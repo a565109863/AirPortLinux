@@ -1,5 +1,5 @@
 //
-//  mac.cpp
+//  compat.cpp
 //  AppleIntelWiFi
 //
 //  Created by Mac-PC on 2020/3/18.

@@ -1,10 +1,5 @@
 /* add your code here*/
 
-typedef unsigned int ifnet_ctl_cmd_t;
-
-#include "IONetworkInterface.h"
-#include "IONetworkController.h"
-
 
 #include "AirPortLinux.hpp"
 
@@ -245,25 +240,41 @@ IOReturn AirPortLinux::getHardwareAddress(IOEthernetAddress* addr) {
     return kIOReturnSuccess;
 }
 
+IOReturn AirPortLinux::outputStart(IONetworkInterface *interface, IOOptionBits options)
+{
+    mbuf_t m;
+    while ((interface->dequeueOutputPackets(1, &m) == kIOReturnSuccess)) {
+        IOReturn ret = this->outputPacket(m, NULL);
+        if (ret != kIOReturnSuccess) {
+//            _ifp->if_oerrors++;
+            return ret;
+        }
+    }
+
+    return kIOReturnNoResources;
+}
+
 UInt32 AirPortLinux::outputPacket(mbuf_t m, void* param) {
     
     int error;
-
-//    IFQ_ENQUEUE(&_ifp->if_snd, m, error);
-    if (error) {
+    
+    if (m == NULL) {
         return kIOReturnOutputDropped;
     }
-
-//    kprintf("%s:start line = %d", __FUNCTION__, __LINE__);
-//    _ifp->if_start(_ifp);
-//    fCommandGate->runAction(&AirPortLinux::if_start_task, _ifp);
-
-    return kIOReturnSuccess;
-}
-
-IOReturn AirPortLinux::outputRaw80211Packet(IO80211Interface*, mbuf_t)
-{
-    kprintf("--%s:start line = %d", __FUNCTION__, __LINE__);
+    if (!(mbuf_flags(m) & MBUF_PKTHDR) ){
+        mbuf_freem(m);
+        return kIOReturnOutputDropped;
+    }
+    if (mbuf_type(m) == MBUF_TYPE_FREE) {
+        return kIOReturnOutputDropped;
+    }
+    
+//    IFQ_ENQUEUE(&_ifp->if_snd, m, error);
+//    if (error) {
+//        return kIOReturnOutputDropped;
+//    }
+    
+//    if_start(_ifp);
     
     return kIOReturnSuccess;
 }
