@@ -74,7 +74,7 @@ public:
     int bpfOutput80211Radio(IOInterface *interface, mbuf_t m) APPLE_KEXT_OVERRIDE;
     
     virtual bool useAppleRSNSupplicant(IOInterface* interface) APPLE_KEXT_OVERRIDE;
-//    virtual bool useAppleRSNSupplicant(IO80211VirtualInterface* interface) APPLE_KEXT_OVERRIDE;
+    //    virtual bool useAppleRSNSupplicant(IO80211VirtualInterface* interface) APPLE_KEXT_OVERRIDE;
 private:
     // 1 - SSID
     IOReturn getSSID(IOInterface* interface, struct apple80211_ssid_data* sd);
@@ -90,12 +90,12 @@ private:
     IOReturn setCHANNEL(IOInterface* interface, struct apple80211_channel_data* cd);
     // 5 - POWERSAVE
     IOReturn getPOWERSAVE(IOInterface* interface, struct apple80211_powersave_data* cd);
-//    IOReturn setPOWERSAVE(IOInterface* interface, struct apple80211_powersave_data* cd);
+    //    IOReturn setPOWERSAVE(IOInterface* interface, struct apple80211_powersave_data* cd);
     // 6 - PROTMODE
     IOReturn getPROTMODE(IOInterface* interface, struct apple80211_protmode_data* ret);
     // 7 - TXPOWER
     IOReturn getTXPOWER(IOInterface* interface, struct apple80211_txpower_data* txd);
-//    IOReturn setTXPOWER(IOInterface* interface, struct apple80211_txpower_data* txd);
+    //    IOReturn setTXPOWER(IOInterface* interface, struct apple80211_txpower_data* txd);
     // 8 - RATE
     IOReturn getRATE(IOInterface* interface, struct apple80211_rate_data* rd);
     // 9 - BSSID
@@ -128,33 +128,33 @@ private:
     IOReturn getASSOCIATE_RESULT(IOInterface* interface,struct apple80211_assoc_result_data* ard);
     // 22 - DISASSOCIATE
     IOReturn setDISASSOCIATE(IOInterface* interface);
-//    // 23 - STATUS_DEV_NAME
-//    IOReturn getSTATUS_DEV_NAME(IOInterface *interface, struct apple80211_status_dev_data *hv);
+    //    // 23 - STATUS_DEV_NAME
+    //    IOReturn getSTATUS_DEV_NAME(IOInterface *interface, struct apple80211_status_dev_data *hv);
     // 27 - SUPPORTED_CHANNELS
     IOReturn getSUPPORTED_CHANNELS(IOInterface* interface, struct apple80211_sup_channel_data* ad);
     // 28 - LOCALE
     IOReturn getLOCALE(IOInterface* interface, struct apple80211_locale_data* ld);
     // 29 - DEAUTH
     IOReturn getDEAUTH(IOInterface *interface, struct apple80211_deauth_data *ret);
-//    // 31 - FRAG_THRESHOLD
-//    IOReturn getFRAG_THRESHOLD(IOInterface* interface, struct apple80211_frag_threshold_data* ld);
+    //    // 31 - FRAG_THRESHOLD
+    //    IOReturn getFRAG_THRESHOLD(IOInterface* interface, struct apple80211_frag_threshold_data* ld);
     // 32 - RATE_SET
     IOReturn getRATE_SET(IOInterface* interface, struct apple80211_rate_set_data* ret);
     // 37 - TX_ANTENNA
     IOReturn getTX_ANTENNA(IOInterface* interface, apple80211_antenna_data* ad);
     // 39 - ANTENNA_DIVERSITY
     IOReturn getANTENNA_DIVERSITY(IOInterface* interface, apple80211_antenna_data* ad);
-//    // 40 - ROM
-//    IOReturn getROM(IOInterface* interface, apple80211_rom_data* rd);
-//    // 42 - STATION_LIST
-//    IOReturn getSTATION_LIST(IOInterface *interface, apple80211_sta_data *sd);
+    //    // 40 - ROM
+    //    IOReturn getROM(IOInterface* interface, apple80211_rom_data* rd);
+    //    // 42 - STATION_LIST
+    //    IOReturn getSTATION_LIST(IOInterface *interface, apple80211_sta_data *sd);
     // 43 - DRIVER_VERSION
     IOReturn getDRIVER_VERSION(IOInterface* interface, struct apple80211_version_data* hv);
     // 44 - HARDWARE_VERSION
     IOReturn getHARDWARE_VERSION(IOInterface* interface, struct apple80211_version_data* hv);
     // 46 - RSN_IE
     IOReturn getRSN_IE(IOInterface* interface, struct apple80211_rsn_ie_data* rid);
-//    IOReturn setRSN_IE(IOInterface *interface, struct apple80211_rsn_ie_data *rid);
+    //    IOReturn setRSN_IE(IOInterface *interface, struct apple80211_rsn_ie_data *rid);
     // 48 AP_IE_LIST
     IOReturn getAP_IE_LIST(IOInterface *interface, struct apple80211_ap_ie_data *data);
     // 50 - ASSOCIATION_STATUS
@@ -163,8 +163,8 @@ private:
     // 51 - COUNTRY_CODE
     IOReturn getCOUNTRY_CODE(IOInterface* interface, struct apple80211_country_code_data* cd);
     IOReturn setCOUNTRY_CODE(IOInterface* interface, struct apple80211_country_code_data* cd);
-//    // 53 - LAST_RX_PKT_DATA
-//    IOReturn getLAST_RX_PKT_DATA(IOInterface *interface,struct apple80211_last_rx_pkt_data *ret);
+    //    // 53 - LAST_RX_PKT_DATA
+    //    IOReturn getLAST_RX_PKT_DATA(IOInterface *interface,struct apple80211_last_rx_pkt_data *ret);
     // 54 - RADIO_INFO
     IOReturn getRADIO_INFO(IOInterface* interface, struct apple80211_radio_info_data* md);
     // 57 - MCS
@@ -173,14 +173,14 @@ private:
     IOReturn getMCS_INDEX_SET(IOInterface* interface, struct apple80211_mcs_index_set_data* md);
     // 80 - ROAM_THRESH
     IOReturn getROAM_THRESH(IOInterface* interface, struct apple80211_roam_threshold_data* rtd);
-//    // 85 - IE
-//    IOReturn getIE(IOInterface* interface, struct apple80211_rsn_ie_data *ret);
+    //    // 85 - IE
+    //    IOReturn getIE(IOInterface* interface, struct apple80211_rsn_ie_data *ret);
     // 86 - SCAN_REQ_MULTIPLE
     IOReturn setSCAN_REQ_MULTIPLE(IOInterface *interface, struct apple80211_scan_multiple_data *sd);
     // 90 - SCANCACHE_CLEAR
-//    IOReturn setSCANCACHE_CLEAR(IOInterface* interface, device *);
-//    // 112 - FACTORY_MODE
-//    IOReturn getFACTORY_MODE(IOInterface* interface, struct apple80211_factory_mode_data* fmd);
+    //    IOReturn setSCANCACHE_CLEAR(IOInterface* interface, device *);
+    //    // 112 - FACTORY_MODE
+    //    IOReturn getFACTORY_MODE(IOInterface* interface, struct apple80211_factory_mode_data* fmd);
     // 156 - LINK_CHANGED_EVENT_DATA
     IOReturn getLINK_CHANGED_EVENT_DATA(IOInterface* interface, struct apple80211_link_changed_event_data* ed);
     // 196 - TX_NSS
@@ -233,11 +233,11 @@ public:
     IONetworkMedium *mediumTable[MEDIUM_TYPE_INVALID];
     
     IOLock *fwLoadLock;
-
+    
     OSData *firmwareData;
     
     IONetworkStats *netStats;
-//    IOOutputQueueStats *outputStats;
+    //    IOOutputQueueStats *outputStats;
     IOEthernetStats *etherStats;
     bool power_state;
     
@@ -249,7 +249,7 @@ public:
     
     OSArray* scanResults;
     uint32_t scanIndex;
-
+    
     void* if_softc;
     bool firstUp = true;
     
@@ -285,7 +285,7 @@ public:
     int assoc_data_index = 0;
     int times = 0;
     
-
+    
 };
 
 
