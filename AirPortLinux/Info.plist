@@ -33,7 +33,7 @@
 		</dict>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2020 User-Mac. All rights reserved.</string>
+	<string>Copyright © 2019 Zhong-Mac. All rights reserved.</string>
 	<key>OSBundleLibraries</key>
 	<dict>
 		<key>com.apple.iokit.IO80211Family</key>
@@ -53,5 +53,7 @@
 		<key>com.apple.kpi.unsupported</key>
 		<string>13.0.0</string>
 	</dict>
+	<key>OSBundleRequired</key>
+	<string>Network-Root</string>
 </dict>
 </plist>

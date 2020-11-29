@@ -2,6 +2,10 @@
 
 #include "AirPortLinux.hpp"
 
+#include <linux/types.h>
+#include <linux/device.h>
+#include <linux/pci.h>
+
 OSDefineMetaClassAndStructors(AirPortLinux, IOController);
 //OSDefineMetaClassAndStructors(IOKitTimeout, OSObject)
 #define super IO80211Controller
@@ -36,40 +40,40 @@ IOService* AirPortLinux::probe(IOService* provider, SInt32 *score)
         return NULL;
     }
     
-    //    struct pci_attach_args *pa = IONew(struct pci_attach_args, 1);
-    //    this->pa.dev.dev = this;
-    //    this->pa.pa_tag = device;
-    //
-    //    this->pa.vendor = this->pa.pa_tag->extendedConfigRead16(kIOPCIConfigVendorID);
-    //    this->pa.device = this->pa.pa_tag->extendedConfigRead16(kIOPCIConfigDeviceID);
-    //    this->pa.pa_id = (this->pa.device << 16) + pa.vendor;
-    //    this->pa.subsystem_vendor = this->pa.pa_tag->extendedConfigRead16(kIOPCIConfigSubSystemVendorID);
-    //    this->pa.subsystem_device = this->pa.pa_tag->extendedConfigRead16(kIOPCIConfigSubSystemID);
-    //    this->pa.revision = this->pa.pa_tag->extendedConfigRead8(kIOPCIConfigRevisionID);
-    //
-    //    for (int i = 0; i < cdlist.size; i++) {
-    //        this->ca = &calist.ca[i];
-    //        if (this->ca->ca_match((struct device *)provider, this, &this->pa)) {
-    //            return this;
-    //        }
-    //    }
+//    struct pci_attach_args *pa = IONew(struct pci_attach_args, 1);
+//    this->pa.dev.dev = this;
+//    this->pa.pa_tag = device;
+//
+//    this->pa.vendor = this->pa.pa_tag->extendedConfigRead16(kIOPCIConfigVendorID);
+//    this->pa.device = this->pa.pa_tag->extendedConfigRead16(kIOPCIConfigDeviceID);
+//    this->pa.pa_id = (this->pa.device << 16) + pa.vendor;
+//    this->pa.subsystem_vendor = this->pa.pa_tag->extendedConfigRead16(kIOPCIConfigSubSystemVendorID);
+//    this->pa.subsystem_device = this->pa.pa_tag->extendedConfigRead16(kIOPCIConfigSubSystemID);
+//    this->pa.revision = this->pa.pa_tag->extendedConfigRead8(kIOPCIConfigRevisionID);
+//
+//    for (int i = 0; i < cdlist.size; i++) {
+//        this->ca = &calist.ca[i];
+//        if (this->ca->ca_match((struct device *)provider, this, &this->pa)) {
+//            return this;
+//        }
+//    }
     
     
-//    struct pci_dev *pdev = IONew(struct pci_dev, 1);
-//    pdev->dev.dev = this;
-//    pdev->device = fPciDevice->extendedConfigRead16(kIOPCIConfigDeviceID);
-//    pdev->subsystem_device = fPciDevice->extendedConfigRead16(kIOPCIConfigSubSystemID);
+    struct pci_dev *pdev = IONew(struct pci_dev, 1);
+    pdev->dev.dev = this;
+    pdev->device = fPciDevice->extendedConfigRead16(kIOPCIConfigDeviceID);
+    pdev->subsystem_device = fPciDevice->extendedConfigRead16(kIOPCIConfigSubSystemID);
     
     iwl_drv_init();
     iwl_mvm_init();
-//    iwl_pci_probe(pdev, pdev->dev.ent);
+    iwl_pci_probe(pdev, pdev->dev.ent);
     return NULL;
     
-    //    this->ca = &calist.ca[0];
-    //    if (!this->ca->ca_match((struct device *)provider, this, &pa)) {
-    //        return NULL;
-    //    }
-    //    return this;
+//    this->ca = &calist.ca[0];
+//    if (!this->ca->ca_match((struct device *)provider, this, &pa)) {
+//        return NULL;
+//    }
+//    return this;
 }
 
 bool AirPortLinux::start(IOService* provider) {
@@ -120,36 +124,36 @@ bool AirPortLinux::start(IOService* provider) {
     
     fCommandGate->enable();
     
-    //    if_softc = IOMallocZero(this->ca->ca_devsize);
-    //    struct device *dev = (struct device *)if_softc;
-    //    dev->dev = this;
-    //
-    //    struct ieee80211com *ic = (struct ieee80211com *)((char *)if_softc + sizeof(struct device));
-    //
-    //    _ifp = &ic->ic_if;
-    //    _ifp->fWorkloop = fWorkloop;
-    //    _ifp->fCommandGate = fCommandGate;
-    //    _ifp->if_link_state = LINK_STATE_DOWN;
-    //
-    //    _scanResults = OSArray::withCapacity(512); // by default, but it autoexpands
-    //    _resultsPending = _scanResults->getCount();
-    //
-    //    fwLoadLock = IOLockAlloc();
-    //
-    //    this->pa.dev.dev = this;
-    ////    bcopy(this->cd->cd_name, this->pa.dev.dv_xname, sizeof(this->cd->cd_name));
-    //    this->pa.workloop = fWorkloop;
-    //    this->pa.pa_tag = fPciDevice;
+//    if_softc = IOMallocZero(this->ca->ca_devsize);
+//    struct device *dev = (struct device *)if_softc;
+//    dev->dev = this;
+//
+//    struct ieee80211com *ic = (struct ieee80211com *)((char *)if_softc + sizeof(struct device));
+//
+//    _ifp = &ic->ic_if;
+//    _ifp->fWorkloop = fWorkloop;
+//    _ifp->fCommandGate = fCommandGate;
+//    _ifp->if_link_state = LINK_STATE_DOWN;
+//
+//    _scanResults = OSArray::withCapacity(512); // by default, but it autoexpands
+//    _resultsPending = _scanResults->getCount();
+//
+//    fwLoadLock = IOLockAlloc();
+//
+//    this->pa.dev.dev = this;
+////    bcopy(this->cd->cd_name, this->pa.dev.dv_xname, sizeof(this->cd->cd_name));
+//    this->pa.workloop = fWorkloop;
+//    this->pa.pa_tag = fPciDevice;
     
     fPciDevice->setBusMasterEnable(true);
     fPciDevice->setIOEnable(true);
     fPciDevice->setMemoryEnable(true);
-    //
-    //    this->ca->ca_attach((struct device *)provider, (struct device *)if_softc, &this->pa);
-    //    if (_ifp->err)
-    //    {
-    //        return false;
-    //    }
+//
+//    this->ca->ca_attach((struct device *)provider, (struct device *)if_softc, &this->pa);
+//    if (_ifp->err)
+//    {
+//        return false;
+//    }
     
     fWatchdogTimer = IOTimerEventSource::timerEventSource(this, OSMemberFunctionCast(IOTimerEventSource::Action, this, &AirPortLinux::if_watchdog));
     
@@ -160,22 +164,21 @@ bool AirPortLinux::start(IOService* provider) {
     fWorkloop->addEventSource(fWatchdogTimer);
     
     
-    //    IFConfig = OSDynamicCast(OSString, getProperty(kIFConfigName));
+//    IFConfig = OSDynamicCast(OSString, getProperty(kIFConfigName));
     
-    //    OSDictionary *params = OSDynamicCast(OSDictionary, getProperty(kParamName));
-    //    BSSID = OSString::withCString("");
-    //    PWD = OSString::withCString("");
-    //    if (params) {
-    //        BSSID = OSDynamicCast(OSString, params->getObject(kBSSIDName));
-    //        PWD = OSDynamicCast(OSString, params->getObject(kPWDName));
-    //    }
+//    OSDictionary *params = OSDynamicCast(OSDictionary, getProperty(kParamName));
+//    BSSID = OSString::withCString("");
+//    PWD = OSString::withCString("");
+//    if (params) {
+//        BSSID = OSDynamicCast(OSString, params->getObject(kBSSIDName));
+//        PWD = OSDynamicCast(OSString, params->getObject(kPWDName));
+//    }
     
-    
-    //    this->mediumDict = OSDictionary::withCapacity(1);
-    //    this->addMediumType(kIOMediumIEEE80211Auto,  _ifp->if_baudrate,  MEDIUM_TYPE_AUTO);
-    //    this->publishMediumDictionary(this->mediumDict);
-    //    this->setCurrentMedium(this->mediumTable[MEDIUM_TYPE_AUTO]);
-    //    this->setSelectedMedium(this->mediumTable[MEDIUM_TYPE_AUTO]);
+//    this->mediumDict = OSDictionary::withCapacity(1);
+//    this->addMediumType(kIOMediumIEEE80211Auto,  _ifp->if_baudrate,  MEDIUM_TYPE_AUTO);
+//    this->publishMediumDictionary(this->mediumDict);
+//    this->setCurrentMedium(this->mediumTable[MEDIUM_TYPE_AUTO]);
+//    this->setSelectedMedium(this->mediumTable[MEDIUM_TYPE_AUTO]);
     
     registerService();
     
@@ -190,11 +193,11 @@ void AirPortLinux::stop(IOService* provider) {
         }
     }
     
-    //    if (_ifp->iface){
-    //        struct ieee80211com *ic = (struct ieee80211com *)_ifp;
-    //        ieee80211_ifdetach(&ic->ic_ac.ac_if);
-    //        _ifp->iface = NULL;
-    //    }
+//    if (_ifp->iface){
+//        struct ieee80211com *ic = (struct ieee80211com *)_ifp;
+//        ieee80211_ifdetach(&ic->ic_ac.ac_if);
+//        _ifp->iface = NULL;
+//    }
     
     super::stop(provider);
 }
@@ -202,24 +205,24 @@ void AirPortLinux::stop(IOService* provider) {
 void AirPortLinux::free() {
     IOLog("AirPortLinux: Free");
     
-    //    ((pci_intr_handle_t)if_softc->sc_ih)->intr->disable();
-    //
-    //    if (fWorkloop) {
-    //        if (((pci_intr_handle_t)if_softc->sc_ih)->intr) {
-    //            fWorkloop->removeEventSource(((pci_intr_handle_t)if_softc->sc_ih)->intr);
-    //            RELEASE(((pci_intr_handle_t)if_softc->sc_ih)->intr);
-    //        }
-    //        if (fCommandGate) {
-    //            fWorkloop->removeEventSource(fCommandGate);
-    //            RELEASE(fCommandGate);
-    //        }
-    //        RELEASE(fWorkloop);
-    //    }
+//    ((pci_intr_handle_t)if_softc->sc_ih)->intr->disable();
+//
+//    if (fWorkloop) {
+//        if (((pci_intr_handle_t)if_softc->sc_ih)->intr) {
+//            fWorkloop->removeEventSource(((pci_intr_handle_t)if_softc->sc_ih)->intr);
+//            RELEASE(((pci_intr_handle_t)if_softc->sc_ih)->intr);
+//        }
+//        if (fCommandGate) {
+//            fWorkloop->removeEventSource(fCommandGate);
+//            RELEASE(fCommandGate);
+//        }
+//        RELEASE(fWorkloop);
+//    }
     
     RELEASE(fCommandGate);
     RELEASE(mediumDict);
     RELEASE(fPciDevice);
-    
+
     super::free();
 }
 
@@ -230,8 +233,8 @@ IOReturn AirPortLinux::getHardwareAddress(IOEthernetAddress* addr) {
     //    addr->bytes[3] = 0x77;
     //    addr->bytes[4] = 0x66;
     //    addr->bytes[5] = 0x55;
-    //    struct ieee80211com *ic = (struct ieee80211com *)_ifp;
-    //    bcopy(ic->ic_myaddr, addr->bytes, kIOEthernetAddressSize);
+//    struct ieee80211com *ic = (struct ieee80211com *)_ifp;
+//    bcopy(ic->ic_myaddr, addr->bytes, kIOEthernetAddressSize);
     return kIOReturnSuccess;
 }
 
@@ -241,11 +244,11 @@ IOReturn AirPortLinux::outputStart(IONetworkInterface *interface, IOOptionBits o
     while ((interface->dequeueOutputPackets(1, &m) == kIOReturnSuccess)) {
         IOReturn ret = this->outputPacket(m, NULL);
         if (ret != kIOReturnSuccess) {
-            //            _ifp->if_oerrors++;
+//            _ifp->if_oerrors++;
             return ret;
         }
     }
-    
+
     return kIOReturnNoResources;
 }
 
@@ -264,12 +267,12 @@ UInt32 AirPortLinux::outputPacket(mbuf_t m, void* param) {
         return kIOReturnOutputDropped;
     }
     
-    //    IFQ_ENQUEUE(&_ifp->if_snd, m, error);
-    //    if (error) {
-    //        return kIOReturnOutputDropped;
-    //    }
+//    IFQ_ENQUEUE(&_ifp->if_snd, m, error);
+//    if (error) {
+//        return kIOReturnOutputDropped;
+//    }
     
-    //    if_start(_ifp);
+//    if_start(_ifp);
     
     return kIOReturnSuccess;
 }
@@ -313,15 +316,15 @@ IOReturn AirPortLinux::enable(IONetworkInterface *netif) {
     
     kprintf("enable() ===>\n");
     
-    //    setLinkStatus((kIONetworkLinkValid | kIONetworkLinkActive), mediumTable[MEDIUM_TYPE_AUTO], _ifp->if_baudrate, NULL);
-    //
-    ////    const char *ifconfig = "nwid FAST_88FED0 wpakey 126abc!@ABC wpaprotos wpa1,wpa2";
-    //    const char *configStr = this->IFConfig->getCStringNoCopy();
-    //    ifconfig(configStr);
+//    setLinkStatus((kIONetworkLinkValid | kIONetworkLinkActive), mediumTable[MEDIUM_TYPE_AUTO], _ifp->if_baudrate, NULL);
+//
+////    const char *ifconfig = "nwid FAST_88FED0 wpakey 126abc!@ABC wpaprotos wpa1,wpa2";
+//    const char *configStr = this->IFConfig->getCStringNoCopy();
+//    ifconfig(configStr);
     
-    //    ifnet *ifp = &if_softc.sc_ic.ic_if;
-    //    if (ifp->iface) ifp->iface->postMessage(APPLE80211_M_POWER_CHANGED);
-    //    if (fOutputQueue) fOutputQueue->setCapacity(200); // FIXME !!!!
+//    ifnet *ifp = &if_softc.sc_ic.ic_if;
+//    if (ifp->iface) ifp->iface->postMessage(APPLE80211_M_POWER_CHANGED);
+//    if (fOutputQueue) fOutputQueue->setCapacity(200); // FIXME !!!!
     
     result = kIOReturnSuccess;
     
@@ -336,7 +339,7 @@ IOReturn AirPortLinux::disable(IONetworkInterface *netif) {
     
     kprintf("disable() ===>\n");
     
-    //    if (_ifp->iface) _ifp->iface->postMessage(APPLE80211_M_POWER_CHANGED);
+//    if (_ifp->iface) _ifp->iface->postMessage(APPLE80211_M_POWER_CHANGED);
     
     kprintf("disable() <===\n");
     
@@ -365,9 +368,9 @@ const OSString* AirPortLinux::newVendorString() const {
 }
 
 const OSString* AirPortLinux::newModelString() const {
-#define kNameLenght 64
+    #define kNameLenght 64
     char modelName[kNameLenght];
-    //    snprintf(modelName, kNameLenght, "Intel %s PCI Express Wifi", if_softc.sc_fwname);
+//    snprintf(modelName, kNameLenght, "Intel %s PCI Express Wifi", if_softc.sc_fwname);
     return OSString::withCString(modelName);
 }
 
@@ -385,27 +388,27 @@ const OSString* AirPortLinux::newModelString() const {
 void
 AirPortLinux::ether_ifattach()
 {
-    //    if (!attachInterface((IONetworkInterface**) &_ifp->iface, true)) {
-    //        panic("AirPortLinux: Failed to attach interface!");
-    //    }
+//    if (!attachInterface((IONetworkInterface**) &_ifp->iface, true)) {
+//        panic("AirPortLinux: Failed to attach interface!");
+//    }
 }
 
 void
 AirPortLinux::ether_ifdetach()
 {
-    //    detachInterface((IONetworkInterface*) _ifp->iface, true);
+//    detachInterface((IONetworkInterface*) _ifp->iface, true);
 }
 
 int AirPortLinux::enqueueInputPacket2(mbuf_t m)
 {
-    //    DebugLog("---%s: line = %d RTX TX: ", __FUNCTION__, __LINE__);
-    //    _ifp->iface->enqueueInputPacket(m);
+//    DebugLog("---%s: line = %d RTX TX: ", __FUNCTION__, __LINE__);
+//    _ifp->iface->enqueueInputPacket(m);
     return 0;
 }
 
 void AirPortLinux::flushInputQueue2()
 {
-    //    _ifp->iface->flushInputQueue();
+//    _ifp->iface->flushInputQueue();
 }
 
 //IOReturn AirPortLinux::if_start_task(OSObject *target, void *arg0, void *arg1, void *arg2, void *arg3)
@@ -473,7 +476,7 @@ int AirPortLinux::loadfirmware(const char *name, u_char **bufp, size_t *buflen)
 
 void AirPortLinux::if_watchdog(IOTimerEventSource *timer)
 {
-    //    _ifp->if_watchdog(_ifp);
+//    _ifp->if_watchdog(_ifp);
     fWatchdogTimer->setTimeoutMS(kTimeoutMS);
 }
 
