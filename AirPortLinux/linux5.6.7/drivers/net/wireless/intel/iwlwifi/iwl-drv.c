@@ -1805,7 +1805,7 @@ void iwl_opmode_deregister(const char *name)
 }
 IWL_EXPORT_SYMBOL(iwl_opmode_deregister);
 
-static int __init iwl_drv_init(void)
+int __init iwl_drv_init(void)
 {
 	int i, err;
 

@@ -129,11 +129,7 @@ struct rhashtable_iter {
 
 int rhashtable_init(struct rhashtable *ht,
             const struct rhashtable_params *params);
-static int rhltable_init(struct rhltable *hlt,
-          const struct rhashtable_params *params)
-{
-    // todo
-    return 0;
-}
+int rhltable_init(struct rhltable *hlt,
+            const struct rhashtable_params *params);
 
 #endif /* _LINUX_RHASHTABLE_TYPES_H */

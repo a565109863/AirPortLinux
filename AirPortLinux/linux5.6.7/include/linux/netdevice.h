@@ -24,31 +24,62 @@
 #include <linux/u64_stats_sync.h>
 
 
-#ifndef SPEED_UNKNOWN
-#define SPEED_UNKNOWN  -1
-#endif /* SPEED_UNKNOWN */
+struct netpoll_info;
+struct device;
+struct phy_device;
+struct dsa_port;
 
-#ifndef DUPLEX_UNKNOWN
-#define DUPLEX_UNKNOWN 0xff
-#endif /* DUPLEX_UNKNOWN */
+struct sfp_bus;
+/* 802.11 specific */
+struct wireless_dev;
+/* 802.15.4 specific */
+struct wpan_dev;
+struct mpls_dev;
+/* UDP Tunnel offloads */
+struct udp_tunnel_info;
+struct bpf_prog;
+struct xdp_buff;
 
-#ifndef ETHTOOL_FWVERS_LEN
-#define ETHTOOL_FWVERS_LEN 32
-#endif
+void netdev_set_default_ethtool_ops(struct net_device *dev,
+                    const struct ethtool_ops *ops);
 
-typedef u64 netdev_features_t;
+/* Backlog congestion levels */
+#define NET_RX_SUCCESS        0    /* keep 'em coming, baby */
+#define NET_RX_DROP        1    /* packet dropped */
 
+#define MAX_NEST_DEV 8
 
-#define    NETDEV_ALIGN        32
+/*
+ * Transmit return codes: transmit return codes originate from three different
+ * namespaces:
+ *
+ * - qdisc return codes
+ * - driver transmit return codes
+ * - errno values
+ *
+ * Drivers are allowed to return any one of those in their hard_start_xmit()
+ * function. Real network devices commonly used with qdiscs should only return
+ * the driver transmit return codes though - when qdiscs are used, the actual
+ * transmission happens asynchronously, so the value is not propagated to
+ * higher layers. Virtual network devices transmit synchronously; in this case
+ * the driver transmit return codes are consumed by dev_queue_xmit(), and all
+ * others are propagated to higher layers.
+ */
 
+/* qdisc ->enqueue() return codes. */
+#define NET_XMIT_SUCCESS    0x00
+#define NET_XMIT_DROP        0x01    /* skb dropped            */
+#define NET_XMIT_CN        0x02    /* congestion notification    */
+#define NET_XMIT_MASK        0x0f    /* qdisc flags in net/sch_generic.h */
 
-/* hardware address assignment types */
-#define NET_ADDR_PERM        0    /* address is permanent (default) */
-#define NET_ADDR_RANDOM        1    /* address is generated randomly */
-#define NET_ADDR_STOLEN        2    /* address is stolen from other device */
-#define NET_ADDR_SET        3    /* address is set using
-* dev_set_mac_address() */
+/* NET_XMIT_CN is special. It does not guarantee that this packet is lost. It
+ * indicates that the device will soon be dropping packets, or already drops
+ * some packets of the same priority; prompting us to send less aggressively. */
+#define net_xmit_eval(e)    ((e) == NET_XMIT_CN ? 0 : (e))
+#define net_xmit_errno(e)    ((e) != NET_XMIT_CN ? -ENOBUFS : 0)
 
+/* Driver transmit return codes */
+#define NETDEV_TX_MASK        0xf0
 
 enum netdev_tx {
     __NETDEV_TX_MIN     = INT_MIN,    /* make sure enum is signed */
@@ -57,35 +88,47 @@ enum netdev_tx {
 };
 typedef enum netdev_tx netdev_tx_t;
 
-
-
-/* Init's network namespace */
-extern struct net init_net;
-
-
-typedef struct {
-#ifdef CONFIG_NET_NS
-    struct net *net;
-#endif
-} possible_net_t;
-
-
-static inline void write_pnet(possible_net_t *pnet, struct net *net)
+/*
+ * Current order: NETDEV_TX_MASK > NET_XMIT_MASK >= 0 is significant;
+ * hard_start_xmit() return < NET_XMIT_MASK means skb was consumed.
+ */
+static inline bool dev_xmit_complete(int rc)
 {
-#ifdef CONFIG_NET_NS
-    pnet->net = net;
-#endif
+    /*
+     * Positive cases with an skb consumed by a driver:
+     * - successful transmission (rc == NETDEV_TX_OK)
+     * - error while transmitting (rc < 0)
+     * - error while queueing to a different device (rc & NET_XMIT_MASK)
+     */
+    if (likely(rc < NET_XMIT_MASK))
+        return true;
+
+    return false;
 }
 
-static inline struct net *read_pnet(const possible_net_t *pnet)
-{
-#ifdef CONFIG_NET_NS
-    return pnet->net;
+/*
+ *    Compute the worst-case header length according to the protocols
+ *    used.
+ */
+
+#if defined(CONFIG_HYPERV_NET)
+# define LL_MAX_HEADER 128
+#elif defined(CONFIG_WLAN) || IS_ENABLED(CONFIG_AX25)
+# if defined(CONFIG_MAC80211_MESH)
+#  define LL_MAX_HEADER 128
+# else
+#  define LL_MAX_HEADER 96
+# endif
 #else
-    return &init_net;
+# define LL_MAX_HEADER 32
 #endif
-}
 
+#if !IS_ENABLED(CONFIG_NET_IPIP) && !IS_ENABLED(CONFIG_NET_IPGRE) && \
+    !IS_ENABLED(CONFIG_IPV6_SIT) && !IS_ENABLED(CONFIG_IPV6_TUNNEL)
+#define MAX_HEADER LL_MAX_HEADER
+#else
+#define MAX_HEADER (LL_MAX_HEADER + 48)
+#endif
 
 /*
  *    Old network device statistics. Fields are native words
@@ -117,6 +160,75 @@ struct net_device_stats {
     unsigned long    rx_compressed;
     unsigned long    tx_compressed;
 };
+
+
+/* These flag bits are private to the generic network queueing
+ * layer; they may not be explicitly referenced by any other
+ * code.
+ */
+
+enum netdev_state_t {
+    __LINK_STATE_START,
+    __LINK_STATE_PRESENT,
+    __LINK_STATE_NOCARRIER,
+    __LINK_STATE_LINKWATCH_PENDING,
+    __LINK_STATE_DORMANT,
+};
+
+
+#ifndef SPEED_UNKNOWN
+#define SPEED_UNKNOWN  -1
+#endif /* SPEED_UNKNOWN */
+
+#ifndef DUPLEX_UNKNOWN
+#define DUPLEX_UNKNOWN 0xff
+#endif /* DUPLEX_UNKNOWN */
+
+#ifndef ETHTOOL_FWVERS_LEN
+#define ETHTOOL_FWVERS_LEN 32
+#endif
+
+typedef u64 netdev_features_t;
+
+
+#define    NETDEV_ALIGN        32
+
+
+/* hardware address assignment types */
+#define NET_ADDR_PERM        0    /* address is permanent (default) */
+#define NET_ADDR_RANDOM        1    /* address is generated randomly */
+#define NET_ADDR_STOLEN        2    /* address is stolen from other device */
+#define NET_ADDR_SET        3    /* address is set using
+* dev_set_mac_address() */
+
+
+
+/* Init's network namespace */
+extern struct net init_net;
+
+
+typedef struct {
+#ifdef CONFIG_NET_NS
+    struct net *net;
+#endif
+} possible_net_t;
+
+
+static inline void write_pnet(possible_net_t *pnet, struct net *net)
+{
+#ifdef CONFIG_NET_NS
+    pnet->net = net;
+#endif
+}
+
+static inline struct net *read_pnet(const possible_net_t *pnet)
+{
+#ifdef CONFIG_NET_NS
+    return pnet->net;
+#else
+    return &init_net;
+#endif
+}
 
 
 #define MAX_ADDR_LEN 19
@@ -745,6 +857,117 @@ struct net_device_ops {
     struct devlink_port *    (*ndo_get_devlink_port)(struct net_device *dev);
 };
 
+/**
+ * enum net_device_priv_flags - &struct net_device priv_flags
+ *
+ * These are the &struct net_device, they are only set internally
+ * by drivers and used in the kernel. These flags are invisible to
+ * userspace; this means that the order of these flags can change
+ * during any kernel release.
+ *
+ * You should have a pretty good reason to be extending these flags.
+ *
+ * @IFF_802_1Q_VLAN: 802.1Q VLAN device
+ * @IFF_EBRIDGE: Ethernet bridging device
+ * @IFF_BONDING: bonding master or slave
+ * @IFF_ISATAP: ISATAP interface (RFC4214)
+ * @IFF_WAN_HDLC: WAN HDLC device
+ * @IFF_XMIT_DST_RELEASE: dev_hard_start_xmit() is allowed to
+ *    release skb->dst
+ * @IFF_DONT_BRIDGE: disallow bridging this ether dev
+ * @IFF_DISABLE_NETPOLL: disable netpoll at run-time
+ * @IFF_MACVLAN_PORT: device used as macvlan port
+ * @IFF_BRIDGE_PORT: device used as bridge port
+ * @IFF_OVS_DATAPATH: device used as Open vSwitch datapath port
+ * @IFF_TX_SKB_SHARING: The interface supports sharing skbs on transmit
+ * @IFF_UNICAST_FLT: Supports unicast filtering
+ * @IFF_TEAM_PORT: device used as team port
+ * @IFF_SUPP_NOFCS: device supports sending custom FCS
+ * @IFF_LIVE_ADDR_CHANGE: device supports hardware address
+ *    change when it's running
+ * @IFF_MACVLAN: Macvlan device
+ * @IFF_XMIT_DST_RELEASE_PERM: IFF_XMIT_DST_RELEASE not taking into account
+ *    underlying stacked devices
+ * @IFF_L3MDEV_MASTER: device is an L3 master device
+ * @IFF_NO_QUEUE: device can run without qdisc attached
+ * @IFF_OPENVSWITCH: device is a Open vSwitch master
+ * @IFF_L3MDEV_SLAVE: device is enslaved to an L3 master device
+ * @IFF_TEAM: device is a team device
+ * @IFF_RXFH_CONFIGURED: device has had Rx Flow indirection table configured
+ * @IFF_PHONY_HEADROOM: the headroom value is controlled by an external
+ *    entity (i.e. the master device for bridged veth)
+ * @IFF_MACSEC: device is a MACsec device
+ * @IFF_NO_RX_HANDLER: device doesn't support the rx_handler hook
+ * @IFF_FAILOVER: device is a failover master device
+ * @IFF_FAILOVER_SLAVE: device is lower dev of a failover master device
+ * @IFF_L3MDEV_RX_HANDLER: only invoke the rx handler of L3 master device
+ * @IFF_LIVE_RENAME_OK: rename is allowed while device is up and running
+ */
+enum netdev_priv_flags {
+    IFF_802_1Q_VLAN            = 1<<0,
+    IFF_EBRIDGE            = 1<<1,
+    IFF_BONDING            = 1<<2,
+    IFF_ISATAP            = 1<<3,
+    IFF_WAN_HDLC            = 1<<4,
+    IFF_XMIT_DST_RELEASE        = 1<<5,
+    IFF_DONT_BRIDGE            = 1<<6,
+    IFF_DISABLE_NETPOLL        = 1<<7,
+    IFF_MACVLAN_PORT        = 1<<8,
+    IFF_BRIDGE_PORT            = 1<<9,
+    IFF_OVS_DATAPATH        = 1<<10,
+    IFF_TX_SKB_SHARING        = 1<<11,
+    IFF_UNICAST_FLT            = 1<<12,
+    IFF_TEAM_PORT            = 1<<13,
+    IFF_SUPP_NOFCS            = 1<<14,
+    IFF_LIVE_ADDR_CHANGE        = 1<<15,
+    IFF_MACVLAN            = 1<<16,
+    IFF_XMIT_DST_RELEASE_PERM    = 1<<17,
+    IFF_L3MDEV_MASTER        = 1<<18,
+    IFF_NO_QUEUE            = 1<<19,
+    IFF_OPENVSWITCH            = 1<<20,
+    IFF_L3MDEV_SLAVE        = 1<<21,
+    IFF_TEAM            = 1<<22,
+    IFF_RXFH_CONFIGURED        = 1<<23,
+    IFF_PHONY_HEADROOM        = 1<<24,
+    IFF_MACSEC            = 1<<25,
+    IFF_NO_RX_HANDLER        = 1<<26,
+    IFF_FAILOVER            = 1<<27,
+    IFF_FAILOVER_SLAVE        = 1<<28,
+    IFF_L3MDEV_RX_HANDLER        = 1<<29,
+    IFF_LIVE_RENAME_OK        = 1<<30,
+};
+
+#define IFF_802_1Q_VLAN            IFF_802_1Q_VLAN
+#define IFF_EBRIDGE            IFF_EBRIDGE
+#define IFF_BONDING            IFF_BONDING
+#define IFF_ISATAP            IFF_ISATAP
+#define IFF_WAN_HDLC            IFF_WAN_HDLC
+#define IFF_XMIT_DST_RELEASE        IFF_XMIT_DST_RELEASE
+#define IFF_DONT_BRIDGE            IFF_DONT_BRIDGE
+#define IFF_DISABLE_NETPOLL        IFF_DISABLE_NETPOLL
+#define IFF_MACVLAN_PORT        IFF_MACVLAN_PORT
+#define IFF_BRIDGE_PORT            IFF_BRIDGE_PORT
+#define IFF_OVS_DATAPATH        IFF_OVS_DATAPATH
+#define IFF_TX_SKB_SHARING        IFF_TX_SKB_SHARING
+#define IFF_UNICAST_FLT            IFF_UNICAST_FLT
+#define IFF_TEAM_PORT            IFF_TEAM_PORT
+#define IFF_SUPP_NOFCS            IFF_SUPP_NOFCS
+#define IFF_LIVE_ADDR_CHANGE        IFF_LIVE_ADDR_CHANGE
+#define IFF_MACVLAN            IFF_MACVLAN
+#define IFF_XMIT_DST_RELEASE_PERM    IFF_XMIT_DST_RELEASE_PERM
+#define IFF_L3MDEV_MASTER        IFF_L3MDEV_MASTER
+#define IFF_NO_QUEUE            IFF_NO_QUEUE
+#define IFF_OPENVSWITCH            IFF_OPENVSWITCH
+#define IFF_L3MDEV_SLAVE        IFF_L3MDEV_SLAVE
+#define IFF_TEAM            IFF_TEAM
+#define IFF_RXFH_CONFIGURED        IFF_RXFH_CONFIGURED
+#define IFF_MACSEC            IFF_MACSEC
+#define IFF_NO_RX_HANDLER        IFF_NO_RX_HANDLER
+#define IFF_FAILOVER            IFF_FAILOVER
+#define IFF_FAILOVER_SLAVE        IFF_FAILOVER_SLAVE
+#define IFF_L3MDEV_RX_HANDLER        IFF_L3MDEV_RX_HANDLER
+#define IFF_LIVE_RENAME_OK        IFF_LIVE_RENAME_OK
+
 
 static
 void synchronize_net(void)
@@ -790,5 +1013,131 @@ struct sk_buff *skb_gso_segment(struct sk_buff *skb, netdev_features_t features)
 {
     return __skb_gso_segment(skb, features, true);
 }
+
+
+/**
+ *    netif_running - test if up
+ *    @dev: network device
+ *
+ *    Test if the device has been brought up.
+ */
+static inline bool netif_running(const struct net_device *dev)
+{
+    return test_bit(__LINK_STATE_START, &dev->state);
+}
+
+
+static int netif_receive_skb(struct sk_buff *skb)
+{
+    int ret = 0;
+//
+//    trace_netif_receive_skb_entry(skb);
+//
+//    ret = netif_receive_skb_internal(skb);
+//    trace_netif_receive_skb_exit(ret);
+
+    return ret;
+}
+
+
+enum gro_result {
+    GRO_MERGED,
+    GRO_MERGED_FREE,
+    GRO_HELD,
+    GRO_NORMAL,
+    GRO_DROP,
+    GRO_CONSUMED,
+};
+typedef enum gro_result gro_result_t;
+
+static gro_result_t napi_gro_receive(struct napi_struct *napi, struct sk_buff *skb)
+{
+    gro_result_t ret = GRO_MERGED;
+
+//    skb_mark_napi_id(skb, napi);
+//    trace_napi_gro_receive_entry(skb);
+//
+//    skb_gro_reset_offset(skb);
+//
+//    ret = napi_skb_finish(napi, skb, dev_gro_receive(napi, skb));
+//    trace_napi_gro_receive_exit(ret);
+
+    return ret;
+}
+
+/**
+ * eth_type_trans - determine the packet's protocol ID.
+ * @skb: received socket data
+ * @dev: receiving network device
+ *
+ * The rule here is that we
+ * assume 802.3 if the type field is short enough to be a length.
+ * This is normal practice and works for any 'now in use' protocol.
+ */
+static __be16 eth_type_trans(struct sk_buff *skb, struct net_device *dev)
+{
+    unsigned short _service_access_point;
+    const unsigned short *sap;
+    const struct ethhdr *eth;
+
+    skb->dev = dev;
+    skb_reset_mac_header(skb);
+
+//    eth = (struct ethhdr *)skb->data;
+//    skb_pull_inline(skb, ETH_HLEN);
+//
+//    if (unlikely(!ether_addr_equal_64bits(eth->h_dest,
+//                          dev->dev_addr))) {
+//        if (unlikely(is_multicast_ether_addr_64bits(eth->h_dest))) {
+//            if (ether_addr_equal_64bits(eth->h_dest, dev->broadcast))
+//                skb->pkt_type = PACKET_BROADCAST;
+//            else
+//                skb->pkt_type = PACKET_MULTICAST;
+//        } else {
+//            skb->pkt_type = PACKET_OTHERHOST;
+//        }
+//    }
+//
+//    /*
+//     * Some variants of DSA tagging don't have an ethertype field
+//     * at all, so we check here whether one of those tagging
+//     * variants has been configured on the receiving interface,
+//     * and if so, set skb->protocol without looking at the packet.
+//     * The DSA tagging protocol may be able to decode some but not all
+//     * traffic (for example only for management). In that case give it the
+//     * option to filter the packets from which it can decode source port
+//     * information.
+//     */
+//    if (unlikely(netdev_uses_dsa(dev)) && dsa_can_decode(skb, dev))
+//        return htons(ETH_P_XDSA);
+//
+//    if (likely(eth_proto_is_802_3(eth->h_proto)))
+//        return eth->h_proto;
+//
+//    /*
+//     *      This is a magic hack to spot IPX packets. Older Novell breaks
+//     *      the protocol design and runs IPX over 802.3 without an 802.2 LLC
+//     *      layer. We look for FFFF which isn't a used 802.2 SSAP/DSAP. This
+//     *      won't work for fault tolerant netware but does for the rest.
+//     */
+//    sap = skb_header_pointer(skb, 0, sizeof(*sap), &_service_access_point);
+//    if (sap && *sap == 0xFFFF)
+//        return htons(ETH_P_802_3);
+
+    /*
+     *      Real 802.2 LLC
+     */
+    return htons(ETH_P_802_2);
+}
+EXPORT_SYMBOL(eth_type_trans);
+
+
+static int dev_queue_xmit(struct sk_buff *skb)
+{
+//    return __dev_queue_xmit(skb, NULL);
+    return 0;
+}
+
+
 
 #endif /* netdevice_h */

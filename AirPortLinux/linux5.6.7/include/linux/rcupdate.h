@@ -15,4 +15,17 @@
 #define rcu_dereference_check(p, cond) rcu_dereference(p)
 #define RCU_INIT_POINTER(p, v)    do { (p) = (v); } while (0)
 
+
+static inline bool
+rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
+{
+    rcu_callback_t func = READ_ONCE(rhp->func);
+
+    if (func == f)
+        return true;
+    WARN_ON_ONCE(func != (rcu_callback_t)~0L);
+    return false;
+}
+
+
 #endif /* rcupdate_h */

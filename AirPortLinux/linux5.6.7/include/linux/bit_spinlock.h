@@ -9,6 +9,10 @@
 #ifndef bit_spinlock_h
 #define bit_spinlock_h
 
+#include <linux/atomic.h>
+#include <linux/kernel.h>
+#include <linux/lockdep.h>
+
 #define bit_spin_lock(x, y)
 #define bit_spin_unlock(x, y)
 

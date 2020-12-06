@@ -40,6 +40,15 @@ static inline void set_page_address(struct page *page, void *address)
 }
 
 
+static inline struct page *virt_to_head_page(const void *x)
+{
+//    struct page *page = virt_to_page(x);
+//
+//    return compound_head(page);
+    return NULL;
+}
+
+
 
 static inline int get_order(unsigned long size)
 {

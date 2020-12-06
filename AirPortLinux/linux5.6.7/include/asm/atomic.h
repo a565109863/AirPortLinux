@@ -32,29 +32,29 @@
 static __inline__ int                            \
 ia64_atomic_##op (int i, atomic_t *v)                    \
 {                                    \
-    __s32 old, new;                            \
+    __s32 old, _new;                            \
     CMPXCHG_BUGCHECK_DECL                        \
                                     \
     do {                                \
         CMPXCHG_BUGCHECK(v);                    \
         old = atomic_read(v);                    \
-        new = old c_op i;                    \
-    } while (ia64_cmpxchg(acq, v, old, new, sizeof(atomic_t)) != old); \
-    return new;                            \
+        _new = old c_op i;                    \
+    } while (ia64_cmpxchg(acq, v, old, _new, sizeof(atomic_t)) != old); \
+    return _new;                            \
 }
 
 #define ATOMIC_FETCH_OP(op, c_op)                    \
 static __inline__ int                            \
 ia64_atomic_fetch_##op (int i, atomic_t *v)                \
 {                                    \
-    __s32 old, new;                            \
+    __s32 old, _new;                            \
     CMPXCHG_BUGCHECK_DECL                        \
                                     \
     do {                                \
         CMPXCHG_BUGCHECK(v);                    \
         old = atomic_read(v);                    \
-        new = old c_op i;                    \
-    } while (ia64_cmpxchg(acq, v, old, new, sizeof(atomic_t)) != old); \
+        _new = old c_op i;                    \
+    } while (ia64_cmpxchg(acq, v, old, _new, sizeof(atomic_t)) != old); \
     return old;                            \
 }
 
@@ -127,29 +127,29 @@ ATOMIC_FETCH_OP(xor, ^)
 static __inline__ s64                            \
 ia64_atomic64_##op (s64 i, atomic64_t *v)                \
 {                                    \
-    s64 old, new;                            \
+    s64 old, _new;                            \
     CMPXCHG_BUGCHECK_DECL                        \
                                     \
     do {                                \
         CMPXCHG_BUGCHECK(v);                    \
         old = atomic64_read(v);                    \
-        new = old c_op i;                    \
-    } while (ia64_cmpxchg(acq, v, old, new, sizeof(atomic64_t)) != old); \
-    return new;                            \
+        _new = old c_op i;                    \
+    } while (ia64_cmpxchg(acq, v, old, _new, sizeof(atomic64_t)) != old); \
+    return _new;                            \
 }
 
 #define ATOMIC64_FETCH_OP(op, c_op)                    \
 static __inline__ s64                            \
 ia64_atomic64_fetch_##op (s64 i, atomic64_t *v)                \
 {                                    \
-    s64 old, new;                            \
+    s64 old, _new;                            \
     CMPXCHG_BUGCHECK_DECL                        \
                                     \
     do {                                \
         CMPXCHG_BUGCHECK(v);                    \
         old = atomic64_read(v);                    \
-        new = old c_op i;                    \
-    } while (ia64_cmpxchg(acq, v, old, new, sizeof(atomic64_t)) != old); \
+        _new = old c_op i;                    \
+    } while (ia64_cmpxchg(acq, v, old, _new, sizeof(atomic64_t)) != old); \
     return old;                            \
 }
 
@@ -208,12 +208,12 @@ ATOMIC64_FETCH_OP(xor, ^)
 #undef ATOMIC64_FETCH_OP
 #undef ATOMIC64_OP
 
-#define atomic_cmpxchg(v, old, new) (cmpxchg(&((v)->counter), old, new))
-#define atomic_xchg(v, new) (xchg(&((v)->counter), new))
+#define atomic_cmpxchg(v, old, _new) (cmpxchg(&((v)->counter), old, _new))
+#define atomic_xchg(v, _new) (xchg(&((v)->counter), _new))
 
-#define atomic64_cmpxchg(v, old, new) \
-    (cmpxchg(&((v)->counter), old, new))
-#define atomic64_xchg(v, new) (xchg(&((v)->counter), new))
+#define atomic64_cmpxchg(v, old, _new) \
+    (cmpxchg(&((v)->counter), old, _new))
+#define atomic64_xchg(v, _new) (xchg(&((v)->counter), _new))
 
 #define atomic_add(i,v)            (void)atomic_add_return((i), (v))
 #define atomic_sub(i,v)            (void)atomic_sub_return((i), (v))

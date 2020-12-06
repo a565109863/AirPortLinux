@@ -23,6 +23,8 @@
 
 #define KERN_DEBUG 0
 
+#define    NUMA_NO_NODE    (-1)
+typedef unsigned int __wsum;
 
 
 /*
@@ -201,6 +203,9 @@ static void *kmalloc_track_caller(size_t size, gfp_t gfp)
 #define pr_debug kprintf
 #define pr_info kprintf
 
+#define netdev_err(d, arg...) kprintf(arg)
+#define net_info_ratelimited  kprintf
+
 
 #define __builtin_expect(x, expected_value) (x)
 #define unlikely(x) __builtin_expect(!!(x), 0)
@@ -274,14 +279,6 @@ struct va_format {
     const char *fmt;
     va_list *va;
 };
-
-
-#define WRITE_ONCE(var, val) \
-    (*((volatile typeof(val) *)(&(var))) = (val))
-
-#define READ_ONCE(var) (*((volatile typeof(var) *)(&(var))))
-
-
 
 
 #define __ALIGN_KERNEL_MASK(x, mask)    (((x) + (mask)) & ~(mask))

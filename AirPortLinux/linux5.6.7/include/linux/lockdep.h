@@ -228,4 +228,12 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s);
 
 #define list_del_rcu list_del
 
+
+/*
+ * For trivial one-depth nesting of a lock-class, the following
+ * global define can be used. (Subsystems with multiple levels
+ * of nesting should define their own lock-nesting subclasses.)
+ */
+#define SINGLE_DEPTH_NESTING            1
+
 #endif /* lockdep_h */

@@ -196,6 +196,8 @@ int __x = (x);          \
 
 #define pr_warn kprintf
 #define pr_warn_ratelimited kprintf
+#define net_dbg_ratelimited kprintf
+#define seq_printf(m, arg...) kprintf(arg)
 
 
 #define might_sleep()
@@ -340,6 +342,7 @@ static inline __u64 __be64_to_cpup(const __be64 *p)
 
 
 #define CONFIG_IWLMVM 1
+#define CONFIG_CFG80211 1
 //#define CONFIG_ACPI 1
 
 #define IS_ENABLED(x) (x)

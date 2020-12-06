@@ -9,7 +9,7 @@
 #ifndef debugfs_h
 #define debugfs_h
 
-#define printk kprintf
+#define printk(arg...) kprintf(arg)
 
 #define dev_dbg(dev, fmt, ...)    kprintf(fmt, ##__VA_ARGS__)
 

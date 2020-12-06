@@ -74,6 +74,6 @@ do {                                    \
  * affected by the rsm/ssm.
  */
 
-#include <asm-generic/barrier.h>
+//#include <asm-generic/barrier.h>
 
 #endif /* _ASM_IA64_BARRIER_H */
