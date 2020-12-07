@@ -11,6 +11,8 @@
 
 #include <asm/types.h>
 
+#define __swab32 swab32
+#define __swab64 swab64
 
 static inline u16 get_unaligned_le16(const void *p)
 {

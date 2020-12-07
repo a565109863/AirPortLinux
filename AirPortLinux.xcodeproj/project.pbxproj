@@ -135,6 +135,30 @@
 		18A4E43D257D3B8E002D9E40 /* kmemleak.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A4E437257D3B8E002D9E40 /* kmemleak.c */; };
 		18A4E43E257D3B8E002D9E40 /* kmemleak.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A4E437257D3B8E002D9E40 /* kmemleak.c */; };
 		18A4E43F257D3B8E002D9E40 /* kmemleak.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A4E437257D3B8E002D9E40 /* kmemleak.c */; };
+		18AB8391257E60E90007F651 /* mlme.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB8390257E60E90007F651 /* mlme.c */; };
+		18AB8392257E60E90007F651 /* mlme.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB8390257E60E90007F651 /* mlme.c */; };
+		18AB8393257E60E90007F651 /* mlme.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB8390257E60E90007F651 /* mlme.c */; };
+		18AB8394257E60E90007F651 /* mlme.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB8390257E60E90007F651 /* mlme.c */; };
+		18AB8396257E61130007F651 /* moduleparam.h in Headers */ = {isa = PBXBuildFile; fileRef = 18AB8395257E61130007F651 /* moduleparam.h */; };
+		18AB8397257E61130007F651 /* moduleparam.h in Headers */ = {isa = PBXBuildFile; fileRef = 18AB8395257E61130007F651 /* moduleparam.h */; };
+		18AB8398257E61130007F651 /* moduleparam.h in Headers */ = {isa = PBXBuildFile; fileRef = 18AB8395257E61130007F651 /* moduleparam.h */; };
+		18AB8399257E61130007F651 /* moduleparam.h in Headers */ = {isa = PBXBuildFile; fileRef = 18AB8395257E61130007F651 /* moduleparam.h */; };
+		18AB83A1257E61640007F651 /* fils_aead.h in Headers */ = {isa = PBXBuildFile; fileRef = 18AB839F257E61640007F651 /* fils_aead.h */; };
+		18AB83A2257E61640007F651 /* fils_aead.h in Headers */ = {isa = PBXBuildFile; fileRef = 18AB839F257E61640007F651 /* fils_aead.h */; };
+		18AB83A3257E61640007F651 /* fils_aead.h in Headers */ = {isa = PBXBuildFile; fileRef = 18AB839F257E61640007F651 /* fils_aead.h */; };
+		18AB83A4257E61640007F651 /* fils_aead.h in Headers */ = {isa = PBXBuildFile; fileRef = 18AB839F257E61640007F651 /* fils_aead.h */; };
+		18AB83A5257E61640007F651 /* fils_aead.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83A0257E61640007F651 /* fils_aead.c */; };
+		18AB83A6257E61640007F651 /* fils_aead.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83A0257E61640007F651 /* fils_aead.c */; };
+		18AB83A7257E61640007F651 /* fils_aead.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83A0257E61640007F651 /* fils_aead.c */; };
+		18AB83A8257E61640007F651 /* fils_aead.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83A0257E61640007F651 /* fils_aead.c */; };
+		18AB83AB257E619D0007F651 /* skcipher.h in Headers */ = {isa = PBXBuildFile; fileRef = 18AB83A9257E619D0007F651 /* skcipher.h */; };
+		18AB83AC257E619D0007F651 /* skcipher.h in Headers */ = {isa = PBXBuildFile; fileRef = 18AB83A9257E619D0007F651 /* skcipher.h */; };
+		18AB83AD257E619D0007F651 /* skcipher.h in Headers */ = {isa = PBXBuildFile; fileRef = 18AB83A9257E619D0007F651 /* skcipher.h */; };
+		18AB83AE257E619D0007F651 /* skcipher.h in Headers */ = {isa = PBXBuildFile; fileRef = 18AB83A9257E619D0007F651 /* skcipher.h */; };
+		18AB83AF257E619D0007F651 /* skcipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83AA257E619D0007F651 /* skcipher.c */; };
+		18AB83B0257E619D0007F651 /* skcipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83AA257E619D0007F651 /* skcipher.c */; };
+		18AB83B1257E619D0007F651 /* skcipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83AA257E619D0007F651 /* skcipher.c */; };
+		18AB83B2257E619D0007F651 /* skcipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83AA257E619D0007F651 /* skcipher.c */; };
 		18D2422D257CF9C30062A72B /* rhashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D2422C257CF9C30062A72B /* rhashtable.c */; };
 		18D2422E257CF9C30062A72B /* rhashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D2422C257CF9C30062A72B /* rhashtable.c */; };
 		18D2422F257CF9C30062A72B /* rhashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D2422C257CF9C30062A72B /* rhashtable.c */; };
@@ -1906,6 +1930,12 @@
 		18A4E42D257D3B78002D9E40 /* highmem.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = highmem.c; sourceTree = "<group>"; };
 		18A4E436257D3B8E002D9E40 /* kmemleak.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kmemleak.h; sourceTree = "<group>"; };
 		18A4E437257D3B8E002D9E40 /* kmemleak.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = kmemleak.c; sourceTree = "<group>"; };
+		18AB8390257E60E90007F651 /* mlme.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mlme.c; sourceTree = "<group>"; };
+		18AB8395257E61130007F651 /* moduleparam.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = moduleparam.h; sourceTree = "<group>"; };
+		18AB839F257E61640007F651 /* fils_aead.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fils_aead.h; sourceTree = "<group>"; };
+		18AB83A0257E61640007F651 /* fils_aead.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fils_aead.c; sourceTree = "<group>"; };
+		18AB83A9257E619D0007F651 /* skcipher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = skcipher.h; sourceTree = "<group>"; };
+		18AB83AA257E619D0007F651 /* skcipher.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = skcipher.c; sourceTree = "<group>"; };
 		18D2422C257CF9C30062A72B /* rhashtable.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rhashtable.c; sourceTree = "<group>"; };
 		18D24231257CFA270062A72B /* cmpxchg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cmpxchg.h; sourceTree = "<group>"; };
 		18D24236257CFA390062A72B /* xchg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xchg.h; sourceTree = "<group>"; };
@@ -2565,10 +2595,13 @@
 				37CFF2EE2573ECC00047098B /* scan.c */,
 				37CFF2ED2573ECC00047098B /* sta_info.c */,
 				37CFF30A2573ECC00047098B /* sta_info.h */,
+				18AB839F257E61640007F651 /* fils_aead.h */,
+				18AB83A0257E61640007F651 /* fils_aead.c */,
 				37CFF3082573ECC00047098B /* tkip.c */,
 				37CFF2F22573ECC00047098B /* tkip.h */,
 				37CFF2E02573ECC00047098B /* trace.c */,
 				37CFF2F72573ECC00047098B /* trace.h */,
+				18AB8390257E60E90007F651 /* mlme.c */,
 				37CFF3062573ECC00047098B /* tx.c */,
 				37CFF2E52573ECC00047098B /* util.c */,
 				37CFF2E92573ECC00047098B /* wep.c */,
@@ -2889,6 +2922,8 @@
 				37CFF3D02573ECC00047098B /* aead.h */,
 				1841ECBF257D432A0071277A /* scatterwalk.h */,
 				37CFF3C42573ECC00047098B /* aes.c */,
+				18AB83A9257E619D0007F651 /* skcipher.h */,
+				18AB83AA257E619D0007F651 /* skcipher.c */,
 				37CFF3CF2573ECC00047098B /* aes.h */,
 				37CFF3CD2573ECC00047098B /* algapi.c */,
 				37CFF3D42573ECC00047098B /* algapi.h */,
@@ -2993,6 +3028,7 @@
 				37CFF42E2573ECC00047098B /* bit_spinlock.h */,
 				37CFF46B2573ECC00047098B /* bitfield.h */,
 				37CFF4622573ECC00047098B /* bitmap.h */,
+				18AB8395257E61130007F651 /* moduleparam.h */,
 				37CFF40F2573ECC00047098B /* bitops.h */,
 				37CFF4042573ECC00047098B /* bitrev.c */,
 				37CFF43A2573ECC00047098B /* bitrev.h */,
@@ -3310,6 +3346,7 @@
 				37CFF5942573ECC10047098B /* tso.h in Headers */,
 				37CFF4862573ECC10047098B /* sysfs.h in Headers */,
 				37CFF5912573ECC10047098B /* ip.h in Headers */,
+				18AB83A1257E61640007F651 /* fils_aead.h in Headers */,
 				37CFF50A2573ECC10047098B /* d3.h in Headers */,
 				37CFF4B82573ECC10047098B /* sta_info.h in Headers */,
 				37CFF54F2573ECC10047098B /* iwl-eeprom-parse.h in Headers */,
@@ -3334,6 +3371,7 @@
 				37CFF5D42573ECC10047098B /* rbtree.h in Headers */,
 				37CFF4FE2573ECC10047098B /* config.h in Headers */,
 				37CFF5FD2573ECC10047098B /* crc32.h in Headers */,
+				18AB8396257E61130007F651 /* moduleparam.h in Headers */,
 				37CFF5952573ECC10047098B /* ipv6.h in Headers */,
 				37CFF5762573ECC10047098B /* types.h in Headers */,
 				37CFF5B32573ECC10047098B /* jiffies.h in Headers */,
@@ -3347,6 +3385,7 @@
 				37CFF5012573ECC10047098B /* context.h in Headers */,
 				37CFF4AA2573ECC10047098B /* michael.h in Headers */,
 				37CFF52F2573ECC10047098B /* led.h in Headers */,
+				18AB83AB257E619D0007F651 /* skcipher.h in Headers */,
 				37CFF4872573ECC10047098B /* rdev-ops.h in Headers */,
 				37CFF4DA2573ECC10047098B /* fw-api.h in Headers */,
 				37CFF58E2573ECC10047098B /* compat.h in Headers */,
@@ -3601,6 +3640,7 @@
 				37CFF7612573EF790047098B /* addrconf.h in Headers */,
 				37CFF7622573EF790047098B /* cfg80211.h in Headers */,
 				37CFF7632573EF790047098B /* compat.h in Headers */,
+				18AB83A2257E61640007F651 /* fils_aead.h in Headers */,
 				37CFF7642573EF790047098B /* fq_impl.h in Headers */,
 				37CFF7652573EF790047098B /* ip6_checksum.h in Headers */,
 				37CFF7662573EF790047098B /* ip.h in Headers */,
@@ -3625,6 +3665,7 @@
 				37CFF7772573EF790047098B /* etherdevice.h in Headers */,
 				37CFF7782573EF790047098B /* crc32poly.h in Headers */,
 				37CFF7792573EF790047098B /* bitops.h in Headers */,
+				18AB8397257E61130007F651 /* moduleparam.h in Headers */,
 				37CFF77A2573EF790047098B /* export.h in Headers */,
 				37CFF77B2573EF790047098B /* device.h in Headers */,
 				37CFF77C2573EF790047098B /* log2.h in Headers */,
@@ -3638,6 +3679,7 @@
 				37CFF7842573EF790047098B /* netdev_features.h in Headers */,
 				37CFF7852573EF790047098B /* leds.h in Headers */,
 				37CFF7862573EF790047098B /* rhashtable.h in Headers */,
+				18AB83AC257E619D0007F651 /* skcipher.h in Headers */,
 				37CFF7872573EF790047098B /* stddef.h in Headers */,
 				37CFF7882573EF790047098B /* wait.h in Headers */,
 				37CFF7892573EF790047098B /* pci_regs.h in Headers */,
@@ -3892,6 +3934,7 @@
 				37CFF8732573EFFE0047098B /* addrconf.h in Headers */,
 				37CFF8742573EFFE0047098B /* cfg80211.h in Headers */,
 				37CFF8752573EFFE0047098B /* compat.h in Headers */,
+				18AB83A3257E61640007F651 /* fils_aead.h in Headers */,
 				37CFF8762573EFFE0047098B /* fq_impl.h in Headers */,
 				37CFF8772573EFFE0047098B /* ip6_checksum.h in Headers */,
 				37CFF8782573EFFE0047098B /* ip.h in Headers */,
@@ -3916,6 +3959,7 @@
 				37CFF8892573EFFF0047098B /* etherdevice.h in Headers */,
 				37CFF88A2573EFFF0047098B /* crc32poly.h in Headers */,
 				37CFF88B2573EFFF0047098B /* bitops.h in Headers */,
+				18AB8398257E61130007F651 /* moduleparam.h in Headers */,
 				37CFF88C2573EFFF0047098B /* export.h in Headers */,
 				37CFF88D2573EFFF0047098B /* device.h in Headers */,
 				37CFF88E2573EFFF0047098B /* log2.h in Headers */,
@@ -3929,6 +3973,7 @@
 				37CFF8962573EFFF0047098B /* netdev_features.h in Headers */,
 				37CFF8972573EFFF0047098B /* leds.h in Headers */,
 				37CFF8982573EFFF0047098B /* rhashtable.h in Headers */,
+				18AB83AD257E619D0007F651 /* skcipher.h in Headers */,
 				37CFF8992573EFFF0047098B /* stddef.h in Headers */,
 				37CFF89A2573EFFF0047098B /* wait.h in Headers */,
 				37CFF89B2573EFFF0047098B /* pci_regs.h in Headers */,
@@ -4183,6 +4228,7 @@
 				37CFFAC72573F1F00047098B /* addrconf.h in Headers */,
 				37CFFAC82573F1F00047098B /* cfg80211.h in Headers */,
 				37CFFAC92573F1F00047098B /* compat.h in Headers */,
+				18AB83A4257E61640007F651 /* fils_aead.h in Headers */,
 				37CFFACA2573F1F00047098B /* fq_impl.h in Headers */,
 				37CFFACB2573F1F00047098B /* ip6_checksum.h in Headers */,
 				37CFFACC2573F1F00047098B /* ip.h in Headers */,
@@ -4207,6 +4253,7 @@
 				37CFFADD2573F1F00047098B /* etherdevice.h in Headers */,
 				37CFFADE2573F1F00047098B /* crc32poly.h in Headers */,
 				37CFFADF2573F1F00047098B /* bitops.h in Headers */,
+				18AB8399257E61130007F651 /* moduleparam.h in Headers */,
 				37CFFAE02573F1F00047098B /* export.h in Headers */,
 				37CFFAE12573F1F00047098B /* device.h in Headers */,
 				37CFFAE22573F1F00047098B /* log2.h in Headers */,
@@ -4220,6 +4267,7 @@
 				37CFFAEA2573F1F00047098B /* netdev_features.h in Headers */,
 				37CFFAEB2573F1F00047098B /* leds.h in Headers */,
 				37CFFAEC2573F1F00047098B /* rhashtable.h in Headers */,
+				18AB83AE257E619D0007F651 /* skcipher.h in Headers */,
 				37CFFAED2573F1F00047098B /* stddef.h in Headers */,
 				37CFFAEE2573F1F00047098B /* wait.h in Headers */,
 				37CFFAEF2573F1F00047098B /* pci_regs.h in Headers */,
@@ -4492,6 +4540,7 @@
 				37CFF5C82573ECC10047098B /* if.c in Sources */,
 				37CFF4832573ECC10047098B /* reg.c in Sources */,
 				37CFF4C32573ECC10047098B /* led.c in Sources */,
+				18AB83AF257E619D0007F651 /* skcipher.c in Sources */,
 				37CFF5552573ECC10047098B /* drv.c in Sources */,
 				37CFF4EE2573ECC10047098B /* paging.c in Sources */,
 				37CFF48D2573ECC10047098B /* led.c in Sources */,
@@ -4542,6 +4591,7 @@
 				37CFF4D82573ECC10047098B /* quota.c in Sources */,
 				37CFF4C62573ECC10047098B /* nvm.c in Sources */,
 				37CFF5242573ECC10047098B /* lib.c in Sources */,
+				18AB8391257E60E90007F651 /* mlme.c in Sources */,
 				37CFF4EF2573ECC10047098B /* debugfs.c in Sources */,
 				37CFF5482573ECC10047098B /* iwl-nvm-parse.c in Sources */,
 				37CFF47C2573ECC10047098B /* sysfs.c in Sources */,
@@ -4598,6 +4648,7 @@
 				37CFF5252573ECC10047098B /* rx.c in Sources */,
 				18A4E3A1257D0613002D9E40 /* ap.c in Sources */,
 				37CFF5652573ECC10047098B /* aead.c in Sources */,
+				18AB83A5257E61640007F651 /* fils_aead.c in Sources */,
 				37CFF5402573ECC10047098B /* 6000.c in Sources */,
 				37CFF4CF2573ECC10047098B /* ops.c in Sources */,
 				37CFF4D12573ECC10047098B /* scan.c in Sources */,
@@ -4681,6 +4732,7 @@
 				37CFF6452573EF640047098B /* aead_api.c in Sources */,
 				37CFF6462573EF640047098B /* debugfs_key.c in Sources */,
 				37CFF6472573EF640047098B /* key.c in Sources */,
+				18AB83B0257E619D0007F651 /* skcipher.c in Sources */,
 				37CFF6482573EF640047098B /* tx.c in Sources */,
 				37CFF6492573EF640047098B /* mesh.c in Sources */,
 				37CFF64A2573EF640047098B /* tkip.c in Sources */,
@@ -4731,6 +4783,7 @@
 				37CFF6732573EF640047098B /* smem.c in Sources */,
 				37CFF6742573EF640047098B /* notif-wait.c in Sources */,
 				37CFF6752573EF640047098B /* acpi.c in Sources */,
+				18AB8392257E60E90007F651 /* mlme.c in Sources */,
 				37CFF6762573EF640047098B /* led.c in Sources */,
 				37CFF6772573EF640047098B /* mac80211.c in Sources */,
 				37CFF6782573EF640047098B /* lib.c in Sources */,
@@ -4787,6 +4840,7 @@
 				37CFF6A52573EF640047098B /* fq_impl.c in Sources */,
 				18A4E3A2257D0613002D9E40 /* ap.c in Sources */,
 				37CFF6A62573EF640047098B /* genetlink.c in Sources */,
+				18AB83A6257E61640007F651 /* fils_aead.c in Sources */,
 				37CFF6A72573EF640047098B /* flow_dissector.c in Sources */,
 				37CFF6A82573EF640047098B /* fq.c in Sources */,
 				37CFF6A92573EF640047098B /* pkt_sched.c in Sources */,
@@ -4870,6 +4924,7 @@
 				37CFF8FB2573F0080047098B /* aead_api.c in Sources */,
 				37CFF8FC2573F0080047098B /* debugfs_key.c in Sources */,
 				37CFF8FD2573F0080047098B /* key.c in Sources */,
+				18AB83B1257E619D0007F651 /* skcipher.c in Sources */,
 				37CFF8FE2573F0080047098B /* tx.c in Sources */,
 				37CFF8FF2573F0080047098B /* mesh.c in Sources */,
 				37CFF9002573F0080047098B /* tkip.c in Sources */,
@@ -4920,6 +4975,7 @@
 				37CFF9292573F0090047098B /* smem.c in Sources */,
 				37CFF92A2573F0090047098B /* notif-wait.c in Sources */,
 				37CFF92B2573F0090047098B /* acpi.c in Sources */,
+				18AB8393257E60E90007F651 /* mlme.c in Sources */,
 				37CFF92C2573F0090047098B /* led.c in Sources */,
 				37CFF92D2573F0090047098B /* mac80211.c in Sources */,
 				37CFF92E2573F0090047098B /* lib.c in Sources */,
@@ -4976,6 +5032,7 @@
 				37CFF95B2573F0090047098B /* fq_impl.c in Sources */,
 				18A4E3A3257D0613002D9E40 /* ap.c in Sources */,
 				37CFF95C2573F0090047098B /* genetlink.c in Sources */,
+				18AB83A7257E61640007F651 /* fils_aead.c in Sources */,
 				37CFF95D2573F0090047098B /* flow_dissector.c in Sources */,
 				37CFF95E2573F0090047098B /* fq.c in Sources */,
 				37CFF95F2573F0090047098B /* pkt_sched.c in Sources */,
@@ -5059,6 +5116,7 @@
 				37CFF9AB2573F1E70047098B /* aead_api.c in Sources */,
 				37CFF9AC2573F1E70047098B /* debugfs_key.c in Sources */,
 				37CFF9AD2573F1E70047098B /* key.c in Sources */,
+				18AB83B2257E619D0007F651 /* skcipher.c in Sources */,
 				37CFF9AE2573F1E70047098B /* tx.c in Sources */,
 				37CFF9AF2573F1E70047098B /* mesh.c in Sources */,
 				37CFF9B02573F1E70047098B /* tkip.c in Sources */,
@@ -5109,6 +5167,7 @@
 				37CFF9D92573F1E70047098B /* smem.c in Sources */,
 				37CFF9DA2573F1E70047098B /* notif-wait.c in Sources */,
 				37CFF9DB2573F1E70047098B /* acpi.c in Sources */,
+				18AB8394257E60E90007F651 /* mlme.c in Sources */,
 				37CFF9DC2573F1E70047098B /* led.c in Sources */,
 				37CFF9DD2573F1E70047098B /* mac80211.c in Sources */,
 				37CFF9DE2573F1E70047098B /* lib.c in Sources */,
@@ -5165,6 +5224,7 @@
 				37CFFA0B2573F1E80047098B /* fq_impl.c in Sources */,
 				18A4E3A4257D0613002D9E40 /* ap.c in Sources */,
 				37CFFA0C2573F1E80047098B /* genetlink.c in Sources */,
+				18AB83A8257E61640007F651 /* fils_aead.c in Sources */,
 				37CFFA0D2573F1E80047098B /* flow_dissector.c in Sources */,
 				37CFFA0E2573F1E80047098B /* fq.c in Sources */,
 				37CFFA0F2573F1E80047098B /* pkt_sched.c in Sources */,

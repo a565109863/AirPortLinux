@@ -472,7 +472,7 @@ static inline unsigned long compare_ether_header(const void *a, const void *b)
      * This means the [a6 a7] ^ [b6 b7] part is done two times.
      */
     fold = *(unsigned long *)a ^ *(unsigned long *)b;
-    fold |= *(unsigned long *)(a + 6) ^ *(unsigned long *)(b + 6);
+    fold |= *(unsigned long *)((unsigned long *)a + 6) ^ *(unsigned long *)((unsigned long *)b + 6);
     return fold;
 #else
     u32 *a32 = (u32 *)((u8 *)a + 2);
@@ -483,16 +483,17 @@ static inline unsigned long compare_ether_header(const void *a, const void *b)
 #endif
 }
 
-///**
-// * eth_skb_pad - Pad buffer to mininum number of octets for Ethernet frame
-// * @skb: Buffer to pad
-// *
-// * An Ethernet frame should have a minimum size of 60 bytes.  This function
-// * takes short frames and pads them with zeros up to the 60 byte limit.
-// */
-//static inline int eth_skb_pad(struct sk_buff *skb)
-//{
+/**
+ * eth_skb_pad - Pad buffer to mininum number of octets for Ethernet frame
+ * @skb: Buffer to pad
+ *
+ * An Ethernet frame should have a minimum size of 60 bytes.  This function
+ * takes short frames and pads them with zeros up to the 60 byte limit.
+ */
+static inline int eth_skb_pad(struct sk_buff *skb)
+{
 //    return skb_put_padto(skb, ETH_ZLEN);
-//}
+    return 0;
+}
 
 #endif /* etherdevice_h */

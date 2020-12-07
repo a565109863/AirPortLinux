@@ -203,6 +203,7 @@ static void *kmalloc_track_caller(size_t size, gfp_t gfp)
 #define pr_debug kprintf
 #define pr_info kprintf
 
+#define netdev_info(d, arg...) kprintf(arg)
 #define netdev_err(d, arg...) kprintf(arg)
 #define net_info_ratelimited  kprintf
 
