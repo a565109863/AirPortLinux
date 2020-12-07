@@ -667,6 +667,11 @@ static void dev_kfree_skb(struct sk_buff *skb)
     // todo
 }
 
+static void dev_kfree_skb_any(struct sk_buff *skb)
+{
+    // todo
+}
+
 static struct page *alloc_pages(gfp_t gtp, size_t size)
 {
     // todo

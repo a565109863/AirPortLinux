@@ -970,6 +970,16 @@ enum netdev_priv_flags {
 
 
 static
+void synchronize_rcu(void)
+{
+    might_sleep();
+//    if (rtnl_is_locked())
+//        synchronize_rcu_expedited();
+//    else
+//        synchronize_rcu();
+}
+
+static
 void synchronize_net(void)
 {
     might_sleep();
@@ -1138,6 +1148,19 @@ static int dev_queue_xmit(struct sk_buff *skb)
     return 0;
 }
 
+static int netif_rx(struct sk_buff *skb)
+{
+//    int ret;
+//
+//    trace_netif_rx_entry(skb);
+//
+//    ret = netif_rx_internal(skb);
+//    trace_netif_rx_exit(ret);
+//
+//    return ret;
+    return 0;
+}
+EXPORT_SYMBOL(netif_rx);
 
 
 #endif /* netdevice_h */

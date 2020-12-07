@@ -159,6 +159,18 @@
 		18AB83B0257E619D0007F651 /* skcipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83AA257E619D0007F651 /* skcipher.c */; };
 		18AB83B1257E619D0007F651 /* skcipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83AA257E619D0007F651 /* skcipher.c */; };
 		18AB83B2257E619D0007F651 /* skcipher.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83AA257E619D0007F651 /* skcipher.c */; };
+		18AB83B4257E6BE00007F651 /* ocb.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83B3257E6BE00007F651 /* ocb.c */; };
+		18AB83B5257E6BE00007F651 /* ocb.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83B3257E6BE00007F651 /* ocb.c */; };
+		18AB83B6257E6BE00007F651 /* ocb.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83B3257E6BE00007F651 /* ocb.c */; };
+		18AB83B7257E6BE00007F651 /* ocb.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83B3257E6BE00007F651 /* ocb.c */; };
+		18AB83B9257E6C690007F651 /* ibss.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83B8257E6C690007F651 /* ibss.c */; };
+		18AB83BA257E6C690007F651 /* ibss.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83B8257E6C690007F651 /* ibss.c */; };
+		18AB83BB257E6C690007F651 /* ibss.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83B8257E6C690007F651 /* ibss.c */; };
+		18AB83BC257E6C690007F651 /* ibss.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83B8257E6C690007F651 /* ibss.c */; };
+		18AB83BE257E6DA10007F651 /* status.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83BD257E6DA10007F651 /* status.c */; };
+		18AB83BF257E6DA10007F651 /* status.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83BD257E6DA10007F651 /* status.c */; };
+		18AB83C0257E6DA10007F651 /* status.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83BD257E6DA10007F651 /* status.c */; };
+		18AB83C1257E6DA10007F651 /* status.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83BD257E6DA10007F651 /* status.c */; };
 		18D2422D257CF9C30062A72B /* rhashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D2422C257CF9C30062A72B /* rhashtable.c */; };
 		18D2422E257CF9C30062A72B /* rhashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D2422C257CF9C30062A72B /* rhashtable.c */; };
 		18D2422F257CF9C30062A72B /* rhashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D2422C257CF9C30062A72B /* rhashtable.c */; };
@@ -1936,6 +1948,9 @@
 		18AB83A0257E61640007F651 /* fils_aead.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = fils_aead.c; sourceTree = "<group>"; };
 		18AB83A9257E619D0007F651 /* skcipher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = skcipher.h; sourceTree = "<group>"; };
 		18AB83AA257E619D0007F651 /* skcipher.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = skcipher.c; sourceTree = "<group>"; };
+		18AB83B3257E6BE00007F651 /* ocb.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ocb.c; sourceTree = "<group>"; };
+		18AB83B8257E6C690007F651 /* ibss.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ibss.c; sourceTree = "<group>"; };
+		18AB83BD257E6DA10007F651 /* status.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = status.c; sourceTree = "<group>"; };
 		18D2422C257CF9C30062A72B /* rhashtable.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rhashtable.c; sourceTree = "<group>"; };
 		18D24231257CFA270062A72B /* cmpxchg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cmpxchg.h; sourceTree = "<group>"; };
 		18D24236257CFA390062A72B /* xchg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xchg.h; sourceTree = "<group>"; };
@@ -2589,7 +2604,9 @@
 				37CFF2E82573ECC00047098B /* michael.c */,
 				37CFF2FC2573ECC00047098B /* michael.h */,
 				37CFF2EF2573ECC00047098B /* offchannel.c */,
+				18AB83B8257E6C690007F651 /* ibss.c */,
 				37CFF2E72573ECC00047098B /* rate.c */,
+				18AB83BD257E6DA10007F651 /* status.c */,
 				37CFF2FB2573ECC00047098B /* rate.h */,
 				18205DF7257CED7F00C6E091 /* rx.c */,
 				37CFF2EE2573ECC00047098B /* scan.c */,
@@ -2602,6 +2619,7 @@
 				37CFF2E02573ECC00047098B /* trace.c */,
 				37CFF2F72573ECC00047098B /* trace.h */,
 				18AB8390257E60E90007F651 /* mlme.c */,
+				18AB83B3257E6BE00007F651 /* ocb.c */,
 				37CFF3062573ECC00047098B /* tx.c */,
 				37CFF2E52573ECC00047098B /* util.c */,
 				37CFF2E92573ECC00047098B /* wep.c */,
@@ -4524,6 +4542,7 @@
 				18A4E3E8257D072D002D9E40 /* radiotap.c in Sources */,
 				37CFF5DB2573ECC10047098B /* rculist.c in Sources */,
 				37CFF4952573ECC10047098B /* rate.c in Sources */,
+				18AB83BE257E6DA10007F651 /* status.c in Sources */,
 				37CFF5EA2573ECC10047098B /* device.c in Sources */,
 				37CFF4C52573ECC10047098B /* coex.c in Sources */,
 				37CFF5A12573ECC10047098B /* rbtree.c in Sources */,
@@ -4595,6 +4614,7 @@
 				37CFF4EF2573ECC10047098B /* debugfs.c in Sources */,
 				37CFF5482573ECC10047098B /* iwl-nvm-parse.c in Sources */,
 				37CFF47C2573ECC10047098B /* sysfs.c in Sources */,
+				18AB83B4257E6BE00007F651 /* ocb.c in Sources */,
 				37CFF52E2573ECC10047098B /* power.c in Sources */,
 				37CFF4802573ECC10047098B /* scan.c in Sources */,
 				37CFF5CC2573ECC10047098B /* crc32.c in Sources */,
@@ -4678,6 +4698,7 @@
 				37CFF6122573EE480047098B /* AirPortLinux_Ioctl.cpp in Sources */,
 				37CFF4BF2573ECC10047098B /* iwl-debug.c in Sources */,
 				37CFF4C72573ECC10047098B /* d3.c in Sources */,
+				18AB83B9257E6C690007F651 /* ibss.c in Sources */,
 				37CFF4A82573ECC10047098B /* driver-ops.c in Sources */,
 				37CFF4AC2573ECC10047098B /* agg-rx.c in Sources */,
 				37CFF4E62573ECC10047098B /* tx.c in Sources */,
@@ -4716,6 +4737,7 @@
 				18A4E3E9257D072D002D9E40 /* radiotap.c in Sources */,
 				37CFF6372573EF640047098B /* rate.c in Sources */,
 				37CFF6382573EF640047098B /* michael.c in Sources */,
+				18AB83BF257E6DA10007F651 /* status.c in Sources */,
 				37CFF6392573EF640047098B /* wep.c in Sources */,
 				37CFF63A2573EF640047098B /* sta_info.c in Sources */,
 				37CFF63B2573EF640047098B /* scan.c in Sources */,
@@ -4787,6 +4809,7 @@
 				37CFF6762573EF640047098B /* led.c in Sources */,
 				37CFF6772573EF640047098B /* mac80211.c in Sources */,
 				37CFF6782573EF640047098B /* lib.c in Sources */,
+				18AB83B5257E6BE00007F651 /* ocb.c in Sources */,
 				37CFF6792573EF640047098B /* rx.c in Sources */,
 				37CFF67A2573EF640047098B /* debugfs.c in Sources */,
 				37CFF67B2573EF640047098B /* calib.c in Sources */,
@@ -4870,6 +4893,7 @@
 				37CFF6BC2573EF650047098B /* compiler.c in Sources */,
 				37CFF6BD2573EF650047098B /* device.c in Sources */,
 				37CFF6BE2573EF650047098B /* workqueue.c in Sources */,
+				18AB83BA257E6C690007F651 /* ibss.c in Sources */,
 				37CFF6BF2573EF650047098B /* stddef.c in Sources */,
 				37CFF6C02573EF650047098B /* wait.c in Sources */,
 				37CFF6C12573EF650047098B /* crypto.c in Sources */,
@@ -4908,6 +4932,7 @@
 				18A4E3EA257D072D002D9E40 /* radiotap.c in Sources */,
 				37CFF8ED2573F0080047098B /* rate.c in Sources */,
 				37CFF8EE2573F0080047098B /* michael.c in Sources */,
+				18AB83C0257E6DA10007F651 /* status.c in Sources */,
 				37CFF8EF2573F0080047098B /* wep.c in Sources */,
 				37CFF8F02573F0080047098B /* sta_info.c in Sources */,
 				37CFF8F12573F0080047098B /* scan.c in Sources */,
@@ -4979,6 +5004,7 @@
 				37CFF92C2573F0090047098B /* led.c in Sources */,
 				37CFF92D2573F0090047098B /* mac80211.c in Sources */,
 				37CFF92E2573F0090047098B /* lib.c in Sources */,
+				18AB83B6257E6BE00007F651 /* ocb.c in Sources */,
 				37CFF92F2573F0090047098B /* rx.c in Sources */,
 				37CFF9302573F0090047098B /* debugfs.c in Sources */,
 				37CFF9312573F0090047098B /* calib.c in Sources */,
@@ -5062,6 +5088,7 @@
 				37CFF9722573F0090047098B /* compiler.c in Sources */,
 				37CFF9732573F0090047098B /* device.c in Sources */,
 				37CFF9742573F0090047098B /* workqueue.c in Sources */,
+				18AB83BB257E6C690007F651 /* ibss.c in Sources */,
 				37CFF9752573F0090047098B /* stddef.c in Sources */,
 				37CFF9762573F0090047098B /* wait.c in Sources */,
 				37CFF9772573F0090047098B /* crypto.c in Sources */,
@@ -5100,6 +5127,7 @@
 				18A4E3EB257D072D002D9E40 /* radiotap.c in Sources */,
 				37CFF99D2573F1E70047098B /* rate.c in Sources */,
 				37CFF99E2573F1E70047098B /* michael.c in Sources */,
+				18AB83C1257E6DA10007F651 /* status.c in Sources */,
 				37CFF99F2573F1E70047098B /* wep.c in Sources */,
 				37CFF9A02573F1E70047098B /* sta_info.c in Sources */,
 				37CFF9A12573F1E70047098B /* scan.c in Sources */,
@@ -5171,6 +5199,7 @@
 				37CFF9DC2573F1E70047098B /* led.c in Sources */,
 				37CFF9DD2573F1E70047098B /* mac80211.c in Sources */,
 				37CFF9DE2573F1E70047098B /* lib.c in Sources */,
+				18AB83B7257E6BE00007F651 /* ocb.c in Sources */,
 				37CFF9DF2573F1E70047098B /* rx.c in Sources */,
 				37CFF9E02573F1E70047098B /* debugfs.c in Sources */,
 				37CFF9E12573F1E70047098B /* calib.c in Sources */,
@@ -5254,6 +5283,7 @@
 				37CFFA222573F1E80047098B /* compiler.c in Sources */,
 				37CFFA232573F1E80047098B /* device.c in Sources */,
 				37CFFA242573F1E80047098B /* workqueue.c in Sources */,
+				18AB83BC257E6C690007F651 /* ibss.c in Sources */,
 				37CFFA252573F1E80047098B /* stddef.c in Sources */,
 				37CFFA262573F1E80047098B /* wait.c in Sources */,
 				37CFFA272573F1E80047098B /* crypto.c in Sources */,
