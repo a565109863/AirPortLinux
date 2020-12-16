@@ -508,19 +508,23 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
                        const struct ieee80211_ops *ops,
                        const char *requested_name)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local;
     int priv_size, i;
     struct wiphy *wiphy;
     bool use_chanctx;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (WARN_ON(!ops->tx || !ops->start || !ops->stop || !ops->config ||
             !ops->add_interface || !ops->remove_interface ||
             !ops->configure_filter))
         return NULL;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (WARN_ON(ops->sta_state && (ops->sta_add || ops->sta_remove)))
         return NULL;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     /* check all or no channel context operations exist */
     i = !!ops->add_chanctx + !!ops->remove_chanctx +
         !!ops->change_chanctx + !!ops->assign_vif_chanctx +
@@ -529,6 +533,7 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
         return NULL;
     use_chanctx = i == 5;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     /* Ensure 32-byte alignment of our private data and hw private data.
      * We use the wiphy priv data for both our ieee80211_local and for
      * the driver's private data
@@ -546,8 +551,10 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
      */
     priv_size = ALIGN(sizeof(*local), NETDEV_ALIGN) + priv_data_len;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     wiphy = wiphy_new_nm(&mac80211_config_ops, priv_size, requested_name);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!wiphy)
         return NULL;
 
@@ -599,11 +606,13 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
 
     wiphy->bss_priv_size = sizeof(struct ieee80211_bss);
 
-//    local = wiphy_priv(wiphy);
+    local = (struct ieee80211_local *)wiphy_priv(wiphy);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (sta_info_init(local))
         goto err_free;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     local->hw.wiphy = wiphy;
 
     local->hw.priv = (char *)local + ALIGN(sizeof(*local), NETDEV_ALIGN);
@@ -710,6 +719,7 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
     tasklet_init(&local->tx_pending_tasklet, ieee80211_tx_pending,
              (unsigned long)local);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (ops->wake_tx_queue)
         tasklet_init(&local->wake_txqs_tasklet, ieee80211_wake_txqs,
                  (unsigned long)local);
@@ -729,8 +739,10 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
     local->hw.radiotap_timestamp.units_pos = -1;
     local->hw.radiotap_timestamp.accuracy = -1;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     return &local->hw;
  err_free:
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     wiphy_free(wiphy);
     return NULL;
 }

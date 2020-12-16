@@ -136,7 +136,35 @@ EXPORT_SYMBOL(usleep_range);
 
 
 
-int del_timer(struct timer_list *timer);
+/**
+ * del_timer - deactivate a timer.
+ * @timer: the timer to be deactivated
+ *
+ * del_timer() deactivates a timer - this works on both active and inactive
+ * timers.
+ *
+ * The function returns whether it has deactivated a pending timer or not.
+ * (ie. del_timer() of an inactive timer returns 0, del_timer() of an
+ * active timer returns 1.)
+ */
+static int del_timer(struct timer_list *timer)
+{
+    struct timer_base *base;
+    unsigned long flags;
+    int ret = 0;
+
+//    debug_assert_init(timer);
+//
+//    if (timer_pending(timer)) {
+//        base = lock_timer_base(timer, &flags);
+//        ret = detach_if_pending(timer, base, true);
+//        raw_spin_unlock_irqrestore(&base->lock, flags);
+//    }
+
+    return ret;
+}
+EXPORT_SYMBOL(del_timer);
+
 
 static inline void timer_setup(struct timer_list *timer,
                                void (*callback) (struct timer_list *),

@@ -17,7 +17,7 @@
 struct pci_device_id {
     __u32 vendor, device;        /* Vendor and device ID or PCI_ANY_ID*/
     __u32 subvendor, subdevice;    /* Subsystem ID's or PCI_ANY_ID */
-    __u32 class_s, class_mask;    /* (class,subclass,prog-if) triplet */
+    __u32 _class, class_mask;    /* (class,subclass,prog-if) triplet */
     kernel_ulong_t driver_data;    /* Data private to the driver */
 };
 
@@ -203,47 +203,10 @@ void interrupt_func(OSObject *owner, IOInterruptEventSource *src, int count);
 
 
 
-static int __must_check
+int __must_check
 devm_request_threaded_irq(struct device *dev, unsigned int irq,
-              irq_handler_t handler, irq_handler_t thread_fn,
-              unsigned long irqflags, const char *devname,
-                          void *dev_id) {
-//    struct irq_devres *dr;
-    int rc;
-//
-//    dr = devres_alloc(devm_irq_release, sizeof(struct irq_devres),
-//              GFP_KERNEL);
-//    if (!dr)
-//        return -ENOMEM;
-//
-//    if (!devname)
-//        devname = dev_name(dev);
-//    rc = request_threaded_irq(irq, handler, thread_fn, irqflags, devname,
-//                  dev_id);
-//    if (rc) {
-////        devres_free(dr);
-//        return rc;
-//    }
-
-//    dr->irq = irq;
-//    dr->dev_id = dev_id;
-//    devres_add(dev, dr);
-
-    pci_intr_handle* ih = dev->ih;
-    ih->dev_id = dev_id;
-    ih->thread_fn = thread_fn;
-    ih->intr = IOInterruptEventSource::interruptEventSource(ih, (IOInterruptEventAction)interrupt_func, ih->dev, ih->source);
-    
-    if (ih->intr == 0)
-        return 0;
-    if (ih->workloop->addEventSource(ih->intr) != kIOReturnSuccess)
-        return 0;
-    
-    ih->intr->enable();
-    
-    handler(irq, dev_id);
-    
-    return 0;
-}
+                          irq_handler_t handler, irq_handler_t thread_fn,
+                          unsigned long irqflags, const char *devname,
+                          void *dev_id);
 
 #endif /* device_h */

@@ -922,6 +922,7 @@ static inline int iwl_trans_start_fw(struct iwl_trans *trans,
 				     const struct fw_img *fw,
 				     bool run_in_rfkill)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	might_sleep();
 
 	WARN_ON_ONCE(!trans->rx_mpdu_cmd);
@@ -1312,7 +1313,7 @@ void iwl_trans_free(struct iwl_trans *trans);
 /*****************************************************
 * driver (transport) register/unregister functions
 ******************************************************/
-int __must_check iwl_pci_register_driver(void);
+int __must_check iwl_pci_register_driver(struct pci_dev *pdev);
 void iwl_pci_unregister_driver(void);
 
 #endif /* __iwl_trans_h__ */

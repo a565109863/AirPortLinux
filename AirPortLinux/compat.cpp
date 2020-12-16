@@ -10,6 +10,8 @@
 
 #include <linux/device.h>
 
+OSDefineMetaClassAndStructors(pci_intr_handle, OSObject)
+
 void interrupt_func(OSObject *ih, IOInterruptEventSource *src, int count)
 {
     pci_intr_handle* _ih = OSDynamicCast(pci_intr_handle, ih);

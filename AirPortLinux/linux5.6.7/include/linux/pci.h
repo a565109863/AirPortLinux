@@ -117,8 +117,11 @@ struct pci_driver {
 
 
 struct pci_dev {
-    unsigned long device;
-    unsigned long subsystem_device;
+    __u32 vendor;
+    __u32 device;
+    __u32 subsystem_vendor;
+    __u32 subsystem_device;
+    __u32 _class;
     struct device dev;
     int cfg_size;
     u16        pcie_flags_reg;
@@ -356,21 +359,69 @@ static inline void pci_set_drvdata(struct pci_dev *pdev, void *data)
 }
 
 
+/**
+ * pci_match_one_device - Tell if a PCI device structure has a matching
+ *              PCI device id structure
+ * @id: single PCI device id structure to match
+ * @dev: the PCI device structure to match against
+ *
+ * Returns the matching pci_device_id structure or %NULL if there is no match.
+ */
+static inline const struct pci_device_id *
+pci_match_one_device(const struct pci_device_id *_id, const struct pci_dev *dev)
+{
+    if ((_id->vendor == PCI_ANY_ID || _id->vendor == dev->vendor) &&
+        (_id->device == PCI_ANY_ID || _id->device == dev->device) &&
+        (_id->subvendor == PCI_ANY_ID || _id->subvendor == dev->subsystem_vendor) &&
+        (_id->subdevice == PCI_ANY_ID || _id->subdevice == dev->subsystem_device))
+        return _id;
+    return NULL;
+}
+
+/**
+ * pci_match_id - See if a pci device matches a given pci_id table
+ * @ids: array of PCI device id structures to search in
+ * @dev: the PCI device structure to match against.
+ *
+ * Used by a driver to check whether a PCI device present in the
+ * system is in its list of supported devices.  Returns the matching
+ * pci_device_id structure or %NULL if there is no match.
+ *
+ * Deprecated, don't use this as it will not catch any dynamic ids
+ * that a driver might want to check for.
+ */
+static
+const struct pci_device_id *pci_match_id(const struct pci_device_id *ids,
+                                         struct pci_dev *dev)
+{
+    if (ids) {
+        while (ids->vendor || ids->subvendor || ids->class_mask) {
+            if (pci_match_one_device(ids, dev))
+                return ids;
+            ids++;
+        }
+    }
+    return NULL;
+}
+EXPORT_SYMBOL(pci_match_id);
+
 static inline int pci_register_driver(struct pci_driver *drv, struct pci_dev *pdev)
 {
     int err = 0;
-    for (int i = 0; i < sizeof(*drv->id_table) / sizeof(const struct pci_device_id); i++) {
-        struct iwl_cfg *cfg = (struct iwl_cfg *)drv->id_table[i].driver_data;
-        if (drv->id_table[i].device == pdev->device && drv->id_table[i].subdevice == pdev->subsystem_device) {
-            pdev->dev.driver_data = (void*)drv->id_table[i].driver_data;
-            pdev->dev.ent = &drv->id_table[i];
-            err = 0;
-            break;
-        }
+    
+    const struct pci_device_id *found_id = pci_match_id(drv->id_table, pdev);
+    if (!found_id) {
         err = 1;
+        return err;
     }
     
+    DebugLog("--%s: line = %d, device = 0x%x, _pdev->device = 0x%x, subdevice = 0x%x, subsystem_device = 0x%x", __FUNCTION__, __LINE__, found_id->device, pdev->device, found_id->subdevice, pdev->subsystem_device);
+    
+    pdev->dev.driver_data = (void*)found_id->driver_data;
+    pdev->dev.ent = found_id;
+    
     return err;
+    
 }
 static inline void pci_unregister_driver(struct pci_driver *drv) { }
 

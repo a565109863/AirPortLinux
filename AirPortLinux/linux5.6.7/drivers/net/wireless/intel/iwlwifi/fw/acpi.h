@@ -121,58 +121,58 @@ struct iwl_geo_profile {
 
 #ifdef CONFIG_ACPI
 
-//struct iwl_fw_runtime;
-//
-//void *iwl_acpi_get_object(struct device *dev, acpi_string method);
-//
-//union acpi_object *iwl_acpi_get_wifi_pkg(struct device *dev,
-//					 union acpi_object *data,
-//					 int data_size, int *tbl_rev);
-//
-///**
-// * iwl_acpi_get_mcc - read MCC from ACPI, if available
-// *
-// * @dev: the struct device
-// * @mcc: output buffer (3 bytes) that will get the MCC
-// *
-// * This function tries to read the current MCC from ACPI if available.
-// */
-//int iwl_acpi_get_mcc(struct device *dev, char *mcc);
-//
-//u64 iwl_acpi_get_pwr_limit(struct device *dev);
-//
-///*
-// * iwl_acpi_get_eckv - read external clock validation from ACPI, if available
-// *
-// * @dev: the struct device
-// * @extl_clk: output var (2 bytes) that will get the clk indication.
-// *
-// * This function tries to read the external clock indication
-// * from ACPI if available.
-// */
-//int iwl_acpi_get_eckv(struct device *dev, u32 *extl_clk);
-//
-//int iwl_sar_set_profile(union acpi_object *table,
-//			struct iwl_sar_profile *profile,
-//			bool enabled);
-//
-//int iwl_sar_select_profile(struct iwl_fw_runtime *fwrt,
-//			   __le16 per_chain_restriction[][IWL_NUM_SUB_BANDS],
-//			   int prof_a, int prof_b);
-//
-//int iwl_sar_get_wrds_table(struct iwl_fw_runtime *fwrt);
-//
-//int iwl_sar_get_ewrd_table(struct iwl_fw_runtime *fwrt);
-//
-//int iwl_sar_get_wgds_table(struct iwl_fw_runtime *fwrt);
-//
-//bool iwl_sar_geo_support(struct iwl_fw_runtime *fwrt);
-//
-//int iwl_validate_sar_geo_profile(struct iwl_fw_runtime *fwrt,
-//				 struct iwl_host_cmd *cmd);
-//
-//int iwl_sar_geo_init(struct iwl_fw_runtime *fwrt,
-//		     struct iwl_per_chain_offset_group *table);
+struct iwl_fw_runtime;
+
+void *iwl_acpi_get_object(struct device *dev, acpi_string method);
+
+union acpi_object *iwl_acpi_get_wifi_pkg(struct device *dev,
+                     union acpi_object *data,
+                     int data_size, int *tbl_rev);
+
+/**
+ * iwl_acpi_get_mcc - read MCC from ACPI, if available
+ *
+ * @dev: the struct device
+ * @mcc: output buffer (3 bytes) that will get the MCC
+ *
+ * This function tries to read the current MCC from ACPI if available.
+ */
+int iwl_acpi_get_mcc(struct device *dev, char *mcc);
+
+u64 iwl_acpi_get_pwr_limit(struct device *dev);
+
+/*
+ * iwl_acpi_get_eckv - read external clock validation from ACPI, if available
+ *
+ * @dev: the struct device
+ * @extl_clk: output var (2 bytes) that will get the clk indication.
+ *
+ * This function tries to read the external clock indication
+ * from ACPI if available.
+ */
+int iwl_acpi_get_eckv(struct device *dev, u32 *extl_clk);
+
+int iwl_sar_set_profile(union acpi_object *table,
+            struct iwl_sar_profile *profile,
+            bool enabled);
+
+int iwl_sar_select_profile(struct iwl_fw_runtime *fwrt,
+               __le16 per_chain_restriction[][IWL_NUM_SUB_BANDS],
+               int prof_a, int prof_b);
+
+int iwl_sar_get_wrds_table(struct iwl_fw_runtime *fwrt);
+
+int iwl_sar_get_ewrd_table(struct iwl_fw_runtime *fwrt);
+
+int iwl_sar_get_wgds_table(struct iwl_fw_runtime *fwrt);
+
+bool iwl_sar_geo_support(struct iwl_fw_runtime *fwrt);
+
+int iwl_validate_sar_geo_profile(struct iwl_fw_runtime *fwrt,
+                 struct iwl_host_cmd *cmd);
+
+int iwl_sar_geo_init(struct iwl_fw_runtime *fwrt,
+             struct iwl_per_chain_offset_group *table);
 
 #else /* CONFIG_ACPI */
 

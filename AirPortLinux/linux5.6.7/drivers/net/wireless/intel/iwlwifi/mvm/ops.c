@@ -637,6 +637,7 @@ static struct iwl_op_mode *
 iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 		      const struct iwl_fw *fw, struct dentry *dbgfs_dir)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct ieee80211_hw *hw;
 	struct iwl_op_mode *op_mode;
 	struct iwl_mvm *mvm;
@@ -655,15 +656,19 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 	 */
 	BUILD_BUG_ON(ARRAY_SIZE(mvm->fw_id_to_mac_id) != IWL_MVM_STATION_COUNT);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/********************************
 	 * 1. Allocating and configuring HW data
 	 ********************************/
 	hw = ieee80211_alloc_hw(sizeof(struct iwl_op_mode) +
 				sizeof(struct iwl_mvm),
 				&iwl_mvm_hw_ops);
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	if (!hw)
 		return NULL;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	hw->max_rx_aggregation_subframes = IEEE80211_MAX_AMPDU_BUF;
 
 	if (cfg->max_tx_agg_size)
@@ -680,11 +685,13 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 	mvm->fw = fw;
 	mvm->hw = hw;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	iwl_fw_runtime_init(&mvm->fwrt, trans, fw, &iwl_mvm_fwrt_ops, mvm,
 			    dbgfs_dir);
 
 	mvm->init_status = 0;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	if (iwl_mvm_has_new_rx_api(mvm)) {
 		op_mode->ops = &iwl_mvm_ops_mq;
 		trans->rx_mpdu_cmd_hdr_size =
@@ -701,6 +708,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 			goto out_free;
 	}
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	mvm->fw_restart = iwlwifi_mod_params.fw_restart ? -1 : 0;
 
 	mvm->aux_queue = IWL_MVM_DQA_AUX_QUEUE;
@@ -715,6 +723,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 		iwl_fw_set_current_image(&mvm->fwrt, IWL_UCODE_INIT);
 	mvm->drop_bcn_ap_mode = true;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	mutex_init(&mvm->mutex);
 	spin_lock_init(&mvm->async_handlers_lock);
 	INIT_LIST_HEAD(&mvm->time_event_list);
@@ -723,6 +732,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 	spin_lock_init(&mvm->time_event_lock);
 	INIT_LIST_HEAD(&mvm->ftm_initiator.loc_list);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	INIT_WORK(&mvm->async_handlers_wk, iwl_mvm_async_handlers_wk);
 	INIT_WORK(&mvm->roc_done_wk, iwl_mvm_roc_done_wk);
 	INIT_DELAYED_WORK(&mvm->tdls_cs.dwork, iwl_mvm_tdls_ch_switch_work);
@@ -730,6 +740,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 	INIT_WORK(&mvm->add_stream_wk, iwl_mvm_add_new_dqa_stream_wk);
 	INIT_LIST_HEAD(&mvm->add_stream_txqs);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	init_waitqueue_head(&mvm->rx_sync_waitq);
 
 	atomic_set(&mvm->queue_sync_counter, 0);
@@ -750,6 +761,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 	if (WARN_ON_ONCE(mvm->cmd_ver.d0i3_resp > 1))
 		goto out_free;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/*
 	 * Populate the state variables that the transport layer needs
 	 * to know about.
@@ -782,6 +794,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 		trans_cfg.rx_buf_size = rb_size_default;
 	}
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	trans->wide_cmd_header = true;
 	trans_cfg.bc_table_dword =
 		mvm->trans->trans_cfg->device_family < IWL_DEVICE_FAMILY_AX210;
@@ -809,6 +822,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 	/* Configure transport layer */
 	iwl_trans_configure(mvm->trans, &trans_cfg);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	trans->rx_mpdu_cmd = REPLY_RX_MPDU_CMD;
 	trans->dbg.dest_tlv = mvm->fw->dbg.dest_tlv;
 	trans->dbg.n_dest_reg = mvm->fw->dbg.n_dest_reg;
@@ -829,6 +843,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 		goto out_free;
 	}
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	IWL_INFO(mvm, "Detected %s, REV=0x%X\n",
 		 mvm->trans->name, mvm->trans->hw_rev);
 
@@ -842,8 +857,10 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 	if (err)
 		goto out_free;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	mutex_lock(&mvm->mutex);
 	err = iwl_run_init_mvm_ucode(mvm, true);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	if (err && err != -ERFKILL)
 		iwl_fw_dbg_error_collect(&mvm->fwrt, FW_DBG_TRIGGER_DRIVER);
 	if (!iwlmvm_mod_params.init_dbg || !err)
@@ -854,6 +871,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 		goto out_free;
 	}
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	scan_size = iwl_mvm_scan_size(mvm);
 
 	mvm->scan_cmd = kmalloc(scan_size, GFP_KERNEL);
@@ -871,6 +889,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 	min_backoff = iwl_mvm_min_backoff(mvm);
 	iwl_mvm_thermal_initialize(mvm, min_backoff);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	iwl_mvm_dbgfs_register(mvm, dbgfs_dir);
 
 	if (!iwl_mvm_has_new_rx_stats_api(mvm))
@@ -881,6 +900,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 
 	iwl_mvm_toggle_tx_ant(mvm, &mvm->mgmt_last_antenna_idx);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	return op_mode;
 
  out_free:

@@ -75,4 +75,22 @@
 //
 //#include <asm-generic/atomic-long.h>
 //
+
+static inline int
+atomic_fetch_add_relaxed(int i, atomic_t *v)
+{
+//    kasan_check_write(v, sizeof(*v));
+//    return arch_atomic_fetch_add_relaxed(i, v);
+    return i;
+}
+
+static inline int
+atomic_fetch_sub_release(int i, atomic_t *v)
+{
+//    kasan_check_write(v, sizeof(*v));
+//    return arch_atomic_fetch_sub_release(i, v);
+    return i;
+}
+
+
 #endif /* _LINUX_ATOMIC_H */

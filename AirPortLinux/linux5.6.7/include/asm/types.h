@@ -71,6 +71,15 @@ typedef IOSimpleLock* spinlock_t;
 //typedef IOPhysicalAddress dma_addr_t;
 
 
+#define DebugLog(x, args...) \
+if(1) { \
+thread_t new_thread = current_thread(); \
+uint64_t new_thread_id = thread_tid(new_thread); \
+kprintf(x " tid = %llu", args, new_thread_id); \
+IOSleep(1000); \
+}
+
+
 typedef struct { volatile int counter; } atomic_t;
 typedef struct { volatile int counter; } atomic64_t;
 
@@ -86,12 +95,12 @@ typedef u16 __u16;
 typedef u32 __u32;
 typedef u64 __u64;
 
-typedef  SInt16 __be16;
-typedef  SInt32 __be32;
-typedef  SInt64 __be64;
-typedef  SInt16 __le16;
-typedef  SInt32 __le32;
-typedef  SInt64 __le64;
+typedef  UInt16 __be16;
+typedef  UInt32 __be32;
+typedef  UInt64 __be64;
+typedef  UInt16 __le16;
+typedef  UInt32 __le32;
+typedef  UInt64 __le64;
 
 typedef SInt8  s8;
 typedef SInt16 s16;
@@ -267,15 +276,6 @@ static int msleep_interruptible(int x)
 #define cpu_to_be16 __cpu_to_be16
 #define be16_to_cpu __be16_to_cpu
 
-
-#define le64_to_cpup __le64_to_cpup
-#define le32_to_cpup __le32_to_cpup
-#define le16_to_cpup __le16_to_cpup
-#define be64_to_cpup __be64_to_cpup
-#define be32_to_cpup __be32_to_cpup
-#define be16_to_cpup __be16_to_cpup
-
-
 static inline void le16_add_cpu(__le16 *var, u16 val)
 {
     *var = cpu_to_le16(le16_to_cpu(*var) + val);
@@ -292,36 +292,43 @@ static inline void le64_add_cpu(__le64 *var, u64 val)
 }
 
 
-static inline __u16 __be16_to_cpup(const __be16 *p)
-{
-    return (__force __u16)*p;
-}
-
-
-static inline __u32 __le32_to_cpup(const __le32 *p)
-{
-    return (__force __u32)*p;
-}
 
 static inline __u16 __le16_to_cpup(const __le16 *p)
 {
-    return (__force __u16)*p;
+    return __le16_to_cpu(*p);
+}
+
+static inline __u32 __le32_to_cpup(const __le32 *p)
+{
+    return __le32_to_cpu(*p);
 }
 
 static inline __u64 __le64_to_cpup(const __le64 *p)
 {
-    return (__force __u64)*p;
+    return __le64_to_cpu(*p);
+}
+
+static inline __u16 __be16_to_cpup(const __be16 *p)
+{
+    return __be16_to_cpu(*p);
 }
 
 static inline __u32 __be32_to_cpup(const __be32 *p)
 {
-    return (__force __u32)*p;
+    return __be32_to_cpu(*p);
 }
 
 static inline __u64 __be64_to_cpup(const __be64 *p)
 {
-    return (__force __u64)*p;
+    return __be64_to_cpu(*p);
 }
+
+#define le64_to_cpup __le64_to_cpup
+#define le32_to_cpup __le32_to_cpup
+#define le16_to_cpup __le16_to_cpup
+#define be64_to_cpup __be64_to_cpup
+#define be32_to_cpup __be32_to_cpup
+#define be16_to_cpup __be16_to_cpup
 
 
 
@@ -343,7 +350,7 @@ static inline __u64 __be64_to_cpup(const __be64 *p)
 
 #define CONFIG_IWLMVM 1
 #define CONFIG_CFG80211 1
-//#define CONFIG_ACPI 1
+#define CONFIG_ACPI 1
 
 #define IS_ENABLED(x) (x)
 
@@ -447,7 +454,6 @@ smp_wmb(); \
 #define CONFIG_MAC80211_DEBUGFS 1
 
 #define CONFIG_PM 1
-//#define CONFIG_ACPI 1
 #define CONFIG_64BIT 1
 
 #define CONFIG_MAC80211_STA_HASH_MAX_SIZE 128

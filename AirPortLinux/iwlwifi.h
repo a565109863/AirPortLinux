@@ -11,7 +11,7 @@
 
 extern struct pci_driver iwl_pci_driver;
 
-extern int iwl_drv_init(void);
+extern int iwl_drv_init(struct pci_dev *pdev);
 int iwl_mvm_init(void);
 int iwl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent);
 

@@ -172,6 +172,7 @@ int iwl_wait_notification(struct iwl_notif_wait_data *notif_wait,
 {
 	int ret;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     notif_wait->notif_waitq.ident = wait_entry;
 	ret = wait_event_timeout(notif_wait->notif_waitq,
 				 wait_entry->triggered || wait_entry->aborted,

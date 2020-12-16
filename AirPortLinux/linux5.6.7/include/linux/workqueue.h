@@ -262,4 +262,14 @@ void schedule_work(struct work_struct *work)
     alloc_workqueue(fmt, WQ_UNBOUND | __WQ_ORDERED |        \
             __WQ_ORDERED_EXPLICIT | (flags), 1, ##args)
 
+
+#define __WORK_INITIALIZER(n, f) { \
+.data = 0, \
+.entry = { &(n).entry, &(n).entry }, \
+.func = f \
+}
+
+#define DECLARE_WORK(n, f) \
+struct work_struct n = __WORK_INITIALIZER((n), (f))
+
 #endif /* workqueue_h */

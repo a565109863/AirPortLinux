@@ -59,21 +59,28 @@ IOService* AirPortLinux::probe(IOService* provider, SInt32 *score)
 //    }
     
     
-    struct pci_dev *pdev = IONew(struct pci_dev, 1);
+    struct pci_dev *pdev = (struct pci_dev *)kzalloc(sizeof(*pdev), GFP_KERNEL);
     pdev->dev.dev = this;
+    pdev->vendor = fPciDevice->extendedConfigRead16(kIOPCIConfigVendorID);
     pdev->device = fPciDevice->extendedConfigRead16(kIOPCIConfigDeviceID);
+    pdev->subsystem_vendor = fPciDevice->extendedConfigRead16(kIOPCIConfigSubSystemVendorID);
     pdev->subsystem_device = fPciDevice->extendedConfigRead16(kIOPCIConfigSubSystemID);
     
-    iwl_drv_init();
-    iwl_mvm_init();
-    iwl_pci_probe(pdev, pdev->dev.ent);
-    return NULL;
+    int err;
+    err = iwl_drv_init(pdev);
+    if (err)
+        return NULL;
+    
+    err = iwl_mvm_init();
+    if (err)
+        return NULL;
     
 //    this->ca = &calist.ca[0];
 //    if (!this->ca->ca_match((struct device *)provider, this, &pa)) {
 //        return NULL;
 //    }
-//    return this;
+    _pdev = pdev;
+    return this;
 }
 
 bool AirPortLinux::start(IOService* provider) {
@@ -123,27 +130,19 @@ bool AirPortLinux::start(IOService* provider) {
     }
     
     fCommandGate->enable();
+    _pdev->dev.dev = this;
+    int err = iwl_pci_probe(_pdev, _pdev->dev.ent);
     
-//    if_softc = IOMallocZero(this->ca->ca_devsize);
-//    struct device *dev = (struct device *)if_softc;
-//    dev->dev = this;
-//
-//    struct ieee80211com *ic = (struct ieee80211com *)((char *)if_softc + sizeof(struct device));
-//
-//    _ifp = &ic->ic_if;
-//    _ifp->fWorkloop = fWorkloop;
-//    _ifp->fCommandGate = fCommandGate;
-//    _ifp->if_link_state = LINK_STATE_DOWN;
-//
-//    _scanResults = OSArray::withCapacity(512); // by default, but it autoexpands
-//    _resultsPending = _scanResults->getCount();
-//
-//    fwLoadLock = IOLockAlloc();
-//
-//    this->pa.dev.dev = this;
-////    bcopy(this->cd->cd_name, this->pa.dev.dv_xname, sizeof(this->cd->cd_name));
-//    this->pa.workloop = fWorkloop;
-//    this->pa.pa_tag = fPciDevice;
+    if (err)
+        return NULL;
+    DebugLog("--%s: line = %d err = %d", __FUNCTION__, __LINE__, err);
+    
+//    err = iwl_mvm_init();
+//    if (err)
+//        return NULL;
+    DebugLog("--%s: line = %d err = %d", __FUNCTION__, __LINE__, err);
+    DebugLog("--%s: line = %d err = %d", __FUNCTION__, __LINE__, err);
+    return NULL;
     
     fPciDevice->setBusMasterEnable(true);
     fPciDevice->setIOEnable(true);

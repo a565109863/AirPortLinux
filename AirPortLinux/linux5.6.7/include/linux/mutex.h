@@ -20,6 +20,10 @@ static void mutex_init(struct mutex *m) {
 }
 
 static void mutex_lock(struct mutex *m) {
+    if (m->lock == NULL) {
+        mutex_init(m);
+    }
+    
     IORecursiveLockLock(m->lock);
 }
 

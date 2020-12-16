@@ -10,6 +10,7 @@
 #define fs_h
 
 #include <linux/types.h>
+#include <linux/mutex.h>
 
 
 /*

@@ -15,6 +15,7 @@
 extern struct pci_dev *_pdev;
 
 int wait_event_timeout(wait_queue_head_t q, int i, u32 timeout) {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (_pdev->dev.dev->fCommandGate == 0) {
         // no command gate so we just sleep
         IODelay(timeout);
@@ -23,11 +24,14 @@ int wait_event_timeout(wait_queue_head_t q, int i, u32 timeout) {
     
     IOReturn ret;
     if (timeout == 0) {
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         ret = _pdev->dev.dev->fCommandGate->runAction(AirPortLinux::tsleepHandler, q.ident);
     } else {
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         ret = _pdev->dev.dev->fCommandGate->runAction(AirPortLinux::tsleepHandler, q.ident, &timeout);
     }
     
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (ret == kIOReturnSuccess)
         return 0;
     else

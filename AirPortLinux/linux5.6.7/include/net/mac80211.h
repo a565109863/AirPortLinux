@@ -2532,7 +2532,7 @@ static inline bool _ieee80211_hw_check(struct ieee80211_hw *hw,
 static inline void _ieee80211_hw_set(struct ieee80211_hw *hw,
                      enum ieee80211_hw_flags flg)
 {
-    return __set_bit(flg, hw->flags);
+    __set_bit(flg, hw->flags);
 }
 #define ieee80211_hw_set(hw, flg)    _ieee80211_hw_set(hw, IEEE80211_HW_##flg)
 
@@ -4117,6 +4117,7 @@ static inline
 struct ieee80211_hw *ieee80211_alloc_hw(size_t priv_data_len,
                     const struct ieee80211_ops *ops)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     return ieee80211_alloc_hw_nm(priv_data_len, ops, NULL);
 }
 

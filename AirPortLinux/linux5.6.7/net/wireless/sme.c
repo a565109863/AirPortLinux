@@ -668,7 +668,7 @@ static void disconnect_work(struct work_struct *work)
 	rtnl_unlock();
 }
 
-//DECLARE_WORK(cfg80211_disconnect_work, disconnect_work);
+DECLARE_WORK(cfg80211_disconnect_work, disconnect_work);
 
 
 /*

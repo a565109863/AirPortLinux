@@ -37,6 +37,20 @@
 //#include <linux/idr.h>
 #include <linux/skbuff.h>
 //#include <linux/notifier.h>
+
+
+/* Attributes of RTM_NEWNSID/RTM_GETNSID messages */
+enum {
+    NETNSA_NONE,
+#define NETNSA_NSID_NOT_ASSIGNED -1
+    NETNSA_NSID,
+    NETNSA_PID,
+    NETNSA_FD,
+    NETNSA_TARGET_NSID,
+    NETNSA_CURRENT_NSID,
+    __NETNSA_MAX,
+};
+
 //
 //struct user_namespace;
 //struct proc_dir_entry;
@@ -47,150 +61,150 @@
 //struct uevent_sock;
 //struct netns_ipvs;
 //struct bpf_prog;
-//
-//#define CONFIG_NET_NS 1
-//
-//#define NETDEV_HASHBITS    8
-//#define NETDEV_HASHENTRIES (1 << NETDEV_HASHBITS)
-//
-//struct net {
-//    /* First cache line can be often dirtied.
-//     * Do not place here read-mostly fields.
-//     */
-////    refcount_t        passive;    /* To decide when the network
-////                         * namespace should be freed.
-////                         */
-////    refcount_t        count;        /* To decided when the network
-//                         *  namespace should be shut down.
-//                         */
-//    spinlock_t        rules_mod_lock;
-//
-//    unsigned int        dev_unreg_count;
-//
-//    unsigned int        dev_base_seq;    /* protected by rtnl_mutex */
-//    int            ifindex;
-//
-//    spinlock_t        nsid_lock;
-//    atomic_t        fnhe_genid;
-//
-//    struct list_head    list;        /* list of network namespaces */
-//    struct list_head    exit_list;    /* To linked to call pernet exit
-//                         * methods on dead net (
-//                         * pernet_ops_rwsem read locked),
-//                         * or to unregister pernet ops
-//                         * (pernet_ops_rwsem write locked).
-//                         */
-////    struct llist_node    cleanup_list;    /* namespaces on death row */
-//
-//#ifdef CONFIG_KEYS
-//    struct key_tag        *key_domain;    /* Key domain of operation tag */
+
+#define CONFIG_NET_NS 1
+
+#define NETDEV_HASHBITS    8
+#define NETDEV_HASHENTRIES (1 << NETDEV_HASHBITS)
+
+struct net {
+    /* First cache line can be often dirtied.
+     * Do not place here read-mostly fields.
+     */
+    refcount_t        passive;    /* To decide when the network
+                         * namespace should be freed.
+                         */
+    refcount_t        count;        /* To decided when the network
+                         *  namespace should be shut down.
+                         */
+    spinlock_t        rules_mod_lock;
+
+    unsigned int        dev_unreg_count;
+
+    unsigned int        dev_base_seq;    /* protected by rtnl_mutex */
+    int            ifindex;
+
+    spinlock_t        nsid_lock;
+    atomic_t        fnhe_genid;
+
+    struct list_head    list;        /* list of network namespaces */
+    struct list_head    exit_list;    /* To linked to call pernet exit
+                         * methods on dead net (
+                         * pernet_ops_rwsem read locked),
+                         * or to unregister pernet ops
+                         * (pernet_ops_rwsem write locked).
+                         */
+//    struct llist_node    cleanup_list;    /* namespaces on death row */
+
+#ifdef CONFIG_KEYS
+    struct key_tag        *key_domain;    /* Key domain of operation tag */
+#endif
+    struct user_namespace   *user_ns;    /* Owning user namespace */
+    struct ucounts        *ucounts;
+//    struct idr        netns_ids;
+
+//    struct ns_common    ns;
+
+    struct list_head     dev_base_head;
+    struct proc_dir_entry     *proc_net;
+    struct proc_dir_entry     *proc_net_stat;
+
+#ifdef CONFIG_SYSCTL
+    struct ctl_table_set    sysctls;
+#endif
+
+    struct sock         *rtnl;            /* rtnetlink socket */
+    struct sock        *genl_sock;
+
+    struct uevent_sock    *uevent_sock;        /* uevent socket */
+
+    struct hlist_head     *dev_name_head;
+    struct hlist_head    *dev_index_head;
+//    struct raw_notifier_head    netdev_chain;
+
+    /* Note that @hash_mix can be read millions times per second,
+     * it is critical that it is on a read_mostly cache line.
+     */
+    u32            hash_mix;
+
+    struct net_device       *loopback_dev;          /* The loopback */
+
+    /* core fib_rules */
+    struct list_head    rules_ops;
+
+//    struct netns_core    core;
+//    struct netns_mib    mib;
+//    struct netns_packet    packet;
+//    struct netns_unix    unx;
+//    struct netns_nexthop    nexthop;
+//    struct netns_ipv4    ipv4;
+//#if IS_ENABLED(CONFIG_IPV6)
+//    struct netns_ipv6    ipv6;
 //#endif
-//    struct user_namespace   *user_ns;    /* Owning user namespace */
-//    struct ucounts        *ucounts;
-////    struct idr        netns_ids;
-//
-////    struct ns_common    ns;
-//
-//    struct list_head     dev_base_head;
-//    struct proc_dir_entry     *proc_net;
-//    struct proc_dir_entry     *proc_net_stat;
-//
-//#ifdef CONFIG_SYSCTL
-//    struct ctl_table_set    sysctls;
-//#endif
-//
-//    struct sock         *rtnl;            /* rtnetlink socket */
-//    struct sock        *genl_sock;
-//
-//    struct uevent_sock    *uevent_sock;        /* uevent socket */
-//
-//    struct hlist_head     *dev_name_head;
-//    struct hlist_head    *dev_index_head;
-////    struct raw_notifier_head    netdev_chain;
-//
-//    /* Note that @hash_mix can be read millions times per second,
-//     * it is critical that it is on a read_mostly cache line.
-//     */
-//    u32            hash_mix;
-//
-//    struct net_device       *loopback_dev;          /* The loopback */
-//
-//    /* core fib_rules */
-//    struct list_head    rules_ops;
-//
-////    struct netns_core    core;
-////    struct netns_mib    mib;
-////    struct netns_packet    packet;
-////    struct netns_unix    unx;
-////    struct netns_nexthop    nexthop;
-////    struct netns_ipv4    ipv4;
-////#if IS_ENABLED(CONFIG_IPV6)
-////    struct netns_ipv6    ipv6;
-////#endif
-//#if IS_ENABLED(CONFIG_IEEE802154_6LOWPAN)
-//    struct netns_ieee802154_lowpan    ieee802154_lowpan;
-//#endif
-//#if defined(CONFIG_IP_SCTP) || defined(CONFIG_IP_SCTP_MODULE)
-//    struct netns_sctp    sctp;
-//#endif
-//#if defined(CONFIG_IP_DCCP) || defined(CONFIG_IP_DCCP_MODULE)
-//    struct netns_dccp    dccp;
-//#endif
-//#ifdef CONFIG_NETFILTER
-//    struct netns_nf        nf;
-//    struct netns_xt        xt;
-//#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
-//    struct netns_ct        ct;
-//#endif
-//#if defined(CONFIG_NF_TABLES) || defined(CONFIG_NF_TABLES_MODULE)
-//    struct netns_nftables    nft;
-//#endif
-//#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
-//    struct netns_nf_frag    nf_frag;
-//    struct ctl_table_header *nf_frag_frags_hdr;
-//#endif
-//    struct sock        *nfnl;
-//    struct sock        *nfnl_stash;
-//#if IS_ENABLED(CONFIG_NETFILTER_NETLINK_ACCT)
-//    struct list_head        nfnl_acct_list;
-//#endif
-//#if IS_ENABLED(CONFIG_NF_CT_NETLINK_TIMEOUT)
-//    struct list_head    nfct_timeout_list;
-//#endif
-//#endif
-//#ifdef CONFIG_WEXT_CORE
-//    struct sk_buff_head    wext_nlevents;
-//#endif
-//    struct net_generic __rcu    *gen;
-//
-//    struct bpf_prog __rcu    *flow_dissector_prog;
-//
-//    /* Note : following structs are cache line aligned */
-//#ifdef CONFIG_XFRM
-//    struct netns_xfrm    xfrm;
-//#endif
-//#if IS_ENABLED(CONFIG_IP_VS)
-//    struct netns_ipvs    *ipvs;
-//#endif
-//#if IS_ENABLED(CONFIG_MPLS)
-//    struct netns_mpls    mpls;
-//#endif
-//#if IS_ENABLED(CONFIG_CAN)
-//    struct netns_can    can;
-//#endif
-//#ifdef CONFIG_XDP_SOCKETS
-//    struct netns_xdp    xdp;
-//#endif
-//#if IS_ENABLED(CONFIG_CRYPTO_USER)
-//    struct sock        *crypto_nlsk;
-//#endif
-//    struct sock        *diag_nlsk;
-//} __randomize_layout;
-//
+#if IS_ENABLED(CONFIG_IEEE802154_6LOWPAN)
+    struct netns_ieee802154_lowpan    ieee802154_lowpan;
+#endif
+#if defined(CONFIG_IP_SCTP) || defined(CONFIG_IP_SCTP_MODULE)
+    struct netns_sctp    sctp;
+#endif
+#if defined(CONFIG_IP_DCCP) || defined(CONFIG_IP_DCCP_MODULE)
+    struct netns_dccp    dccp;
+#endif
+#ifdef CONFIG_NETFILTER
+    struct netns_nf        nf;
+    struct netns_xt        xt;
+#if defined(CONFIG_NF_CONNTRACK) || defined(CONFIG_NF_CONNTRACK_MODULE)
+    struct netns_ct        ct;
+#endif
+#if defined(CONFIG_NF_TABLES) || defined(CONFIG_NF_TABLES_MODULE)
+    struct netns_nftables    nft;
+#endif
+#if IS_ENABLED(CONFIG_NF_DEFRAG_IPV6)
+    struct netns_nf_frag    nf_frag;
+    struct ctl_table_header *nf_frag_frags_hdr;
+#endif
+    struct sock        *nfnl;
+    struct sock        *nfnl_stash;
+#if IS_ENABLED(CONFIG_NETFILTER_NETLINK_ACCT)
+    struct list_head        nfnl_acct_list;
+#endif
+#if IS_ENABLED(CONFIG_NF_CT_NETLINK_TIMEOUT)
+    struct list_head    nfct_timeout_list;
+#endif
+#endif
+#ifdef CONFIG_WEXT_CORE
+    struct sk_buff_head    wext_nlevents;
+#endif
+    struct net_generic __rcu    *gen;
+
+    struct bpf_prog __rcu    *flow_dissector_prog;
+
+    /* Note : following structs are cache line aligned */
+#ifdef CONFIG_XFRM
+    struct netns_xfrm    xfrm;
+#endif
+#if IS_ENABLED(CONFIG_IP_VS)
+    struct netns_ipvs    *ipvs;
+#endif
+#if IS_ENABLED(CONFIG_MPLS)
+    struct netns_mpls    mpls;
+#endif
+#if IS_ENABLED(CONFIG_CAN)
+    struct netns_can    can;
+#endif
+#ifdef CONFIG_XDP_SOCKETS
+    struct netns_xdp    xdp;
+#endif
+#if IS_ENABLED(CONFIG_CRYPTO_USER)
+    struct sock        *crypto_nlsk;
+#endif
+    struct sock        *diag_nlsk;
+} __randomize_layout;
+
 ////#include <linux/seq_file_net.h>
-//
-///* Init's network namespace */
-//extern struct net init_net;
+
+/* Init's network namespace */
+extern struct net init_net;
 //
 //#ifdef CONFIG_NET_NS
 //struct net *copy_net_ns(unsigned long flags, struct user_namespace *user_ns,
@@ -233,15 +247,15 @@
 //#define ipx_register_sysctl()
 //#define ipx_unregister_sysctl()
 //#endif
-//
-//#ifdef CONFIG_NET_NS
-//void __put_net(struct net *net);
-//
-//static inline struct net *get_net(struct net *net)
-//{
-////    refcount_inc(&net->count);
-//    return net;
-//}
+
+#ifdef CONFIG_NET_NS
+void __put_net(struct net *net);
+
+static inline struct net *get_net(struct net *net)
+{
+    refcount_inc(&net->count);
+    return net;
+}
 //
 //static inline struct net *maybe_get_net(struct net *net)
 //{
@@ -274,115 +288,115 @@
 //
 //void net_drop_ns(void *);
 //
-//#else
-//
-//static inline struct net *get_net(struct net *net)
-//{
-//    return net;
-//}
-//
-//static inline void put_net(struct net *net)
-//{
-//}
-//
-//static inline struct net *maybe_get_net(struct net *net)
-//{
-//    return net;
-//}
-//
-//static inline
-//int net_eq(const struct net *net1, const struct net *net2)
-//{
-//    return 1;
-//}
-//
-//static inline int check_net(const struct net *net)
-//{
-//    return 1;
-//}
-//
-//#define net_drop_ns NULL
-//#endif
-//
-//
-//typedef struct {
+#else
+
+static inline struct net *get_net(struct net *net)
+{
+    return net;
+}
+
+static inline void put_net(struct net *net)
+{
+}
+
+static inline struct net *maybe_get_net(struct net *net)
+{
+    return net;
+}
+
+static inline
+int net_eq(const struct net *net1, const struct net *net2)
+{
+    return 1;
+}
+
+static inline int check_net(const struct net *net)
+{
+    return 1;
+}
+
+#define net_drop_ns NULL
+#endif
+
+
+typedef struct {
 //#ifdef CONFIG_NET_NS
-//    struct net *net;
+    struct net *net;
 //#endif
-//} possible_net_t;
-//
-//static inline void write_pnet(possible_net_t *pnet, struct net *net)
-//{
-//#ifdef CONFIG_NET_NS
-//    pnet->net = net;
-//#endif
-//}
-//
-//static inline struct net *read_pnet(const possible_net_t *pnet)
-//{
-//#ifdef CONFIG_NET_NS
-//    return pnet->net;
-//#else
-//    return &init_net;
-//#endif
-//}
-//
-///* Protected by net_rwsem */
-//#define for_each_net(VAR)                \
-//    list_for_each_entry(VAR, &net_namespace_list, list)
-//#define for_each_net_continue_reverse(VAR)        \
-//    list_for_each_entry_continue_reverse(VAR, &net_namespace_list, list)
-//#define for_each_net_rcu(VAR)                \
-//    list_for_each_entry_rcu(VAR, &net_namespace_list, list)
-//
-//#ifdef CONFIG_NET_NS
-//#define __net_init
-//#define __net_exit
-//#define __net_initdata
-//#define __net_initconst
-//#else
-//#define __net_init    __init
-//#define __net_exit    __ref
-//#define __net_initdata    __initdata
-//#define __net_initconst    __initconst
-//#endif
+} possible_net_t;
+
+static inline void write_pnet(possible_net_t *pnet, struct net *net)
+{
+#ifdef CONFIG_NET_NS
+    pnet->net = net;
+#endif
+}
+
+static inline struct net *read_pnet(const possible_net_t *pnet)
+{
+#ifdef CONFIG_NET_NS
+    return pnet->net;
+#else
+    return &init_net;
+#endif
+}
+
+/* Protected by net_rwsem */
+#define for_each_net(VAR)                \
+    list_for_each_entry(VAR, &net_namespace_list, list)
+#define for_each_net_continue_reverse(VAR)        \
+    list_for_each_entry_continue_reverse(VAR, &net_namespace_list, list)
+#define for_each_net_rcu(VAR)                \
+    list_for_each_entry_rcu(VAR, &net_namespace_list, list)
+
+#ifdef CONFIG_NET_NS
+#define __net_init
+#define __net_exit
+#define __net_initdata
+#define __net_initconst
+#else
+#define __net_init    __init
+#define __net_exit    __ref
+#define __net_initdata    __initdata
+#define __net_initconst    __initconst
+#endif
 //
 //int peernet2id_alloc(struct net *net, struct net *peer, gfp_t gfp);
 //int peernet2id(const struct net *net, struct net *peer);
 //bool peernet_has_id(const struct net *net, struct net *peer);
 //struct net *get_net_ns_by_id(const struct net *net, int id);
-//
-//struct pernet_operations {
-//    struct list_head list;
-//    /*
-//     * Below methods are called without any exclusive locks.
-//     * More than one net may be constructed and destructed
-//     * in parallel on several cpus. Every pernet_operations
-//     * have to keep in mind all other pernet_operations and
-//     * to introduce a locking, if they share common resources.
-//     *
-//     * The only time they are called with exclusive lock is
-//     * from register_pernet_subsys(), unregister_pernet_subsys()
-//     * register_pernet_device() and unregister_pernet_device().
-//     *
-//     * Exit methods using blocking RCU primitives, such as
-//     * synchronize_rcu(), should be implemented via exit_batch.
-//     * Then, destruction of a group of net requires single
-//     * synchronize_rcu() related to these pernet_operations,
-//     * instead of separate synchronize_rcu() for every net.
-//     * Please, avoid synchronize_rcu() at all, where it's possible.
-//     *
-//     * Note that a combination of pre_exit() and exit() can
-//     * be used, since a synchronize_rcu() is guaranteed between
-//     * the calls.
-//     */
-//    int (*init)(struct net *net);
-//    void (*pre_exit)(struct net *net);
-//    void (*exit)(struct net *net);
-//    void (*exit_batch)(struct list_head *net_exit_list);
-//    unsigned int *id;
-//    size_t size;
-//};
+
+struct pernet_operations {
+    struct list_head list;
+    /*
+     * Below methods are called without any exclusive locks.
+     * More than one net may be constructed and destructed
+     * in parallel on several cpus. Every pernet_operations
+     * have to keep in mind all other pernet_operations and
+     * to introduce a locking, if they share common resources.
+     *
+     * The only time they are called with exclusive lock is
+     * from register_pernet_subsys(), unregister_pernet_subsys()
+     * register_pernet_device() and unregister_pernet_device().
+     *
+     * Exit methods using blocking RCU primitives, such as
+     * synchronize_rcu(), should be implemented via exit_batch.
+     * Then, destruction of a group of net requires single
+     * synchronize_rcu() related to these pernet_operations,
+     * instead of separate synchronize_rcu() for every net.
+     * Please, avoid synchronize_rcu() at all, where it's possible.
+     *
+     * Note that a combination of pre_exit() and exit() can
+     * be used, since a synchronize_rcu() is guaranteed between
+     * the calls.
+     */
+    int (*init)(struct net *net);
+    void (*pre_exit)(struct net *net);
+    void (*exit)(struct net *net);
+    void (*exit_batch)(struct list_head *net_exit_list);
+    unsigned int *id;
+    size_t size;
+};
 //
 ///*
 // * Use these carefully.  If you implement a network device and it

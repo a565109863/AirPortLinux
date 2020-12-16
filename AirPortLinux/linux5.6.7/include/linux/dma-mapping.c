@@ -22,6 +22,6 @@ int dma_set_mask(struct device *dev, u64 mask)
 //        return -EIO;
 //
 //    arch_dma_set_mask(dev, mask);
-    *dev->dma_mask = mask;
+    dev->dma_mask = &mask;
     return 0;
 }

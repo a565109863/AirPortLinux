@@ -31,6 +31,50 @@
 		1841ECC7257D43900071277A /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 1841ECC5257D43900071277A /* hash.h */; };
 		1841ECC8257D43900071277A /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 1841ECC5257D43900071277A /* hash.h */; };
 		1841ECC9257D43900071277A /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 1841ECC5257D43900071277A /* hash.h */; };
+		189E84082584CF50005C902E /* mesh_plink.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84072584CF50005C902E /* mesh_plink.c */; };
+		189E84092584CF50005C902E /* mesh_plink.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84072584CF50005C902E /* mesh_plink.c */; };
+		189E840A2584CF50005C902E /* mesh_plink.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84072584CF50005C902E /* mesh_plink.c */; };
+		189E840B2584CF50005C902E /* mesh_plink.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84072584CF50005C902E /* mesh_plink.c */; };
+		189E84102584D390005C902E /* cfg.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E840F2584D390005C902E /* cfg.c */; };
+		189E84112584D390005C902E /* cfg.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E840F2584D390005C902E /* cfg.c */; };
+		189E84122584D390005C902E /* cfg.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E840F2584D390005C902E /* cfg.c */; };
+		189E84132584D390005C902E /* cfg.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E840F2584D390005C902E /* cfg.c */; };
+		189E84152584D581005C902E /* pm.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84142584D581005C902E /* pm.c */; };
+		189E84162584D581005C902E /* pm.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84142584D581005C902E /* pm.c */; };
+		189E84172584D581005C902E /* pm.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84142584D581005C902E /* pm.c */; };
+		189E84182584D581005C902E /* pm.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84142584D581005C902E /* pm.c */; };
+		189E841A2584D89F005C902E /* mesh_hwmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84192584D89F005C902E /* mesh_hwmp.c */; };
+		189E841B2584D89F005C902E /* mesh_hwmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84192584D89F005C902E /* mesh_hwmp.c */; };
+		189E841C2584D89F005C902E /* mesh_hwmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84192584D89F005C902E /* mesh_hwmp.c */; };
+		189E841D2584D89F005C902E /* mesh_hwmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84192584D89F005C902E /* mesh_hwmp.c */; };
+		189E841F2584DCDF005C902E /* vht.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E841E2584DCDF005C902E /* vht.c */; };
+		189E84202584DCE0005C902E /* vht.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E841E2584DCDF005C902E /* vht.c */; };
+		189E84212584DCE0005C902E /* vht.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E841E2584DCDF005C902E /* vht.c */; };
+		189E84222584DCE0005C902E /* vht.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E841E2584DCDF005C902E /* vht.c */; };
+		189E84242584DD1F005C902E /* tdls.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84232584DD1F005C902E /* tdls.c */; };
+		189E84252584DD1F005C902E /* tdls.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84232584DD1F005C902E /* tdls.c */; };
+		189E84262584DD1F005C902E /* tdls.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84232584DD1F005C902E /* tdls.c */; };
+		189E84272584DD1F005C902E /* tdls.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84232584DD1F005C902E /* tdls.c */; };
+		189E84292584DE88005C902E /* chan.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84282584DE88005C902E /* chan.c */; };
+		189E842A2584DE88005C902E /* chan.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84282584DE88005C902E /* chan.c */; };
+		189E842B2584DE88005C902E /* chan.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84282584DE88005C902E /* chan.c */; };
+		189E842C2584DE88005C902E /* chan.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84282584DE88005C902E /* chan.c */; };
+		189E842E2584E053005C902E /* mesh_sync.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E842D2584E053005C902E /* mesh_sync.c */; };
+		189E842F2584E053005C902E /* mesh_sync.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E842D2584E053005C902E /* mesh_sync.c */; };
+		189E84302584E053005C902E /* mesh_sync.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E842D2584E053005C902E /* mesh_sync.c */; };
+		189E84312584E053005C902E /* mesh_sync.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E842D2584E053005C902E /* mesh_sync.c */; };
+		189E84332584E18A005C902E /* spectmgmt.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84322584E18A005C902E /* spectmgmt.c */; };
+		189E84342584E18A005C902E /* spectmgmt.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84322584E18A005C902E /* spectmgmt.c */; };
+		189E84352584E18A005C902E /* spectmgmt.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84322584E18A005C902E /* spectmgmt.c */; };
+		189E84362584E18A005C902E /* spectmgmt.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84322584E18A005C902E /* spectmgmt.c */; };
+		189E84382584E20B005C902E /* mesh_ps.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84372584E20B005C902E /* mesh_ps.c */; };
+		189E84392584E20B005C902E /* mesh_ps.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84372584E20B005C902E /* mesh_ps.c */; };
+		189E843A2584E20B005C902E /* mesh_ps.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84372584E20B005C902E /* mesh_ps.c */; };
+		189E843B2584E20B005C902E /* mesh_ps.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84372584E20B005C902E /* mesh_ps.c */; };
+		189E843D2584E47F005C902E /* airtime.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E843C2584E47F005C902E /* airtime.c */; };
+		189E843E2584E47F005C902E /* airtime.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E843C2584E47F005C902E /* airtime.c */; };
+		189E843F2584E47F005C902E /* airtime.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E843C2584E47F005C902E /* airtime.c */; };
+		189E84402584E47F005C902E /* airtime.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E843C2584E47F005C902E /* airtime.c */; };
 		18A4E3A1257D0613002D9E40 /* ap.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A4E3A0257D0613002D9E40 /* ap.c */; };
 		18A4E3A2257D0613002D9E40 /* ap.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A4E3A0257D0613002D9E40 /* ap.c */; };
 		18A4E3A3257D0613002D9E40 /* ap.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A4E3A0257D0613002D9E40 /* ap.c */; };
@@ -227,6 +271,38 @@
 		18DCD1E225767E7B004817B7 /* if_vlan.h in Headers */ = {isa = PBXBuildFile; fileRef = 18DCD1E025767E7B004817B7 /* if_vlan.h */; };
 		18DCD1E325767E7B004817B7 /* if_vlan.h in Headers */ = {isa = PBXBuildFile; fileRef = 18DCD1E025767E7B004817B7 /* if_vlan.h */; };
 		18DCD1E425767E7B004817B7 /* if_vlan.h in Headers */ = {isa = PBXBuildFile; fileRef = 18DCD1E025767E7B004817B7 /* if_vlan.h */; };
+		374023F82587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
+		374023F92587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
+		374023FA2587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
+		374023FB2587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
+		374024542587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */; };
+		374024552587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */; };
+		374024562587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */; };
+		374024572587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */; };
+		3740248C2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */; };
+		3740248D2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */; };
+		3740248E2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */; };
+		3740248F2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */; };
+		374024942587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023892587BC42006B33D3 /* iwlwifi-8265-36.ucode */; };
+		374024952587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023892587BC42006B33D3 /* iwlwifi-8265-36.ucode */; };
+		374024962587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023892587BC42006B33D3 /* iwlwifi-8265-36.ucode */; };
+		374024972587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023892587BC42006B33D3 /* iwlwifi-8265-36.ucode */; };
+		374024A42587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */; };
+		374024A52587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */; };
+		374024A62587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */; };
+		374024A72587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */; };
+		374024D42587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */; };
+		374024D52587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */; };
+		374024D62587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */; };
+		374024D72587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */; };
+		37C6D1F02584EB5200977605 /* he.c in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D1EF2584EB5200977605 /* he.c */; };
+		37C6D1F12584EB5200977605 /* he.c in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D1EF2584EB5200977605 /* he.c */; };
+		37C6D1F22584EB5200977605 /* he.c in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D1EF2584EB5200977605 /* he.c */; };
+		37C6D1F32584EB5200977605 /* he.c in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D1EF2584EB5200977605 /* he.c */; };
+		37C6D1F52584F2A800977605 /* net_namespace.c in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D1F42584F2A800977605 /* net_namespace.c */; };
+		37C6D1F62584F2A800977605 /* net_namespace.c in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D1F42584F2A800977605 /* net_namespace.c */; };
+		37C6D1F72584F2A800977605 /* net_namespace.c in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D1F42584F2A800977605 /* net_namespace.c */; };
+		37C6D1F82584F2A800977605 /* net_namespace.c in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D1F42584F2A800977605 /* net_namespace.c */; };
 		37CFF28F2573CFF00047098B /* AirPortLinux.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 37CFF28E2573CFF00047098B /* AirPortLinux.hpp */; };
 		37CFF2912573CFF00047098B /* AirPortLinux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF2902573CFF00047098B /* AirPortLinux.cpp */; };
 		37CFF2B82573EB150047098B /* IONetworkInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 37CFF2AB2573EB150047098B /* IONetworkInterface.h */; };
@@ -1916,6 +1992,17 @@
 		1841ECBA257D43080071277A /* shash.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = shash.c; sourceTree = "<group>"; };
 		1841ECBF257D432A0071277A /* scatterwalk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = scatterwalk.h; sourceTree = "<group>"; };
 		1841ECC5257D43900071277A /* hash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hash.h; sourceTree = "<group>"; };
+		189E84072584CF50005C902E /* mesh_plink.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mesh_plink.c; sourceTree = "<group>"; };
+		189E840F2584D390005C902E /* cfg.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cfg.c; sourceTree = "<group>"; };
+		189E84142584D581005C902E /* pm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pm.c; sourceTree = "<group>"; };
+		189E84192584D89F005C902E /* mesh_hwmp.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mesh_hwmp.c; sourceTree = "<group>"; };
+		189E841E2584DCDF005C902E /* vht.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = vht.c; sourceTree = "<group>"; };
+		189E84232584DD1F005C902E /* tdls.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = tdls.c; sourceTree = "<group>"; };
+		189E84282584DE88005C902E /* chan.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = chan.c; sourceTree = "<group>"; };
+		189E842D2584E053005C902E /* mesh_sync.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mesh_sync.c; sourceTree = "<group>"; };
+		189E84322584E18A005C902E /* spectmgmt.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = spectmgmt.c; sourceTree = "<group>"; };
+		189E84372584E20B005C902E /* mesh_ps.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mesh_ps.c; sourceTree = "<group>"; };
+		189E843C2584E47F005C902E /* airtime.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = airtime.c; sourceTree = "<group>"; };
 		18A4E3A0257D0613002D9E40 /* ap.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ap.c; sourceTree = "<group>"; };
 		18A4E3A5257D06B0002D9E40 /* mlme.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mlme.c; sourceTree = "<group>"; };
 		18A4E3AA257D072B002D9E40 /* lib80211_crypt_ccmp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lib80211_crypt_ccmp.c; sourceTree = "<group>"; };
@@ -1965,6 +2052,14 @@
 		18DCD1CA25767410004817B7 /* types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		18DCD1D325767955004817B7 /* refcount.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = refcount.h; sourceTree = "<group>"; };
 		18DCD1E025767E7B004817B7 /* if_vlan.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = if_vlan.h; sourceTree = "<group>"; };
+		374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-21.ucode"; sourceTree = "<group>"; };
+		374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-22.ucode"; sourceTree = "<group>"; };
+		374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-31.ucode"; sourceTree = "<group>"; };
+		374023892587BC42006B33D3 /* iwlwifi-8265-36.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-36.ucode"; sourceTree = "<group>"; };
+		3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-34.ucode"; sourceTree = "<group>"; };
+		374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-27.ucode"; sourceTree = "<group>"; };
+		37C6D1EF2584EB5200977605 /* he.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = he.c; sourceTree = "<group>"; };
+		37C6D1F42584F2A800977605 /* net_namespace.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = net_namespace.c; sourceTree = "<group>"; };
 		37CFF28B2573CFF00047098B /* AirPortLinux.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirPortLinux.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		37CFF28E2573CFF00047098B /* AirPortLinux.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AirPortLinux.hpp; sourceTree = "<group>"; };
 		37CFF2902573CFF00047098B /* AirPortLinux.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AirPortLinux.cpp; sourceTree = "<group>"; };
@@ -2514,9 +2609,9 @@
 			isa = PBXGroup;
 			children = (
 				1841ECB9257D42DE0071277A /* crypto */,
-				18D2422B257CF9A90062A72B /* lib */,
 				37CFF30B2573ECC00047098B /* drivers */,
 				37CFF3BA2573ECC00047098B /* include */,
+				18D2422B257CF9A90062A72B /* lib */,
 				37CFF2C82573ECC00047098B /* net */,
 			);
 			path = linux5.6.7;
@@ -2577,6 +2672,7 @@
 				37CFF3002573ECC00047098B /* aead_api.c */,
 				37CFF2EB2573ECC00047098B /* aead_api.h */,
 				37CFF3092573ECC00047098B /* aes_ccm.h */,
+				37C6D1EF2584EB5200977605 /* he.c */,
 				37CFF2F52573ECC00047098B /* aes_cmac.c */,
 				37CFF2E42573ECC00047098B /* aes_cmac.h */,
 				37CFF3022573ECC00047098B /* aes_gcm.h */,
@@ -2584,13 +2680,19 @@
 				37CFF2F42573ECC00047098B /* aes_gmac.h */,
 				37CFF2FE2573ECC00047098B /* agg-rx.c */,
 				37CFF2F02573ECC00047098B /* agg-tx.c */,
+				189E843C2584E47F005C902E /* airtime.c */,
+				189E840F2584D390005C902E /* cfg.c */,
+				189E84282584DE88005C902E /* chan.c */,
 				37CFF2E32573ECC00047098B /* debug.h */,
 				37CFF3012573ECC00047098B /* debugfs_key.c */,
 				37CFF2EC2573ECC00047098B /* debugfs_key.h */,
 				37CFF3042573ECC00047098B /* debugfs.h */,
 				37CFF2FA2573ECC00047098B /* driver-ops.c */,
 				37CFF2DE2573ECC00047098B /* driver-ops.h */,
+				18AB83A0257E61640007F651 /* fils_aead.c */,
+				18AB839F257E61640007F651 /* fils_aead.h */,
 				37CFF2F12573ECC00047098B /* ht.c */,
+				18AB83B8257E6C690007F651 /* ibss.c */,
 				37CFF2FD2573ECC00047098B /* ieee80211_i.h */,
 				37CFF2E22573ECC00047098B /* iface.c */,
 				37CFF3032573ECC00047098B /* key.c */,
@@ -2598,30 +2700,35 @@
 				37CFF2DF2573ECC00047098B /* led.c */,
 				37CFF2F62573ECC00047098B /* led.h */,
 				37CFF2F82573ECC00047098B /* main.c */,
+				189E84192584D89F005C902E /* mesh_hwmp.c */,
 				18205DF2257CEAB900C6E091 /* mesh_pathtbl.c */,
+				189E84072584CF50005C902E /* mesh_plink.c */,
+				189E84372584E20B005C902E /* mesh_ps.c */,
+				189E842D2584E053005C902E /* mesh_sync.c */,
 				37CFF3072573ECC00047098B /* mesh.c */,
 				37CFF2F32573ECC00047098B /* mesh.h */,
 				37CFF2E82573ECC00047098B /* michael.c */,
 				37CFF2FC2573ECC00047098B /* michael.h */,
+				18AB8390257E60E90007F651 /* mlme.c */,
+				18AB83B3257E6BE00007F651 /* ocb.c */,
 				37CFF2EF2573ECC00047098B /* offchannel.c */,
-				18AB83B8257E6C690007F651 /* ibss.c */,
+				189E84142584D581005C902E /* pm.c */,
 				37CFF2E72573ECC00047098B /* rate.c */,
-				18AB83BD257E6DA10007F651 /* status.c */,
 				37CFF2FB2573ECC00047098B /* rate.h */,
 				18205DF7257CED7F00C6E091 /* rx.c */,
 				37CFF2EE2573ECC00047098B /* scan.c */,
+				189E84322584E18A005C902E /* spectmgmt.c */,
 				37CFF2ED2573ECC00047098B /* sta_info.c */,
 				37CFF30A2573ECC00047098B /* sta_info.h */,
-				18AB839F257E61640007F651 /* fils_aead.h */,
-				18AB83A0257E61640007F651 /* fils_aead.c */,
+				18AB83BD257E6DA10007F651 /* status.c */,
+				189E84232584DD1F005C902E /* tdls.c */,
 				37CFF3082573ECC00047098B /* tkip.c */,
 				37CFF2F22573ECC00047098B /* tkip.h */,
 				37CFF2E02573ECC00047098B /* trace.c */,
 				37CFF2F72573ECC00047098B /* trace.h */,
-				18AB8390257E60E90007F651 /* mlme.c */,
-				18AB83B3257E6BE00007F651 /* ocb.c */,
 				37CFF3062573ECC00047098B /* tx.c */,
 				37CFF2E52573ECC00047098B /* util.c */,
+				189E841E2584DCDF005C902E /* vht.c */,
 				37CFF2E92573ECC00047098B /* wep.c */,
 				37CFF3052573ECC00047098B /* wep.h */,
 				37CFF2FF2573ECC00047098B /* wme.c */,
@@ -3015,6 +3122,7 @@
 				37CFF3E82573ECC00047098B /* iw_handler.h */,
 				37CFF3F02573ECC00047098B /* mac80211.h */,
 				18DCD1AA25767339004817B7 /* net_namespace.h */,
+				37C6D1F42584F2A800977605 /* net_namespace.c */,
 				18DCD1A125767324004817B7 /* netlink.h */,
 				18A4E409257D0829002D9E40 /* wext.h */,
 				37CFF3F82573ECC00047098B /* pkt_sched.c */,
@@ -3180,6 +3288,12 @@
 		37E824812573F3F6001A3370 /* firmware */ = {
 			isa = PBXGroup;
 			children = (
+				374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */,
+				374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */,
+				374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */,
+				374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */,
+				3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */,
+				374023892587BC42006B33D3 /* iwlwifi-8265-36.ucode */,
 			);
 			path = firmware;
 			sourceTree = "<group>";
@@ -4486,6 +4600,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				374023F82587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */,
+				374024542587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */,
+				374024A42587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */,
+				3740248C2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */,
+				374024D42587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */,
+				374024942587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4493,6 +4613,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				374023F92587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */,
+				374024552587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */,
+				374024A52587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */,
+				3740248D2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */,
+				374024D52587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */,
+				374024952587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4500,6 +4626,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				374023FA2587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */,
+				374024562587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */,
+				374024A62587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */,
+				3740248E2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */,
+				374024D62587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */,
+				374024962587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4507,6 +4639,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				374023FB2587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */,
+				374024572587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */,
+				374024A72587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */,
+				3740248F2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */,
+				374024D72587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */,
+				374024972587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4542,6 +4680,7 @@
 				18A4E3E8257D072D002D9E40 /* radiotap.c in Sources */,
 				37CFF5DB2573ECC10047098B /* rculist.c in Sources */,
 				37CFF4952573ECC10047098B /* rate.c in Sources */,
+				189E842E2584E053005C902E /* mesh_sync.c in Sources */,
 				18AB83BE257E6DA10007F651 /* status.c in Sources */,
 				37CFF5EA2573ECC10047098B /* device.c in Sources */,
 				37CFF4C52573ECC10047098B /* coex.c in Sources */,
@@ -4554,6 +4693,7 @@
 				37CFF5642573ECC10047098B /* api.c in Sources */,
 				37CFF53F2573ECC10047098B /* 1000.c in Sources */,
 				37CFF4E22573ECC10047098B /* mac-ctxt.c in Sources */,
+				189E84332584E18A005C902E /* spectmgmt.c in Sources */,
 				37CFF4E02573ECC10047098B /* offloading.c in Sources */,
 				37CFF5C22573ECC10047098B /* rfkill.c in Sources */,
 				37CFF5C82573ECC10047098B /* if.c in Sources */,
@@ -4603,18 +4743,22 @@
 				18D2422D257CF9C30062A72B /* rhashtable.c in Sources */,
 				37CFF5E32573ECC10047098B /* compiler.c in Sources */,
 				37CFF4AF2573ECC10047098B /* debugfs_key.c in Sources */,
+				189E84242584DD1F005C902E /* tdls.c in Sources */,
 				37CFF4B42573ECC10047098B /* tx.c in Sources */,
 				37CFF56F2573ECC10047098B /* arc4.c in Sources */,
+				189E84082584CF50005C902E /* mesh_plink.c in Sources */,
 				18205DF3257CEAB900C6E091 /* mesh_pathtbl.c in Sources */,
 				37CFF5622573ECC10047098B /* aes.c in Sources */,
 				37CFF4D82573ECC10047098B /* quota.c in Sources */,
 				37CFF4C62573ECC10047098B /* nvm.c in Sources */,
 				37CFF5242573ECC10047098B /* lib.c in Sources */,
+				189E84102584D390005C902E /* cfg.c in Sources */,
 				18AB8391257E60E90007F651 /* mlme.c in Sources */,
 				37CFF4EF2573ECC10047098B /* debugfs.c in Sources */,
 				37CFF5482573ECC10047098B /* iwl-nvm-parse.c in Sources */,
 				37CFF47C2573ECC10047098B /* sysfs.c in Sources */,
 				18AB83B4257E6BE00007F651 /* ocb.c in Sources */,
+				189E841A2584D89F005C902E /* mesh_hwmp.c in Sources */,
 				37CFF52E2573ECC10047098B /* power.c in Sources */,
 				37CFF4802573ECC10047098B /* scan.c in Sources */,
 				37CFF5CC2573ECC10047098B /* crc32.c in Sources */,
@@ -4643,6 +4787,7 @@
 				37CFF4D22573ECC10047098B /* phy-ctxt.c in Sources */,
 				37CFF5862573ECC10047098B /* genetlink.c in Sources */,
 				37CFF5592573ECC10047098B /* tx.c in Sources */,
+				189E84292584DE88005C902E /* chan.c in Sources */,
 				37CFF6132573EE480047098B /* AirPortLinux_Util.cpp in Sources */,
 				18205DF8257CED7F00C6E091 /* rx.c in Sources */,
 				37CFF5612573ECC10047098B /* nl80211.c in Sources */,
@@ -4664,6 +4809,7 @@
 				37CFF4792573ECC10047098B /* pmsr.c in Sources */,
 				37CFF5812573ECC10047098B /* ieee80211_radiotap.c in Sources */,
 				37CFF5292573ECC10047098B /* scan.c in Sources */,
+				37C6D1F02584EB5200977605 /* he.c in Sources */,
 				37CFF48F2573ECC10047098B /* aes_gmac.c in Sources */,
 				37CFF5252573ECC10047098B /* rx.c in Sources */,
 				18A4E3A1257D0613002D9E40 /* ap.c in Sources */,
@@ -4676,14 +4822,19 @@
 				37CFF5ED2573ECC10047098B /* workqueue.c in Sources */,
 				18A4E3D0257D072D002D9E40 /* mesh.c in Sources */,
 				37CFF4972573ECC10047098B /* wep.c in Sources */,
+				189E84152584D581005C902E /* pm.c in Sources */,
 				37CFF4812573ECC10047098B /* wext-compat.c in Sources */,
 				37CFF57C2573ECC10047098B /* swab.c in Sources */,
 				37CFF5272573ECC10047098B /* calib.c in Sources */,
 				37CFF4DF2573ECC10047098B /* ftm-initiator.c in Sources */,
+				189E84382584E20B005C902E /* mesh_ps.c in Sources */,
 				37CFF49F2573ECC10047098B /* ht.c in Sources */,
+				37C6D1F52584F2A800977605 /* net_namespace.c in Sources */,
+				189E843D2584E47F005C902E /* airtime.c in Sources */,
 				37CFF56E2573ECC10047098B /* memneq.c in Sources */,
 				37CFF4A32573ECC10047098B /* aes_cmac.c in Sources */,
 				37CFF5392573ECC10047098B /* rxon.c in Sources */,
+				189E841F2584DCDF005C902E /* vht.c in Sources */,
 				37CFF4B52573ECC10047098B /* mesh.c in Sources */,
 				37CFF5CF2573ECC10047098B /* scatterlist.c in Sources */,
 				18A4E3EC257D072D002D9E40 /* of.c in Sources */,
@@ -4737,6 +4888,7 @@
 				18A4E3E9257D072D002D9E40 /* radiotap.c in Sources */,
 				37CFF6372573EF640047098B /* rate.c in Sources */,
 				37CFF6382573EF640047098B /* michael.c in Sources */,
+				189E842F2584E053005C902E /* mesh_sync.c in Sources */,
 				18AB83BF257E6DA10007F651 /* status.c in Sources */,
 				37CFF6392573EF640047098B /* wep.c in Sources */,
 				37CFF63A2573EF640047098B /* sta_info.c in Sources */,
@@ -4749,6 +4901,7 @@
 				37CFF6402573EF640047098B /* main.c in Sources */,
 				37CFF6412573EF640047098B /* wpa.c in Sources */,
 				37CFF6422573EF640047098B /* driver-ops.c in Sources */,
+				189E84342584E18A005C902E /* spectmgmt.c in Sources */,
 				37CFF6432573EF640047098B /* agg-rx.c in Sources */,
 				37CFF6442573EF640047098B /* wme.c in Sources */,
 				37CFF6452573EF640047098B /* aead_api.c in Sources */,
@@ -4798,18 +4951,22 @@
 				18D2422E257CF9C30062A72B /* rhashtable.c in Sources */,
 				37CFF66E2573EF640047098B /* iwl-eeprom-parse.c in Sources */,
 				37CFF66F2573EF640047098B /* paging.c in Sources */,
+				189E84252584DD1F005C902E /* tdls.c in Sources */,
 				37CFF6702573EF640047098B /* debugfs.c in Sources */,
 				37CFF6712573EF640047098B /* init.c in Sources */,
+				189E84092584CF50005C902E /* mesh_plink.c in Sources */,
 				18205DF4257CEAB900C6E091 /* mesh_pathtbl.c in Sources */,
 				37CFF6722573EF640047098B /* dbg.c in Sources */,
 				37CFF6732573EF640047098B /* smem.c in Sources */,
 				37CFF6742573EF640047098B /* notif-wait.c in Sources */,
 				37CFF6752573EF640047098B /* acpi.c in Sources */,
+				189E84112584D390005C902E /* cfg.c in Sources */,
 				18AB8392257E60E90007F651 /* mlme.c in Sources */,
 				37CFF6762573EF640047098B /* led.c in Sources */,
 				37CFF6772573EF640047098B /* mac80211.c in Sources */,
 				37CFF6782573EF640047098B /* lib.c in Sources */,
 				18AB83B5257E6BE00007F651 /* ocb.c in Sources */,
+				189E841B2584D89F005C902E /* mesh_hwmp.c in Sources */,
 				37CFF6792573EF640047098B /* rx.c in Sources */,
 				37CFF67A2573EF640047098B /* debugfs.c in Sources */,
 				37CFF67B2573EF640047098B /* calib.c in Sources */,
@@ -4838,6 +4995,7 @@
 				37CFF68D2573EF640047098B /* 7000.c in Sources */,
 				37CFF68E2573EF640047098B /* iwl-drv.c in Sources */,
 				37CFF68F2573EF640047098B /* iwl-nvm-parse.c in Sources */,
+				189E842A2584DE88005C902E /* chan.c in Sources */,
 				37CFF6902573EF640047098B /* iwl-eeprom-read.c in Sources */,
 				18205DF9257CED7F00C6E091 /* rx.c in Sources */,
 				37CFF6912573EF640047098B /* rx.c in Sources */,
@@ -4859,6 +5017,7 @@
 				37CFF6A12573EF640047098B /* memneq.c in Sources */,
 				37CFF6A22573EF640047098B /* arc4.c in Sources */,
 				37CFF6A32573EF640047098B /* swab.c in Sources */,
+				37C6D1F12584EB5200977605 /* he.c in Sources */,
 				37CFF6A42573EF640047098B /* ieee80211_radiotap.c in Sources */,
 				37CFF6A52573EF640047098B /* fq_impl.c in Sources */,
 				18A4E3A2257D0613002D9E40 /* ap.c in Sources */,
@@ -4871,14 +5030,19 @@
 				37CFF6AA2573EF650047098B /* bitrev.c in Sources */,
 				18A4E3D1257D072D002D9E40 /* mesh.c in Sources */,
 				37CFF6AB2573EF650047098B /* rbtree.c in Sources */,
+				189E84162584D581005C902E /* pm.c in Sources */,
 				37CFF6AC2573EF650047098B /* if_vlan.c in Sources */,
 				37CFF6AD2573EF650047098B /* bug.c in Sources */,
 				37CFF6AE2573EF650047098B /* ctype.c in Sources */,
 				37CFF6AF2573EF650047098B /* dma-mapping.c in Sources */,
+				189E84392584E20B005C902E /* mesh_ps.c in Sources */,
 				37CFF6B02573EF650047098B /* pci.c in Sources */,
+				37C6D1F62584F2A800977605 /* net_namespace.c in Sources */,
+				189E843E2584E47F005C902E /* airtime.c in Sources */,
 				37CFF6B12573EF650047098B /* errno.c in Sources */,
 				37CFF6B22573EF650047098B /* rfkill.c in Sources */,
 				37CFF6B32573EF650047098B /* atomic.c in Sources */,
+				189E84202584DCE0005C902E /* vht.c in Sources */,
 				37CFF6B42573EF650047098B /* random.c in Sources */,
 				37CFF6B52573EF650047098B /* if.c in Sources */,
 				18A4E3ED257D072D002D9E40 /* of.c in Sources */,
@@ -4932,6 +5096,7 @@
 				18A4E3EA257D072D002D9E40 /* radiotap.c in Sources */,
 				37CFF8ED2573F0080047098B /* rate.c in Sources */,
 				37CFF8EE2573F0080047098B /* michael.c in Sources */,
+				189E84302584E053005C902E /* mesh_sync.c in Sources */,
 				18AB83C0257E6DA10007F651 /* status.c in Sources */,
 				37CFF8EF2573F0080047098B /* wep.c in Sources */,
 				37CFF8F02573F0080047098B /* sta_info.c in Sources */,
@@ -4944,6 +5109,7 @@
 				37CFF8F62573F0080047098B /* main.c in Sources */,
 				37CFF8F72573F0080047098B /* wpa.c in Sources */,
 				37CFF8F82573F0080047098B /* driver-ops.c in Sources */,
+				189E84352584E18A005C902E /* spectmgmt.c in Sources */,
 				37CFF8F92573F0080047098B /* agg-rx.c in Sources */,
 				37CFF8FA2573F0080047098B /* wme.c in Sources */,
 				37CFF8FB2573F0080047098B /* aead_api.c in Sources */,
@@ -4993,18 +5159,22 @@
 				18D2422F257CF9C30062A72B /* rhashtable.c in Sources */,
 				37CFF9242573F0090047098B /* iwl-eeprom-parse.c in Sources */,
 				37CFF9252573F0090047098B /* paging.c in Sources */,
+				189E84262584DD1F005C902E /* tdls.c in Sources */,
 				37CFF9262573F0090047098B /* debugfs.c in Sources */,
 				37CFF9272573F0090047098B /* init.c in Sources */,
+				189E840A2584CF50005C902E /* mesh_plink.c in Sources */,
 				18205DF5257CEAB900C6E091 /* mesh_pathtbl.c in Sources */,
 				37CFF9282573F0090047098B /* dbg.c in Sources */,
 				37CFF9292573F0090047098B /* smem.c in Sources */,
 				37CFF92A2573F0090047098B /* notif-wait.c in Sources */,
 				37CFF92B2573F0090047098B /* acpi.c in Sources */,
+				189E84122584D390005C902E /* cfg.c in Sources */,
 				18AB8393257E60E90007F651 /* mlme.c in Sources */,
 				37CFF92C2573F0090047098B /* led.c in Sources */,
 				37CFF92D2573F0090047098B /* mac80211.c in Sources */,
 				37CFF92E2573F0090047098B /* lib.c in Sources */,
 				18AB83B6257E6BE00007F651 /* ocb.c in Sources */,
+				189E841C2584D89F005C902E /* mesh_hwmp.c in Sources */,
 				37CFF92F2573F0090047098B /* rx.c in Sources */,
 				37CFF9302573F0090047098B /* debugfs.c in Sources */,
 				37CFF9312573F0090047098B /* calib.c in Sources */,
@@ -5033,6 +5203,7 @@
 				37CFF9432573F0090047098B /* 7000.c in Sources */,
 				37CFF9442573F0090047098B /* iwl-drv.c in Sources */,
 				37CFF9452573F0090047098B /* iwl-nvm-parse.c in Sources */,
+				189E842B2584DE88005C902E /* chan.c in Sources */,
 				37CFF9462573F0090047098B /* iwl-eeprom-read.c in Sources */,
 				18205DFA257CED7F00C6E091 /* rx.c in Sources */,
 				37CFF9472573F0090047098B /* rx.c in Sources */,
@@ -5054,6 +5225,7 @@
 				37CFF9572573F0090047098B /* memneq.c in Sources */,
 				37CFF9582573F0090047098B /* arc4.c in Sources */,
 				37CFF9592573F0090047098B /* swab.c in Sources */,
+				37C6D1F22584EB5200977605 /* he.c in Sources */,
 				37CFF95A2573F0090047098B /* ieee80211_radiotap.c in Sources */,
 				37CFF95B2573F0090047098B /* fq_impl.c in Sources */,
 				18A4E3A3257D0613002D9E40 /* ap.c in Sources */,
@@ -5066,14 +5238,19 @@
 				37CFF9602573F0090047098B /* bitrev.c in Sources */,
 				18A4E3D2257D072D002D9E40 /* mesh.c in Sources */,
 				37CFF9612573F0090047098B /* rbtree.c in Sources */,
+				189E84172584D581005C902E /* pm.c in Sources */,
 				37CFF9622573F0090047098B /* if_vlan.c in Sources */,
 				37CFF9632573F0090047098B /* bug.c in Sources */,
 				37CFF9642573F0090047098B /* ctype.c in Sources */,
 				37CFF9652573F0090047098B /* dma-mapping.c in Sources */,
+				189E843A2584E20B005C902E /* mesh_ps.c in Sources */,
 				37CFF9662573F0090047098B /* pci.c in Sources */,
+				37C6D1F72584F2A800977605 /* net_namespace.c in Sources */,
+				189E843F2584E47F005C902E /* airtime.c in Sources */,
 				37CFF9672573F0090047098B /* errno.c in Sources */,
 				37CFF9682573F0090047098B /* rfkill.c in Sources */,
 				37CFF9692573F0090047098B /* atomic.c in Sources */,
+				189E84212584DCE0005C902E /* vht.c in Sources */,
 				37CFF96A2573F0090047098B /* random.c in Sources */,
 				37CFF96B2573F0090047098B /* if.c in Sources */,
 				18A4E3EE257D072D002D9E40 /* of.c in Sources */,
@@ -5127,6 +5304,7 @@
 				18A4E3EB257D072D002D9E40 /* radiotap.c in Sources */,
 				37CFF99D2573F1E70047098B /* rate.c in Sources */,
 				37CFF99E2573F1E70047098B /* michael.c in Sources */,
+				189E84312584E053005C902E /* mesh_sync.c in Sources */,
 				18AB83C1257E6DA10007F651 /* status.c in Sources */,
 				37CFF99F2573F1E70047098B /* wep.c in Sources */,
 				37CFF9A02573F1E70047098B /* sta_info.c in Sources */,
@@ -5139,6 +5317,7 @@
 				37CFF9A62573F1E70047098B /* main.c in Sources */,
 				37CFF9A72573F1E70047098B /* wpa.c in Sources */,
 				37CFF9A82573F1E70047098B /* driver-ops.c in Sources */,
+				189E84362584E18A005C902E /* spectmgmt.c in Sources */,
 				37CFF9A92573F1E70047098B /* agg-rx.c in Sources */,
 				37CFF9AA2573F1E70047098B /* wme.c in Sources */,
 				37CFF9AB2573F1E70047098B /* aead_api.c in Sources */,
@@ -5188,18 +5367,22 @@
 				18D24230257CF9C30062A72B /* rhashtable.c in Sources */,
 				37CFF9D42573F1E70047098B /* iwl-eeprom-parse.c in Sources */,
 				37CFF9D52573F1E70047098B /* paging.c in Sources */,
+				189E84272584DD1F005C902E /* tdls.c in Sources */,
 				37CFF9D62573F1E70047098B /* debugfs.c in Sources */,
 				37CFF9D72573F1E70047098B /* init.c in Sources */,
+				189E840B2584CF50005C902E /* mesh_plink.c in Sources */,
 				18205DF6257CEAB900C6E091 /* mesh_pathtbl.c in Sources */,
 				37CFF9D82573F1E70047098B /* dbg.c in Sources */,
 				37CFF9D92573F1E70047098B /* smem.c in Sources */,
 				37CFF9DA2573F1E70047098B /* notif-wait.c in Sources */,
 				37CFF9DB2573F1E70047098B /* acpi.c in Sources */,
+				189E84132584D390005C902E /* cfg.c in Sources */,
 				18AB8394257E60E90007F651 /* mlme.c in Sources */,
 				37CFF9DC2573F1E70047098B /* led.c in Sources */,
 				37CFF9DD2573F1E70047098B /* mac80211.c in Sources */,
 				37CFF9DE2573F1E70047098B /* lib.c in Sources */,
 				18AB83B7257E6BE00007F651 /* ocb.c in Sources */,
+				189E841D2584D89F005C902E /* mesh_hwmp.c in Sources */,
 				37CFF9DF2573F1E70047098B /* rx.c in Sources */,
 				37CFF9E02573F1E70047098B /* debugfs.c in Sources */,
 				37CFF9E12573F1E70047098B /* calib.c in Sources */,
@@ -5228,6 +5411,7 @@
 				37CFF9F32573F1E80047098B /* 7000.c in Sources */,
 				37CFF9F42573F1E80047098B /* iwl-drv.c in Sources */,
 				37CFF9F52573F1E80047098B /* iwl-nvm-parse.c in Sources */,
+				189E842C2584DE88005C902E /* chan.c in Sources */,
 				37CFF9F62573F1E80047098B /* iwl-eeprom-read.c in Sources */,
 				18205DFB257CED7F00C6E091 /* rx.c in Sources */,
 				37CFF9F72573F1E80047098B /* rx.c in Sources */,
@@ -5249,6 +5433,7 @@
 				37CFFA072573F1E80047098B /* memneq.c in Sources */,
 				37CFFA082573F1E80047098B /* arc4.c in Sources */,
 				37CFFA092573F1E80047098B /* swab.c in Sources */,
+				37C6D1F32584EB5200977605 /* he.c in Sources */,
 				37CFFA0A2573F1E80047098B /* ieee80211_radiotap.c in Sources */,
 				37CFFA0B2573F1E80047098B /* fq_impl.c in Sources */,
 				18A4E3A4257D0613002D9E40 /* ap.c in Sources */,
@@ -5261,14 +5446,19 @@
 				37CFFA102573F1E80047098B /* bitrev.c in Sources */,
 				18A4E3D3257D072D002D9E40 /* mesh.c in Sources */,
 				37CFFA112573F1E80047098B /* rbtree.c in Sources */,
+				189E84182584D581005C902E /* pm.c in Sources */,
 				37CFFA122573F1E80047098B /* if_vlan.c in Sources */,
 				37CFFA132573F1E80047098B /* bug.c in Sources */,
 				37CFFA142573F1E80047098B /* ctype.c in Sources */,
 				37CFFA152573F1E80047098B /* dma-mapping.c in Sources */,
+				189E843B2584E20B005C902E /* mesh_ps.c in Sources */,
 				37CFFA162573F1E80047098B /* pci.c in Sources */,
+				37C6D1F82584F2A800977605 /* net_namespace.c in Sources */,
+				189E84402584E47F005C902E /* airtime.c in Sources */,
 				37CFFA172573F1E80047098B /* errno.c in Sources */,
 				37CFFA182573F1E80047098B /* rfkill.c in Sources */,
 				37CFFA192573F1E80047098B /* atomic.c in Sources */,
+				189E84222584DCE0005C902E /* vht.c in Sources */,
 				37CFFA1A2573F1E80047098B /* random.c in Sources */,
 				37CFFA1B2573F1E80047098B /* if.c in Sources */,
 				18A4E3EF257D072D002D9E40 /* of.c in Sources */,

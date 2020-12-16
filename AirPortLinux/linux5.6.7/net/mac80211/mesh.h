@@ -117,7 +117,7 @@ struct mesh_path {
     unsigned long exp_time;
     u32 discovery_timeout;
     u8 discovery_retries;
-    enum mesh_path_flags flags;
+    int flags;
     spinlock_t state_lock;
     u8 rann_snd_addr[ETH_ALEN];
     u32 rann_metric;

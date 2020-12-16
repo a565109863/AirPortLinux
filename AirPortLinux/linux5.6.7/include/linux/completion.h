@@ -30,9 +30,12 @@ static inline void init_completion(struct completion *x)
 
 static void complete(struct completion *x)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     IOLockLock(x->lock);
     IOLockWakeup(x->lock, x->event, true);
     IOLockUnlock(x->lock);
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     
 //    unsigned long flags;
 //

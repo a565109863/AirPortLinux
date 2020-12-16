@@ -19,7 +19,7 @@
 #define CMAC_TLEN_256 16 /* CMAC TLen = 128 bits (16 octets) */
 #define AAD_LEN 20
 
-extern const u8 zero[CMAC_TLEN_256];
+static u8 zero[CMAC_TLEN_256];
 
 void ieee80211_aes_cmac(struct crypto_shash *tfm, const u8 *aad,
             const u8 *data, size_t data_len, u8 *mic)

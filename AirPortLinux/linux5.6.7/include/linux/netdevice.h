@@ -23,6 +23,7 @@
 
 #include <linux/u64_stats_sync.h>
 
+#include <net/net_namespace.h>
 
 struct netpoll_info;
 struct device;
@@ -200,35 +201,6 @@ typedef u64 netdev_features_t;
 #define NET_ADDR_STOLEN        2    /* address is stolen from other device */
 #define NET_ADDR_SET        3    /* address is set using
 * dev_set_mac_address() */
-
-
-
-/* Init's network namespace */
-extern struct net init_net;
-
-
-typedef struct {
-#ifdef CONFIG_NET_NS
-    struct net *net;
-#endif
-} possible_net_t;
-
-
-static inline void write_pnet(possible_net_t *pnet, struct net *net)
-{
-#ifdef CONFIG_NET_NS
-    pnet->net = net;
-#endif
-}
-
-static inline struct net *read_pnet(const possible_net_t *pnet)
-{
-#ifdef CONFIG_NET_NS
-    return pnet->net;
-#else
-    return &init_net;
-#endif
-}
 
 
 #define MAX_ADDR_LEN 19

@@ -100,13 +100,19 @@ static inline void *kcalloc(size_t n, size_t size, gfp_t flags)
 
 #define kvfree kfree
 
-static inline void *krealloc(void* node, size_t s, gfp_t gfp)
+static inline void *__krealloc(void* node, size_t node_size, size_t s, gfp_t gfp)
 {
+    if (node_size >= s) {
+        return node;
+    }
     void *p = kmalloc(s, gfp);
-
-    memset(p, 0, s);
+    if (p && node) {
+        memcpy(p, node, node_size);
+    }
     return p;
 }
+
+#define krealloc(n, s, g) __krealloc(n, s - sizeof(*n) , s, g)
 
 static void *kmemdup(const void *src, size_t len, gfp_t gfp)
 {
@@ -300,9 +306,6 @@ struct va_format {
 #define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
 #define round_down(x, y) ((x) & ~__round_mask(x, y))
 
-
-#define atomic_read(v)        READ_ONCE((v)->counter)
-#define atomic64_read(v)    READ_ONCE((v)->counter)
 
 #define ATOMIC_INIT(i)        { (i) }
 #define ATOMIC64_INIT(i)    { (i) }

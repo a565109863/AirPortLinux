@@ -25,6 +25,7 @@ static inline int fls64(UInt64 x)
     return bitpos + 1;
 }
 
+#define fls fls64
 
 static inline unsigned long __ffs(unsigned long x)
 {

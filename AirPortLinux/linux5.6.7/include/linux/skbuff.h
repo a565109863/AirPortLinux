@@ -679,7 +679,10 @@ static struct page *alloc_pages(gfp_t gtp, size_t size)
 }
 #define alloc_page(gfp_mask) alloc_pages(gfp_mask, 0)
 
-void kfree_skb(struct page *page);
+static void kfree_skb(struct page *page)
+{
+    
+}
 
 #define __free_pages(a,b) kfree_skb(a)
 #define __free_page(a) kfree_skb(a)

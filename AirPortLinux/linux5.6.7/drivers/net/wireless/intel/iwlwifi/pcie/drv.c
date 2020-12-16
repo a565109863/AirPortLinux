@@ -1021,16 +1021,16 @@ int iwl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 
 	/* make sure trans is the first element in iwl_cfg */
 	BUILD_BUG_ON(offsetof(struct iwl_cfg, trans));
-
+    
 	iwl_trans = iwl_trans_pcie_alloc(pdev, ent, trans);
 	if (IS_ERR(iwl_trans))
 		return PTR_ERR(iwl_trans);
-
+    
 	trans_pcie = IWL_TRANS_GET_PCIE_TRANS(iwl_trans);
-
+    
 	/* the trans_cfg should never change, so set it now */
 	iwl_trans->trans_cfg = trans;
-
+    
 	for (i = 0; i < ARRAY_SIZE(iwl_dev_info_table); i++) {
 		const struct iwl_dev_info *dev_info = &iwl_dev_info_table[i];
 
@@ -1043,7 +1043,7 @@ int iwl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 			goto found;
 		}
 	}
-
+    
 #if IS_ENABLED(CONFIG_IWLMVM)
 	/*
 	 * special-case 7265D, it has the same PCI IDs.
@@ -1195,18 +1195,23 @@ found:
 				(SILICON_C_STEP << 2);
 		iwl_trans_release_nic_access(iwl_trans, &flags);
 	}
-
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	pci_set_drvdata(pdev, iwl_trans);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	iwl_trans->drv = iwl_drv_start(iwl_trans);
-
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	if (IS_ERR(iwl_trans->drv)) {
 		ret = PTR_ERR(iwl_trans->drv);
 		goto out_free_trans;
 	}
-
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/* register transport layer debugfs here */
 	iwl_trans_pcie_dbgfs_register(iwl_trans);
-
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/* The PCI device starts with a reference taken and we are
 	 * supposed to release it here.  But to simplify the
 	 * interaction with the opmode, we don't do it now, but let
@@ -1302,12 +1307,10 @@ struct pci_driver iwl_pci_driver = {
 //	.driver.pm = IWL_PM_OPS,
 };
 
-extern struct pci_dev *_pdev;
-
-int __must_check iwl_pci_register_driver(void)
+int __must_check iwl_pci_register_driver(struct pci_dev *pdev)
 {
 	int ret;
-	ret = pci_register_driver(&iwl_pci_driver, _pdev);
+	ret = pci_register_driver(&iwl_pci_driver, pdev);
 	if (ret)
 		pr_err("Unable to initialize PCI module\n");
 

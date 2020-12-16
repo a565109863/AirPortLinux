@@ -405,4 +405,22 @@ static inline unsigned long ffz(unsigned long word)
 
 #define __test_and_set_bit(nr, vaddr)    test_and_set_bit(nr, vaddr)
 
+static inline int
+find_first_zero_bit(volatile void *p, int max)
+{
+    int b;
+    volatile u_int *ptr = (volatile u_int *)p;
+
+    for (b = 0; b < max; b += 32) {
+        if (ptr[b >> 5] != ~0) {
+            for (;;) {
+                if ((ptr[b >> 5] & (1 << (b & 0x1f))) == 0)
+                    return b;
+                b++;
+            }
+        }
+    }
+    return max;
+}
+
 #endif

@@ -483,6 +483,7 @@ static struct page *iwl_pcie_rx_alloc_page(struct iwl_trans *trans,
 void iwl_pcie_rxq_alloc_rbs(struct iwl_trans *trans, gfp_t priority,
 			    struct iwl_rxq *rxq)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct iwl_rx_mem_buffer *rxb;
 	struct page *page;
@@ -1073,6 +1074,7 @@ int iwl_pcie_dummy_napi_poll(struct napi_struct *napi, int budget)
 
 static int _iwl_pcie_rx_init(struct iwl_trans *trans)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct iwl_rxq *def_rxq;
 	struct iwl_rb_allocator *rba = &trans_pcie->rba;
@@ -1145,6 +1147,7 @@ static int _iwl_pcie_rx_init(struct iwl_trans *trans)
 		rxb->invalid = true;
 	}
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	iwl_pcie_rxq_alloc_rbs(trans, GFP_KERNEL, def_rxq);
 
 	return 0;
@@ -1152,6 +1155,7 @@ static int _iwl_pcie_rx_init(struct iwl_trans *trans)
 
 int iwl_pcie_rx_init(struct iwl_trans *trans)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	int ret = _iwl_pcie_rx_init(trans);
 
@@ -1470,6 +1474,7 @@ out_err:
  */
 static void iwl_pcie_rx_handle(struct iwl_trans *trans, int queue)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct napi_struct *napi;
 	struct iwl_rxq *rxq;
@@ -1784,6 +1789,7 @@ void iwl_pcie_handle_rfkill_irq(struct iwl_trans *trans)
 
 irqreturn_t iwl_pcie_irq_handler(int irq, void *dev_id)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans *trans = (struct iwl_trans *)dev_id;
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct isr_statistics *isr_stats = &trans_pcie->isr_stats;

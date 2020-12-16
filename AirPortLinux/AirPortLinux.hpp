@@ -16,6 +16,14 @@ typedef unsigned int ifnet_ctl_cmd_t;
 //
 //#include "help_ifconfig.h"
 
+#define DebugLog(x, args...) \
+if(1) { \
+    thread_t new_thread = current_thread(); \
+    uint64_t new_thread_id = thread_tid(new_thread); \
+    kprintf(x " tid = %llu", args, new_thread_id); \
+    IOSleep(1000); \
+}
+
 
 enum {
     kIOMessageNetworkChanged,
