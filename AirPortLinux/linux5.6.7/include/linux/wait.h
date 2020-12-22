@@ -32,8 +32,9 @@ typedef struct wait_queue_head wait_queue_head_t;
 
 int wait_event_timeout(wait_queue_head_t q, int i, u32 timeout);
 
-int wake_up(wait_queue_head_t *q);
+int wakeup_sleep(wait_queue_head_t *q, bool one);
 
-void wake_up_all(wait_queue_head_t *wq_head);
+#define wake_up(q)      wakeup_sleep(q, true);
+#define wake_up_all(q)  wakeup_sleep(q, false);
 
 #endif /* linux_wait_h */

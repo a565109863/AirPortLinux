@@ -24,6 +24,10 @@
 
 #include <linux/types.h>
 
+#define ETHTOOL_FWVERS_LEN    32
+
+#define DEFAULT_TX_QUEUE_LEN    1000
+
 /*
  *    IEEE 802.3 Ethernet magic constants.  The frame sizes omit the preamble
  *    and FCS/CRC (frame check sequence).
@@ -179,6 +183,26 @@ struct ethhdr {
 #define PACKET_KERNEL        7        /* To kernel space    */
 /* Unused, PACKET_FASTROUTE and PACKET_LOOPBACK are invisible to user space */
 #define PACKET_FASTROUTE    6        /* Fastrouted frame    */
+
+
+/*
+ * Convert Ethernet address to printable (loggable) representation.
+ */
+static char digits[] = "0123456789abcdef";
+static char * ether_sprintf(u_char *ap)
+{
+    int i;
+    static char etherbuf[ETHER_ADDR_LEN * 3];
+    char *cp = etherbuf;
+    
+    for (i = 0; i < ETHER_ADDR_LEN; i++) {
+        *cp++ = digits[*ap >> 4];
+        *cp++ = digits[*ap++ & 0xf];
+        *cp++ = ':';
+    }
+    *--cp = 0;
+    return (etherbuf);
+}
 
 
 #endif /* _UAPI_LINUX_IF_ETHER_H */

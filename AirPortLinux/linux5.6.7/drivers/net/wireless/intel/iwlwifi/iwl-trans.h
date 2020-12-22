@@ -922,7 +922,6 @@ static inline int iwl_trans_start_fw(struct iwl_trans *trans,
 				     const struct fw_img *fw,
 				     bool run_in_rfkill)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	might_sleep();
 
 	WARN_ON_ONCE(!trans->rx_mpdu_cmd);

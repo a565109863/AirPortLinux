@@ -30,4 +30,7 @@
 /* Don't assign or return these: may not be this big! */
 typedef struct cpumask { DECLARE_BITMAP(bits, NR_CPUS); } cpumask_t;
 
+/* Ignore alignment, as CBMC doesn't care about false sharing. */
+#define alloc_percpu(type) __alloc_percpu(sizeof(type), 1)
+
 #endif /* cpu_h */

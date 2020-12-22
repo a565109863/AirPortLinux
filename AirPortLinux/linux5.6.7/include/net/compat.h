@@ -42,20 +42,20 @@ atomic64_inc_return(atomic64_t *v)
 
 static __inline__ int atomic_fetch_add_unless(atomic_t *v, int a, int u)
 {
-//    int c, nnew, old;
+//    int c, _new, old;
 //    smp_mb();
 //    __asm__ __volatile__(
 //                         "1:    ldl_l    %[old],%[mem]\n"
 //                         "    cmpeq    %[old],%[u],%[c]\n"
-//                         "    addl    %[old],%[a],%[nnew]\n"
+//                         "    addl    %[old],%[a],%[_new]\n"
 //                         "    bne    %[c],2f\n"
-//                         "    stl_c    %[nnew],%[mem]\n"
-//                         "    beq    %[nnew],3f\n"
+//                         "    stl_c    %[_new],%[mem]\n"
+//                         "    beq    %[_new],3f\n"
 //                         "2:\n"
 //                         ".subsection 2\n"
 //                         "3:    br    1b\n"
 //                         ".previous"
-//                         : [old] "=&r"(old), [nnew] "=&r"(nnew), [c] "=&r"(c)
+//                         : [old] "=&r"(old), [_new] "=&r"(_new), [c] "=&r"(c)
 //                         : [mem] "m"(*v), [a] "rI"(a), [u] "rI"((long)u)
 //                         : "memory");
 //    smp_mb();

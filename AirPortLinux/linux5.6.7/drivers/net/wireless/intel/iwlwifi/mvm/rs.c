@@ -3068,6 +3068,7 @@ static void __iwl_mvm_rs_tx_status(struct iwl_mvm *mvm,
 				   int tid, struct ieee80211_tx_info *info,
 				   bool ndp)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	int legacy_success;
 	int retries;
 	int i;

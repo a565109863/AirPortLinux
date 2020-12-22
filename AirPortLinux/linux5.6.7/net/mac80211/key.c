@@ -289,15 +289,15 @@ int ieee80211_set_tx_key(struct ieee80211_key *key)
 }
 
 static void ieee80211_pairwise_rekey(struct ieee80211_key *old,
-                     struct ieee80211_key *nnew)
+                     struct ieee80211_key *_new)
 {
-    struct ieee80211_local *local = nnew->local;
-    struct sta_info *sta = nnew->sta;
+    struct ieee80211_local *local = _new->local;
+    struct sta_info *sta = _new->sta;
     int i;
 
     assert_key_lock(local);
 
-    if (nnew->conf.flags & IEEE80211_KEY_FLAG_NO_AUTO_TX) {
+    if (_new->conf.flags & IEEE80211_KEY_FLAG_NO_AUTO_TX) {
         /* Extended Key ID key install, initial one or rekey */
 
         if (sta->ptk_idx != INVALID_PTK_KEYIDX &&
@@ -406,26 +406,26 @@ static int ieee80211_key_replace(struct ieee80211_sub_if_data *sdata,
                   struct sta_info *sta,
                   bool pairwise,
                   struct ieee80211_key *old,
-                  struct ieee80211_key *nnew)
+                  struct ieee80211_key *_new)
 {
     int idx;
     int ret = 0;
     bool defunikey, defmultikey, defmgmtkey;
 
     /* caller must provide at least one old/new */
-    if (WARN_ON(!nnew && !old))
+    if (WARN_ON(!_new && !old))
         return 0;
 
-//    if (nnew)
-//        list_add_tail_rcu(&nnew->list, &sdata->key_list);
+//    if (_new)
+//        list_add_tail_rcu(&_new->list, &sdata->key_list);
 
-    WARN_ON(nnew && old && nnew->conf.keyidx != old->conf.keyidx);
+    WARN_ON(_new && old && _new->conf.keyidx != old->conf.keyidx);
 
-    if (nnew && sta && pairwise) {
+    if (_new && sta && pairwise) {
         /* Unicast rekey needs special handling. With Extended Key ID
          * old is still NULL for the first rekey.
          */
-        ieee80211_pairwise_rekey(old, nnew);
+        ieee80211_pairwise_rekey(old, _new);
     }
 
     if (old) {
@@ -434,14 +434,14 @@ static int ieee80211_key_replace(struct ieee80211_sub_if_data *sdata,
         if (old->flags & KEY_FLAG_UPLOADED_TO_HARDWARE) {
             ieee80211_key_disable_hw_accel(old);
 
-            if (nnew)
-                ret = ieee80211_key_enable_hw_accel(nnew);
+            if (_new)
+                ret = ieee80211_key_enable_hw_accel(_new);
         }
     } else {
         /* new must be provided in case old is not */
-        idx = nnew->conf.keyidx;
-        if (!nnew->local->wowlan)
-            ret = ieee80211_key_enable_hw_accel(nnew);
+        idx = _new->conf.keyidx;
+        if (!_new->local->wowlan)
+            ret = ieee80211_key_enable_hw_accel(_new);
     }
 
     if (ret)
@@ -449,18 +449,18 @@ static int ieee80211_key_replace(struct ieee80211_sub_if_data *sdata,
 
     if (sta) {
         if (pairwise) {
-            rcu_assign_pointer(sta->ptk[idx], nnew);
-            if (nnew &&
-                !(nnew->conf.flags & IEEE80211_KEY_FLAG_NO_AUTO_TX))
-                _ieee80211_set_tx_key(nnew, true);
+            rcu_assign_pointer(sta->ptk[idx], _new);
+            if (_new &&
+                !(_new->conf.flags & IEEE80211_KEY_FLAG_NO_AUTO_TX))
+                _ieee80211_set_tx_key(_new, true);
         } else {
-            rcu_assign_pointer(sta->gtk[idx], nnew);
+            rcu_assign_pointer(sta->gtk[idx], _new);
         }
         /* Only needed for transition from no key -> key.
          * Still triggers unnecessary when using Extended Key ID
          * and installing the second key ID the first time.
          */
-        if (nnew && !old)
+        if (_new && !old)
             ieee80211_check_fast_rx(sta);
     } else {
         defunikey = old &&
@@ -473,23 +473,23 @@ static int ieee80211_key_replace(struct ieee80211_sub_if_data *sdata,
             old == key_mtx_dereference(sdata->local,
                         sdata->default_mgmt_key);
 
-        if (defunikey && !nnew)
+        if (defunikey && !_new)
             __ieee80211_set_default_key(sdata, -1, true, false);
-        if (defmultikey && !nnew)
+        if (defmultikey && !_new)
             __ieee80211_set_default_key(sdata, -1, false, true);
-        if (defmgmtkey && !nnew)
+        if (defmgmtkey && !_new)
             __ieee80211_set_default_mgmt_key(sdata, -1);
 
-        rcu_assign_pointer(sdata->keys[idx], nnew);
-        if (defunikey && nnew)
-            __ieee80211_set_default_key(sdata, nnew->conf.keyidx,
+        rcu_assign_pointer(sdata->keys[idx], _new);
+        if (defunikey && _new)
+            __ieee80211_set_default_key(sdata, _new->conf.keyidx,
                             true, false);
-        if (defmultikey && nnew)
-            __ieee80211_set_default_key(sdata, nnew->conf.keyidx,
+        if (defmultikey && _new)
+            __ieee80211_set_default_key(sdata, _new->conf.keyidx,
                             false, true);
-        if (defmgmtkey && nnew)
+        if (defmgmtkey && _new)
             __ieee80211_set_default_mgmt_key(sdata,
-                             nnew->conf.keyidx);
+                             _new->conf.keyidx);
     }
 
 //    if (old)
@@ -732,16 +732,16 @@ void ieee80211_key_free_unused(struct ieee80211_key *key)
 
 static bool ieee80211_key_identical(struct ieee80211_sub_if_data *sdata,
                     struct ieee80211_key *old,
-                    struct ieee80211_key *nnew)
+                    struct ieee80211_key *_new)
 {
     u8 tkip_old[WLAN_KEY_LEN_TKIP], tkip_new[WLAN_KEY_LEN_TKIP];
     u8 *tk_old, *tk_new;
 
-    if (!old || nnew->conf.keylen != old->conf.keylen)
+    if (!old || _new->conf.keylen != old->conf.keylen)
         return false;
 
     tk_old = old->conf.key;
-    tk_new = nnew->conf.key;
+    tk_new = _new->conf.key;
 
     /*
      * In station mode, don't compare the TX MIC key, as it's never used
@@ -749,9 +749,9 @@ static bool ieee80211_key_identical(struct ieee80211_sub_if_data *sdata,
      * is the case in iwlwifi, for example.
      */
     if (sdata->vif.type == NL80211_IFTYPE_STATION &&
-        nnew->conf.cipher == WLAN_CIPHER_SUITE_TKIP &&
-        nnew->conf.keylen == WLAN_KEY_LEN_TKIP &&
-        !(nnew->conf.flags & IEEE80211_KEY_FLAG_PAIRWISE)) {
+        _new->conf.cipher == WLAN_CIPHER_SUITE_TKIP &&
+        _new->conf.keylen == WLAN_KEY_LEN_TKIP &&
+        !(_new->conf.flags & IEEE80211_KEY_FLAG_PAIRWISE)) {
         memcpy(tkip_old, tk_old, WLAN_KEY_LEN_TKIP);
         memcpy(tkip_new, tk_new, WLAN_KEY_LEN_TKIP);
         memset(tkip_old + NL80211_TKIP_DATA_OFFSET_TX_MIC_KEY, 0, 8);
@@ -760,7 +760,7 @@ static bool ieee80211_key_identical(struct ieee80211_sub_if_data *sdata,
         tk_new = tkip_new;
     }
 
-    return !crypto_memneq(tk_old, tk_new, nnew->conf.keylen);
+    return !crypto_memneq(tk_old, tk_new, _new->conf.keylen);
 }
 
 int ieee80211_key_link(struct ieee80211_key *key,

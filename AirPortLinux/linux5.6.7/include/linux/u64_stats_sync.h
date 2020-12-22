@@ -21,21 +21,6 @@ typedef struct {
     u64        v;
 } u64_stats_t;
 
-/* often modified stats are per-CPU, other are shared (netdev->stats) */
-struct pcpu_sw_netstats {
-    u64     rx_packets;
-    u64     rx_bytes;
-    u64     tx_packets;
-    u64     tx_bytes;
-    struct u64_stats_sync   syncp;
-} __aligned(4 * sizeof(u64));
-
-struct pcpu_lstats {
-    u64_stats_t packets;
-    u64_stats_t bytes;
-    struct u64_stats_sync syncp;
-} __aligned(2 * sizeof(u64));
-
 
 static inline void u64_stats_init(struct u64_stats_sync *syncp)
 {

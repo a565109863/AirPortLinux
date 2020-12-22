@@ -126,8 +126,8 @@ struct pci_dev {
     int cfg_size;
     u16        pcie_flags_reg;
     u8        pcie_cap;    /* PCIe capability offset */
-    u8        msi_cap;    /* MSI capability offset */
-    u8        msix_cap;
+//    u8        msi_cap;    /* MSI capability offset */
+//    u8        msix_cap;
     u8        pm_cap;
     pci_power_t    current_state;    /* Current operating state. In ACPI, */
     pci_channel_state_t error_state;    /* Current connectivity state */
@@ -261,12 +261,12 @@ EXPORT_SYMBOL(pci_pme_capable);
  * Returns true if state has been changed to the requested state.
  */
 static inline bool pci_dev_set_io_state(struct pci_dev *dev,
-                                        pci_channel_state_t nnew)
+                                        pci_channel_state_t _new)
 {
     bool changed = false;
     
 //    device_lock_assert(&dev->dev);
-    switch (nnew) {
+    switch (_new) {
         case pci_channel_io_perm_failure:
             switch (dev->error_state) {
                 case pci_channel_io_frozen:
@@ -294,7 +294,7 @@ static inline bool pci_dev_set_io_state(struct pci_dev *dev,
             break;
     }
     if (changed)
-        dev->error_state = nnew;
+        dev->error_state = _new;
     return changed;
 }
 
@@ -415,9 +415,7 @@ static inline int pci_register_driver(struct pci_driver *drv, struct pci_dev *pd
         return err;
     }
     
-    DebugLog("--%s: line = %d, device = 0x%x, _pdev->device = 0x%x, subdevice = 0x%x, subsystem_device = 0x%x", __FUNCTION__, __LINE__, found_id->device, pdev->device, found_id->subdevice, pdev->subsystem_device);
-    
-    pdev->dev.driver_data = (void*)found_id->driver_data;
+    pdev->dev.driver_data = (void *)found_id->driver_data;
     pdev->dev.ent = found_id;
     
     return err;

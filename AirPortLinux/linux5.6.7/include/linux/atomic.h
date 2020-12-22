@@ -6,6 +6,63 @@
 
 #include <uapi/asm/atomic.h>
 //#include <asm/barrier.h>
+
+
+#define ATOMIC_INIT(i)        { (i) }
+#define ATOMIC64_INIT(i)    { (i) }
+
+#define atomic_read(v)        READ_ONCE((v)->counter)
+#define atomic64_read(v)    READ_ONCE((v)->counter)
+
+#define atomic_set(v,i)        WRITE_ONCE((v)->counter, (i))
+#define atomic64_set(v,i)    WRITE_ONCE((v)->counter, (i))
+
+
+#define ATOMIC_LONG_INIT(i)        ATOMIC64_INIT(i)
+
+
+struct va_format {
+    const char *fmt;
+    va_list *va;
+};
+
+static inline int atomic_inc_return( atomic_t *v)
+{
+    v->counter++;
+    return v->counter;
+}
+
+static inline void atomic_dec( atomic_t *v)
+{
+    v->counter--;
+}
+
+static inline int atomic_dec_return( atomic_t *v)
+{
+    v->counter--;
+    return v->counter;
+}
+
+static inline void atomic_inc( atomic_t *v)
+{
+    v->counter++;
+}
+
+static inline int atomic_dec_if_positive(atomic_t *v)
+{
+    unsigned long flags;
+    int res;
+    
+//    local_irq_save(flags);
+    res = v->counter - 1;
+    if (res >= 0)
+        v->counter = res;
+//    local_irq_restore(flags);
+    
+    return res;
+}
+
+
 //
 ///*
 // * Relaxed variants of xchg, cmpxchg and some atomic operations.
@@ -90,6 +147,24 @@ atomic_fetch_sub_release(int i, atomic_t *v)
 //    kasan_check_write(v, sizeof(*v));
 //    return arch_atomic_fetch_sub_release(i, v);
     return i;
+}
+
+static inline void
+atomic64_add(int n, atomic64_t *v)
+{
+    v->counter = n;
+}
+
+static inline void
+atomic64_inc(atomic64_t *v)
+{
+    atomic64_add(1, v);
+}
+
+static inline void
+atomic_long_inc(atomic_long_t *v)
+{
+    atomic64_inc(v);
 }
 
 

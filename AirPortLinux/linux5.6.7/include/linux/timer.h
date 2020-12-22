@@ -10,6 +10,8 @@
 #define timer_h
 
 #include <linux/types.h>
+#include <linux/jiffies.h>
+#include <linux/debugfs.h>
 
 
 #define TIMER_CPUMASK        0x0003FFFF
@@ -31,32 +33,76 @@
 
 //typedef UInt64 ktime_t;
 
+
+class IOTimeout : public OSObject {
+    OSDeclareDefaultStructors(IOTimeout)
+    
+public:
+    static void timeout_run(OSObject* obj, IOTimerEventSource* timer);
+public:
+    IOTimerEventSource* timer;
+    struct timer_list *tl;
+};
+
+
+
 struct timer_list {
     /*
      * All fields that change during normal runtime grouped to the
      * same cacheline
      */
-    struct hlist_node entry;
+//    struct hlist_node entry;
     unsigned long expires;
-    struct tvec_base *base;
+//    struct tvec_base *base;
+    IOTimeout* vt;
     
-    void (*function)(unsigned long);
-    unsigned long data;
-    
-    int slack;
-    
-#ifdef CONFIG_TIMER_STATS
-    int start_pid;
-    void *start_site;
-    char start_comm[16];
-#endif
-#ifdef CONFIG_LOCKDEP
-    struct lockdep_map lockdep_map;
-#endif
-    
-    int vv;
-    int on;
+    void (*function)(struct timer_list *);
+//    unsigned long data;
+//
+//    int slack;
+//
+//#ifdef CONFIG_TIMER_STATS
+//    int start_pid;
+//    void *start_site;
+//    char start_comm[16];
+//#endif
+//#ifdef CONFIG_LOCKDEP
+//    struct lockdep_map lockdep_map;
+//#endif
+//
+//    int vv;
+//    int on;
 };
+
+
+/**
+ * timer_setup - prepare a timer for first use
+ * @timer: the timer in question
+ * @callback: the function to call when timer expires
+ * @flags: any TIMER_* flags
+ *
+ * Regular timer initialization should use either DEFINE_TIMER() above,
+ * or timer_setup(). For timers on the stack, timer_setup_on_stack() must
+ * be used and must be balanced with a call to destroy_timer_on_stack().
+ */
+#define timer_setup(timer, callback, flags)            \
+    __init_timer((timer), (callback), (flags))
+
+void __init_timer(struct timer_list *timer,
+                       void (*callback) (struct timer_list *),
+                        unsigned int flags);
+void add_timer_on(struct timer_list *timer, int cpu);
+void add_timer(struct timer_list *timer);
+int del_timer(struct timer_list * timer);
+int mod_timer(struct timer_list *timer, unsigned long expires);
+//int mod_timer_pending(struct timer_list *timer, unsigned long expires);
+//int timer_reduce(struct timer_list *timer, unsigned long expires);
+int timer_pending(const struct timer_list * timer);
+#define del_timer_sync(t)        del_timer(t)
+
+
+
+
 
 #define typecheck(type,x) \
 ({    type __dummy; \
@@ -99,7 +145,7 @@ container_of(callback_timer, typeof(*var), timer_fieldname)
 
 /* Parameters used to convert the timespec values: */
 #define MSEC_PER_SEC    1000L
-#define USEC_PER_MSEC    1000L
+//#define USEC_PER_MSEC    1000L
 //#define NSEC_PER_USEC    1000L
 //#define USEC_PER_SEC    1000000L
 //#define NSEC_PER_SEC    1000000000L
@@ -121,7 +167,9 @@ static
 void __sched usleep_range(unsigned long min, unsigned long max)
 {
     UInt32 r = random();
-    udelay(min + abs(max - min - r));
+    
+    kprintf("--%s: line = %d r = %lu", __FUNCTION__, __LINE__, (min + r % (max - min)));
+    udelay((min + r % (max - min)));
 //    ktime_t exp = ktime_add_us(ktime_get(), min);
 //    u64 delta = (u64)(max - min) * NSEC_PER_USEC;
 //
@@ -133,78 +181,6 @@ void __sched usleep_range(unsigned long min, unsigned long max)
 //    }
 }
 EXPORT_SYMBOL(usleep_range);
-
-
-
-/**
- * del_timer - deactivate a timer.
- * @timer: the timer to be deactivated
- *
- * del_timer() deactivates a timer - this works on both active and inactive
- * timers.
- *
- * The function returns whether it has deactivated a pending timer or not.
- * (ie. del_timer() of an inactive timer returns 0, del_timer() of an
- * active timer returns 1.)
- */
-static int del_timer(struct timer_list *timer)
-{
-    struct timer_base *base;
-    unsigned long flags;
-    int ret = 0;
-
-//    debug_assert_init(timer);
-//
-//    if (timer_pending(timer)) {
-//        base = lock_timer_base(timer, &flags);
-//        ret = detach_if_pending(timer, base, true);
-//        raw_spin_unlock_irqrestore(&base->lock, flags);
-//    }
-
-    return ret;
-}
-EXPORT_SYMBOL(del_timer);
-
-
-static inline void timer_setup(struct timer_list *timer,
-                               void (*callback) (struct timer_list *),
-                               unsigned int flags)
-{
-//#ifdef __setup_timer
-//    __setup_timer(timer, (TIMER_FUNC_TYPE) callback,
-//                  (TIMER_DATA_TYPE) timer, flags);
-//#else
-//    if (flags & TIMER_DEFERRABLE)
-//        setup_deferrable_timer(timer, (TIMER_FUNC_TYPE) callback,
-//                               (TIMER_DATA_TYPE) timer);
-//    else
-//        setup_timer(timer, (TIMER_FUNC_TYPE) callback,
-//                    (TIMER_DATA_TYPE) timer);
-//#endif
-}
-
-
-static inline int timer_pending(const struct timer_list * timer)
-{
-    return timer->entry.pprev != NULL;
-}
-
-
-static int del_timer_sync(struct timer_list *timer)
-{
-    // todo
-    return 0;
-}
-static int add_timer(struct timer_list *timer)
-{
-    // todo
-    return 0;
-}
-static void mod_timer(struct timer_list *timer, int length)
-{
-    // todo
-}
-
 
 #define raw_smp_processor_id() 0
 

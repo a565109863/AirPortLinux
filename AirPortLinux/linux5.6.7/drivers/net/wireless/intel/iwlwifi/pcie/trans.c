@@ -577,11 +577,9 @@ static int iwl_pcie_nic_init(struct iwl_trans *trans)
 
 	iwl_op_mode_nic_config(trans->op_mode);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/* Allocate the RX queue, or reset if it is already allocated */
 	iwl_pcie_rx_init(trans);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/* Allocate or reset and init all Tx and Command queues */
 	if (iwl_pcie_tx_init(trans))
 		return -ENOMEM;
@@ -1212,7 +1210,6 @@ void iwl_pcie_conf_msix_hw(struct iwl_trans_pcie *trans_pcie)
 
 static void iwl_pcie_init_msix(struct iwl_trans_pcie *trans_pcie)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans *trans = trans_pcie->trans;
 
 	iwl_pcie_conf_msix_hw(trans_pcie);
@@ -1220,7 +1217,6 @@ static void iwl_pcie_init_msix(struct iwl_trans_pcie *trans_pcie)
 	if (!trans_pcie->msix_enabled)
 		return;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	trans_pcie->fh_init_mask = ~iwl_read32(trans, CSR_MSIX_FH_INT_MASK_AD);
 	trans_pcie->fh_mask = trans_pcie->fh_init_mask;
 	trans_pcie->hw_init_mask = ~iwl_read32(trans, CSR_MSIX_HW_INT_MASK_AD);
@@ -1324,7 +1320,6 @@ void iwl_pcie_synchronize_irqs(struct iwl_trans *trans)
 static int iwl_trans_pcie_start_fw(struct iwl_trans *trans,
 				   const struct fw_img *fw, bool run_in_rfkill)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	bool hw_rfkill;
 	int ret;
@@ -1375,7 +1370,6 @@ static int iwl_trans_pcie_start_fw(struct iwl_trans *trans,
 	/* clear (again), then enable host interrupts */
 	iwl_write32(trans, CSR_INT, 0xFFFFFFFF);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	ret = iwl_pcie_nic_init(trans);
 	if (ret) {
 		IWL_ERR(trans, "Unable to init nic\n");
@@ -1635,7 +1629,7 @@ iwl_pcie_set_interrupt_capa(struct pci_dev *pdev,
 	int max_irqs, num_irqs, i, ret;
 	u16 pci_cmd;
 
-	if (!cfg_trans->mq_rx_supported || 1)
+	if (!cfg_trans->mq_rx_supported)
 		goto enable_msi;
 
 	max_irqs = min_t(u32, num_online_cpus() + 2, IWL_MAX_RX_HW_QUEUES);
@@ -1808,7 +1802,6 @@ static int iwl_pcie_gen2_force_power_gating(struct iwl_trans *trans)
 
 static int _iwl_trans_pcie_start_hw(struct iwl_trans *trans)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	int err;
 
@@ -1820,7 +1813,6 @@ static int _iwl_trans_pcie_start_hw(struct iwl_trans *trans)
 		return err;
 	}
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	err = iwl_trans_pcie_clear_persistence_bit(trans);
 	if (err)
 		return err;
@@ -1834,18 +1826,15 @@ static int _iwl_trans_pcie_start_hw(struct iwl_trans *trans)
 			return err;
 	}
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	err = iwl_pcie_apm_init(trans);
 	if (err)
 		return err;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	iwl_pcie_init_msix(trans_pcie);
 
 	/* From now on, the op_mode will be kept updated about RF kill state */
 	iwl_enable_rfkill_int(trans);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	trans_pcie->opmode_down = false;
 
 	/* Set is_down to false here so that...*/
@@ -1854,13 +1843,11 @@ static int _iwl_trans_pcie_start_hw(struct iwl_trans *trans)
 	/* ...rfkill can call stop_device and set it false if needed */
 	iwl_pcie_check_hw_rf_kill(trans);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	return 0;
 }
 
 static int iwl_trans_pcie_start_hw(struct iwl_trans *trans)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	int ret;
 
@@ -1868,7 +1855,6 @@ static int iwl_trans_pcie_start_hw(struct iwl_trans *trans)
 	ret = _iwl_trans_pcie_start_hw(trans);
 	mutex_unlock(&trans_pcie->mutex);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	return ret;
 }
 
@@ -3522,12 +3508,17 @@ struct iwl_trans *iwl_trans_pcie_alloc(struct pci_dev *pdev,
 		goto out_free_trans;
 	}
 	INIT_WORK(&trans_pcie->rba.rx_alloc, iwl_pcie_rx_allocator_work);
+    
+    do {
+        INIT_LIST_HEAD(&(&trans_pcie->rba.rx_alloc)->entry);
+        (&trans_pcie->rba.rx_alloc)->func = (iwl_pcie_rx_allocator_work);
+    } while (0);
 
-//	trans_pcie->tso_hdr_page = alloc_percpu(struct iwl_tso_hdr_page);
-//	if (!trans_pcie->tso_hdr_page) {
-//		ret = -ENOMEM;
-//		goto out_no_pci;
-//	}
+	trans_pcie->tso_hdr_page = (struct iwl_tso_hdr_page *)alloc_percpu(struct iwl_tso_hdr_page);
+	if (!trans_pcie->tso_hdr_page) {
+		ret = -ENOMEM;
+		goto out_no_pci;
+	}
 	trans_pcie->debug_rfkill = -1;
 
 	if (!cfg_trans->base_params->pcie_l1_allowed) {
@@ -3637,8 +3628,7 @@ struct iwl_trans *iwl_trans_pcie_alloc(struct pci_dev *pdev,
 
 	init_waitqueue_head(&trans_pcie->sx_waitq);
     
-    DebugLog("--%s: line = %d, trans_pcie->msix_enabled = %d", __FUNCTION__, __LINE__, trans_pcie->msix_enabled);
-	if (trans_pcie->msix_enabled && 0) {
+	if (trans_pcie->msix_enabled) {
 		ret = iwl_pcie_init_msix_handler(pdev, trans_pcie);
 		if (ret)
 			goto out_no_pci;
@@ -3663,7 +3653,7 @@ struct iwl_trans *iwl_trans_pcie_alloc(struct pci_dev *pdev,
 	mutex_init(&trans_pcie->fw_mon_data.mutex);
 #endif
     
-//	iwl_dbg_tlv_init(trans);
+	iwl_dbg_tlv_init(trans);
 
 	return trans;
 

@@ -968,6 +968,7 @@ static inline const char *queue_name(struct device *dev,
 
 static inline void iwl_enable_rfkill_int(struct iwl_trans *trans)
 {
+    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 
 	IWL_DEBUG_ISR(trans, "Enabling rfkill interrupt\n");

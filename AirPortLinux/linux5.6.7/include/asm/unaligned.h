@@ -116,12 +116,6 @@ static inline u32 get_unaligned32(const void *p)
     return *val;
 }
 
-static inline void put_unaligned32(u32 val, void *p)
-{
-//    asm volatile (" stnw    .d2t1    %0,*%1\n"
-//              : : "a"(val), "b"(p) : "memory");
-}
-
 static inline u64 get_unaligned64(const void *p)
 {
     u64 val;
@@ -131,11 +125,11 @@ static inline u64 get_unaligned64(const void *p)
     return val;
 }
 
-static inline void put_unaligned64(u64 val, const void *p)
-{
-//    asm volatile (" stndw    .d2t1    %0,*%1\n"
-//              : : "a"(val), "b"(p) : "memory");
-}
+//static inline void put_unaligned64(u64 val, const void *p)
+//{
+////    asm volatile (" stndw    .d2t1    %0,*%1\n"
+////              : : "a"(val), "b"(p) : "memory");
+//}
 
 static inline u32 get_unaligned_le32(const u8 *p)
 {
@@ -143,33 +137,33 @@ static inline u32 get_unaligned_le32(const u8 *p)
 }
 
 
-#ifdef CONFIG_CPU_BIG_ENDIAN
-
-//#define get_unaligned_le32(p)     __swab32(get_unaligned32(p))
-#define get_unaligned_le64(p)     __swab64(get_unaligned64(p))
-#define get_unaligned_be32(p)     get_unaligned32(p)
-#define get_unaligned_be64(p)     get_unaligned64(p)
-#define put_unaligned_le32(v, p) put_unaligned32(__swab32(v), (p))
-#define put_unaligned_le64(v, p) put_unaligned64(__swab64(v), (p))
-#define put_unaligned_be32(v, p) put_unaligned32((v), (p))
-#define put_unaligned_be64(v, p) put_unaligned64((v), (p))
-#define get_unaligned    __get_unaligned_be
-#define put_unaligned    __put_unaligned_be
-
-#else
-
-//#define get_unaligned_le32(p)     get_unaligned32(p)
-#define get_unaligned_le64(p)     get_unaligned64(p)
-#define get_unaligned_be32(p)     __swab32(get_unaligned32(p))
-#define get_unaligned_be64(p)     __swab64(get_unaligned64(p))
-#define put_unaligned_le32(v, p) put_unaligned32((v), (p))
-#define put_unaligned_le64(v, p) put_unaligned64((v), (p))
-#define put_unaligned_be32(v, p) put_unaligned32(__swab32(v), (p))
-#define put_unaligned_be64(v, p) put_unaligned64(__swab64(v), (p))
-#define get_unaligned    __get_unaligned_le
-#define put_unaligned    __put_unaligned_le
-
-#endif
+//#ifdef CONFIG_CPU_BIG_ENDIAN
+//
+////#define get_unaligned_le32(p)     __swab32(get_unaligned32(p))
+//#define get_unaligned_le64(p)     __swab64(get_unaligned64(p))
+//#define get_unaligned_be32(p)     get_unaligned32(p)
+//#define get_unaligned_be64(p)     get_unaligned64(p)
+//#define put_unaligned_le32(v, p) put_unaligned32(__swab32(v), (p))
+//#define put_unaligned_le64(v, p) put_unaligned64(__swab64(v), (p))
+//#define put_unaligned_be32(v, p) put_unaligned32((v), (p))
+//#define put_unaligned_be64(v, p) put_unaligned64((v), (p))
+//#define get_unaligned    __get_unaligned_be
+//#define put_unaligned    __put_unaligned_be
+//
+//#else
+//
+////#define get_unaligned_le32(p)     get_unaligned32(p)
+//#define get_unaligned_le64(p)     get_unaligned64(p)
+//#define get_unaligned_be32(p)     __swab32(get_unaligned32(p))
+//#define get_unaligned_be64(p)     __swab64(get_unaligned64(p))
+////#define put_unaligned_le32(v, p) put_unaligned32((v), (p))
+//#define put_unaligned_le64(v, p) put_unaligned64((v), (p))
+//#define put_unaligned_be32(v, p) put_unaligned32(__swab32(v), (p))
+//#define put_unaligned_be64(v, p) put_unaligned64(__swab64(v), (p))
+//#define get_unaligned    __get_unaligned_le
+//#define put_unaligned    __put_unaligned_le
+//
+//#endif
 
 #define __bad_unaligned_access_size(void)
 
@@ -195,5 +189,6 @@ static inline u32 get_unaligned_le32(const u8 *p)
     }                                \
     (void)0; })
 
+#define put_unaligned    __put_unaligned_le
 
 #endif /* unaligned_h */

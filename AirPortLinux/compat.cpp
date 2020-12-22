@@ -19,3 +19,12 @@ void interrupt_func(OSObject *ih, IOInterruptEventSource *src, int count)
         return;
     _ih->thread_fn(_ih->irq, _ih->dev_id); // jump to actual interrupt handler
 }
+
+bool interrupt_filter(OSObject *ih, IOFilterInterruptEventSource *sender)
+{
+    pci_intr_handle* _ih = OSDynamicCast(pci_intr_handle, ih);
+    if (_ih == NULL)
+        return false;
+    
+    return _ih->filter_fn(_ih->irq, _ih->dev_id);
+}

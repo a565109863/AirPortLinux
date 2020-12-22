@@ -171,4 +171,71 @@ static inline u32 jhash_1word(u32 a, u32 initval)
     return __jhash_nwords(a, 0, 0, initval + JHASH_INITVAL + (1 << 2));
 }
 
+
+/* Hash courtesy of the R5 hash in reiserfs modulo sign bits */
+#define init_name_hash(salt)        (unsigned long)(salt)
+
+
+/* from old Linux dcache.h */
+static inline unsigned long
+partial_name_hash(unsigned long c, unsigned long prevhash)
+{
+    return (prevhash + (c << 4) + (c >> 4)) * 11;
+}
+
+
+#define GOLDEN_RATIO_32 0x61C88647
+#define GOLDEN_RATIO_64 0x61C8864680B583EBull
+
+/*
+ * The _generic versions exist only so lib/test_hash.c can compare
+ * the arch-optimized versions with the generic.
+ *
+ * Note that if you change these, any <asm/hash.h> that aren't updated
+ * to match need to have their HAVE_ARCH_* define values updated so the
+ * self-test will not false-positive.
+ */
+#ifndef HAVE_ARCH__HASH_32
+#define __hash_32 __hash_32_generic
+#endif
+static inline u32 __hash_32_generic(u32 val)
+{
+    return val * GOLDEN_RATIO_32;
+}
+
+#ifndef HAVE_ARCH_HASH_32
+#define hash_32 hash_32_generic
+#endif
+static inline u32 hash_32_generic(u32 val, unsigned int bits)
+{
+    /* High bits are more random, so use them. */
+    return __hash_32(val) >> (32 - bits);
+}
+
+#ifndef HAVE_ARCH_HASH_64
+#define hash_64 hash_64_generic
+#endif
+static __always_inline u32 hash_64_generic(u64 val, unsigned int bits)
+{
+#if BITS_PER_LONG == 64
+    /* 64x64-bit multiply is efficient on all 64-bit processors */
+    return val * GOLDEN_RATIO_64 >> (64 - bits);
+#else
+    /* Hash 64 bits using only 32x32-bit multiply. */
+    return hash_32((u32)val ^ __hash_32(val >> 32), bits);
+#endif
+}
+
+#define hash_long(val, bits) hash_64(val, bits)
+
+/*
+ * Finally: cut down the number of bits to a int value (and try to avoid
+ * losing bits).  This also has the property (wanted by the dcache)
+ * that the msbits make a good hash table index.
+ */
+static inline unsigned int end_name_hash(unsigned long hash)
+{
+    return hash_long(hash, 32);
+}
+
 #endif /* _LINUX_JHASH_H */

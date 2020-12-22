@@ -11,7 +11,7 @@
 
 #include <linux/types.h>
 
-static unsigned long volatile jiffies = 1;
+static unsigned long volatile jiffies = ULONG_MAX - (10 * 60 * HZ);
 
 //#define jiffies        \
 //({        \

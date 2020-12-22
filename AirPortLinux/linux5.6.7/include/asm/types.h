@@ -58,6 +58,7 @@
 #include <IOKit/IODataQueue.h>
 #include <IOKit/IOMemoryDescriptor.h>
 #include <IOKit/IOInterruptEventSource.h>
+#include <IOKit/IOFilterInterruptEventSource.h>
 
 #include <IOKit/assert.h>
 #include <IOKit/pci/IOPCIDevice.h>
@@ -250,6 +251,25 @@ static int msleep_interruptible(int x)
 #define __randomize_layout
 
 
+#define __force
+#define __user
+#define __read_mostly
+
+
+typedef __u16 __bitwise __le16;
+typedef __u16 __bitwise __be16;
+typedef __u32 __bitwise __le32;
+typedef __u32 __bitwise __be32;
+typedef __u64 __bitwise __le64;
+typedef __u64 __bitwise __be64;
+
+typedef __u16 __bitwise __sum16;
+typedef __u32 __bitwise __wsum;
+typedef unsigned long kernel_ulong_t;
+typedef unsigned int __bitwise __poll_t;
+
+
+
 #define __cpu_to_le64(x) OSSwapHostToLittleInt64(x)
 #define __le64_to_cpu(x) OSSwapLittleToHostInt64(x)
 #define __cpu_to_le32(x) OSSwapHostToLittleInt32(x)
@@ -344,7 +364,7 @@ static inline __u64 __be64_to_cpup(const __be64 *p)
 
 #define HZ 1000
 #define USEC_PER_MSEC    1000UL
-#define USEC_PER_SEC    1000000UL
+//#define USEC_PER_SEC    1000000UL
 #define USEC_PER_JIFFY    (USEC_PER_SEC / HZ)
 
 

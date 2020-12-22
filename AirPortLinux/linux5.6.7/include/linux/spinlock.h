@@ -10,6 +10,7 @@
 #define spinlock_h
 
 #include <linux/bitops.h>
+#include <linux/lockdep.h>
 
 #define pthread_mutex_t         spinlock_t 
 #define DEFINE_SPINLOCK(x)    pthread_mutex_t x = NULL

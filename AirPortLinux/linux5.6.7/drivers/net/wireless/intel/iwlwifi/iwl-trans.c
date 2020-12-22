@@ -94,8 +94,8 @@ struct iwl_trans *iwl_trans_alloc(unsigned int priv_size,
 		kmem_cache_create(trans->dev_cmd_pool_name,
 				  cmd_pool_size, cmd_pool_align,
 				  SLAB_HWCACHE_ALIGN, NULL);
-//    if (!trans->dev_cmd_pool)
-//        return NULL;
+    if (!trans->dev_cmd_pool)
+        return NULL;
 
 	WARN_ON(!ops->wait_txq_empty && !ops->wait_tx_queues_empty);
 

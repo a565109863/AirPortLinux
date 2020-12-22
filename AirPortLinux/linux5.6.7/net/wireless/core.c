@@ -398,7 +398,6 @@ static void cfg80211_propagate_cac_done_wk(struct work_struct *work)
 struct wiphy *wiphy_new_nm(const struct cfg80211_ops *ops, int sizeof_priv,
                const char *requested_name)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     static atomic_t wiphy_counter = ATOMIC_INIT(0);
 
     struct cfg80211_registered_device *rdev;
@@ -431,7 +430,6 @@ struct wiphy *wiphy_new_nm(const struct cfg80211_ops *ops, int sizeof_priv,
 
     rdev->wiphy_idx = atomic_inc_return(&wiphy_counter);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (unlikely(rdev->wiphy_idx < 0)) {
         /* ugh, wrapped! */
         atomic_dec(&wiphy_counter);
@@ -439,7 +437,6 @@ struct wiphy *wiphy_new_nm(const struct cfg80211_ops *ops, int sizeof_priv,
         return NULL;
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     /* atomic_inc_return makes it start at 1, make it start at 0 */
     rdev->wiphy_idx--;
 
@@ -455,7 +452,6 @@ struct wiphy *wiphy_new_nm(const struct cfg80211_ops *ops, int sizeof_priv,
             goto use_default_name;
         }
 
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 //        rv = dev_set_name(&rdev->wiphy.dev, "%s", requested_name);
         rtnl_unlock();
         if (rv)
@@ -477,7 +473,6 @@ use_default_name:
         }
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     INIT_LIST_HEAD(&rdev->wiphy.wdev_list);
     INIT_LIST_HEAD(&rdev->beacon_registrations);
     spin_lock_init(&rdev->beacon_registrations_lock);
@@ -494,7 +489,6 @@ use_default_name:
     rdev->wiphy.wext = &cfg80211_wext_handler;
 #endif
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 //    device_initialize(&rdev->wiphy.dev);
 //    rdev->wiphy.dev.class = &ieee80211_class;
 //    rdev->wiphy.dev.platform_data = rdev;
@@ -511,7 +505,6 @@ use_default_name:
     rdev->wiphy.flags |= WIPHY_FLAG_PS_ON_BY_DEFAULT;
 #endif
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     wiphy_net_set(&rdev->wiphy, &init_net);
 
 //    rdev->rfkill_ops.set_block = cfg80211_rfkill_set_block;
@@ -519,22 +512,17 @@ use_default_name:
 //                   &rdev->wiphy.dev, RFKILL_TYPE_WLAN,
 //                   &rdev->rfkill_ops, rdev);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 //    if (!rdev->rfkill) {
-//        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 //        wiphy_free(&rdev->wiphy);
 //        return NULL;
 //    }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     INIT_WORK(&rdev->rfkill_block, cfg80211_rfkill_block_work);
     INIT_WORK(&rdev->conn_work, cfg80211_conn_work);
     INIT_WORK(&rdev->event_work, cfg80211_event_work);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     init_waitqueue_head(&rdev->dev_wait);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     /*
      * Initialize wiphy parameters to IEEE 802.11 MIB default values.
      * Fragmentation and RTS threshold are disabled by default with the
@@ -551,7 +539,6 @@ use_default_name:
     rdev->wiphy.max_sched_scan_plans = 1;
     rdev->wiphy.max_sched_scan_plan_interval = U32_MAX;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     return &rdev->wiphy;
 }
 EXPORT_SYMBOL(wiphy_new_nm);

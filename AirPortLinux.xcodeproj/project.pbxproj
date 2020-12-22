@@ -31,6 +31,34 @@
 		1841ECC7257D43900071277A /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 1841ECC5257D43900071277A /* hash.h */; };
 		1841ECC8257D43900071277A /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 1841ECC5257D43900071277A /* hash.h */; };
 		1841ECC9257D43900071277A /* hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 1841ECC5257D43900071277A /* hash.h */; };
+		187F2C7125910105001242FF /* capability.h in Headers */ = {isa = PBXBuildFile; fileRef = 187F2C7025910105001242FF /* capability.h */; };
+		187F2C7225910105001242FF /* capability.h in Headers */ = {isa = PBXBuildFile; fileRef = 187F2C7025910105001242FF /* capability.h */; };
+		187F2C7325910105001242FF /* capability.h in Headers */ = {isa = PBXBuildFile; fileRef = 187F2C7025910105001242FF /* capability.h */; };
+		187F2C7425910105001242FF /* capability.h in Headers */ = {isa = PBXBuildFile; fileRef = 187F2C7025910105001242FF /* capability.h */; };
+		188478102591F15E00672FE6 /* dev.c in Sources */ = {isa = PBXBuildFile; fileRef = 1884780F2591F15E00672FE6 /* dev.c */; };
+		188478112591F15E00672FE6 /* dev.c in Sources */ = {isa = PBXBuildFile; fileRef = 1884780F2591F15E00672FE6 /* dev.c */; };
+		188478122591F15E00672FE6 /* dev.c in Sources */ = {isa = PBXBuildFile; fileRef = 1884780F2591F15E00672FE6 /* dev.c */; };
+		188478132591F15E00672FE6 /* dev.c in Sources */ = {isa = PBXBuildFile; fileRef = 1884780F2591F15E00672FE6 /* dev.c */; };
+		1884781D2591F90D00672FE6 /* netdevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 1884781C2591F90D00672FE6 /* netdevice.h */; };
+		1884781E2591F90D00672FE6 /* netdevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 1884781C2591F90D00672FE6 /* netdevice.h */; };
+		1884781F2591F90D00672FE6 /* netdevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 1884781C2591F90D00672FE6 /* netdevice.h */; };
+		188478202591F90D00672FE6 /* netdevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 1884781C2591F90D00672FE6 /* netdevice.h */; };
+		1887A4CC25920CBF0037B9BF /* eth.c in Sources */ = {isa = PBXBuildFile; fileRef = 1887A4C725920CBF0037B9BF /* eth.c */; };
+		1887A4CD25920CBF0037B9BF /* eth.c in Sources */ = {isa = PBXBuildFile; fileRef = 1887A4C725920CBF0037B9BF /* eth.c */; };
+		1887A4CE25920CBF0037B9BF /* eth.c in Sources */ = {isa = PBXBuildFile; fileRef = 1887A4C725920CBF0037B9BF /* eth.c */; };
+		1887A4CF25920CBF0037B9BF /* eth.c in Sources */ = {isa = PBXBuildFile; fileRef = 1887A4C725920CBF0037B9BF /* eth.c */; };
+		1887A4DD259241C20037B9BF /* ethtool.h in Headers */ = {isa = PBXBuildFile; fileRef = 1887A4DC259241C20037B9BF /* ethtool.h */; };
+		1887A4DE259241C20037B9BF /* ethtool.h in Headers */ = {isa = PBXBuildFile; fileRef = 1887A4DC259241C20037B9BF /* ethtool.h */; };
+		1887A4DF259241C20037B9BF /* ethtool.h in Headers */ = {isa = PBXBuildFile; fileRef = 1887A4DC259241C20037B9BF /* ethtool.h */; };
+		1887A4E0259241C20037B9BF /* ethtool.h in Headers */ = {isa = PBXBuildFile; fileRef = 1887A4DC259241C20037B9BF /* ethtool.h */; };
+		1887A4E6259242CD0037B9BF /* ethtool.h in Headers */ = {isa = PBXBuildFile; fileRef = 1887A4E5259242CD0037B9BF /* ethtool.h */; };
+		1887A4E7259242CD0037B9BF /* ethtool.h in Headers */ = {isa = PBXBuildFile; fileRef = 1887A4E5259242CD0037B9BF /* ethtool.h */; };
+		1887A4E8259242CD0037B9BF /* ethtool.h in Headers */ = {isa = PBXBuildFile; fileRef = 1887A4E5259242CD0037B9BF /* ethtool.h */; };
+		1887A4E9259242CD0037B9BF /* ethtool.h in Headers */ = {isa = PBXBuildFile; fileRef = 1887A4E5259242CD0037B9BF /* ethtool.h */; };
+		1887A4EF259242EF0037B9BF /* compat.h in Headers */ = {isa = PBXBuildFile; fileRef = 1887A4EE259242EF0037B9BF /* compat.h */; };
+		1887A4F0259242EF0037B9BF /* compat.h in Headers */ = {isa = PBXBuildFile; fileRef = 1887A4EE259242EF0037B9BF /* compat.h */; };
+		1887A4F1259242EF0037B9BF /* compat.h in Headers */ = {isa = PBXBuildFile; fileRef = 1887A4EE259242EF0037B9BF /* compat.h */; };
+		1887A4F2259242EF0037B9BF /* compat.h in Headers */ = {isa = PBXBuildFile; fileRef = 1887A4EE259242EF0037B9BF /* compat.h */; };
 		189E84082584CF50005C902E /* mesh_plink.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84072584CF50005C902E /* mesh_plink.c */; };
 		189E84092584CF50005C902E /* mesh_plink.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84072584CF50005C902E /* mesh_plink.c */; };
 		189E840A2584CF50005C902E /* mesh_plink.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E84072584CF50005C902E /* mesh_plink.c */; };
@@ -215,6 +243,14 @@
 		18AB83BF257E6DA10007F651 /* status.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83BD257E6DA10007F651 /* status.c */; };
 		18AB83C0257E6DA10007F651 /* status.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83BD257E6DA10007F651 /* status.c */; };
 		18AB83C1257E6DA10007F651 /* status.c in Sources */ = {isa = PBXBuildFile; fileRef = 18AB83BD257E6DA10007F651 /* status.c */; };
+		18C0AF982590642A0035E189 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18C0AF972590642A0035E189 /* timer.c */; };
+		18C0AF992590642A0035E189 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18C0AF972590642A0035E189 /* timer.c */; };
+		18C0AF9A2590642A0035E189 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18C0AF972590642A0035E189 /* timer.c */; };
+		18C0AF9B2590642A0035E189 /* timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 18C0AF972590642A0035E189 /* timer.c */; };
+		18C0AFA12590761B0035E189 /* task.h in Headers */ = {isa = PBXBuildFile; fileRef = 18C0AFA02590761B0035E189 /* task.h */; };
+		18C0AFA22590761B0035E189 /* task.h in Headers */ = {isa = PBXBuildFile; fileRef = 18C0AFA02590761B0035E189 /* task.h */; };
+		18C0AFA32590761B0035E189 /* task.h in Headers */ = {isa = PBXBuildFile; fileRef = 18C0AFA02590761B0035E189 /* task.h */; };
+		18C0AFA42590761B0035E189 /* task.h in Headers */ = {isa = PBXBuildFile; fileRef = 18C0AFA02590761B0035E189 /* task.h */; };
 		18D2422D257CF9C30062A72B /* rhashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D2422C257CF9C30062A72B /* rhashtable.c */; };
 		18D2422E257CF9C30062A72B /* rhashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D2422C257CF9C30062A72B /* rhashtable.c */; };
 		18D2422F257CF9C30062A72B /* rhashtable.c in Sources */ = {isa = PBXBuildFile; fileRef = 18D2422C257CF9C30062A72B /* rhashtable.c */; };
@@ -271,6 +307,18 @@
 		18DCD1E225767E7B004817B7 /* if_vlan.h in Headers */ = {isa = PBXBuildFile; fileRef = 18DCD1E025767E7B004817B7 /* if_vlan.h */; };
 		18DCD1E325767E7B004817B7 /* if_vlan.h in Headers */ = {isa = PBXBuildFile; fileRef = 18DCD1E025767E7B004817B7 /* if_vlan.h */; };
 		18DCD1E425767E7B004817B7 /* if_vlan.h in Headers */ = {isa = PBXBuildFile; fileRef = 18DCD1E025767E7B004817B7 /* if_vlan.h */; };
+		370E059D25925E6100F0FBD5 /* dev_addr_lists.c in Sources */ = {isa = PBXBuildFile; fileRef = 370E059C25925E6100F0FBD5 /* dev_addr_lists.c */; };
+		370E059E25925E6100F0FBD5 /* dev_addr_lists.c in Sources */ = {isa = PBXBuildFile; fileRef = 370E059C25925E6100F0FBD5 /* dev_addr_lists.c */; };
+		370E059F25925E6100F0FBD5 /* dev_addr_lists.c in Sources */ = {isa = PBXBuildFile; fileRef = 370E059C25925E6100F0FBD5 /* dev_addr_lists.c */; };
+		370E05A025925E6100F0FBD5 /* dev_addr_lists.c in Sources */ = {isa = PBXBuildFile; fileRef = 370E059C25925E6100F0FBD5 /* dev_addr_lists.c */; };
+		370E05A225926A5300F0FBD5 /* ethtool.c in Sources */ = {isa = PBXBuildFile; fileRef = 370E05A125926A5300F0FBD5 /* ethtool.c */; };
+		370E05A325926A5300F0FBD5 /* ethtool.c in Sources */ = {isa = PBXBuildFile; fileRef = 370E05A125926A5300F0FBD5 /* ethtool.c */; };
+		370E05A425926A5300F0FBD5 /* ethtool.c in Sources */ = {isa = PBXBuildFile; fileRef = 370E05A125926A5300F0FBD5 /* ethtool.c */; };
+		370E05A525926A5300F0FBD5 /* ethtool.c in Sources */ = {isa = PBXBuildFile; fileRef = 370E05A125926A5300F0FBD5 /* ethtool.c */; };
+		370E05A725926EBA00F0FBD5 /* ctype.c in Sources */ = {isa = PBXBuildFile; fileRef = 370E05A625926EBA00F0FBD5 /* ctype.c */; };
+		370E05A825926EBA00F0FBD5 /* ctype.c in Sources */ = {isa = PBXBuildFile; fileRef = 370E05A625926EBA00F0FBD5 /* ctype.c */; };
+		370E05A925926EBA00F0FBD5 /* ctype.c in Sources */ = {isa = PBXBuildFile; fileRef = 370E05A625926EBA00F0FBD5 /* ctype.c */; };
+		370E05AA25926EBA00F0FBD5 /* ctype.c in Sources */ = {isa = PBXBuildFile; fileRef = 370E05A625926EBA00F0FBD5 /* ctype.c */; };
 		374023F82587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
 		374023F92587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
 		374023FA2587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
@@ -627,7 +675,6 @@
 		37CFF5AE2573ECC10047098B /* compiler.h in Headers */ = {isa = PBXBuildFile; fileRef = 37CFF4152573ECC00047098B /* compiler.h */; };
 		37CFF5AF2573ECC10047098B /* rculist.h in Headers */ = {isa = PBXBuildFile; fileRef = 37CFF4162573ECC00047098B /* rculist.h */; };
 		37CFF5B02573ECC10047098B /* bug.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4172573ECC00047098B /* bug.c */; };
-		37CFF5B12573ECC10047098B /* ctype.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4182573ECC00047098B /* ctype.c */; };
 		37CFF5B22573ECC10047098B /* lockdep.h in Headers */ = {isa = PBXBuildFile; fileRef = 37CFF4192573ECC00047098B /* lockdep.h */; };
 		37CFF5B32573ECC10047098B /* jiffies.h in Headers */ = {isa = PBXBuildFile; fileRef = 37CFF41A2573ECC00047098B /* jiffies.h */; };
 		37CFF5B42573ECC10047098B /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = 37CFF41B2573ECC00047098B /* types.h */; };
@@ -862,7 +909,6 @@
 		37CFF6AB2573EF650047098B /* rbtree.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4082573ECC00047098B /* rbtree.c */; };
 		37CFF6AC2573EF650047098B /* if_vlan.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4102573ECC00047098B /* if_vlan.c */; };
 		37CFF6AD2573EF650047098B /* bug.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4172573ECC00047098B /* bug.c */; };
-		37CFF6AE2573EF650047098B /* ctype.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4182573ECC00047098B /* ctype.c */; };
 		37CFF6AF2573EF650047098B /* dma-mapping.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF41E2573ECC00047098B /* dma-mapping.c */; };
 		37CFF6B02573EF650047098B /* pci.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4202573ECC00047098B /* pci.c */; };
 		37CFF6B12573EF650047098B /* errno.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4262573ECC00047098B /* errno.c */; };
@@ -1541,7 +1587,6 @@
 		37CFF9612573F0090047098B /* rbtree.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4082573ECC00047098B /* rbtree.c */; };
 		37CFF9622573F0090047098B /* if_vlan.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4102573ECC00047098B /* if_vlan.c */; };
 		37CFF9632573F0090047098B /* bug.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4172573ECC00047098B /* bug.c */; };
-		37CFF9642573F0090047098B /* ctype.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4182573ECC00047098B /* ctype.c */; };
 		37CFF9652573F0090047098B /* dma-mapping.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF41E2573ECC00047098B /* dma-mapping.c */; };
 		37CFF9662573F0090047098B /* pci.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4202573ECC00047098B /* pci.c */; };
 		37CFF9672573F0090047098B /* errno.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4262573ECC00047098B /* errno.c */; };
@@ -1702,7 +1747,6 @@
 		37CFFA112573F1E80047098B /* rbtree.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4082573ECC00047098B /* rbtree.c */; };
 		37CFFA122573F1E80047098B /* if_vlan.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4102573ECC00047098B /* if_vlan.c */; };
 		37CFFA132573F1E80047098B /* bug.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4172573ECC00047098B /* bug.c */; };
-		37CFFA142573F1E80047098B /* ctype.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4182573ECC00047098B /* ctype.c */; };
 		37CFFA152573F1E80047098B /* dma-mapping.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF41E2573ECC00047098B /* dma-mapping.c */; };
 		37CFFA162573F1E80047098B /* pci.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4202573ECC00047098B /* pci.c */; };
 		37CFFA172573F1E80047098B /* errno.c in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF4262573ECC00047098B /* errno.c */; };
@@ -1992,6 +2036,13 @@
 		1841ECBA257D43080071277A /* shash.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = shash.c; sourceTree = "<group>"; };
 		1841ECBF257D432A0071277A /* scatterwalk.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = scatterwalk.h; sourceTree = "<group>"; };
 		1841ECC5257D43900071277A /* hash.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hash.h; sourceTree = "<group>"; };
+		187F2C7025910105001242FF /* capability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = capability.h; sourceTree = "<group>"; };
+		1884780F2591F15E00672FE6 /* dev.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dev.c; sourceTree = "<group>"; };
+		1884781C2591F90D00672FE6 /* netdevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = netdevice.h; sourceTree = "<group>"; };
+		1887A4C725920CBF0037B9BF /* eth.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = eth.c; sourceTree = "<group>"; };
+		1887A4DC259241C20037B9BF /* ethtool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ethtool.h; sourceTree = "<group>"; };
+		1887A4E5259242CD0037B9BF /* ethtool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ethtool.h; sourceTree = "<group>"; };
+		1887A4EE259242EF0037B9BF /* compat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = compat.h; sourceTree = "<group>"; };
 		189E84072584CF50005C902E /* mesh_plink.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mesh_plink.c; sourceTree = "<group>"; };
 		189E840F2584D390005C902E /* cfg.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = cfg.c; sourceTree = "<group>"; };
 		189E84142584D581005C902E /* pm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pm.c; sourceTree = "<group>"; };
@@ -2038,6 +2089,8 @@
 		18AB83B3257E6BE00007F651 /* ocb.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ocb.c; sourceTree = "<group>"; };
 		18AB83B8257E6C690007F651 /* ibss.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ibss.c; sourceTree = "<group>"; };
 		18AB83BD257E6DA10007F651 /* status.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = status.c; sourceTree = "<group>"; };
+		18C0AF972590642A0035E189 /* timer.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = timer.c; sourceTree = "<group>"; };
+		18C0AFA02590761B0035E189 /* task.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = task.h; sourceTree = "<group>"; };
 		18D2422C257CF9C30062A72B /* rhashtable.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rhashtable.c; sourceTree = "<group>"; };
 		18D24231257CFA270062A72B /* cmpxchg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cmpxchg.h; sourceTree = "<group>"; };
 		18D24236257CFA390062A72B /* xchg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = xchg.h; sourceTree = "<group>"; };
@@ -2052,6 +2105,9 @@
 		18DCD1CA25767410004817B7 /* types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		18DCD1D325767955004817B7 /* refcount.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = refcount.h; sourceTree = "<group>"; };
 		18DCD1E025767E7B004817B7 /* if_vlan.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = if_vlan.h; sourceTree = "<group>"; };
+		370E059C25925E6100F0FBD5 /* dev_addr_lists.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dev_addr_lists.c; sourceTree = "<group>"; };
+		370E05A125926A5300F0FBD5 /* ethtool.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ethtool.c; sourceTree = "<group>"; };
+		370E05A625926EBA00F0FBD5 /* ctype.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ctype.c; sourceTree = "<group>"; };
 		374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-21.ucode"; sourceTree = "<group>"; };
 		374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-22.ucode"; sourceTree = "<group>"; };
 		374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-31.ucode"; sourceTree = "<group>"; };
@@ -2391,7 +2447,6 @@
 		37CFF4152573ECC00047098B /* compiler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = compiler.h; sourceTree = "<group>"; };
 		37CFF4162573ECC00047098B /* rculist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = rculist.h; sourceTree = "<group>"; };
 		37CFF4172573ECC00047098B /* bug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bug.c; sourceTree = "<group>"; };
-		37CFF4182573ECC00047098B /* ctype.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ctype.c; sourceTree = "<group>"; };
 		37CFF4192573ECC00047098B /* lockdep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lockdep.h; sourceTree = "<group>"; };
 		37CFF41A2573ECC00047098B /* jiffies.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = jiffies.h; sourceTree = "<group>"; };
 		37CFF41B2573ECC00047098B /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
@@ -2532,10 +2587,28 @@
 			path = crypto;
 			sourceTree = "<group>";
 		};
+		1884780E2591F14100672FE6 /* core */ = {
+			isa = PBXGroup;
+			children = (
+				1884780F2591F15E00672FE6 /* dev.c */,
+				370E059C25925E6100F0FBD5 /* dev_addr_lists.c */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
+		1887A4C525920CA70037B9BF /* ethernet */ = {
+			isa = PBXGroup;
+			children = (
+				1887A4C725920CBF0037B9BF /* eth.c */,
+			);
+			path = ethernet;
+			sourceTree = "<group>";
+		};
 		18D2422B257CF9A90062A72B /* lib */ = {
 			isa = PBXGroup;
 			children = (
 				18D2422C257CF9C30062A72B /* rhashtable.c */,
+				370E05A625926EBA00F0FBD5 /* ctype.c */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -2620,6 +2693,8 @@
 		37CFF2C82573ECC00047098B /* net */ = {
 			isa = PBXGroup;
 			children = (
+				1887A4C525920CA70037B9BF /* ethernet */,
+				1884780E2591F14100672FE6 /* core */,
 				37CFF2DC2573ECC00047098B /* mac80211 */,
 				37CFF2C92573ECC00047098B /* wireless */,
 			);
@@ -2678,6 +2753,7 @@
 				37CFF3022573ECC00047098B /* aes_gcm.h */,
 				37CFF2E12573ECC00047098B /* aes_gmac.c */,
 				37CFF2F42573ECC00047098B /* aes_gmac.h */,
+				370E05A125926A5300F0FBD5 /* ethtool.c */,
 				37CFF2FE2573ECC00047098B /* agg-rx.c */,
 				37CFF2F02573ECC00047098B /* agg-tx.c */,
 				189E843C2584E47F005C902E /* airtime.c */,
@@ -2823,44 +2899,44 @@
 		37CFF3192573ECC00047098B /* mvm */ = {
 			isa = PBXGroup;
 			children = (
-				37CFF31A2573ECC00047098B /* ftm-responder.c */,
-				37CFF31B2573ECC00047098B /* led.c */,
-				37CFF31C2573ECC00047098B /* mac80211.c */,
-				37CFF31D2573ECC00047098B /* coex.c */,
-				37CFF31E2573ECC00047098B /* nvm.c */,
-				37CFF31F2573ECC00047098B /* d3.c */,
-				37CFF3202573ECC00047098B /* rx.c */,
-				37CFF3212573ECC00047098B /* sta.h */,
-				37CFF3222573ECC00047098B /* debugfs.c */,
 				37CFF3232573ECC00047098B /* binding.c */,
-				37CFF3242573ECC00047098B /* Makefile */,
-				37CFF3252573ECC00047098B /* rxmq.c */,
-				37CFF3262573ECC00047098B /* time-event.c */,
-				37CFF3272573ECC00047098B /* ops.c */,
-				37CFF3282573ECC00047098B /* tdls.c */,
-				37CFF3292573ECC00047098B /* scan.c */,
-				37CFF32A2573ECC00047098B /* phy-ctxt.c */,
-				37CFF32B2573ECC00047098B /* tt.c */,
-				37CFF32C2573ECC00047098B /* fw.c */,
-				37CFF32D2573ECC00047098B /* rs.h */,
-				37CFF32E2573ECC00047098B /* power.c */,
+				37CFF31D2573ECC00047098B /* coex.c */,
 				37CFF32F2573ECC00047098B /* constants.h */,
-				37CFF3302573ECC00047098B /* quota.c */,
-				37CFF3312573ECC00047098B /* utils.c */,
-				37CFF3322573ECC00047098B /* fw-api.h */,
-				37CFF3332573ECC00047098B /* sf.c */,
-				37CFF3342573ECC00047098B /* mvm.h */,
+				37CFF31F2573ECC00047098B /* d3.c */,
 				37CFF3352573ECC00047098B /* debugfs-vif.c */,
-				37CFF3362573ECC00047098B /* sta.c */,
-				37CFF3372573ECC00047098B /* ftm-initiator.c */,
-				37CFF3382573ECC00047098B /* offloading.c */,
-				37CFF3392573ECC00047098B /* time-event.h */,
-				37CFF33A2573ECC00047098B /* mac-ctxt.c */,
-				37CFF33B2573ECC00047098B /* testmode.h */,
+				37CFF3222573ECC00047098B /* debugfs.c */,
 				37CFF33C2573ECC00047098B /* debugfs.h */,
+				37CFF3372573ECC00047098B /* ftm-initiator.c */,
+				37CFF31A2573ECC00047098B /* ftm-responder.c */,
+				37CFF3322573ECC00047098B /* fw-api.h */,
+				37CFF32C2573ECC00047098B /* fw.c */,
+				37CFF31B2573ECC00047098B /* led.c */,
+				37CFF33A2573ECC00047098B /* mac-ctxt.c */,
+				37CFF31C2573ECC00047098B /* mac80211.c */,
+				37CFF3242573ECC00047098B /* Makefile */,
+				37CFF3342573ECC00047098B /* mvm.h */,
+				37CFF31E2573ECC00047098B /* nvm.c */,
+				37CFF3382573ECC00047098B /* offloading.c */,
+				37CFF3272573ECC00047098B /* ops.c */,
+				37CFF32A2573ECC00047098B /* phy-ctxt.c */,
+				37CFF32E2573ECC00047098B /* power.c */,
+				37CFF3302573ECC00047098B /* quota.c */,
 				37CFF33D2573ECC00047098B /* rs-fw.c */,
-				37CFF33E2573ECC00047098B /* tx.c */,
 				37CFF33F2573ECC00047098B /* rs.c */,
+				37CFF32D2573ECC00047098B /* rs.h */,
+				37CFF3202573ECC00047098B /* rx.c */,
+				37CFF3252573ECC00047098B /* rxmq.c */,
+				37CFF3292573ECC00047098B /* scan.c */,
+				37CFF3332573ECC00047098B /* sf.c */,
+				37CFF3362573ECC00047098B /* sta.c */,
+				37CFF3212573ECC00047098B /* sta.h */,
+				37CFF3282573ECC00047098B /* tdls.c */,
+				37CFF33B2573ECC00047098B /* testmode.h */,
+				37CFF3262573ECC00047098B /* time-event.c */,
+				37CFF3392573ECC00047098B /* time-event.h */,
+				37CFF32B2573ECC00047098B /* tt.c */,
+				37CFF33E2573ECC00047098B /* tx.c */,
+				37CFF3312573ECC00047098B /* utils.c */,
 			);
 			path = mvm;
 			sourceTree = "<group>";
@@ -3029,6 +3105,8 @@
 			isa = PBXGroup;
 			children = (
 				37CFF3BF2573ECC00047098B /* if_ether.h */,
+				1887A4E5259242CD0037B9BF /* ethtool.h */,
+				1884781C2591F90D00672FE6 /* netdevice.h */,
 				37CFF3C22573ECC00047098B /* nl80211.c */,
 				18DCD1B32576737B004817B7 /* genetlink.h */,
 				18DCD1BD257673D9004817B7 /* netlink.h */,
@@ -3154,7 +3232,6 @@
 				37CFF42E2573ECC00047098B /* bit_spinlock.h */,
 				37CFF46B2573ECC00047098B /* bitfield.h */,
 				37CFF4622573ECC00047098B /* bitmap.h */,
-				18AB8395257E61130007F651 /* moduleparam.h */,
 				37CFF40F2573ECC00047098B /* bitops.h */,
 				37CFF4042573ECC00047098B /* bitrev.c */,
 				37CFF43A2573ECC00047098B /* bitrev.h */,
@@ -3162,7 +3239,9 @@
 				37CFF4252573ECC00047098B /* bsearch.h */,
 				37CFF4172573ECC00047098B /* bug.c */,
 				37CFF4452573ECC00047098B /* bug.h */,
+				187F2C7025910105001242FF /* capability.h */,
 				37CFF44A2573ECC00047098B /* compiler.c */,
+				1887A4EE259242EF0037B9BF /* compat.h */,
 				37CFF4152573ECC00047098B /* compiler.h */,
 				37CFF4092573ECC00047098B /* completion.h */,
 				37CFF46F2573ECC00047098B /* const.h */,
@@ -3174,7 +3253,6 @@
 				37CFF44F2573ECC00047098B /* crc32table.h */,
 				37CFF4662573ECC00047098B /* crypto.c */,
 				37CFF4322573ECC00047098B /* crypto.h */,
-				37CFF4182573ECC00047098B /* ctype.c */,
 				37CFF43F2573ECC00047098B /* ctype.h */,
 				37CFF45F2573ECC00047098B /* debugfs.h */,
 				37CFF4552573ECC00047098B /* delay.h */,
@@ -3185,6 +3263,7 @@
 				37CFF4602573ECC00047098B /* dma-mapping.h */,
 				37CFF43C2573ECC00047098B /* err.c */,
 				37CFF4072573ECC00047098B /* err.h */,
+				1887A4DC259241C20037B9BF /* ethtool.h */,
 				37CFF4262573ECC00047098B /* errno.c */,
 				37CFF4522573ECC00047098B /* errno.h */,
 				37CFF40D2573ECC00047098B /* etherdevice.h */,
@@ -3220,6 +3299,7 @@
 				37CFF4052573ECC00047098B /* math64.h */,
 				37CFF41C2573ECC00047098B /* mm.h */,
 				37CFF45B2573ECC00047098B /* module.h */,
+				18AB8395257E61130007F651 /* moduleparam.h */,
 				37CFF4582573ECC00047098B /* mutex.h */,
 				37CFF41D2573ECC00047098B /* netdev_features.h */,
 				37CFF4752573ECC00047098B /* netdevice.h */,
@@ -3256,8 +3336,10 @@
 				37CFF45C2573ECC00047098B /* stddef.c */,
 				37CFF4222573ECC00047098B /* stddef.h */,
 				37CFF4532573ECC00047098B /* stringify.h */,
+				18C0AFA02590761B0035E189 /* task.h */,
 				37CFF4032573ECC00047098B /* tcp.h */,
 				37CFF4002573ECC00047098B /* time.h */,
+				18C0AF972590642A0035E189 /* timer.c */,
 				37CFF4372573ECC00047098B /* timer.h */,
 				37CFF4682573ECC00047098B /* tracepoint.h */,
 				37CFF41B2573ECC00047098B /* types.h */,
@@ -3367,6 +3449,7 @@
 				37CFF5F02573ECC10047098B /* mutex.h in Headers */,
 				18DCD1B42576737B004817B7 /* genetlink.h in Headers */,
 				37CFF55E2573ECC10047098B /* if_ether.h in Headers */,
+				1887A4E6259242CD0037B9BF /* ethtool.h in Headers */,
 				1841ECC0257D432A0071277A /* scatterwalk.h in Headers */,
 				37CFF6032573ECC10047098B /* bitfield.h in Headers */,
 				37CFF51F2573ECC10047098B /* iwl-devtrace-msg.h in Headers */,
@@ -3448,6 +3531,7 @@
 				37CFF2C32573EB150047098B /* apple80211.h in Headers */,
 				37CFF5E82573ECC10047098B /* crc32table.h in Headers */,
 				37CFF4B92573ECC10047098B /* iwl-drv.h in Headers */,
+				18C0AFA12590761B0035E189 /* task.h in Headers */,
 				37CFF4E92573ECC10047098B /* iwl-config.h in Headers */,
 				37CFF4FC2573ECC10047098B /* sta.h in Headers */,
 				37CFF4B72573ECC10047098B /* aes_ccm.h in Headers */,
@@ -3461,6 +3545,7 @@
 				37CFF5C12573ECC10047098B /* in6.h in Headers */,
 				37CFF4B32573ECC10047098B /* wep.h in Headers */,
 				37CFF5A72573ECC10047098B /* crc32poly.h in Headers */,
+				1887A4EF259242EF0037B9BF /* compat.h in Headers */,
 				18A4E41E257D09EC002D9E40 /* lib80211.h in Headers */,
 				18A4E438257D3B8E002D9E40 /* kmemleak.h in Headers */,
 				37CFF5DF2573ECC10047098B /* ieee80211.h in Headers */,
@@ -3483,6 +3568,7 @@
 				37CFF4B82573ECC10047098B /* sta_info.h in Headers */,
 				37CFF54F2573ECC10047098B /* iwl-eeprom-parse.h in Headers */,
 				37CFF4B02573ECC10047098B /* aes_gcm.h in Headers */,
+				1887A4DD259241C20037B9BF /* ethtool.h in Headers */,
 				37CFF4982573ECC10047098B /* key.h in Headers */,
 				37CFF2BB2573EB150047098B /* apple80211_ioctl.h in Headers */,
 				37CFF4762573ECC10047098B /* iwlwifi.h in Headers */,
@@ -3501,6 +3587,7 @@
 				37CFF4822573ECC10047098B /* nl80211.h in Headers */,
 				37CFF5072573ECC10047098B /* mac-cfg.h in Headers */,
 				37CFF5D42573ECC10047098B /* rbtree.h in Headers */,
+				187F2C7125910105001242FF /* capability.h in Headers */,
 				37CFF4FE2573ECC10047098B /* config.h in Headers */,
 				37CFF5FD2573ECC10047098B /* crc32.h in Headers */,
 				18AB8396257E61130007F651 /* moduleparam.h in Headers */,
@@ -3541,6 +3628,7 @@
 				37CFF5F32573ECC10047098B /* module.h in Headers */,
 				37CFF52D2573ECC10047098B /* rs.h in Headers */,
 				37CFF60C2573ECC10047098B /* atomic.h in Headers */,
+				1884781D2591F90D00672FE6 /* netdevice.h in Headers */,
 				37CFF5A42573ECC10047098B /* gfp.h in Headers */,
 				37CFF5EB2573ECC10047098B /* errno.h in Headers */,
 				37CFF5FA2573ECC10047098B /* bitmap.h in Headers */,
@@ -3661,6 +3749,7 @@
 				37CFF6FC2573EF780047098B /* iwl-config.h in Headers */,
 				18DCD1B52576737B004817B7 /* genetlink.h in Headers */,
 				37CFF6FD2573EF780047098B /* iwl-modparams.h in Headers */,
+				1887A4E7259242CD0037B9BF /* ethtool.h in Headers */,
 				1841ECC1257D432A0071277A /* scatterwalk.h in Headers */,
 				37CFF6FE2573EF780047098B /* notif-wait.h in Headers */,
 				37CFF6FF2573EF780047098B /* file.h in Headers */,
@@ -3742,6 +3831,7 @@
 				37CFF7482573EF790047098B /* aes.h in Headers */,
 				37CFF7492573EF790047098B /* aead.h in Headers */,
 				37CFF74A2573EF790047098B /* hash.h in Headers */,
+				18C0AFA22590761B0035E189 /* task.h in Headers */,
 				37CFF74B2573EF790047098B /* algapi.h in Headers */,
 				37CFF74C2573EF790047098B /* page.h in Headers */,
 				37CFF74D2573EF790047098B /* unaligned.h in Headers */,
@@ -3755,6 +3845,7 @@
 				37CFF7532573EF790047098B /* io.h in Headers */,
 				37CFF7542573EF790047098B /* errno.h in Headers */,
 				37CFF7552573EF790047098B /* bitsperlong.h in Headers */,
+				1887A4F0259242EF0037B9BF /* compat.h in Headers */,
 				18A4E41F257D09EC002D9E40 /* lib80211.h in Headers */,
 				18A4E439257D3B8E002D9E40 /* kmemleak.h in Headers */,
 				37CFF7562573EF790047098B /* div64.h in Headers */,
@@ -3777,6 +3868,7 @@
 				37CFF7652573EF790047098B /* ip6_checksum.h in Headers */,
 				37CFF7662573EF790047098B /* ip.h in Headers */,
 				37CFF7672573EF790047098B /* tso.h in Headers */,
+				1887A4DE259241C20037B9BF /* ethtool.h in Headers */,
 				37CFF7682573EF790047098B /* ipv6.h in Headers */,
 				37CFF7692573EF790047098B /* cfg80211-wext.h in Headers */,
 				37CFF76A2573EF790047098B /* genetlink.h in Headers */,
@@ -3795,6 +3887,7 @@
 				37CFF7752573EF790047098B /* gfp.h in Headers */,
 				37CFF7762573EF790047098B /* scatterlist.h in Headers */,
 				37CFF7772573EF790047098B /* etherdevice.h in Headers */,
+				187F2C7225910105001242FF /* capability.h in Headers */,
 				37CFF7782573EF790047098B /* crc32poly.h in Headers */,
 				37CFF7792573EF790047098B /* bitops.h in Headers */,
 				18AB8397257E61130007F651 /* moduleparam.h in Headers */,
@@ -3835,6 +3928,7 @@
 				37CFF7982573EF7A0047098B /* rbtree.h in Headers */,
 				37CFF7992573EF7A0047098B /* _string.h in Headers */,
 				37CFF79A2573EF7A0047098B /* ctype.h in Headers */,
+				1884781E2591F90D00672FE6 /* netdevice.h in Headers */,
 				37CFF79B2573EF7A0047098B /* io.h in Headers */,
 				37CFF79C2573EF7A0047098B /* vmalloc.h in Headers */,
 				37CFF79D2573EF7A0047098B /* cpu.h in Headers */,
@@ -3955,6 +4049,7 @@
 				37CFF80E2573EFFE0047098B /* iwl-config.h in Headers */,
 				18DCD1B62576737B004817B7 /* genetlink.h in Headers */,
 				37CFF80F2573EFFE0047098B /* iwl-modparams.h in Headers */,
+				1887A4E8259242CD0037B9BF /* ethtool.h in Headers */,
 				1841ECC2257D432A0071277A /* scatterwalk.h in Headers */,
 				37CFF8102573EFFE0047098B /* notif-wait.h in Headers */,
 				37CFF8112573EFFE0047098B /* file.h in Headers */,
@@ -4036,6 +4131,7 @@
 				37CFF85A2573EFFE0047098B /* aes.h in Headers */,
 				37CFF85B2573EFFE0047098B /* aead.h in Headers */,
 				37CFF85C2573EFFE0047098B /* hash.h in Headers */,
+				18C0AFA32590761B0035E189 /* task.h in Headers */,
 				37CFF85D2573EFFE0047098B /* algapi.h in Headers */,
 				37CFF85E2573EFFE0047098B /* page.h in Headers */,
 				37CFF85F2573EFFE0047098B /* unaligned.h in Headers */,
@@ -4049,6 +4145,7 @@
 				37CFF8652573EFFE0047098B /* io.h in Headers */,
 				37CFF8662573EFFE0047098B /* errno.h in Headers */,
 				37CFF8672573EFFE0047098B /* bitsperlong.h in Headers */,
+				1887A4F1259242EF0037B9BF /* compat.h in Headers */,
 				18A4E420257D09EC002D9E40 /* lib80211.h in Headers */,
 				18A4E43A257D3B8E002D9E40 /* kmemleak.h in Headers */,
 				37CFF8682573EFFE0047098B /* div64.h in Headers */,
@@ -4071,6 +4168,7 @@
 				37CFF8772573EFFE0047098B /* ip6_checksum.h in Headers */,
 				37CFF8782573EFFE0047098B /* ip.h in Headers */,
 				37CFF8792573EFFE0047098B /* tso.h in Headers */,
+				1887A4DF259241C20037B9BF /* ethtool.h in Headers */,
 				37CFF87A2573EFFE0047098B /* ipv6.h in Headers */,
 				37CFF87B2573EFFE0047098B /* cfg80211-wext.h in Headers */,
 				37CFF87C2573EFFE0047098B /* genetlink.h in Headers */,
@@ -4089,6 +4187,7 @@
 				37CFF8872573EFFF0047098B /* gfp.h in Headers */,
 				37CFF8882573EFFF0047098B /* scatterlist.h in Headers */,
 				37CFF8892573EFFF0047098B /* etherdevice.h in Headers */,
+				187F2C7325910105001242FF /* capability.h in Headers */,
 				37CFF88A2573EFFF0047098B /* crc32poly.h in Headers */,
 				37CFF88B2573EFFF0047098B /* bitops.h in Headers */,
 				18AB8398257E61130007F651 /* moduleparam.h in Headers */,
@@ -4129,6 +4228,7 @@
 				37CFF8AA2573EFFF0047098B /* rbtree.h in Headers */,
 				37CFF8AB2573EFFF0047098B /* _string.h in Headers */,
 				37CFF8AC2573EFFF0047098B /* ctype.h in Headers */,
+				1884781F2591F90D00672FE6 /* netdevice.h in Headers */,
 				37CFF8AD2573EFFF0047098B /* io.h in Headers */,
 				37CFF8AE2573EFFF0047098B /* vmalloc.h in Headers */,
 				37CFF8AF2573EFFF0047098B /* cpu.h in Headers */,
@@ -4249,6 +4349,7 @@
 				37CFFA622573F1EF0047098B /* iwl-config.h in Headers */,
 				18DCD1B72576737B004817B7 /* genetlink.h in Headers */,
 				37CFFA632573F1EF0047098B /* iwl-modparams.h in Headers */,
+				1887A4E9259242CD0037B9BF /* ethtool.h in Headers */,
 				1841ECC3257D432A0071277A /* scatterwalk.h in Headers */,
 				37CFFA642573F1EF0047098B /* notif-wait.h in Headers */,
 				37CFFA652573F1EF0047098B /* file.h in Headers */,
@@ -4330,6 +4431,7 @@
 				37CFFAAE2573F1EF0047098B /* aes.h in Headers */,
 				37CFFAAF2573F1EF0047098B /* aead.h in Headers */,
 				37CFFAB02573F1EF0047098B /* hash.h in Headers */,
+				18C0AFA42590761B0035E189 /* task.h in Headers */,
 				37CFFAB12573F1EF0047098B /* algapi.h in Headers */,
 				37CFFAB22573F1EF0047098B /* page.h in Headers */,
 				37CFFAB32573F1EF0047098B /* unaligned.h in Headers */,
@@ -4343,6 +4445,7 @@
 				37CFFAB92573F1EF0047098B /* io.h in Headers */,
 				37CFFABA2573F1EF0047098B /* errno.h in Headers */,
 				37CFFABB2573F1EF0047098B /* bitsperlong.h in Headers */,
+				1887A4F2259242EF0037B9BF /* compat.h in Headers */,
 				18A4E421257D09EC002D9E40 /* lib80211.h in Headers */,
 				18A4E43B257D3B8E002D9E40 /* kmemleak.h in Headers */,
 				37CFFABC2573F1EF0047098B /* div64.h in Headers */,
@@ -4365,6 +4468,7 @@
 				37CFFACB2573F1F00047098B /* ip6_checksum.h in Headers */,
 				37CFFACC2573F1F00047098B /* ip.h in Headers */,
 				37CFFACD2573F1F00047098B /* tso.h in Headers */,
+				1887A4E0259241C20037B9BF /* ethtool.h in Headers */,
 				37CFFACE2573F1F00047098B /* ipv6.h in Headers */,
 				37CFFACF2573F1F00047098B /* cfg80211-wext.h in Headers */,
 				37CFFAD02573F1F00047098B /* genetlink.h in Headers */,
@@ -4383,6 +4487,7 @@
 				37CFFADB2573F1F00047098B /* gfp.h in Headers */,
 				37CFFADC2573F1F00047098B /* scatterlist.h in Headers */,
 				37CFFADD2573F1F00047098B /* etherdevice.h in Headers */,
+				187F2C7425910105001242FF /* capability.h in Headers */,
 				37CFFADE2573F1F00047098B /* crc32poly.h in Headers */,
 				37CFFADF2573F1F00047098B /* bitops.h in Headers */,
 				18AB8399257E61130007F651 /* moduleparam.h in Headers */,
@@ -4423,6 +4528,7 @@
 				37CFFAFE2573F1F00047098B /* rbtree.h in Headers */,
 				37CFFAFF2573F1F00047098B /* _string.h in Headers */,
 				37CFFB002573F1F00047098B /* ctype.h in Headers */,
+				188478202591F90D00672FE6 /* netdevice.h in Headers */,
 				37CFFB012573F1F00047098B /* io.h in Headers */,
 				37CFFB022573F1F00047098B /* vmalloc.h in Headers */,
 				37CFFB032573F1F00047098B /* cpu.h in Headers */,
@@ -4714,7 +4820,6 @@
 				37CFF4BE2573ECC10047098B /* iwl-dbg-tlv.c in Sources */,
 				37CFF49D2573ECC10047098B /* offchannel.c in Sources */,
 				37CFF5372573ECC10047098B /* rs.c in Sources */,
-				37CFF5B12573ECC10047098B /* ctype.c in Sources */,
 				37CFF4AD2573ECC10047098B /* wme.c in Sources */,
 				1841ECBB257D43080071277A /* shash.c in Sources */,
 				37CFF53B2573ECC10047098B /* 8000.c in Sources */,
@@ -4754,11 +4859,13 @@
 				37CFF5242573ECC10047098B /* lib.c in Sources */,
 				189E84102584D390005C902E /* cfg.c in Sources */,
 				18AB8391257E60E90007F651 /* mlme.c in Sources */,
+				1887A4CC25920CBF0037B9BF /* eth.c in Sources */,
 				37CFF4EF2573ECC10047098B /* debugfs.c in Sources */,
 				37CFF5482573ECC10047098B /* iwl-nvm-parse.c in Sources */,
 				37CFF47C2573ECC10047098B /* sysfs.c in Sources */,
 				18AB83B4257E6BE00007F651 /* ocb.c in Sources */,
 				189E841A2584D89F005C902E /* mesh_hwmp.c in Sources */,
+				370E05A725926EBA00F0FBD5 /* ctype.c in Sources */,
 				37CFF52E2573ECC10047098B /* power.c in Sources */,
 				37CFF4802573ECC10047098B /* scan.c in Sources */,
 				37CFF5CC2573ECC10047098B /* crc32.c in Sources */,
@@ -4830,9 +4937,12 @@
 				189E84382584E20B005C902E /* mesh_ps.c in Sources */,
 				37CFF49F2573ECC10047098B /* ht.c in Sources */,
 				37C6D1F52584F2A800977605 /* net_namespace.c in Sources */,
+				18C0AF982590642A0035E189 /* timer.c in Sources */,
+				188478102591F15E00672FE6 /* dev.c in Sources */,
 				189E843D2584E47F005C902E /* airtime.c in Sources */,
 				37CFF56E2573ECC10047098B /* memneq.c in Sources */,
 				37CFF4A32573ECC10047098B /* aes_cmac.c in Sources */,
+				370E05A225926A5300F0FBD5 /* ethtool.c in Sources */,
 				37CFF5392573ECC10047098B /* rxon.c in Sources */,
 				189E841F2584DCDF005C902E /* vht.c in Sources */,
 				37CFF4B52573ECC10047098B /* mesh.c in Sources */,
@@ -4846,6 +4956,7 @@
 				18A4E400257D072D002D9E40 /* sme.c in Sources */,
 				37CFF5C42573ECC10047098B /* atomic.c in Sources */,
 				37CFF5D52573ECC10047098B /* err.c in Sources */,
+				370E059D25925E6100F0FBD5 /* dev_addr_lists.c in Sources */,
 				37CFF6122573EE480047098B /* AirPortLinux_Ioctl.cpp in Sources */,
 				37CFF4BF2573ECC10047098B /* iwl-debug.c in Sources */,
 				37CFF4C72573ECC10047098B /* d3.c in Sources */,
@@ -4962,11 +5073,13 @@
 				37CFF6752573EF640047098B /* acpi.c in Sources */,
 				189E84112584D390005C902E /* cfg.c in Sources */,
 				18AB8392257E60E90007F651 /* mlme.c in Sources */,
+				1887A4CD25920CBF0037B9BF /* eth.c in Sources */,
 				37CFF6762573EF640047098B /* led.c in Sources */,
 				37CFF6772573EF640047098B /* mac80211.c in Sources */,
 				37CFF6782573EF640047098B /* lib.c in Sources */,
 				18AB83B5257E6BE00007F651 /* ocb.c in Sources */,
 				189E841B2584D89F005C902E /* mesh_hwmp.c in Sources */,
+				370E05A825926EBA00F0FBD5 /* ctype.c in Sources */,
 				37CFF6792573EF640047098B /* rx.c in Sources */,
 				37CFF67A2573EF640047098B /* debugfs.c in Sources */,
 				37CFF67B2573EF640047098B /* calib.c in Sources */,
@@ -5033,14 +5146,16 @@
 				189E84162584D581005C902E /* pm.c in Sources */,
 				37CFF6AC2573EF650047098B /* if_vlan.c in Sources */,
 				37CFF6AD2573EF650047098B /* bug.c in Sources */,
-				37CFF6AE2573EF650047098B /* ctype.c in Sources */,
 				37CFF6AF2573EF650047098B /* dma-mapping.c in Sources */,
 				189E84392584E20B005C902E /* mesh_ps.c in Sources */,
 				37CFF6B02573EF650047098B /* pci.c in Sources */,
 				37C6D1F62584F2A800977605 /* net_namespace.c in Sources */,
+				18C0AF992590642A0035E189 /* timer.c in Sources */,
+				188478112591F15E00672FE6 /* dev.c in Sources */,
 				189E843E2584E47F005C902E /* airtime.c in Sources */,
 				37CFF6B12573EF650047098B /* errno.c in Sources */,
 				37CFF6B22573EF650047098B /* rfkill.c in Sources */,
+				370E05A325926A5300F0FBD5 /* ethtool.c in Sources */,
 				37CFF6B32573EF650047098B /* atomic.c in Sources */,
 				189E84202584DCE0005C902E /* vht.c in Sources */,
 				37CFF6B42573EF650047098B /* random.c in Sources */,
@@ -5054,6 +5169,7 @@
 				18A4E401257D072D002D9E40 /* sme.c in Sources */,
 				37CFF6BA2573EF650047098B /* poison.c in Sources */,
 				37CFF6BB2573EF650047098B /* rculist.c in Sources */,
+				370E059E25925E6100F0FBD5 /* dev_addr_lists.c in Sources */,
 				37CFF6BC2573EF650047098B /* compiler.c in Sources */,
 				37CFF6BD2573EF650047098B /* device.c in Sources */,
 				37CFF6BE2573EF650047098B /* workqueue.c in Sources */,
@@ -5170,11 +5286,13 @@
 				37CFF92B2573F0090047098B /* acpi.c in Sources */,
 				189E84122584D390005C902E /* cfg.c in Sources */,
 				18AB8393257E60E90007F651 /* mlme.c in Sources */,
+				1887A4CE25920CBF0037B9BF /* eth.c in Sources */,
 				37CFF92C2573F0090047098B /* led.c in Sources */,
 				37CFF92D2573F0090047098B /* mac80211.c in Sources */,
 				37CFF92E2573F0090047098B /* lib.c in Sources */,
 				18AB83B6257E6BE00007F651 /* ocb.c in Sources */,
 				189E841C2584D89F005C902E /* mesh_hwmp.c in Sources */,
+				370E05A925926EBA00F0FBD5 /* ctype.c in Sources */,
 				37CFF92F2573F0090047098B /* rx.c in Sources */,
 				37CFF9302573F0090047098B /* debugfs.c in Sources */,
 				37CFF9312573F0090047098B /* calib.c in Sources */,
@@ -5241,14 +5359,16 @@
 				189E84172584D581005C902E /* pm.c in Sources */,
 				37CFF9622573F0090047098B /* if_vlan.c in Sources */,
 				37CFF9632573F0090047098B /* bug.c in Sources */,
-				37CFF9642573F0090047098B /* ctype.c in Sources */,
 				37CFF9652573F0090047098B /* dma-mapping.c in Sources */,
 				189E843A2584E20B005C902E /* mesh_ps.c in Sources */,
 				37CFF9662573F0090047098B /* pci.c in Sources */,
 				37C6D1F72584F2A800977605 /* net_namespace.c in Sources */,
+				18C0AF9A2590642A0035E189 /* timer.c in Sources */,
+				188478122591F15E00672FE6 /* dev.c in Sources */,
 				189E843F2584E47F005C902E /* airtime.c in Sources */,
 				37CFF9672573F0090047098B /* errno.c in Sources */,
 				37CFF9682573F0090047098B /* rfkill.c in Sources */,
+				370E05A425926A5300F0FBD5 /* ethtool.c in Sources */,
 				37CFF9692573F0090047098B /* atomic.c in Sources */,
 				189E84212584DCE0005C902E /* vht.c in Sources */,
 				37CFF96A2573F0090047098B /* random.c in Sources */,
@@ -5262,6 +5382,7 @@
 				18A4E402257D072D002D9E40 /* sme.c in Sources */,
 				37CFF9702573F0090047098B /* poison.c in Sources */,
 				37CFF9712573F0090047098B /* rculist.c in Sources */,
+				370E059F25925E6100F0FBD5 /* dev_addr_lists.c in Sources */,
 				37CFF9722573F0090047098B /* compiler.c in Sources */,
 				37CFF9732573F0090047098B /* device.c in Sources */,
 				37CFF9742573F0090047098B /* workqueue.c in Sources */,
@@ -5378,11 +5499,13 @@
 				37CFF9DB2573F1E70047098B /* acpi.c in Sources */,
 				189E84132584D390005C902E /* cfg.c in Sources */,
 				18AB8394257E60E90007F651 /* mlme.c in Sources */,
+				1887A4CF25920CBF0037B9BF /* eth.c in Sources */,
 				37CFF9DC2573F1E70047098B /* led.c in Sources */,
 				37CFF9DD2573F1E70047098B /* mac80211.c in Sources */,
 				37CFF9DE2573F1E70047098B /* lib.c in Sources */,
 				18AB83B7257E6BE00007F651 /* ocb.c in Sources */,
 				189E841D2584D89F005C902E /* mesh_hwmp.c in Sources */,
+				370E05AA25926EBA00F0FBD5 /* ctype.c in Sources */,
 				37CFF9DF2573F1E70047098B /* rx.c in Sources */,
 				37CFF9E02573F1E70047098B /* debugfs.c in Sources */,
 				37CFF9E12573F1E70047098B /* calib.c in Sources */,
@@ -5449,14 +5572,16 @@
 				189E84182584D581005C902E /* pm.c in Sources */,
 				37CFFA122573F1E80047098B /* if_vlan.c in Sources */,
 				37CFFA132573F1E80047098B /* bug.c in Sources */,
-				37CFFA142573F1E80047098B /* ctype.c in Sources */,
 				37CFFA152573F1E80047098B /* dma-mapping.c in Sources */,
 				189E843B2584E20B005C902E /* mesh_ps.c in Sources */,
 				37CFFA162573F1E80047098B /* pci.c in Sources */,
 				37C6D1F82584F2A800977605 /* net_namespace.c in Sources */,
+				18C0AF9B2590642A0035E189 /* timer.c in Sources */,
+				188478132591F15E00672FE6 /* dev.c in Sources */,
 				189E84402584E47F005C902E /* airtime.c in Sources */,
 				37CFFA172573F1E80047098B /* errno.c in Sources */,
 				37CFFA182573F1E80047098B /* rfkill.c in Sources */,
+				370E05A525926A5300F0FBD5 /* ethtool.c in Sources */,
 				37CFFA192573F1E80047098B /* atomic.c in Sources */,
 				189E84222584DCE0005C902E /* vht.c in Sources */,
 				37CFFA1A2573F1E80047098B /* random.c in Sources */,
@@ -5470,6 +5595,7 @@
 				18A4E403257D072D002D9E40 /* sme.c in Sources */,
 				37CFFA202573F1E80047098B /* poison.c in Sources */,
 				37CFFA212573F1E80047098B /* rculist.c in Sources */,
+				370E05A025925E6100F0FBD5 /* dev_addr_lists.c in Sources */,
 				37CFFA222573F1E80047098B /* compiler.c in Sources */,
 				37CFFA232573F1E80047098B /* device.c in Sources */,
 				37CFFA242573F1E80047098B /* workqueue.c in Sources */,

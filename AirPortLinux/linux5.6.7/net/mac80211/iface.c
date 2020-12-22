@@ -216,7 +216,7 @@ static int ieee80211_change_mac(struct net_device *dev, void *addr)
     if (ret)
         return ret;
 
-//    ret = eth_mac_addr(dev, sa);
+    ret = eth_mac_addr(dev, sa);
 
     if (ret == 0)
         memcpy(sdata->vif.addr, sa->sa_data, ETH_ALEN);
@@ -584,9 +584,9 @@ int ieee80211_do_open(struct wireless_dev *wdev, bool coming_up)
         /* no need to tell driver, but set carrier and chanctx */
         if (rtnl_dereference(sdata->bss->beacon)) {
             ieee80211_vif_vlan_copy_chanctx(sdata);
-//            netif_carrier_on(dev);
+            netif_carrier_on(dev);
         } else {
-//            netif_carrier_off(dev);
+            netif_carrier_off(dev);
         }
         break;
     case NL80211_IFTYPE_MONITOR:
@@ -618,7 +618,7 @@ int ieee80211_do_open(struct wireless_dev *wdev, bool coming_up)
         ieee80211_recalc_idle(local);
         mutex_unlock(&local->mtx);
 
-//        netif_carrier_on(dev);
+        netif_carrier_on(dev);
         break;
     default:
         if (coming_up) {
@@ -653,7 +653,7 @@ int ieee80211_do_open(struct wireless_dev *wdev, bool coming_up)
         case NL80211_IFTYPE_AP:
         case NL80211_IFTYPE_MESH_POINT:
         case NL80211_IFTYPE_OCB:
-//            netif_carrier_off(dev);
+            netif_carrier_off(dev);
             break;
         case NL80211_IFTYPE_WDS:
         case NL80211_IFTYPE_P2P_DEVICE:
@@ -697,7 +697,7 @@ int ieee80211_do_open(struct wireless_dev *wdev, bool coming_up)
         }
 
         rate_control_rate_init(sta);
-//        netif_carrier_on(dev);
+        netif_carrier_on(dev);
         break;
     case NL80211_IFTYPE_P2P_DEVICE:
         rcu_assign_pointer(local->p2p_sdata, sdata);
@@ -731,8 +731,8 @@ int ieee80211_do_open(struct wireless_dev *wdev, bool coming_up)
         sdata->vif.type == NL80211_IFTYPE_AP_VLAN ||
         local->ops->wake_tx_queue) {
         /* XXX: for AP_VLAN, actually track AP queues */
-//        if (dev)
-//            netif_tx_start_all_queues(dev);
+        if (dev)
+            netif_tx_start_all_queues(dev);
     } else if (dev) {
         unsigned long flags;
         int n_acs = IEEE80211_NUM_ACS;
@@ -748,9 +748,9 @@ int ieee80211_do_open(struct wireless_dev *wdev, bool coming_up)
             for (ac = 0; ac < n_acs; ac++) {
                 int ac_queue = sdata->vif.hw_queue[ac];
 
-//                if (local->queue_stop_reasons[ac_queue] == 0 &&
-//                    skb_queue_empty(&local->pending[ac_queue]))
-//                    netif_start_subqueue(dev, ac);
+                if (local->queue_stop_reasons[ac_queue] == 0 &&
+                    skb_queue_empty(&local->pending[ac_queue]))
+                    netif_start_subqueue(dev, ac);
             }
         }
         spin_unlock_irqrestore(&local->queue_stop_reason_lock, flags);
@@ -812,8 +812,8 @@ static void ieee80211_do_stop(struct ieee80211_sub_if_data *sdata,
     /*
      * Stop TX on this interface first.
      */
-//    if (sdata->dev)
-//        netif_tx_stop_all_queues(sdata->dev);
+    if (sdata->dev)
+        netif_tx_stop_all_queues(sdata->dev);
 
     ieee80211_roc_purge(local, sdata);
 
@@ -867,14 +867,14 @@ static void ieee80211_do_stop(struct ieee80211_sub_if_data *sdata,
         local->fif_probe_req--;
     }
 
-//    if (sdata->dev) {
-//        netif_addr_lock_bh(sdata->dev);
-//        spin_lock_bh(&local->filter_lock);
+    if (sdata->dev) {
+        netif_addr_lock_bh(sdata->dev);
+        spin_lock_bh(&local->filter_lock);
 //        __hw_addr_unsync(&local->mc_list, &sdata->dev->mc,
 //                 sdata->dev->addr_len);
-//        spin_unlock_bh(&local->filter_lock);
-//        netif_addr_unlock_bh(sdata->dev);
-//    }
+        spin_unlock_bh(&local->filter_lock);
+        netif_addr_unlock_bh(sdata->dev);
+    }
 
     del_timer_sync(&local->dynamic_ps_timer);
     cancel_work_sync(&local->dynamic_ps_enable_work);
@@ -1097,7 +1097,7 @@ static void ieee80211_set_multicast_list(struct net_device *dev)
     }
 
     spin_lock_bh(&local->filter_lock);
-//    __hw_addr_sync(&local->mc_list, &dev->mc, dev->addr_len);
+    __hw_addr_sync(&local->mc_list, &dev->mc, dev->addr_len);
     spin_unlock_bh(&local->filter_lock);
     ieee80211_queue_work(&local->hw, &local->reconfig_filter);
 }
@@ -1198,7 +1198,7 @@ struct net_device_ops ieee80211_monitorif_ops = {
     .ndo_open        = ieee80211_open,
     .ndo_stop        = ieee80211_stop,
     .ndo_uninit        = ieee80211_uninit,
-//    .ndo_start_xmit        = ieee80211_monitor_start_xmit,
+    .ndo_start_xmit        = ieee80211_monitor_start_xmit,
     .ndo_set_rx_mode    = ieee80211_set_multicast_list,
     .ndo_set_mac_address     = ieee80211_change_mac,
     .ndo_select_queue    = ieee80211_monitor_select_queue,
@@ -1212,17 +1212,17 @@ static void ieee80211_if_free(struct net_device *dev)
 
 static void ieee80211_if_setup(struct net_device *dev)
 {
-//    ether_setup(dev);
-//    dev->priv_flags &= ~IFF_TX_SKB_SHARING;
-//    dev->netdev_ops = &ieee80211_dataif_ops;
-//    dev->needs_free_netdev = true;
-//    dev->priv_destructor = ieee80211_if_free;
+    ether_setup(dev);
+    dev->priv_flags &= ~IFF_TX_SKB_SHARING;
+    dev->netdev_ops = &ieee80211_dataif_ops;
+    dev->needs_free_netdev = true;
+    dev->priv_destructor = ieee80211_if_free;
 }
 
 static void ieee80211_if_setup_no_queue(struct net_device *dev)
 {
     ieee80211_if_setup(dev);
-//    dev->priv_flags |= IFF_NO_QUEUE;
+    dev->priv_flags |= IFF_NO_QUEUE;
 }
 
 static void ieee80211_iface_work(struct work_struct *work)
@@ -1454,7 +1454,7 @@ static void ieee80211_setup_sdata(struct ieee80211_sub_if_data *sdata,
             ieee80211_mesh_init_sdata(sdata);
         break;
     case NL80211_IFTYPE_MONITOR:
-//        sdata->dev->type = ARPHRD_IEEE80211_RADIOTAP;
+        sdata->dev->type = ARPHRD_IEEE80211_RADIOTAP;
         sdata->dev->netdev_ops = &ieee80211_monitorif_ops;
         sdata->u.mntr.flags = MONITOR_FLAG_CONTROL |
                       MONITOR_FLAG_OTHER_BSS;
@@ -1767,14 +1767,14 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
                 txqs = IEEE80211_NUM_ACS;
         }
 
-//        ndev = alloc_netdev_mqs(size + txq_size,
-//                    name, name_assign_type,
-//                    if_setup, txqs, 1);
+        ndev = alloc_netdev_mqs(size + txq_size,
+                    name, name_assign_type,
+                    if_setup, txqs, 1);
         if (!ndev)
             return -ENOMEM;
-//        dev_net_set(ndev, wiphy_net(local->hw.wiphy));
+        dev_net_set(ndev, wiphy_net(local->hw.wiphy));
 
-//        ndev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
+        ndev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
         if (!ndev->tstats) {
 //            free_netdev(ndev);
             return -ENOMEM;
@@ -1789,7 +1789,7 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
                     + IEEE80211_ENCRYPT_HEADROOM;
         ndev->needed_tailroom = IEEE80211_ENCRYPT_TAILROOM;
 
-//        ret = dev_alloc_name(ndev, ndev->name);
+        ret = dev_alloc_name(ndev, ndev->name);
         if (ret < 0) {
             ieee80211_if_free(ndev);
 //            free_netdev(ndev);
@@ -1801,16 +1801,16 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
             memcpy(ndev->dev_addr, params->macaddr, ETH_ALEN);
         else
             memcpy(ndev->dev_addr, ndev->perm_addr, ETH_ALEN);
-//        SET_NETDEV_DEV(ndev, wiphy_dev(local->hw.wiphy));
+        SET_NETDEV_DEV(ndev, wiphy_dev(local->hw.wiphy));
 
         /* don't use IEEE80211_DEV_TO_SUB_IF -- it checks too much */
-//        sdata = (struct wireless_dev *)netdev_priv(ndev);
+        sdata = (struct ieee80211_sub_if_data *)netdev_priv(ndev);
         ndev->ieee80211_ptr = &sdata->wdev;
         memcpy(sdata->vif.addr, ndev->dev_addr, ETH_ALEN);
         memcpy(sdata->name, ndev->name, IFNAMSIZ);
 
         if (txq_size) {
-//            txqi = netdev_priv(ndev) + size;
+            txqi = (struct txq_info *)((char *)netdev_priv(ndev) + size);
             ieee80211_txq_init(sdata, NULL, txqi, 0);
         }
 
@@ -1872,13 +1872,13 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
 
         ndev->features |= local->hw.netdev_features;
 
-//        netdev_set_default_ethtool_ops(ndev, &ieee80211_ethtool_ops);
+        netdev_set_default_ethtool_ops(ndev, &ieee80211_ethtool_ops);
 
         /* MTU range: 256 - 2304 */
         ndev->min_mtu = 256;
         ndev->max_mtu = local->hw.max_mtu;
 
-//        ret = register_netdevice(ndev);
+        ret = register_netdevice(ndev);
         if (ret) {
 //            free_netdev(ndev);
             return ret;
@@ -1906,10 +1906,10 @@ void ieee80211_if_remove(struct ieee80211_sub_if_data *sdata)
     if (sdata->vif.txq)
         ieee80211_txq_purge(sdata->local, to_txq_info(sdata->vif.txq));
 
-//    synchronize_rcu();
+    synchronize_rcu();
 
     if (sdata->dev) {
-//        unregister_netdevice(sdata->dev);
+        unregister_netdevice(sdata->dev);
     } else {
         cfg80211_unregister_wdev(&sdata->wdev);
         ieee80211_teardown_sdata(sdata);
@@ -1972,20 +1972,20 @@ void ieee80211_remove_interfaces(struct ieee80211_local *local)
 static int netdev_notify(struct notifier_block *nb,
              unsigned long state, void *ptr)
 {
-//    struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+    struct net_device *dev = netdev_notifier_info_to_dev((const struct netdev_notifier_info *)ptr);
     struct ieee80211_sub_if_data *sdata;
 
-//    if (state != NETDEV_CHANGENAME)
-//        return NOTIFY_DONE;
-//
-//    if (!dev->ieee80211_ptr || !dev->ieee80211_ptr->wiphy)
-//        return NOTIFY_DONE;
-//
-//    if (dev->ieee80211_ptr->wiphy->privid != mac80211_wiphy_privid)
-//        return NOTIFY_DONE;
-//
-//    sdata = IEEE80211_DEV_TO_SUB_IF(dev);
-//    memcpy(sdata->name, dev->name, IFNAMSIZ);
+    if (state != NETDEV_CHANGENAME)
+        return NOTIFY_DONE;
+
+    if (!dev->ieee80211_ptr || !dev->ieee80211_ptr->wiphy)
+        return NOTIFY_DONE;
+
+    if (dev->ieee80211_ptr->wiphy->privid != mac80211_wiphy_privid)
+        return NOTIFY_DONE;
+
+    sdata = IEEE80211_DEV_TO_SUB_IF(dev);
+    memcpy(sdata->name, dev->name, IFNAMSIZ);
 //    ieee80211_debugfs_rename_netdev(sdata);
 
     return NOTIFY_OK;
@@ -1997,8 +1997,7 @@ struct notifier_block mac80211_netdev_notifier = {
 
 int ieee80211_iface_init(void)
 {
-//    return register_netdevice_notifier(&mac80211_netdev_notifier);
-    return 0;
+    return register_netdevice_notifier(&mac80211_netdev_notifier);
 }
 
 void ieee80211_iface_exit(void)

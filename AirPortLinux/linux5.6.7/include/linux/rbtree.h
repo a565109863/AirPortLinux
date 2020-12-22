@@ -61,9 +61,9 @@ extern struct rb_node *rb_first_postorder(const struct rb_root *);
 extern struct rb_node *rb_next_postorder(const struct rb_node *);
 
 /* Fast replacement of a single node without remove/rebalance/add/rebalance */
-extern void rb_replace_node(struct rb_node *victim, struct rb_node *nnew,
+extern void rb_replace_node(struct rb_node *victim, struct rb_node *_new,
                 struct rb_root *root);
-extern void rb_replace_node_rcu(struct rb_node *victim, struct rb_node *nnew,
+extern void rb_replace_node_rcu(struct rb_node *victim, struct rb_node *_new,
                 struct rb_root *root);
 
 static inline void rb_link_node(struct rb_node *node, struct rb_node *parent,
@@ -150,12 +150,12 @@ static inline void rb_erase_cached(struct rb_node *node,
 }
 
 static inline void rb_replace_node_cached(struct rb_node *victim,
-                      struct rb_node *nnew,
+                      struct rb_node *_new,
                       struct rb_root_cached *root)
 {
     if (root->rb_leftmost == victim)
-        root->rb_leftmost = nnew;
-    rb_replace_node(victim, nnew, &root->rb_root);
+        root->rb_leftmost = _new;
+    rb_replace_node(victim, _new, &root->rb_root);
 }
 
 #endif    /* _LINUX_RBTREE_H */

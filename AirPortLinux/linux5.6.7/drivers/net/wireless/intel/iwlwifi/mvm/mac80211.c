@@ -365,6 +365,7 @@ iwl_mvm_op_get_antenna(struct ieee80211_hw *hw, u32 *tx_ant, u32 *rx_ant)
 
 int iwl_mvm_mac_setup_register(struct iwl_mvm *mvm)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct ieee80211_hw *hw = mvm->hw;
 	int num_mac, ret, i;
 	static const u32 mvm_ciphers[] = {
@@ -563,6 +564,8 @@ int iwl_mvm_mac_setup_register(struct iwl_mvm *mvm)
 	memcpy(mvm->addresses[0].addr, mvm->nvm_data->hw_addr, ETH_ALEN);
 	hw->wiphy->addresses = mvm->addresses;
 	hw->wiphy->n_addresses = 1;
+    
+    kprintf("--%s: line = %d, mvm->nvm_data->hw_addr %s\n", __FUNCTION__, __LINE__, ether_sprintf(mvm->nvm_data->hw_addr));
 
 	/* Extract additional MAC addresses if available */
 	num_mac = (mvm->nvm_data->n_hw_addrs > 1) ?
@@ -573,6 +576,8 @@ int iwl_mvm_mac_setup_register(struct iwl_mvm *mvm)
 		       ETH_ALEN);
 		mvm->addresses[i].addr[5]++;
 		hw->wiphy->n_addresses++;
+        
+        kprintf("--%s: line = %d, address %s\n", __FUNCTION__, __LINE__, ether_sprintf(mvm->addresses[i].addr));
 	}
 
 	iwl_mvm_reset_phy_ctxts(mvm);

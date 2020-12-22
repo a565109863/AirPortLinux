@@ -21,6 +21,50 @@
 #endif
 
 
+struct neighbour {
+    struct neighbour __rcu    *next;
+    struct neigh_table    *tbl;
+    struct neigh_parms    *parms;
+    unsigned long        confirmed;
+    unsigned long        updated;
+//    rwlock_t        lock;
+    refcount_t        refcnt;
+    unsigned int        arp_queue_len_bytes;
+    struct sk_buff_head    arp_queue;
+    struct timer_list    timer;
+    unsigned long        used;
+    atomic_t        probes;
+    __u8            flags;
+    __u8            nud_state;
+    __u8            type;
+    __u8            dead;
+    u8            protocol;
+//    seqlock_t        ha_lock;
+    unsigned char        ha[ALIGN(MAX_ADDR_LEN, sizeof(unsigned long))] __aligned(8);
+    struct hh_cache        hh;
+    int            (*output)(struct neighbour *, struct sk_buff *);
+    const struct neigh_ops    *ops;
+    struct list_head    gc_list;
+    struct rcu_head        rcu;
+    struct net_device    *dev;
+    u8            primary_key[0];
+} __randomize_layout;
+
+
+static inline struct ethhdr *eth_hdr(const struct sk_buff *skb)
+{
+    return (struct ethhdr *)skb_mac_header(skb);
+}
+
+int eth_header(struct sk_buff *skb, struct net_device *dev, unsigned short type,
+               const void *daddr, const void *saddr, unsigned len);
+int eth_header_parse(const struct sk_buff *skb, unsigned char *haddr);
+int eth_header_cache(const struct neighbour *neigh, struct hh_cache *hh,
+                     __be16 type);
+void eth_header_cache_update(struct hh_cache *hh, const struct net_device *dev,
+                             const unsigned char *haddr);
+__be16 eth_header_parse_protocol(const struct sk_buff *skb);
+
 
 /* Reserved Ethernet Addresses per IEEE 802.1Q */
 static const u8 eth_reserved_addr_base[ETH_ALEN] __aligned(2) =
@@ -495,5 +539,10 @@ static inline int eth_skb_pad(struct sk_buff *skb)
 //    return skb_put_padto(skb, ETH_ZLEN);
     return 0;
 }
+
+
+int eth_prepare_mac_addr_change(struct net_device *dev, void *p);
+void eth_commit_mac_addr_change(struct net_device *dev, void *p);
+int eth_mac_addr(struct net_device *dev, void *p);
 
 #endif /* etherdevice_h */

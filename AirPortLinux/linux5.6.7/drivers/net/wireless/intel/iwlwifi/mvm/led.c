@@ -109,6 +109,7 @@ static void iwl_led_brightness_set(struct led_classdev *led_cdev,
 
 int iwl_mvm_leds_init(struct iwl_mvm *mvm)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	int mode = iwlwifi_mod_params.led_mode;
 	int ret;
 
@@ -167,6 +168,7 @@ void iwl_mvm_leds_sync(struct iwl_mvm *mvm)
 
 void iwl_mvm_leds_exit(struct iwl_mvm *mvm)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	if (!(mvm->init_status & IWL_MVM_INIT_STATUS_LEDS_INIT_COMPLETE))
 		return;
 

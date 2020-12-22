@@ -251,6 +251,9 @@ public:
     
     OSDictionary* mediumDict;
     
+    
+    struct pci_dev *pdev;
+    
     struct pci_attach_args *pa;
     struct cfdriver *cd;
     struct cfattach *ca;

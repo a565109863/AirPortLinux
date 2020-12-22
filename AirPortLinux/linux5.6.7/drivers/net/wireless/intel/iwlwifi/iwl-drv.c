@@ -224,7 +224,7 @@ void firmwareLoadComplete(OSKextRequestTag requestTag, OSReturn result,
         memcpy((void*)fw->data, resourceData, fw->size);
     }
 
-    DebugLog("--%s: line = %d, fw->size = %lu", __FUNCTION__, __LINE__, fw->size);
+//    kprintf("--%s: line = %d, fw->size = %lu", __FUNCTION__, __LINE__, fw->size);
 
     ((struct iwl_drv *)context)->dev->cont(fw, context);
 }
@@ -253,7 +253,6 @@ inline int request_firmware_nowait(
 
 static int iwl_request_firmware(struct iwl_drv *drv, bool first)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	const struct iwl_cfg *cfg = drv->trans->cfg;
 	char tag[8];
 
@@ -298,8 +297,6 @@ static int iwl_request_firmware(struct iwl_drv *drv, bool first)
 	IWL_DEBUG_FW_INFO(drv, "attempting to load firmware '%s'\n",
 			  drv->firmware_name);
 
-    DebugLog("--%s: line = %d, firmware_name = %s", __FUNCTION__, __LINE__, drv->firmware_name);
-    DebugLog("--%s: line = %d, firmware_name = %s", __FUNCTION__, __LINE__, drv->firmware_name);
 	return request_firmware_nowait(THIS_MODULE, 1, drv->firmware_name,
 				       drv->trans->dev,
 				       GFP_KERNEL, drv, iwl_req_fw_callback);
@@ -696,8 +693,6 @@ static int iwl_parse_tlv_firmware(struct iwl_drv *drv,
 		 IWL_UCODE_API(drv->fw.ucode_ver),
 		 IWL_UCODE_SERIAL(drv->fw.ucode_ver),
 		 buildstr, iwl_reduced_fw_name(drv));
-    
-    DebugLog("--%s: line = %d, drv->fw.fw_version = %s", __FUNCTION__, __LINE__, drv->fw.fw_version);
 
 	data = ucode->data;
 
@@ -1341,10 +1336,8 @@ _iwl_op_mode_start(struct iwl_drv *drv, struct iwlwifi_opmode_table *op)
 //	dbgfs_dir = drv->dbgfs_op_mode;
 #endif
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	op_mode = ops->start(drv->trans, drv->trans->cfg, &drv->fw, dbgfs_dir);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 #ifdef CONFIG_IWLWIFI_DEBUGFS
 	if (!op_mode) {
 //		debugfs_remove_recursive(drv->dbgfs_op_mode);
@@ -1377,6 +1370,7 @@ static void _iwl_op_mode_stop(struct iwl_drv *drv)
  */
 static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_drv *drv = (struct iwl_drv *)context;
 	struct iwl_fw *fw = &drv->fw;
 	struct iwl_ucode_header *ucode;
@@ -1430,8 +1424,6 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
 		api_ver = drv->fw.ucode_ver;
 	else
 		api_ver = IWL_UCODE_API(drv->fw.ucode_ver);
-
-    DebugLog("--%s: line = %d,api_ver = %d", __FUNCTION__, __LINE__, api_ver);
 
 	/*
 	 * api_ver should match the api version forming part of the
@@ -1628,22 +1620,17 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
 	list_add_tail(&drv->list, &op->drv);
 
 	if (op->ops) {
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 		drv->op_mode = _iwl_op_mode_start(drv, op);
 
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 		if (!drv->op_mode) {
-            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 			mutex_unlock(&iwlwifi_opmode_table_mtx);
 			goto out_unbind;
 		}
 	} else {
 		load_module = true;
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	}
 	mutex_unlock(&iwlwifi_opmode_table_mtx);
 
-    DebugLog("--%s: line = %d load_module = %d", __FUNCTION__, __LINE__, load_module);
 	/*
 	 * Complete the firmware request last so that
 	 * a driver unbind (stop) doesn't run while we
@@ -1651,7 +1638,6 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
 	 */
 	complete(&drv->request_firmware_complete);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/*
 	 * Load the module last so we don't block anything
 	 * else from proceeding if the module fails to load
@@ -1669,7 +1655,6 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
 	goto free;
 
  try_again:
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/* try next, if any */
 	release_firmware(ucode_raw);
 	if (iwl_request_firmware(drv, false))
@@ -1677,15 +1662,11 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
 	goto free;
 
  out_free_fw:
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	release_firmware(ucode_raw);
  out_unbind:
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	complete(&drv->request_firmware_complete);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 //	device_release_driver(drv->trans->dev);
  free:
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	if (pieces) {
 		for (i = 0; i < ARRAY_SIZE(pieces->img); i++)
 			kfree(pieces->img[i].sec);
@@ -1696,7 +1677,6 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
 
 struct iwl_drv *iwl_drv_start(struct iwl_trans *trans)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_drv *drv;
 	int ret;
 
@@ -1708,6 +1688,7 @@ struct iwl_drv *iwl_drv_start(struct iwl_trans *trans)
 
 	drv->trans = trans;
 	drv->dev = trans->dev;
+    kprintf("--%s: line = %d, drv->trans->cfg->name = %s", __FUNCTION__, __LINE__, drv->trans->cfg->name);
 
 	init_completion(&drv->request_firmware_complete);
 	INIT_LIST_HEAD(&drv->list);
@@ -1723,7 +1704,6 @@ struct iwl_drv *iwl_drv_start(struct iwl_trans *trans)
 
 	drv->trans->dbg.domains_bitmap = IWL_TRANS_FW_DBG_DOMAIN(drv->trans);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     drv->request_firmware_complete.event = drv;
 	ret = iwl_request_firmware(drv, true);
     IOLockSleep(drv->request_firmware_complete.lock, drv, THREAD_INTERRUPTIBLE);
@@ -1733,10 +1713,7 @@ struct iwl_drv *iwl_drv_start(struct iwl_trans *trans)
 		goto err_fw;
 	}
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     IOLockFree(drv->request_firmware_complete.lock);
-    
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     
 	return drv;
 

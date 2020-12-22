@@ -264,21 +264,7 @@ static int __pci_enable_msix_range(struct pci_dev *dev,
                                    int maxvec, struct irq_affinity *affd,
                                    int flags)
 {
-    IOReturn ret;
-    int index, source = -1;
-    for (index = 0; ; index++)
-    {
-        int interruptType;
-        ret = dev->dev.dev->fPciDevice->getInterruptType(index, &interruptType);
-        if (ret != kIOReturnSuccess)
-            break;
-        if (interruptType & kIOInterruptTypePCIMessaged)
-        {
-            source = index;
-            break;
-        }
-    }
-    return source;
+    return -1;
 }
 
 /**

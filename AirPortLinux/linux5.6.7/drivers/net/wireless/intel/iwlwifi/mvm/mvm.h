@@ -1350,7 +1350,6 @@ bool iwl_mvm_is_p2p_scm_uapsd_supported(struct iwl_mvm *mvm)
 
 static inline bool iwl_mvm_has_new_rx_api(struct iwl_mvm *mvm)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	return fw_has_capa(&mvm->fw->ucode_capa,
 			   IWL_UCODE_TLV_CAPA_MULTI_QUEUE_RX_SUPPORT);
 }
@@ -1947,13 +1946,14 @@ static inline u32 iwl_mvm_flushable_queues(struct iwl_mvm *mvm)
 
 static inline void iwl_mvm_stop_device(struct iwl_mvm *mvm)
 {
-	lockdep_assert_held(&mvm->mutex);
-	iwl_fw_cancel_timestamp(&mvm->fwrt);
-	clear_bit(IWL_MVM_STATUS_FIRMWARE_RUNNING, &mvm->status);
-	iwl_fw_dbg_stop_sync(&mvm->fwrt);
-	iwl_trans_stop_device(mvm->trans);
-	iwl_free_fw_paging(&mvm->fwrt);
-	iwl_fw_dump_conf_clear(&mvm->fwrt);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+//    lockdep_assert_held(&mvm->mutex);
+//    iwl_fw_cancel_timestamp(&mvm->fwrt);
+//    clear_bit(IWL_MVM_STATUS_FIRMWARE_RUNNING, &mvm->status);
+//    iwl_fw_dbg_stop_sync(&mvm->fwrt);
+//    iwl_trans_stop_device(mvm->trans);
+//    iwl_free_fw_paging(&mvm->fwrt);
+//    iwl_fw_dump_conf_clear(&mvm->fwrt);
 }
 
 /* Re-configure the SCD for a queue that has already been configured */

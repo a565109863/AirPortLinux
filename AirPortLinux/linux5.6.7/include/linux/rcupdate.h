@@ -16,6 +16,11 @@
 #define RCU_INIT_POINTER(p, v)    do { (p) = (v); } while (0)
 
 
+#define rcu_read_lock_held() 0
+#define rcu_read_lock_bh_held() 0
+
+
+
 static inline bool
 rcu_head_after_call_rcu(struct rcu_head *rhp, rcu_callback_t f)
 {

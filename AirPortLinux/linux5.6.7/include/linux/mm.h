@@ -15,24 +15,52 @@
 #include <linux/kernel.h>
 
 
-#define free_pages(a,b)
+struct page {
+    int32_t    name;
+    int32_t    sect;
+    int32_t    arch;
+    int32_t    desc;
+    int32_t    file;
+    
+    uint32_t    dm_mapsize;    /* size of the mapping */
+    int        dm_nsegs;    /* # valid segments in mapping */
+    IOPhysicalSegment *dm_segs;    /* segments; variable length */
+    
+    uint32_t alignment;
+    IOBufferMemoryDescriptor *bufDes;
+    IODMACommand *dmaCmd;
+    IOMbufNaturalMemoryCursor*    mbufCursor;
+    
+    
+    IOPhysicalSegment    seg;
+    dma_addr_t        paddr;
+    caddr_t            vaddr;
+    uint32_t        size;
+};
 
-static
-void *page_address(mbuf_t mac_data)
-{
-    return mbuf_data(mac_data);
-}
+#define free_pages(a,b)
 
 static
 void get_page(struct page * page)
 {
-    
+//    page++;
+}
+
+
+static void __free_page(struct page * page)
+{
+//    page++;
+}
+
+static void __free_pages(struct page * page, u32 _rx_page_order)
+{
+//    page++;
 }
 
 
 static inline void *page_address(const struct page *page)
 {
-    return NULL;
+    return page->vaddr;
 }
 static inline void set_page_address(struct page *page, void *address)
 {
@@ -42,6 +70,7 @@ static inline void set_page_address(struct page *page, void *address)
 
 static inline struct page *virt_to_head_page(const void *x)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 //    struct page *page = virt_to_page(x);
 //
 //    return compound_head(page);

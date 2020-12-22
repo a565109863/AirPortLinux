@@ -307,7 +307,7 @@ static bool iwl_wait_phy_db_entry(struct iwl_notif_wait_data *notif_wait,
 static int iwl_mvm_load_ucode_wait_alive(struct iwl_mvm *mvm,
 					 enum iwl_ucode_type ucode_type)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_notification_wait alive_wait;
 	struct iwl_mvm_alive_data alive_data = {};
 	const struct fw_img *fw;
@@ -345,14 +345,12 @@ static int iwl_mvm_load_ucode_wait_alive(struct iwl_mvm *mvm,
 		return ret;
 	}
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/*
 	 * Some things may run in the background now, but we
 	 * just wait for the ALIVE notification here.
 	 */
 	ret = iwl_wait_notification(&mvm->notif_wait, &alive_wait,
 				    MVM_UCODE_ALIVE_TIMEOUT);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	if (ret) {
 		struct iwl_trans *trans = mvm->trans;
 
@@ -388,7 +386,6 @@ static int iwl_mvm_load_ucode_wait_alive(struct iwl_mvm *mvm,
 		iwl_fw_set_current_image(&mvm->fwrt, old_type);
 		return ret;
 	}
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 
 	if (!alive_data.valid) {
 		IWL_ERR(mvm, "Loaded ucode is not valid!\n");
@@ -396,7 +393,6 @@ static int iwl_mvm_load_ucode_wait_alive(struct iwl_mvm *mvm,
 		return -EIO;
 	}
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	iwl_trans_fw_alive(mvm->trans, alive_data.scd_base_addr);
 
 	/*
@@ -423,7 +419,6 @@ static int iwl_mvm_load_ucode_wait_alive(struct iwl_mvm *mvm,
 	iwl_fw_set_dbg_rec_on(&mvm->fwrt);
 #endif
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	return 0;
 }
 
@@ -530,6 +525,7 @@ error:
 
 static int iwl_send_phy_cfg_cmd(struct iwl_mvm *mvm)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_phy_cfg_cmd phy_cfg_cmd;
 	enum iwl_ucode_type ucode_type = mvm->fwrt.cur_fw_img;
 
@@ -566,7 +562,7 @@ static int iwl_send_phy_cfg_cmd(struct iwl_mvm *mvm)
 
 int iwl_run_init_mvm_ucode(struct iwl_mvm *mvm, bool read_nvm)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_notification_wait calib_wait;
 	static const u16 init_complete[] = {
 		INIT_COMPLETE_NOTIF,
@@ -581,7 +577,6 @@ int iwl_run_init_mvm_ucode(struct iwl_mvm *mvm, bool read_nvm)
 
 	mvm->rfkill_safe_init_done = false;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	iwl_init_notification_wait(&mvm->notif_wait,
 				   &calib_wait,
 				   init_complete,
@@ -589,7 +584,6 @@ int iwl_run_init_mvm_ucode(struct iwl_mvm *mvm, bool read_nvm)
 				   iwl_wait_phy_db_entry,
 				   mvm->phy_db);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/* Will also start the device */
 	ret = iwl_mvm_load_ucode_wait_alive(mvm, IWL_UCODE_INIT);
 	if (ret) {

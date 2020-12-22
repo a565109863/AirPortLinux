@@ -17,11 +17,14 @@
 #include <linux/_string.h>
 #include <linux/cpu.h>
 #include <linux/rculist.h>
+#include <linux/atomic.h>
+#include <linux/list.h>
 
 #include <asm/swab.h>
 
 
 #define KERN_DEBUG 0
+#define __KERNEL__ 1
 
 #define    NUMA_NO_NODE    (-1)
 typedef unsigned int __wsum;
@@ -72,11 +75,9 @@ static void free(void* addr, int type, vm_size_t len)
     addr = NULL;
 }
 
-static inline void *kmalloc(size_t s, gfp_t gfp)
+static inline void *kmalloc(size_t size, gfp_t gfp)
 {
-//    if (__kmalloc_fake)
-//        return __kmalloc_fake;
-    return IOMalloc(s);
+    return malloc(size);
 }
 
 static inline void *kmalloc_array(size_t n, size_t size, gfp_t flags)
@@ -84,11 +85,11 @@ static inline void *kmalloc_array(size_t n, size_t size, gfp_t flags)
     return kmalloc(n * size, flags);
 }
 
-static inline void *kzalloc(size_t s, gfp_t gfp)
+static inline void *kzalloc(size_t size, gfp_t gfp)
 {
-    void *p = kmalloc(s, gfp);
+    void *p = kmalloc(size, gfp);
 
-    memset(p, 0, s);
+    memset(p, 0, size);
     return p;
 }
 
@@ -149,6 +150,12 @@ static void __percpu *__alloc_percpu_gfp(size_t size, size_t align, gfp_t gfp)
 {
     return vzalloc(size);
 }
+
+static void __percpu *__alloc_percpu(size_t size, size_t align)
+{
+   return vzalloc(size);
+}
+EXPORT_SYMBOL_GPL(__alloc_percpu);
 
 #define alloc_percpu_gfp(type, gfp)                    \
     (typeof(type) __percpu *)__alloc_percpu_gfp(sizeof(type),    \
@@ -212,6 +219,12 @@ static void *kmalloc_track_caller(size_t size, gfp_t gfp)
 #define netdev_info(d, arg...) kprintf(arg)
 #define netdev_err(d, arg...) kprintf(arg)
 #define net_info_ratelimited  kprintf
+#define netdev_warn(d, arg...) kprintf(arg)
+#define netdev_crit(d, arg...) kprintf(arg)
+#define netdev_notice(d, arg...) kprintf(arg)
+#define netdev_alert(d, arg...) kprintf(arg)
+#define netdev_emerg(d, arg...) kprintf(arg)
+#define netdev_printk(l, d, arg...) kprintf(arg)
 
 
 #define __builtin_expect(x, expected_value) (x)
@@ -282,16 +295,11 @@ unlikely(__ret_warn_once);                              \
 #define upper_32_bits(n) ((u32)(((n) >> 16) >> 16))
 #define lower_32_bits(n) ((u32)(n))
 
-struct va_format {
-    const char *fmt;
-    va_list *va;
-};
-
-
 #define __ALIGN_KERNEL_MASK(x, mask)    (((x) + (mask)) & ~(mask))
 #define __ALIGN_KERNEL(x, a)        __ALIGN_KERNEL_MASK(x, (typeof(x))(a) - 1)
 //#define ALIGN(x, a)            __ALIGN_KERNEL((x), (a))
 
+#define __KERNEL_DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
 
 /* @a is a power of 2 value */
 #define ALIGN(x, a)        __ALIGN_KERNEL((x), (a))
@@ -305,53 +313,6 @@ struct va_format {
 #define __round_mask(x, y) ((__typeof__(x))((y)-1))
 #define round_up(x, y) ((((x)-1) | __round_mask(x, y))+1)
 #define round_down(x, y) ((x) & ~__round_mask(x, y))
-
-
-#define ATOMIC_INIT(i)        { (i) }
-#define ATOMIC64_INIT(i)    { (i) }
-
-#define atomic_read(v)        READ_ONCE((v)->counter)
-#define atomic64_read(v)    READ_ONCE((v)->counter)
-
-#define atomic_set(v,i)        WRITE_ONCE((v)->counter, (i))
-#define atomic64_set(v,i)    WRITE_ONCE((v)->counter, (i))
-
-
-static inline int atomic_inc_return( atomic_t *v)
-{
-    v->counter++;
-    return v->counter;
-}
-
-static inline void atomic_dec( atomic_t *v)
-{
-    v->counter--;
-}
-
-static inline int atomic_dec_return( atomic_t *v)
-{
-    v->counter--;
-    return v->counter;
-}
-
-static inline void atomic_inc( atomic_t *v)
-{
-    v->counter++;
-}
-
-static inline int atomic_dec_if_positive(atomic_t *v)
-{
-    unsigned long flags;
-    int res;
-    
-//    local_irq_save(flags);
-    res = v->counter - 1;
-    if (res >= 0)
-        v->counter = res;
-//    local_irq_restore(flags);
-    
-    return res;
-}
 
 
 # define do_div(n,base) ({                    \
@@ -370,7 +331,7 @@ __rem;                            \
 #define for_each_possible_cpu(cpu) \
     for ((cpu) = 0; (cpu) < NR_CPUS; ++(cpu))
 
-#define per_cpu_ptr(x, y) x
+//#define per_cpu_ptr(x, y) x
 
 #define free_percpu(x)
 

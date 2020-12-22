@@ -11,16 +11,31 @@
 
 #include <linux/gfp.h>
 #include <linux/log2.h>
+#include <linux/kernel.h>
 
 #define SLAB_HWCACHE_ALIGN 0
 
 #define __assume_slab_alignment
 #define __malloc
 
-static void *kmem_cache_alloc(struct kmem_cache *, gfp_t flags) __assume_slab_alignment __malloc
+struct kmem_cache {
+    unsigned int object_size;/* The original size of the object */
+    unsigned int size;    /* The aligned/padded/added on size  */
+    unsigned int align;    /* Alignment as calculated */
+    slab_flags_t flags;    /* Active flags on the slab */
+    unsigned int useroffset;/* Usercopy region offset */
+    unsigned int usersize;    /* Usercopy region size */
+    const char *name;    /* Slab name for sysfs */
+    int refcount;        /* Use counter */
+    void (*ctor)(void *);    /* Called on object slot creation */
+    struct list_head list;    /* List of all slab caches on the system */
+};
+
+static void *kmem_cache_alloc(struct kmem_cache *kc, gfp_t flags) __assume_slab_alignment __malloc
 {
-    return NULL;
+    return malloc(sizeof(*kc));
 }
+
 static void kmem_cache_free(struct kmem_cache *, void *)
 {
     
@@ -39,7 +54,9 @@ static struct kmem_cache *kmem_cache_create(const char *name, unsigned int size,
             unsigned int align, slab_flags_t flags,
             void (*ctor)(void *))
 {
-    return NULL;
+    struct kmem_cache *kc = (struct kmem_cache *)kmalloc(size, flags);
+    kc->name = name;
+    return kc;
 }
 static struct kmem_cache *kmem_cache_create_usercopy(const char *name,
             unsigned int size, unsigned int align,

@@ -1004,6 +1004,7 @@ static const struct iwl_dev_info iwl_dev_info_table[] = {
 
 int iwl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	const struct iwl_cfg_trans_params *trans =
 		(struct iwl_cfg_trans_params *)(ent->driver_data);
 	const struct iwl_cfg *cfg_7265d __maybe_unused = NULL;
@@ -1196,22 +1197,18 @@ found:
 		iwl_trans_release_nic_access(iwl_trans, &flags);
 	}
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	pci_set_drvdata(pdev, iwl_trans);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	iwl_trans->drv = iwl_drv_start(iwl_trans);
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	if (IS_ERR(iwl_trans->drv)) {
 		ret = PTR_ERR(iwl_trans->drv);
 		goto out_free_trans;
 	}
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/* register transport layer debugfs here */
 	iwl_trans_pcie_dbgfs_register(iwl_trans);
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	/* The PCI device starts with a reference taken and we are
 	 * supposed to release it here.  But to simplify the
 	 * interaction with the opmode, we don't do it now, but let

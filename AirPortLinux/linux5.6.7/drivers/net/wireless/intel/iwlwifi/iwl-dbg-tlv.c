@@ -336,11 +336,11 @@ void iwl_dbg_tlv_del_timers(struct iwl_trans *trans)
 	struct list_head *timer_list = &trans->dbg.periodic_trig_list;
 	struct iwl_dbg_tlv_timer_node *node, *tmp;
 
-	list_for_each_entry_safe(node, tmp, timer_list, list) {
-		del_timer(&node->timer);
-		list_del(&node->list);
-		kfree(node);
-	}
+//    list_for_each_entry_safe(node, tmp, timer_list, list) {
+//        del_timer(&node->timer);
+//        list_del(&node->list);
+//        kfree(node);
+//    }
 }
 IWL_EXPORT_SYMBOL(iwl_dbg_tlv_del_timers);
 
@@ -764,14 +764,14 @@ static void iwl_dbg_tlv_set_periodic_trigs(struct iwl_fw_runtime *fwrt)
 	}
 }
 
-static bool is_trig_data_contained(struct iwl_ucode_tlv *nnew,
+static bool is_trig_data_contained(struct iwl_ucode_tlv *_new,
 				   struct iwl_ucode_tlv *old)
 {
-	struct iwl_fw_ini_trigger_tlv *new_trig = (struct iwl_fw_ini_trigger_tlv *)nnew->data;
+	struct iwl_fw_ini_trigger_tlv *new_trig = (struct iwl_fw_ini_trigger_tlv *)_new->data;
 	struct iwl_fw_ini_trigger_tlv *old_trig = (struct iwl_fw_ini_trigger_tlv *)old->data;
 	__le32 *new_data = new_trig->data, *old_data = old_trig->data;
-	u32 new_dwords_num = iwl_tlv_array_len(nnew, new_trig, data);
-	u32 old_dwords_num = iwl_tlv_array_len(nnew, new_trig, data);
+	u32 new_dwords_num = iwl_tlv_array_len(_new, new_trig, data);
+	u32 old_dwords_num = iwl_tlv_array_len(_new, new_trig, data);
 	int i, j;
 
 	for (i = 0; i < new_dwords_num; i++) {

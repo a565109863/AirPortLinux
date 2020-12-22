@@ -37,8 +37,6 @@ typedef u64            uint64_t;
 typedef u64            u_int64_t;
 typedef s64            int64_t;
 
-typedef unsigned long kernel_ulong_t;
-
 typedef void (*swap_func_t)(void *a, void *b, int size);
 
 typedef int (*cmp_r_func_t)(const void *a, const void *b, const void *priv);
@@ -72,17 +70,6 @@ typedef int (*cmp_func_t)(const void *a, const void *b);
 //typedef __u8  u8;
 //typedef __s8  s8;
 
-#ifdef __CHECKER__
-#define __bitwise__ __attribute__((bitwise))
-#else
-#define __bitwise__
-#endif
-#define __bitwise __bitwise__
-
-#define __force
-#define __user
-#define __must_check
-#define __cold
 
 //typedef __u16 __bitwise __le16;
 //typedef __u16 __bitwise __be16;
@@ -106,6 +93,14 @@ struct hlist_head {
 
 struct hlist_node {
     struct hlist_node *next, **pprev;
+};
+
+struct llist_head {
+    struct llist_node *first;
+};
+
+struct llist_node {
+    struct llist_node *next;
 };
 
 
@@ -165,6 +160,5 @@ typedef void (*swap_func_t)(void *a, void *b, int size);
 
 typedef int (*cmp_r_func_t)(const void *a, const void *b, const void *priv);
 typedef int (*cmp_func_t)(const void *a, const void *b);
-
 
 #endif /* linux_types_h */

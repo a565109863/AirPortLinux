@@ -35,8 +35,8 @@ bool AirPortLinux::init(OSDictionary* parameters) {
 IOService* AirPortLinux::probe(IOService* provider, SInt32 *score)
 {
     super::probe(provider, score);
-    IOPCIDevice* fPciDevice = OSDynamicCast(IOPCIDevice, provider);
-    if (!fPciDevice) {
+    IOPCIDevice* _fPciDevice = OSDynamicCast(IOPCIDevice, provider);
+    if (!_fPciDevice) {
         return NULL;
     }
     
@@ -59,28 +59,28 @@ IOService* AirPortLinux::probe(IOService* provider, SInt32 *score)
 //    }
     
     
-    struct pci_dev *pdev = (struct pci_dev *)kzalloc(sizeof(*pdev), GFP_KERNEL);
-    pdev->dev.dev = this;
-    pdev->vendor = fPciDevice->extendedConfigRead16(kIOPCIConfigVendorID);
-    pdev->device = fPciDevice->extendedConfigRead16(kIOPCIConfigDeviceID);
-    pdev->subsystem_vendor = fPciDevice->extendedConfigRead16(kIOPCIConfigSubSystemVendorID);
-    pdev->subsystem_device = fPciDevice->extendedConfigRead16(kIOPCIConfigSubSystemID);
+    struct pci_dev *__pdev = IONew(struct pci_dev, 1);
+    __pdev->dev.dev = this;
+    __pdev->vendor = _fPciDevice->extendedConfigRead16(kIOPCIConfigVendorID);
+    __pdev->device = _fPciDevice->extendedConfigRead16(kIOPCIConfigDeviceID);
+    __pdev->subsystem_vendor = _fPciDevice->extendedConfigRead16(kIOPCIConfigSubSystemVendorID);
+    __pdev->subsystem_device = _fPciDevice->extendedConfigRead16(kIOPCIConfigSubSystemID);
     
     int err;
-    err = iwl_drv_init(pdev);
+    err = iwl_drv_init(__pdev);
     if (err)
-        return NULL;
+        goto fail;
     
     err = iwl_mvm_init();
     if (err)
-        return NULL;
+        goto fail;
     
-//    this->ca = &calist.ca[0];
-//    if (!this->ca->ca_match((struct device *)provider, this, &pa)) {
-//        return NULL;
-//    }
-    _pdev = pdev;
+    this->pdev = __pdev;
     return this;
+    
+fail:
+    IODelete(_pdev, struct pci_dev, 1);
+    return NULL;
 }
 
 bool AirPortLinux::start(IOService* provider) {
@@ -129,30 +129,20 @@ bool AirPortLinux::start(IOService* provider) {
         return false;
     }
     
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     fCommandGate->enable();
-    _pdev->dev.dev = this;
-    int err = iwl_pci_probe(_pdev, _pdev->dev.ent);
+    _pdev = this->pdev;
+    this->pdev->dev.dev = this;
+    memcpy(this->pdev->dev.name, "AirPortLinux", sizeof(this->pdev->dev.name));
+    int err = iwl_pci_probe(this->pdev, this->pdev->dev.ent);
     
     if (err)
         return NULL;
     DebugLog("--%s: line = %d err = %d", __FUNCTION__, __LINE__, err);
     
-//    err = iwl_mvm_init();
-//    if (err)
-//        return NULL;
     DebugLog("--%s: line = %d err = %d", __FUNCTION__, __LINE__, err);
     DebugLog("--%s: line = %d err = %d", __FUNCTION__, __LINE__, err);
     return NULL;
-    
-    fPciDevice->setBusMasterEnable(true);
-    fPciDevice->setIOEnable(true);
-    fPciDevice->setMemoryEnable(true);
-//
-//    this->ca->ca_attach((struct device *)provider, (struct device *)if_softc, &this->pa);
-//    if (_ifp->err)
-//    {
-//        return false;
-//    }
     
     fWatchdogTimer = IOTimerEventSource::timerEventSource(this, OSMemberFunctionCast(IOTimerEventSource::Action, this, &AirPortLinux::if_watchdog));
     
@@ -161,23 +151,6 @@ bool AirPortLinux::start(IOService* provider) {
         return false;
     }
     fWorkloop->addEventSource(fWatchdogTimer);
-    
-    
-//    IFConfig = OSDynamicCast(OSString, getProperty(kIFConfigName));
-    
-//    OSDictionary *params = OSDynamicCast(OSDictionary, getProperty(kParamName));
-//    BSSID = OSString::withCString("");
-//    PWD = OSString::withCString("");
-//    if (params) {
-//        BSSID = OSDynamicCast(OSString, params->getObject(kBSSIDName));
-//        PWD = OSDynamicCast(OSString, params->getObject(kPWDName));
-//    }
-    
-//    this->mediumDict = OSDictionary::withCapacity(1);
-//    this->addMediumType(kIOMediumIEEE80211Auto,  _ifp->if_baudrate,  MEDIUM_TYPE_AUTO);
-//    this->publishMediumDictionary(this->mediumDict);
-//    this->setCurrentMedium(this->mediumTable[MEDIUM_TYPE_AUTO]);
-//    this->setSelectedMedium(this->mediumTable[MEDIUM_TYPE_AUTO]);
     
     registerService();
     
@@ -423,7 +396,7 @@ IOReturn AirPortLinux::tsleepHandler(OSObject* owner, void* arg0 = 0, void* arg1
     if (dev == 0)
         return kIOReturnError;
     
-    if (arg1 == 0) {
+    if ((*(int*)arg1) == 0) {
         // no deadline
         if (dev->fCommandGate->commandSleep(arg0, THREAD_INTERRUPTIBLE) == THREAD_AWAKENED)
             return kIOReturnSuccess;

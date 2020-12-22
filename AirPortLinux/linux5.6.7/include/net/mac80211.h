@@ -4117,7 +4117,6 @@ static inline
 struct ieee80211_hw *ieee80211_alloc_hw(size_t priv_data_len,
                     const struct ieee80211_ops *ops)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     return ieee80211_alloc_hw_nm(priv_data_len, ops, NULL);
 }
 

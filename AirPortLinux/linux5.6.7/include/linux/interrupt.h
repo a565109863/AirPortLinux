@@ -9,24 +9,33 @@
 #ifndef interrupt_h
 #define interrupt_h
 
-struct tasklet_struct
-{
-    struct tasklet_struct *next;
-    unsigned long state;
-    atomic_t count;
-    void (*func)(unsigned long);
-    unsigned long data;
+enum irqreturn {
+    IRQ_NONE        = (0 << 0),
+    IRQ_HANDLED        = (1 << 0),
+    IRQ_WAKE_THREAD        = (1 << 1),
 };
 
-static void tasklet_init(struct tasklet_struct *t,
-          void (*func)(unsigned long), unsigned long data)
-{
-    t->next = NULL;
-    t->state = 0;
-    atomic_set(&t->count, 0);
-    t->func = func;
-    t->data = data;
-}
+typedef enum irqreturn irqreturn_t;
 
+typedef irqreturn_t (*irq_handler_t)(int, void *);
+
+
+class pci_intr_handle : public OSObject {
+    OSDeclareDefaultStructors(pci_intr_handle)
+public:
+    IOWorkLoop*        workloop;
+//    IOInterruptEventSource*    intr;
+    IOFilterInterruptEventSource* fintr;
+    IOPCIDevice*        dev;
+    irq_handler_t thread_fn;
+    irq_handler_t filter_fn;
+    void *dev_id;
+    unsigned int irq;
+    const char *intrstr;
+};
+
+
+void interrupt_func(OSObject *owner, IOInterruptEventSource *src, int count);
+bool interrupt_filter(OSObject *owner, IOFilterInterruptEventSource *sender);
 
 #endif /* interrupt_h */

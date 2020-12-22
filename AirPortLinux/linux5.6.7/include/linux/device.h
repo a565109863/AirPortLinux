@@ -13,6 +13,8 @@
 #include <linux/gfp.h>
 #include <linux/mutex.h>
 #include <linux/interrupt.h>
+#include <linux/capability.h>
+#include "AirPortLinux.hpp"
 
 struct pci_device_id {
     __u32 vendor, device;        /* Vendor and device ID or PCI_ANY_ID*/
@@ -29,8 +31,6 @@ struct bus_type {
     const char        *name;
 };
 
-class AirPortLinux;
-class pci_intr_handle;
 struct device {
 //    void *dev;
     AirPortLinux* dev;
@@ -106,7 +106,7 @@ static void *devm_kmalloc(struct device *dev, size_t size, gfp_t gfp)
 //    devres_add(dev, dr->data);
 //    return dr->data;
     
-    return kmalloc(size, gfp);
+    return kzalloc(size, gfp);
 }
 EXPORT_SYMBOL_GPL(devm_kmalloc);
 
@@ -172,36 +172,6 @@ char *devm_kasprintf(struct device *dev, gfp_t gfp, const char *fmt, ...)
     return p;
 }
 EXPORT_SYMBOL_GPL(devm_kasprintf);
-
-
-enum irqreturn {
-    IRQ_NONE        = (0 << 0),
-    IRQ_HANDLED        = (1 << 0),
-    IRQ_WAKE_THREAD        = (1 << 1),
-};
-
-typedef enum irqreturn irqreturn_t;
-
-typedef irqreturn_t (*irq_handler_t)(int, void *);
-
-
-class pci_intr_handle : public OSObject {
-    OSDeclareDefaultStructors(pci_intr_handle)
-public:
-    IOWorkLoop*        workloop;
-    IOInterruptEventSource*    intr;
-    IOPCIDevice*        dev;
-    irqreturn_t (*thread_fn)(int, void *);
-    void *dev_id;
-    unsigned int irq;
-    int source;
-    const char *intrstr;
-};
-
-
-void interrupt_func(OSObject *owner, IOInterruptEventSource *src, int count);
-
-
 
 int __must_check
 devm_request_threaded_irq(struct device *dev, unsigned int irq,
