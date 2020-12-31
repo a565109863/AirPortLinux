@@ -65,6 +65,7 @@ struct net init_net = {
 EXPORT_SYMBOL(init_net);
 
 static bool init_net_initialized;
+
 /*
  * pernet_ops_rwsem: protects: pernet_list, net_generic_ids,
  * init_net_initialized and first_device pointer.
@@ -336,11 +337,11 @@ static __net_init int setup_net(struct net *net, struct user_namespace *user_ns)
     spin_lock_init(&net->nsid_lock);
 //    mutex_init(&net->ipv4.ra_mutex);
     
-//    list_for_each_entry(ops, &pernet_list, list) {
-//        error = ops_init(ops, net);
-//        if (error < 0)
-//            goto out_undo;
-//    }
+    list_for_each_entry(ops, &pernet_list, list) {
+        error = ops_init(ops, net);
+        if (error < 0)
+            goto out_undo;
+    }
 //    down_write(&net_rwsem);
     list_add_tail_rcu(&net->list, &net_namespace_list);
 //    up_write(&net_rwsem);

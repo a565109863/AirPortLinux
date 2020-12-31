@@ -167,5 +167,10 @@ atomic_long_inc(atomic_long_t *v)
     atomic64_inc(v);
 }
 
+static inline long
+atomic_long_read(const atomic_long_t *v)
+{
+    return atomic64_read(v);
+}
 
 #endif /* _LINUX_ATOMIC_H */

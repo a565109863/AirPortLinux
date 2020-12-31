@@ -8,7 +8,7 @@
 
 #include "AirPortLinux.hpp"
 
-extern struct ifnet *_ifp;
+//extern struct ifnet *_ifp;
 
 
 int AirPortLinux::bpfOutputPacket(IOInterface* interface, UInt dltType, mbuf_t m)

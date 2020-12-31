@@ -56,6 +56,7 @@ struct timer_list {
 //    struct tvec_base *base;
     IOTimeout* vt;
     
+    const char *name;
     void (*function)(struct timer_list *);
 //    unsigned long data;
 //
@@ -88,9 +89,12 @@ struct timer_list {
 #define timer_setup(timer, callback, flags)            \
     __init_timer((timer), (callback), (flags))
 
-void __init_timer(struct timer_list *timer,
-                       void (*callback) (struct timer_list *),
-                        unsigned int flags);
+#define __init_timer(_timer, _fn, _flags)                \
+init_timer_key((_timer), (_fn), (_flags), #_timer)
+
+void init_timer_key(struct timer_list *timer,
+                    void (*func)(struct timer_list *), unsigned int flags,
+                    const char *name);
 void add_timer_on(struct timer_list *timer, int cpu);
 void add_timer(struct timer_list *timer);
 int del_timer(struct timer_list * timer);

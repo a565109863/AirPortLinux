@@ -466,27 +466,27 @@ static void crypto_shash_free_instance(struct crypto_instance *inst)
 //    shash->free(shash);
 }
 
-#ifdef CONFIG_NET
-static int crypto_shash_report(struct sk_buff *skb, struct crypto_alg *alg)
-{
-    struct crypto_report_hash rhash;
-    struct shash_alg *salg = __crypto_shash_alg(alg);
-
-    memset(&rhash, 0, sizeof(rhash));
-
-    strscpy(rhash.type, "shash", sizeof(rhash.type));
-
-    rhash.blocksize = alg->cra_blocksize;
-    rhash.digestsize = salg->digestsize;
-
-    return nla_put(skb, CRYPTOCFGA_REPORT_HASH, sizeof(rhash), &rhash);
-}
-#else
+//#ifdef CONFIG_NET
+//static int crypto_shash_report(struct sk_buff *skb, struct crypto_alg *alg)
+//{
+//    struct crypto_report_hash rhash;
+//    struct shash_alg *salg = __crypto_shash_alg(alg);
+//
+//    memset(&rhash, 0, sizeof(rhash));
+//
+//    strscpy(rhash.type, "shash", sizeof(rhash.type));
+//
+//    rhash.blocksize = alg->cra_blocksize;
+//    rhash.digestsize = salg->digestsize;
+//
+//    return nla_put(skb, CRYPTOCFGA_REPORT_HASH, sizeof(rhash), &rhash);
+//}
+//#else
 static int crypto_shash_report(struct sk_buff *skb, struct crypto_alg *alg)
 {
     return -ENOSYS;
 }
-#endif
+//#endif
 
 static void crypto_shash_show(struct seq_file *m, struct crypto_alg *alg)
     __maybe_unused;

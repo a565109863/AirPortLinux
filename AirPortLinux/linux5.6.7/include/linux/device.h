@@ -14,6 +14,7 @@
 #include <linux/mutex.h>
 #include <linux/interrupt.h>
 #include <linux/capability.h>
+#include <linux/pm.h>
 #include "AirPortLinux.hpp"
 
 struct pci_device_id {
@@ -38,11 +39,17 @@ struct device {
     struct device *parent;
 //    AppleIwlWiFi *parent;
     struct kobject kobj; // Device of type IOPCIDevice.
-    void *driver_data;
+    void        *platform_data;    /* Platform specific data, device
+                       core doesn't touch it */
+    void        *driver_data;    /* Driver data, set and get with
+                       dev_set_drvdata/dev_get_drvdata */
+    struct dev_pm_info    power;
+    
+    
     const struct pci_device_id *ent;
     struct bus_type *bus;
     
-    pci_intr_handle *ih;
+    pci_intr_handle *ih[16];
     u64        *dma_mask;
     void (*cont)(const struct firmware *, void *);
 };

@@ -1181,14 +1181,14 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
     if (!local->hw.weight_multiplier)
         local->hw.weight_multiplier = 1;
 
-//    result = ieee80211_wep_init(local);
-//    if (result < 0)
-//        wiphy_debug(local->hw.wiphy, "Failed to initialize wep: %d\n",
-//                result);
+    result = ieee80211_wep_init(local);
+    if (result < 0)
+        wiphy_debug(local->hw.wiphy, "Failed to initialize wep: %d\n",
+                result);
 
     local->hw.conf.flags = IEEE80211_CONF_IDLE;
 
-//    ieee80211_led_init(local);
+    ieee80211_led_init(local);
 
     result = ieee80211_txq_setup_flows(local);
     if (result)
@@ -1199,8 +1199,8 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
                           hw->rate_control_algorithm);
     rtnl_unlock();
     if (result < 0) {
-//        wiphy_debug(local->hw.wiphy,
-//                "Failed to initialize rate control algorithm\n");
+        wiphy_debug(local->hw.wiphy,
+                "Failed to initialize rate control algorithm\n");
         goto fail_rate;
     }
 
@@ -1241,8 +1241,8 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
             goto fail_rate;
         }
 
-//        wiphy_dbg(hw->wiphy, "copying sband (band %d) due to VHT EXT NSS BW flag\n",
-//              band);
+        wiphy_dbg(hw->wiphy, "copying sband (band %d) due to VHT EXT NSS BW flag\n",
+              band);
 
         sband->vht_cap.vht_mcs.tx_highest ^=
             cpu_to_le16(IEEE80211_VHT_EXT_NSS_BW_CAPABLE);
@@ -1262,11 +1262,11 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
         !ieee80211_hw_check(hw, NO_AUTO_VIF)) {
         struct vif_params params = {0};
 
-//        result = ieee80211_if_add(local, "wlan%d", NET_NAME_ENUM, NULL,
-//                      NL80211_IFTYPE_STATION, &params);
-//        if (result)
-//            wiphy_warn(local->hw.wiphy,
-//                   "Failed to add default virtual iface\n");
+        result = ieee80211_if_add(local, "wlan%d", NET_NAME_ENUM, NULL,
+                      NL80211_IFTYPE_STATION, &params);
+        if (result)
+            wiphy_warn(local->hw.wiphy,
+                   "Failed to add default virtual iface\n");
     }
 
     rtnl_unlock();

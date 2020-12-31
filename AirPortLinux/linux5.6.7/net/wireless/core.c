@@ -58,14 +58,14 @@ struct cfg80211_registered_device *cfg80211_rdev_by_wiphy_idx(int wiphy_idx)
 {
     struct cfg80211_registered_device *result = NULL, *rdev;
 
-//    ASSERT_RTNL();
-//
-//    list_for_each_entry(rdev, &cfg80211_rdev_list, list) {
-//        if (rdev->wiphy_idx == wiphy_idx) {
-//            result = rdev;
-//            break;
-//        }
-//    }
+    ASSERT_RTNL();
+
+    list_for_each_entry(rdev, &cfg80211_rdev_list, list) {
+        if (rdev->wiphy_idx == wiphy_idx) {
+            result = rdev;
+            break;
+        }
+    }
 
     return result;
 }
@@ -147,7 +147,7 @@ int cfg80211_dev_rename(struct cfg80211_registered_device *rdev,
 //                   rdev->wiphy.debugfsdir,
 //                   rdev->wiphy.debugfsdir->d_parent, newname);
 
-//    nl80211_notify_wiphy(rdev, NL80211_CMD_NEW_WIPHY);
+    nl80211_notify_wiphy(rdev, NL80211_CMD_NEW_WIPHY);
 
     return 0;
 }
@@ -193,20 +193,20 @@ int cfg80211_switch_netns(struct cfg80211_registered_device *rdev,
     list_for_each_entry(wdev, &rdev->wiphy.wdev_list, list) {
         if (!wdev->netdev)
             continue;
-//        nl80211_notify_iface(rdev, wdev, NL80211_CMD_DEL_INTERFACE);
+        nl80211_notify_iface(rdev, wdev, NL80211_CMD_DEL_INTERFACE);
     }
-//    nl80211_notify_wiphy(rdev, NL80211_CMD_DEL_WIPHY);
+    nl80211_notify_wiphy(rdev, NL80211_CMD_DEL_WIPHY);
 
     wiphy_net_set(&rdev->wiphy, net);
 
 //    err = device_rename(&rdev->wiphy.dev, dev_name(&rdev->wiphy.dev));
 //    WARN_ON(err);
 
-//    nl80211_notify_wiphy(rdev, NL80211_CMD_NEW_WIPHY);
+    nl80211_notify_wiphy(rdev, NL80211_CMD_NEW_WIPHY);
     list_for_each_entry(wdev, &rdev->wiphy.wdev_list, list) {
         if (!wdev->netdev)
             continue;
-//        nl80211_notify_iface(rdev, wdev, NL80211_CMD_NEW_INTERFACE);
+        nl80211_notify_iface(rdev, wdev, NL80211_CMD_NEW_INTERFACE);
     }
 
     return 0;
@@ -491,7 +491,7 @@ use_default_name:
 
 //    device_initialize(&rdev->wiphy.dev);
 //    rdev->wiphy.dev.class = &ieee80211_class;
-//    rdev->wiphy.dev.platform_data = rdev;
+    rdev->wiphy.dev.platform_data = rdev;
 //    device_enable_async_suspend(&rdev->wiphy.dev);
 
     INIT_WORK(&rdev->destroy_work, cfg80211_destroy_iface_wk);
@@ -886,15 +886,14 @@ int wiphy_register(struct wiphy *wiphy)
 
     rtnl_lock();
 //    res = device_add(&rdev->wiphy.dev);
-    if (res) {
-        rtnl_unlock();
-        return res;
-    }
+//    if (res) {
+//        rtnl_unlock();
+//        return res;
+//    }
 
 //    /* set up regulatory info */
-//    wiphy_regulatory_register(wiphy);
-//
-//    list_add_rcu(&rdev->list, &cfg80211_rdev_list);
+    wiphy_regulatory_register(wiphy);
+    list_add_rcu(&rdev->list, &cfg80211_rdev_list);
     cfg80211_rdev_list_generation++;
 //
 //    /* add to debugfs */
@@ -902,7 +901,7 @@ int wiphy_register(struct wiphy *wiphy)
 //                            ieee80211_debugfs_dir);
 //
 //    cfg80211_debugfs_rdev_add(rdev);
-//    nl80211_notify_wiphy(rdev, NL80211_CMD_NEW_WIPHY);
+    nl80211_notify_wiphy(rdev, NL80211_CMD_NEW_WIPHY);
 
     if (wiphy->regulatory_flags & REGULATORY_CUSTOM_REG) {
         struct regulatory_request request;
@@ -994,7 +993,7 @@ void wiphy_unregister(struct wiphy *wiphy)
 //        rfkill_unregister(rdev->rfkill);
 
     rtnl_lock();
-//    nl80211_notify_wiphy(rdev, NL80211_CMD_DEL_WIPHY);
+    nl80211_notify_wiphy(rdev, NL80211_CMD_DEL_WIPHY);
     rdev->wiphy.registered = false;
 
     WARN_ON(!list_empty(&rdev->wiphy.wdev_list));
@@ -1080,11 +1079,11 @@ static void __cfg80211_unregister_wdev(struct wireless_dev *wdev, bool sync)
 
     flush_work(&wdev->pmsr_free_wk);
 
-//    nl80211_notify_iface(rdev, wdev, NL80211_CMD_DEL_INTERFACE);
-//
-//    list_del_rcu(&wdev->list);
-//    if (sync)
-//        synchronize_rcu();
+    nl80211_notify_iface(rdev, wdev, NL80211_CMD_DEL_INTERFACE);
+
+    list_del_rcu(&wdev->list);
+    if (sync)
+        synchronize_rcu();
     rdev->devlist_generation++;
 
     cfg80211_mlme_purge_registrations(wdev);
@@ -1245,10 +1244,10 @@ void cfg80211_init_wdev(struct cfg80211_registered_device *rdev,
      */
     if (!wdev->identifier)
         wdev->identifier = ++rdev->wdev_id;
-//    list_add_rcu(&wdev->list, &rdev->wiphy.wdev_list);
+    list_add_rcu(&wdev->list, &rdev->wiphy.wdev_list);
     rdev->devlist_generation++;
 
-//    nl80211_notify_iface(rdev, wdev, NL80211_CMD_NEW_INTERFACE);
+    nl80211_notify_iface(rdev, wdev, NL80211_CMD_NEW_INTERFACE);
 }
 
 static int cfg80211_netdev_notifier_call(struct notifier_block *nb,
@@ -1434,10 +1433,10 @@ static void cfg80211_pernet_exit(struct net *net)
     struct cfg80211_registered_device *rdev;
 
     rtnl_lock();
-//    list_for_each_entry(rdev, &cfg80211_rdev_list, list) {
-//        if (net_eq(wiphy_net(&rdev->wiphy), net))
-//            WARN_ON(cfg80211_switch_netns(rdev, &init_net));
-//    }
+    list_for_each_entry(rdev, &cfg80211_rdev_list, list) {
+        if (net_eq(wiphy_net(&rdev->wiphy), net))
+            WARN_ON(cfg80211_switch_netns(rdev, &init_net));
+    }
     rtnl_unlock();
 }
 

@@ -96,21 +96,21 @@ struct genl_info {
     struct nlattr **    attrs;
     possible_net_t        _net;
     void *            user_ptr[2];
-//    struct netlink_ext_ack *extack;
+    struct netlink_ext_ack *extack;
 };
 
-//static inline struct net *genl_info_net(struct genl_info *info)
-//{
-//    return read_pnet(&info->_net);
-//}
+static inline struct net *genl_info_net(struct genl_info *info)
+{
+    return read_pnet(&info->_net);
+}
 //
 //static inline void genl_info_net_set(struct genl_info *info, struct net *net)
 //{
 //    write_pnet(&info->_net, net);
 //}
-//
-////#define GENL_SET_ERR_MSG(info, msg) NL_SET_ERR_MSG((info)->extack, msg)
-//
+
+#define GENL_SET_ERR_MSG(info, msg) NL_SET_ERR_MSG((info)->extack, msg)
+
 //static inline int genl_err_attr(struct genl_info *info, int err,
 //                const struct nlattr *attr)
 //{
@@ -170,23 +170,23 @@ struct genl_ops {
 //int genl_unregister_family(const struct genl_family *family);
 //void genl_notify(const struct genl_family *family, struct sk_buff *skb,
 //         struct genl_info *info, u32 group, gfp_t flags);
-//
-//void *genlmsg_put(struct sk_buff *skb, u32 portid, u32 seq,
-//          const struct genl_family *family, int flags, u8 cmd);
-//
-///**
-// * genlmsg_nlhdr - Obtain netlink header from user specified header
-// * @user_hdr: user header as returned from genlmsg_put()
-// *
-// * Returns pointer to netlink header.
-// */
-//static inline struct nlmsghdr *genlmsg_nlhdr(void *user_hdr)
-//{
-//    return (struct nlmsghdr *)((char *)user_hdr -
-//                   GENL_HDRLEN -
-//                   NLMSG_HDRLEN);
-//}
-//
+
+void *genlmsg_put(struct sk_buff *skb, u32 portid, u32 seq,
+          const struct genl_family *family, int flags, u8 cmd);
+
+/**
+ * genlmsg_nlhdr - Obtain netlink header from user specified header
+ * @user_hdr: user header as returned from genlmsg_put()
+ *
+ * Returns pointer to netlink header.
+ */
+static inline struct nlmsghdr *genlmsg_nlhdr(void *user_hdr)
+{
+    return (struct nlmsghdr *)((char *)user_hdr -
+                   GENL_HDRLEN -
+                   NLMSG_HDRLEN);
+}
+
 ///**
 // * genlmsg_parse_deprecated - parse attributes of a genetlink message
 // * @nlh: netlink message header
@@ -224,21 +224,21 @@ struct genl_ops {
 ////    return __nlmsg_parse(nlh, family->hdrsize + GENL_HDRLEN, tb, maxtype,
 ////                 policy, NL_VALIDATE_STRICT, extack);
 ////}
-//
-///**
-// * genl_dump_check_consistent - check if sequence is consistent and advertise if not
-// * @cb: netlink callback structure that stores the sequence number
-// * @user_hdr: user header as returned from genlmsg_put()
-// *
-// * Cf. nl_dump_check_consistent(), this just provides a wrapper to make it
-// * simpler to use with generic netlink.
-// */
-//static inline void genl_dump_check_consistent(struct netlink_callback *cb,
-//                          void *user_hdr)
-//{
-//    nl_dump_check_consistent(cb, genlmsg_nlhdr(user_hdr));
-//}
-//
+
+/**
+ * genl_dump_check_consistent - check if sequence is consistent and advertise if not
+ * @cb: netlink callback structure that stores the sequence number
+ * @user_hdr: user header as returned from genlmsg_put()
+ *
+ * Cf. nl_dump_check_consistent(), this just provides a wrapper to make it
+ * simpler to use with generic netlink.
+ */
+static inline void genl_dump_check_consistent(struct netlink_callback *cb,
+                          void *user_hdr)
+{
+    nl_dump_check_consistent(cb, genlmsg_nlhdr(user_hdr));
+}
+
 ///**
 // * genlmsg_put_reply - Add generic netlink header to a reply message
 // * @skb: socket buffer holding the message
@@ -257,96 +257,96 @@ struct genl_ops {
 //    return genlmsg_put(skb, info->snd_portid, info->snd_seq, family,
 //               flags, cmd);
 //}
-//
-///**
-// * genlmsg_end - Finalize a generic netlink message
-// * @skb: socket buffer the message is stored in
-// * @hdr: user specific header
-// */
-//static inline void genlmsg_end(struct sk_buff *skb, void *hdr)
-//{
-//    nlmsg_end(skb, hdr - GENL_HDRLEN - NLMSG_HDRLEN);
-//}
-//
-///**
-// * genlmsg_cancel - Cancel construction of a generic netlink message
-// * @skb: socket buffer the message is stored in
-// * @hdr: generic netlink message header
-// */
-//static inline void genlmsg_cancel(struct sk_buff *skb, void *hdr)
-//{
-//    if (hdr)
-//        nlmsg_cancel(skb, hdr - GENL_HDRLEN - NLMSG_HDRLEN);
-//}
-//
-///**
-// * genlmsg_multicast_netns - multicast a netlink message to a specific netns
-// * @family: the generic netlink family
-// * @net: the net namespace
-// * @skb: netlink message as socket buffer
-// * @portid: own netlink portid to avoid sending to yourself
-// * @group: offset of multicast group in groups array
-// * @flags: allocation flags
-// */
-//static inline int genlmsg_multicast_netns(const struct genl_family *family,
-//                      struct net *net, struct sk_buff *skb,
-//                      u32 portid, unsigned int group, gfp_t flags)
-//{
-//    if (WARN_ON_ONCE(group >= family->n_mcgrps))
-//        return -EINVAL;
-//    group = family->mcgrp_offset + group;
-//    return nlmsg_multicast(net->genl_sock, skb, portid, group, flags);
-//}
-//
-///**
-// * genlmsg_multicast - multicast a netlink message to the default netns
-// * @family: the generic netlink family
-// * @skb: netlink message as socket buffer
-// * @portid: own netlink portid to avoid sending to yourself
-// * @group: offset of multicast group in groups array
-// * @flags: allocation flags
-// */
-//static inline int genlmsg_multicast(const struct genl_family *family,
-//                    struct sk_buff *skb, u32 portid,
-//                    unsigned int group, gfp_t flags)
-//{
-//    return genlmsg_multicast_netns(family, &init_net, skb,
-//                       portid, group, flags);
-//}
-//
-///**
-// * genlmsg_multicast_allns - multicast a netlink message to all net namespaces
-// * @family: the generic netlink family
-// * @skb: netlink message as socket buffer
-// * @portid: own netlink portid to avoid sending to yourself
-// * @group: offset of multicast group in groups array
-// * @flags: allocation flags
-// *
-// * This function must hold the RTNL or rcu_read_lock().
-// */
-//int genlmsg_multicast_allns(const struct genl_family *family,
-//                struct sk_buff *skb, u32 portid,
-//                unsigned int group, gfp_t flags);
-//
-///**
-// * genlmsg_unicast - unicast a netlink message
-// * @skb: netlink message as socket buffer
-// * @portid: netlink portid of the destination socket
-// */
-//static inline int genlmsg_unicast(struct net *net, struct sk_buff *skb, u32 portid)
-//{
-//    return nlmsg_unicast(net->genl_sock, skb, portid);
-//}
-//
-///**
-// * genlmsg_reply - reply to a request
-// * @skb: netlink message to be sent back
-// * @info: receiver information
-// */
-//static inline int genlmsg_reply(struct sk_buff *skb, struct genl_info *info)
-//{
-//    return genlmsg_unicast(genl_info_net(info), skb, info->snd_portid);
-//}
+
+/**
+ * genlmsg_end - Finalize a generic netlink message
+ * @skb: socket buffer the message is stored in
+ * @hdr: user specific header
+ */
+static inline void genlmsg_end(struct sk_buff *skb, void *hdr)
+{
+    nlmsg_end(skb, (struct nlmsghdr *)((char *)hdr - GENL_HDRLEN - NLMSG_HDRLEN));
+}
+
+/**
+ * genlmsg_cancel - Cancel construction of a generic netlink message
+ * @skb: socket buffer the message is stored in
+ * @hdr: generic netlink message header
+ */
+static inline void genlmsg_cancel(struct sk_buff *skb, void *hdr)
+{
+    if (hdr)
+        nlmsg_cancel(skb, (struct nlmsghdr *)((char *)hdr - GENL_HDRLEN - NLMSG_HDRLEN));
+}
+
+/**
+ * genlmsg_multicast_netns - multicast a netlink message to a specific netns
+ * @family: the generic netlink family
+ * @net: the net namespace
+ * @skb: netlink message as socket buffer
+ * @portid: own netlink portid to avoid sending to yourself
+ * @group: offset of multicast group in groups array
+ * @flags: allocation flags
+ */
+static inline int genlmsg_multicast_netns(const struct genl_family *family,
+                      struct net *net, struct sk_buff *skb,
+                      u32 portid, unsigned int group, gfp_t flags)
+{
+    if (WARN_ON_ONCE(group >= family->n_mcgrps))
+        return -EINVAL;
+    group = family->mcgrp_offset + group;
+    return nlmsg_multicast(net->genl_sock, skb, portid, group, flags);
+}
+
+/**
+ * genlmsg_multicast - multicast a netlink message to the default netns
+ * @family: the generic netlink family
+ * @skb: netlink message as socket buffer
+ * @portid: own netlink portid to avoid sending to yourself
+ * @group: offset of multicast group in groups array
+ * @flags: allocation flags
+ */
+static inline int genlmsg_multicast(const struct genl_family *family,
+                    struct sk_buff *skb, u32 portid,
+                    unsigned int group, gfp_t flags)
+{
+    return genlmsg_multicast_netns(family, &init_net, skb,
+                       portid, group, flags);
+}
+
+/**
+ * genlmsg_multicast_allns - multicast a netlink message to all net namespaces
+ * @family: the generic netlink family
+ * @skb: netlink message as socket buffer
+ * @portid: own netlink portid to avoid sending to yourself
+ * @group: offset of multicast group in groups array
+ * @flags: allocation flags
+ *
+ * This function must hold the RTNL or rcu_read_lock().
+ */
+int genlmsg_multicast_allns(const struct genl_family *family,
+                struct sk_buff *skb, u32 portid,
+                unsigned int group, gfp_t flags);
+
+/**
+ * genlmsg_unicast - unicast a netlink message
+ * @skb: netlink message as socket buffer
+ * @portid: netlink portid of the destination socket
+ */
+static inline int genlmsg_unicast(struct net *net, struct sk_buff *skb, u32 portid)
+{
+    return nlmsg_unicast(net->genl_sock, skb, portid);
+}
+
+/**
+ * genlmsg_reply - reply to a request
+ * @skb: netlink message to be sent back
+ * @info: receiver information
+ */
+static inline int genlmsg_reply(struct sk_buff *skb, struct genl_info *info)
+{
+    return genlmsg_unicast(genl_info_net(info), skb, info->snd_portid);
+}
 //
 ///**
 // * gennlmsg_data - head of message payload

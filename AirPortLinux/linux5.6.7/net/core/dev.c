@@ -10,6 +10,191 @@
 #include <linux/jhash.h>
 #include <linux/rtnetlink.h>
 #include <linux/ctype.h>
+#include <net/rtnetlink.h>
+
+
+
+/**
+ *    netdev_increment_features - increment feature set by one
+ *    @all: current feature set
+ *    @one: new feature set
+ *    @mask: mask feature set
+ *
+ *    Computes a new feature set after adding a device with feature set
+ *    @one to the master device with current feature set @all.  Will not
+ *    enable anything that is off in @mask. Returns the new feature set.
+ */
+netdev_features_t netdev_increment_features(netdev_features_t all,
+                                            netdev_features_t one, netdev_features_t mask)
+{
+    if (mask & NETIF_F_HW_CSUM)
+        mask |= NETIF_F_CSUM_MASK;
+    mask |= NETIF_F_VLAN_CHALLENGED;
+    
+    all |= one & (NETIF_F_ONE_FOR_ALL | NETIF_F_CSUM_MASK) & mask;
+    all &= one | ~NETIF_F_ALL_FOR_ALL;
+    
+    /* If one device supports hw checksumming, set for all. */
+    if (all & NETIF_F_HW_CSUM)
+        all &= ~(NETIF_F_CSUM_MASK & ~NETIF_F_HW_CSUM);
+    
+    return all;
+}
+EXPORT_SYMBOL(netdev_increment_features);
+
+static struct hlist_head * __net_init netdev_create_hash(void)
+{
+    int i;
+    struct hlist_head *hash;
+    
+    hash = (struct hlist_head *)kmalloc_array(NETDEV_HASHENTRIES, sizeof(*hash), GFP_KERNEL);
+    if (hash != NULL)
+        for (i = 0; i < NETDEV_HASHENTRIES; i++)
+            INIT_HLIST_HEAD(&hash[i]);
+    
+    return hash;
+}
+
+/* Initialize per network namespace state */
+static int __net_init netdev_init(struct net *net)
+{
+    BUILD_BUG_ON(GRO_HASH_BUCKETS >
+                 8 * sizeof_field(struct napi_struct, gro_bitmask));
+    
+    if (net != &init_net)
+        INIT_LIST_HEAD(&net->dev_base_head);
+    
+    net->dev_name_head = netdev_create_hash();
+    if (net->dev_name_head == NULL)
+        goto err_name;
+    
+    net->dev_index_head = netdev_create_hash();
+    if (net->dev_index_head == NULL)
+        goto err_idx;
+    
+//    RAW_INIT_NOTIFIER_HEAD(&net->netdev_chain);
+    
+    return 0;
+    
+err_idx:
+    kfree(net->dev_name_head);
+err_name:
+    return -ENOMEM;
+}
+
+
+/* Return the hash of a string of known length */
+unsigned int full_name_hash(const void *salt, const char *name, unsigned int len)
+{
+    unsigned long hash = init_name_hash(salt);
+    while (len--)
+        hash = partial_name_hash((unsigned char)*name++, hash);
+    return end_name_hash(hash);
+}
+EXPORT_SYMBOL(full_name_hash);
+
+
+///// dev.c
+
+static inline void dev_base_seq_inc(struct net *net)
+{
+    while (++net->dev_base_seq == 0)
+        ;
+}
+
+static inline struct hlist_head *dev_name_hash(struct net *net, const char *name)
+{
+    unsigned int hash = full_name_hash(net, name, strnlen(name, IFNAMSIZ));
+
+    return &net->dev_name_head[hash_32(hash, NETDEV_HASHBITS)];
+}
+
+static inline struct hlist_head *dev_index_hash(struct net *net, int ifindex)
+{
+    return &net->dev_index_head[ifindex & (NETDEV_HASHENTRIES - 1)];
+}
+
+static inline void rps_lock(struct softnet_data *sd)
+{
+#ifdef CONFIG_RPS
+    spin_lock(&sd->input_pkt_queue.lock);
+#endif
+}
+
+static inline void rps_unlock(struct softnet_data *sd)
+{
+#ifdef CONFIG_RPS
+    spin_unlock(&sd->input_pkt_queue.lock);
+#endif
+}
+
+static struct netdev_name_node *netdev_name_node_alloc(struct net_device *dev,
+                               const char *name)
+{
+    struct netdev_name_node *name_node;
+
+    name_node = (struct netdev_name_node *)kmalloc(sizeof(*name_node), GFP_KERNEL);
+    if (!name_node)
+        return NULL;
+    INIT_HLIST_NODE(&name_node->hlist);
+    name_node->dev = dev;
+    name_node->name = name;
+    return name_node;
+}
+
+static struct netdev_name_node *
+netdev_name_node_head_alloc(struct net_device *dev)
+{
+    struct netdev_name_node *name_node;
+
+    name_node = netdev_name_node_alloc(dev, dev->name);
+    if (!name_node)
+        return NULL;
+    INIT_LIST_HEAD(&name_node->list);
+    return name_node;
+}
+
+static void netdev_name_node_free(struct netdev_name_node *name_node)
+{
+    kfree(name_node);
+}
+
+static void netdev_name_node_add(struct net *net,
+                 struct netdev_name_node *name_node)
+{
+    hlist_add_head_rcu(&name_node->hlist,
+               dev_name_hash(net, name_node->name));
+}
+
+static void netdev_name_node_del(struct netdev_name_node *name_node)
+{
+    hlist_del_rcu(&name_node->hlist);
+}
+
+static struct netdev_name_node *netdev_name_node_lookup(struct net *net,
+                            const char *name)
+{
+    struct hlist_head *head = dev_name_hash(net, name);
+    struct netdev_name_node *name_node;
+
+    hlist_for_each_entry(name_node, head, hlist)
+        if (!strcmp(name_node->name, name))
+            return name_node;
+    
+    return NULL;
+}
+
+static struct netdev_name_node *netdev_name_node_lookup_rcu(struct net *net,
+                                const char *name)
+{
+    struct hlist_head *head = dev_name_hash(net, name);
+    struct netdev_name_node *name_node;
+
+    hlist_for_each_entry_rcu(name_node, head, hlist)
+        if (!strcmp(name_node->name, name))
+            return name_node;
+    return NULL;
+}
 
 /**
  * eth_type_trans - determine the packet's protocol ID.
@@ -385,14 +570,40 @@ static int netif_alloc_netdev_queues(struct net_device *dev)
 void netif_tx_stop_all_queues(struct net_device *dev)
 {
     unsigned int i;
-    
+
     for (i = 0; i < dev->num_tx_queues; i++) {
         struct netdev_queue *txq = netdev_get_tx_queue(dev, i);
-        
+
         netif_tx_stop_queue(txq);
     }
 }
 EXPORT_SYMBOL(netif_tx_stop_all_queues);
+
+static void netdev_register_lockdep_key(struct net_device *dev)
+{
+//    lockdep_register_key(&dev->qdisc_tx_busylock_key);
+//    lockdep_register_key(&dev->qdisc_running_key);
+//    lockdep_register_key(&dev->qdisc_xmit_lock_key);
+//    lockdep_register_key(&dev->addr_list_lock_key);
+}
+
+static void netdev_unregister_lockdep_key(struct net_device *dev)
+{
+//    lockdep_unregister_key(&dev->qdisc_tx_busylock_key);
+//    lockdep_unregister_key(&dev->qdisc_running_key);
+//    lockdep_unregister_key(&dev->qdisc_xmit_lock_key);
+//    lockdep_unregister_key(&dev->addr_list_lock_key);
+}
+
+void netdev_update_lockdep_key(struct net_device *dev)
+{
+//    lockdep_unregister_key(&dev->addr_list_lock_key);
+//    lockdep_register_key(&dev->addr_list_lock_key);
+
+    lockdep_set_class(&dev->addr_list_lock, &dev->addr_list_lock_key);
+}
+EXPORT_SYMBOL(netdev_update_lockdep_key);
+
 
 
 #define REG_STATE_NEW        0x0
@@ -620,10 +831,12 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
 
     dev_mc_init(dev);
     dev_uc_init(dev);
+    
+    netdev_init(&init_net);
 
     dev_net_set(dev, &init_net);
 
-//    netdev_register_lockdep_key(dev);
+    netdev_register_lockdep_key(dev);
 
     dev->gso_max_size = GSO_MAX_SIZE;
     dev->gso_max_segs = GSO_MAX_SEGS;
@@ -695,36 +908,37 @@ static int __dev_alloc_name(struct net *net, const char *name, char *buf)
     if (!dev_valid_name(name))
         return -EINVAL;
 
-//    p = strchr(name, '%');
-//    if (p) {
-//        /*
-//         * Verify the string as this thing may have come from
-//         * the user.  There must be either one "%d" and no other "%"
-//         * characters.
-//         */
-//        if (p[1] != 'd' || strchr(p + 2, '%'))
-//            return -EINVAL;
-//
-//        /* Use one page as a bit array of possible slots */
-//        inuse = (unsigned long *) get_zeroed_page(GFP_ATOMIC);
-//        if (!inuse)
-//            return -ENOMEM;
-//
-//        for_each_netdev(net, d) {
-//            if (!sscanf(d->name, name, &i))
-//                continue;
-//            if (i < 0 || i >= max_netdevices)
-//                continue;
-//
-//            /*  avoid cases where sscanf is not exact inverse of printf */
-//            snprintf(buf, IFNAMSIZ, name, i);
-//            if (!strncmp(buf, d->name, IFNAMSIZ))
-//                set_bit(i, inuse);
-//        }
-//
-//        i = find_first_zero_bit(inuse, max_netdevices);
+    p = strchr(name, '%');
+    if (p) {
+        /*
+         * Verify the string as this thing may have come from
+         * the user.  There must be either one "%d" and no other "%"
+         * characters.
+         */
+        if (p[1] != 'd' || strchr(p + 2, '%'))
+            return -EINVAL;
+
+        /* Use one page as a bit array of possible slots */
+        inuse = (unsigned long *) malloc(sizeof(unsigned long)); // get_zeroed_page(GFP_ATOMIC);
+        if (!inuse)
+            return -ENOMEM;
+
+        for_each_netdev(net, d) {
+            if (!sscanf(d->name, name, &i))
+                continue;
+            if (i < 0 || i >= max_netdevices)
+                continue;
+
+            /*  avoid cases where sscanf is not exact inverse of printf */
+            snprintf(buf, IFNAMSIZ, name, i);
+            if (!strncmp(buf, d->name, IFNAMSIZ))
+                set_bit(i, inuse);
+        }
+
+        i = find_first_zero_bit(inuse, max_netdevices);
 //        free_page((unsigned long) inuse);
-//    }
+        free(inuse, 1, sizeof(unsigned long));
+    }
 
     snprintf(buf, IFNAMSIZ, name, i);
     if (!__dev_get_by_name(net, buf))
@@ -785,35 +999,6 @@ bool dev_valid_name(const char *name)
 EXPORT_SYMBOL(dev_valid_name);
 
 
-/* Return the hash of a string of known length */
-unsigned int full_name_hash(const void *salt, const char *name, unsigned int len)
-{
-    unsigned long hash = init_name_hash(salt);
-    while (len--)
-        hash = partial_name_hash((unsigned char)*name++, hash);
-    return end_name_hash(hash);
-}
-EXPORT_SYMBOL(full_name_hash);
-
-static inline struct hlist_head *dev_name_hash(struct net *net, const char *name)
-{
-    unsigned int hash = full_name_hash(net, name, strnlen(name, IFNAMSIZ));
-
-    return &net->dev_name_head[hash_32(hash, NETDEV_HASHBITS)];
-}
-
-static struct netdev_name_node *netdev_name_node_lookup(struct net *net,
-                            const char *name)
-{
-    struct hlist_head *head = dev_name_hash(net, name);
-    struct netdev_name_node *name_node;
-
-    hlist_for_each_entry(name_node, head, hlist)
-        if (!strcmp(name_node->name, name))
-            return name_node;
-    return NULL;
-}
-
 struct net_device *__dev_get_by_name(struct net *net, const char *name)
 {
     struct netdev_name_node *node_name;
@@ -822,6 +1007,53 @@ struct net_device *__dev_get_by_name(struct net *net, const char *name)
     return node_name ? node_name->dev : NULL;
 }
 EXPORT_SYMBOL(__dev_get_by_name);
+
+
+/**
+ * dev_get_by_name_rcu    - find a device by its name
+ * @net: the applicable net namespace
+ * @name: name to find
+ *
+ * Find an interface by name.
+ * If the name is found a pointer to the device is returned.
+ * If the name is not found then %NULL is returned.
+ * The reference counters are not incremented so the caller must be
+ * careful with locks. The caller must hold RCU lock.
+ */
+
+struct net_device *dev_get_by_name_rcu(struct net *net, const char *name)
+{
+    struct netdev_name_node *node_name;
+
+    node_name = netdev_name_node_lookup_rcu(net, name);
+    return node_name ? node_name->dev : NULL;
+}
+EXPORT_SYMBOL(dev_get_by_name_rcu);
+
+/**
+ *    dev_get_by_name        - find a device by its name
+ *    @net: the applicable net namespace
+ *    @name: name to find
+ *
+ *    Find an interface by name. This can be called from any
+ *    context and does its own locking. The returned handle has
+ *    the usage count incremented and the caller must use dev_put() to
+ *    release it when it is no longer needed. %NULL is returned if no
+ *    matching device is found.
+ */
+
+struct net_device *dev_get_by_name(struct net *net, const char *name)
+{
+    struct net_device *dev;
+
+    rcu_read_lock();
+    dev = dev_get_by_name_rcu(net, name);
+    if (dev)
+        dev_hold(dev);
+    rcu_read_unlock();
+    return dev;
+}
+EXPORT_SYMBOL(dev_get_by_name);
 
 
 static int dev_get_valid_name(struct net *net, struct net_device *dev,
@@ -842,12 +1074,6 @@ static int dev_get_valid_name(struct net *net, struct net_device *dev,
     return 0;
 }
 
-
-static inline struct hlist_head *dev_index_hash(struct net *net, int ifindex)
-{
-    return &net->dev_index_head[ifindex & (NETDEV_HASHENTRIES - 1)];
-}
-
 struct net_device *__dev_get_by_index(struct net *net, int ifindex)
 {
     struct net_device *dev;
@@ -860,6 +1086,56 @@ struct net_device *__dev_get_by_index(struct net *net, int ifindex)
     return NULL;
 }
 EXPORT_SYMBOL(__dev_get_by_index);
+
+/**
+ *    dev_get_by_index_rcu - find a device by its ifindex
+ *    @net: the applicable net namespace
+ *    @ifindex: index of device
+ *
+ *    Search for an interface by index. Returns %NULL if the device
+ *    is not found or a pointer to the device. The device has not
+ *    had its reference counter increased so the caller must be careful
+ *    about locking. The caller must hold RCU lock.
+ */
+
+struct net_device *dev_get_by_index_rcu(struct net *net, int ifindex)
+{
+    struct net_device *dev;
+    struct hlist_head *head = dev_index_hash(net, ifindex);
+    
+    hlist_for_each_entry_rcu(dev, head, index_hlist)
+    if (dev->ifindex == ifindex)
+        return dev;
+    
+    return NULL;
+}
+EXPORT_SYMBOL(dev_get_by_index_rcu);
+
+
+/**
+ *    dev_get_by_index - find a device by its ifindex
+ *    @net: the applicable net namespace
+ *    @ifindex: index of device
+ *
+ *    Search for an interface by index. Returns NULL if the device
+ *    is not found or a pointer to the device. The device returned has
+ *    had a reference added and the pointer is safe until the user calls
+ *    dev_put to indicate they have finished with it.
+ */
+
+struct net_device *dev_get_by_index(struct net *net, int ifindex)
+{
+    struct net_device *dev;
+    
+    rcu_read_lock();
+    dev = dev_get_by_index_rcu(net, ifindex);
+    if (dev)
+        dev_hold(dev);
+    rcu_read_unlock();
+    return dev;
+}
+EXPORT_SYMBOL(dev_get_by_index);
+
 
 static int dev_new_index(struct net *net)
 {
@@ -1039,6 +1315,193 @@ void *netdev_lower_get_next(struct net_device *dev, struct list_head **iter)
 }
 EXPORT_SYMBOL(netdev_lower_get_next);
 
+/**
+ *    netdev_get_name - get a netdevice name, knowing its ifindex.
+ *    @net: network namespace
+ *    @name: a pointer to the buffer where the name will be stored.
+ *    @ifindex: the ifindex of the interface to get the name from.
+ *
+ *    The use of raw_seqcount_begin() and cond_resched() before
+ *    retrying is required as we want to give the writers a chance
+ *    to complete when CONFIG_PREEMPTION is not set.
+ */
+int netdev_get_name(struct net *net, char *name, int ifindex)
+{
+    struct net_device *dev;
+    unsigned int seq;
+    
+retry:
+//    seq = raw_seqcount_begin(&devnet_rename_seq);
+    rcu_read_lock();
+    dev = dev_get_by_index_rcu(net, ifindex);
+    if (!dev) {
+        rcu_read_unlock();
+        return -ENODEV;
+    }
+    
+    strncpy(name, dev->name, sizeof(dev->name));
+    rcu_read_unlock();
+//    if (read_seqcount_retry(&devnet_rename_seq, seq)) {
+//        cond_resched();
+//        goto retry;
+//    }
+    
+    return 0;
+}
+
+
+/**
+ *    dev_get_iflink    - get 'iflink' value of a interface
+ *    @dev: targeted interface
+ *
+ *    Indicates the ifindex the interface is linked to.
+ *    Physical interfaces have the same 'ifindex' and 'iflink' values.
+ */
+
+int dev_get_iflink(const struct net_device *dev)
+{
+    if (dev->netdev_ops && dev->netdev_ops->ndo_get_iflink)
+        return dev->netdev_ops->ndo_get_iflink(dev);
+    
+    return dev->ifindex;
+}
+EXPORT_SYMBOL(dev_get_iflink);
+
+
+/* Convert net_device_stats to rtnl_link_stats64. rtnl_link_stats64 has
+ * all the same fields in the same order as net_device_stats, with only
+ * the type differing, but rtnl_link_stats64 may have additional fields
+ * at the end for newer counters.
+ */
+void netdev_stats_to_stats64(struct rtnl_link_stats64 *stats64,
+                             const struct net_device_stats *netdev_stats)
+{
+#if BITS_PER_LONG == 64
+    BUILD_BUG_ON(sizeof(*stats64) < sizeof(*netdev_stats));
+    memcpy(stats64, netdev_stats, sizeof(*netdev_stats));
+    /* zero out counters that only exist in rtnl_link_stats64 */
+    memset((char *)stats64 + sizeof(*netdev_stats), 0,
+           sizeof(*stats64) - sizeof(*netdev_stats));
+#else
+    size_t i, n = sizeof(*netdev_stats) / sizeof(unsigned long);
+    const unsigned long *src = (const unsigned long *)netdev_stats;
+    u64 *dst = (u64 *)stats64;
+    
+    BUILD_BUG_ON(n > sizeof(*stats64) / sizeof(u64));
+    for (i = 0; i < n; i++)
+        dst[i] = src[i];
+    /* zero out counters that only exist in rtnl_link_stats64 */
+    memset((char *)stats64 + n * sizeof(u64), 0,
+           sizeof(*stats64) - n * sizeof(u64));
+#endif
+}
+EXPORT_SYMBOL(netdev_stats_to_stats64);
+
+/**
+ *    dev_get_stats    - get network device statistics
+ *    @dev: device to get statistics from
+ *    @storage: place to store stats
+ *
+ *    Get network statistics from device. Return @storage.
+ *    The device driver may provide its own method by setting
+ *    dev->netdev_ops->get_stats64 or dev->netdev_ops->get_stats;
+ *    otherwise the internal statistics structure is used.
+ */
+struct rtnl_link_stats64 *dev_get_stats(struct net_device *dev,
+                                        struct rtnl_link_stats64 *storage)
+{
+    const struct net_device_ops *ops = dev->netdev_ops;
+    
+    if (ops->ndo_get_stats64) {
+        memset(storage, 0, sizeof(*storage));
+        ops->ndo_get_stats64(dev, storage);
+    } else if (ops->ndo_get_stats) {
+        netdev_stats_to_stats64(storage, ops->ndo_get_stats(dev));
+    } else {
+        netdev_stats_to_stats64(storage, &dev->stats);
+    }
+    storage->rx_dropped += (unsigned long)atomic_long_read(&dev->rx_dropped);
+    storage->tx_dropped += (unsigned long)atomic_long_read(&dev->tx_dropped);
+    storage->rx_nohandler += (unsigned long)atomic_long_read(&dev->rx_nohandler);
+    return storage;
+}
+EXPORT_SYMBOL(dev_get_stats);
+
+/**
+ *    dev_change_name - change name of a device
+ *    @dev: device
+ *    @newname: name (or format string) must be at least IFNAMSIZ
+ *
+ *    Change name of a device, can pass format strings "eth%d".
+ *    for wildcarding.
+ */
+int dev_change_name(struct net_device *dev, const char *newname)
+{
+    int err = 0;
+    
+    return err;
+}
+
+
+/**
+ *    dev_set_alias - change ifalias of a device
+ *    @dev: device
+ *    @alias: name up to IFALIASZ
+ *    @len: limit of bytes to copy from info
+ *
+ *    Set ifalias for a device,
+ */
+int dev_set_alias(struct net_device *dev, const char *alias, size_t len)
+{
+    struct dev_ifalias *new_alias = NULL;
+    
+    if (len >= IFALIASZ)
+        return -EINVAL;
+    
+    if (len) {
+        new_alias = (struct dev_ifalias *)kmalloc(sizeof(*new_alias) + len + 1, GFP_KERNEL);
+        if (!new_alias)
+            return -ENOMEM;
+        
+        memcpy(new_alias->ifalias, alias, len);
+        new_alias->ifalias[len] = 0;
+    }
+    
+//    mutex_lock(&ifalias_mutex);
+//    new_alias = rcu_replace_pointer(dev->ifalias, new_alias,
+//                                    mutex_is_locked(&ifalias_mutex));
+//    mutex_unlock(&ifalias_mutex);
+//
+//    if (new_alias)
+//        kfree_rcu(new_alias, rcuhead);
+    
+    return len;
+}
+EXPORT_SYMBOL(dev_set_alias);
+
+/**
+ *    dev_get_alias - get ifalias of a device
+ *    @dev: device
+ *    @name: buffer to store name of ifalias
+ *    @len: size of buffer
+ *
+ *    get ifalias for a device.  Caller must make sure dev cannot go
+ *    away,  e.g. rcu read lock or own a reference count to device.
+ */
+int dev_get_alias(const struct net_device *dev, char *name, size_t len)
+{
+    const struct dev_ifalias *alias;
+    int ret = 0;
+    
+    rcu_read_lock();
+    alias = rcu_dereference(dev->ifalias);
+    if (alias)
+        ret = snprintf(name, len, "%s", alias->ifalias);
+    rcu_read_unlock();
+    
+    return ret;
+}
+
 
 int __netdev_update_features(struct net_device *dev)
 {
@@ -1159,51 +1622,6 @@ void netdev_update_features(struct net_device *dev)
 }
 EXPORT_SYMBOL(netdev_update_features);
 
-
-static struct netdev_name_node *netdev_name_node_alloc(struct net_device *dev,
-                                                       const char *name)
-{
-    struct netdev_name_node *name_node;
-    
-    name_node = (struct netdev_name_node *)kmalloc(sizeof(*name_node), GFP_KERNEL);
-    if (!name_node)
-        return NULL;
-    INIT_HLIST_NODE(&name_node->hlist);
-    name_node->dev = dev;
-    name_node->name = name;
-    return name_node;
-}
-
-static struct netdev_name_node *
-netdev_name_node_head_alloc(struct net_device *dev)
-{
-    struct netdev_name_node *name_node;
-    
-    name_node = netdev_name_node_alloc(dev, dev->name);
-    if (!name_node)
-        return NULL;
-    INIT_LIST_HEAD(&name_node->list);
-    return name_node;
-}
-
-static void netdev_name_node_free(struct netdev_name_node *name_node)
-{
-    kfree(name_node);
-}
-
-static void netdev_name_node_add(struct net *net,
-                                 struct netdev_name_node *name_node)
-{
-    hlist_add_head_rcu(&name_node->hlist,
-                       dev_name_hash(net, name_node->name));
-}
-
-static void netdev_name_node_del(struct netdev_name_node *name_node)
-{
-    hlist_del_rcu(&name_node->hlist);
-}
-
-
 /* Device list insertion */
 static void list_netdevice(struct net_device *dev)
 {
@@ -1218,7 +1636,7 @@ static void list_netdevice(struct net_device *dev)
                dev_index_hash(net, dev->ifindex));
 //    write_unlock_bh(&dev_base_lock);
 
-//    dev_base_seq_inc(net);
+    dev_base_seq_inc(net);
 }
 
 #define NOTIFY_DONE        0x0000        /* Don't care */
@@ -1391,7 +1809,7 @@ err_uninit:
     if (dev->priv_destructor)
         dev->priv_destructor(dev);
 err_free_name:
-//    netdev_name_node_free(dev->name_node);
+    netdev_name_node_free(dev->name_node);
     goto out;
 }
 EXPORT_SYMBOL(register_netdevice);
@@ -1499,7 +1917,7 @@ void free_netdev(struct net_device *dev)
     free_percpu(dev->xdp_bulkq);
     dev->xdp_bulkq = NULL;
     
-//    netdev_unregister_lockdep_key(dev);
+    netdev_unregister_lockdep_key(dev);
     
     /*  Compatibility with error handling in drivers */
     if (dev->reg_state == NETREG_UNINITIALIZED) {
@@ -1735,6 +2153,162 @@ static void rollback_registered_many(struct list_head *head)
     dev_put(dev);
 }
 
+/**
+ *    dev_get_phys_port_id - Get device physical port ID
+ *    @dev: device
+ *    @ppid: port ID
+ *
+ *    Get device physical port ID
+ */
+int dev_get_phys_port_id(struct net_device *dev,
+                         struct netdev_phys_item_id *ppid)
+{
+    const struct net_device_ops *ops = dev->netdev_ops;
+    
+    if (!ops->ndo_get_phys_port_id)
+        return -EOPNOTSUPP;
+    return ops->ndo_get_phys_port_id(dev, ppid);
+}
+EXPORT_SYMBOL(dev_get_phys_port_id);
+
+
+static inline int
+devlink_compat_phys_port_name_get(struct net_device *dev,
+                                  char *name, size_t len)
+{
+    return -EOPNOTSUPP;
+}
+
+/**
+ * netdev_master_upper_dev_get - Get master upper device
+ * @dev: device
+ *
+ * Find a master upper device and return pointer to it or NULL in case
+ * it's not there. The caller must hold the RTNL lock.
+ */
+struct net_device *netdev_master_upper_dev_get(struct net_device *dev)
+{
+    struct netdev_adjacent *upper;
+    
+    ASSERT_RTNL();
+    
+    if (list_empty(&dev->adj_list.upper))
+        return NULL;
+    
+    upper = list_first_entry(&dev->adj_list.upper,
+                             struct netdev_adjacent, list);
+    if (likely(upper->master))
+        return upper->dev;
+    return NULL;
+}
+EXPORT_SYMBOL(netdev_master_upper_dev_get);
+
+static struct net_device *__netdev_master_upper_dev_get(struct net_device *dev)
+{
+    struct netdev_adjacent *upper;
+    
+    ASSERT_RTNL();
+    
+    if (list_empty(&dev->adj_list.upper))
+        return NULL;
+    
+    upper = list_first_entry(&dev->adj_list.upper,
+                             struct netdev_adjacent, list);
+    if (likely(upper->master) && !upper->ignore)
+        return upper->dev;
+    return NULL;
+}
+
+/**
+ * netdev_master_upper_dev_get_rcu - Get master upper device
+ * @dev: device
+ *
+ * Find a master upper device and return pointer to it or NULL in case
+ * it's not there. The caller must hold the RCU read lock.
+ */
+struct net_device *netdev_master_upper_dev_get_rcu(struct net_device *dev)
+{
+    struct netdev_adjacent *upper;
+    
+    upper = list_first_or_null_rcu(&dev->adj_list.upper,
+                                   struct netdev_adjacent, list);
+    if (upper && likely(upper->master))
+        return upper->dev;
+    return NULL;
+}
+EXPORT_SYMBOL(netdev_master_upper_dev_get_rcu);
+
+
+/**
+ *    dev_get_port_parent_id - Get the device's port parent identifier
+ *    @dev: network device
+ *    @ppid: pointer to a storage for the port's parent identifier
+ *    @recurse: allow/disallow recursion to lower devices
+ *
+ *    Get the devices's port parent identifier
+ */
+int dev_get_port_parent_id(struct net_device *dev,
+                           struct netdev_phys_item_id *ppid,
+                           bool recurse)
+{
+    const struct net_device_ops *ops = dev->netdev_ops;
+    struct netdev_phys_item_id first = { };
+    struct net_device *lower_dev;
+    struct list_head *iter;
+    int err;
+    
+    if (ops->ndo_get_port_parent_id) {
+        err = ops->ndo_get_port_parent_id(dev, ppid);
+        if (err != -EOPNOTSUPP)
+            return err;
+    }
+    
+//    err = devlink_compat_switch_id_get(dev, ppid);
+//    if (!err || err != -EOPNOTSUPP)
+//        return err;
+    
+    if (!recurse)
+        return -EOPNOTSUPP;
+    
+    netdev_for_each_lower_dev(dev, lower_dev, iter) {
+        err = dev_get_port_parent_id(lower_dev, ppid, recurse);
+        if (err)
+            break;
+        if (!first.id_len)
+            first = *ppid;
+        else if (memcmp(&first, ppid, sizeof(*ppid)))
+            return -ENODATA;
+    }
+    
+    return err;
+}
+EXPORT_SYMBOL(dev_get_port_parent_id);
+
+
+/**
+ *    dev_get_phys_port_name - Get device physical port name
+ *    @dev: device
+ *    @name: port name
+ *    @len: limit of bytes to copy to name
+ *
+ *    Get device physical port name
+ */
+int dev_get_phys_port_name(struct net_device *dev,
+                           char *name, size_t len)
+{
+    const struct net_device_ops *ops = dev->netdev_ops;
+    int err;
+    
+    if (ops->ndo_get_phys_port_name) {
+        err = ops->ndo_get_phys_port_name(dev, name, len);
+        if (err != -EOPNOTSUPP)
+            return err;
+    }
+    return devlink_compat_phys_port_name_get(dev, name, len);
+}
+EXPORT_SYMBOL(dev_get_phys_port_name);
+
+
 static void rollback_registered(struct net_device *dev)
 {
     LIST_HEAD(single);
@@ -1810,34 +2384,6 @@ static int call_netdevice_notifiers_info(unsigned long val,
 }
 
 
-void __dev_notify_flags(struct net_device *dev, unsigned int old_flags,
-                        unsigned int gchanges)
-{
-    unsigned int changes = dev->flags ^ old_flags;
-    
-//    if (gchanges)
-//        rtmsg_ifinfo(RTM_NEWLINK, dev, gchanges, GFP_ATOMIC);
-    
-    if (changes & IFF_UP) {
-        if (dev->flags & IFF_UP)
-            call_netdevice_notifiers(NETDEV_UP, dev);
-        else
-            call_netdevice_notifiers(NETDEV_DOWN, dev);
-    }
-    
-    if (dev->flags & IFF_UP &&
-        (changes & ~(IFF_UP | IFF_PROMISC | IFF_ALLMULTI))) {
-        struct netdev_notifier_change_info change_info = {
-            .info = {
-                .dev = dev,
-            },
-            .flags_changed = changes,
-        };
-        
-        call_netdevice_notifiers_info(NETDEV_CHANGE, &change_info.info);
-    }
-}
-
 static int __dev_set_promiscuity(struct net_device *dev, int inc, bool notify)
 {
     unsigned int old_flags = dev->flags;
@@ -1884,47 +2430,6 @@ static int __dev_set_promiscuity(struct net_device *dev, int inc, bool notify)
     if (notify)
         __dev_notify_flags(dev, old_flags, IFF_PROMISC);
     return 0;
-}
-
-/*
- *    Upload unicast and multicast address lists to device and
- *    configure RX filtering. When the device doesn't support unicast
- *    filtering it is put in promiscuous mode while unicast addresses
- *    are present.
- */
-void __dev_set_rx_mode(struct net_device *dev)
-{
-    const struct net_device_ops *ops = dev->netdev_ops;
-    
-    /* dev_open will call this function so the list will stay sane. */
-    if (!(dev->flags&IFF_UP))
-        return;
-    
-    if (!netif_device_present(dev))
-        return;
-    
-    if (!(dev->priv_flags & IFF_UNICAST_FLT)) {
-        /* Unicast addresses changes may only happen under the rtnl,
-         * therefore calling __dev_set_promiscuity here is safe.
-         */
-        if (!netdev_uc_empty(dev) && !dev->uc_promisc) {
-            __dev_set_promiscuity(dev, 1, false);
-            dev->uc_promisc = true;
-        } else if (netdev_uc_empty(dev) && dev->uc_promisc) {
-            __dev_set_promiscuity(dev, -1, false);
-            dev->uc_promisc = false;
-        }
-    }
-    
-    if (ops->ndo_set_rx_mode)
-        ops->ndo_set_rx_mode(dev);
-}
-
-void dev_set_rx_mode(struct net_device *dev)
-{
-    netif_addr_lock_bh(dev);
-    __dev_set_rx_mode(dev);
-    netif_addr_unlock_bh(dev);
 }
 
 
@@ -2119,6 +2624,119 @@ void dev_close_many(struct list_head *head, bool unlink)
     }
 }
 EXPORT_SYMBOL(dev_close_many);
+
+
+int __dev_set_mtu(struct net_device *dev, int new_mtu)
+{
+    const struct net_device_ops *ops = dev->netdev_ops;
+    
+    if (ops->ndo_change_mtu)
+        return ops->ndo_change_mtu(dev, new_mtu);
+    
+    /* Pairs with all the lockless reads of dev->mtu in the stack */
+    WRITE_ONCE(dev->mtu, new_mtu);
+    return 0;
+}
+EXPORT_SYMBOL(__dev_set_mtu);
+
+int dev_validate_mtu(struct net_device *dev, int new_mtu,
+                     struct netlink_ext_ack *extack)
+{
+    /* MTU must be positive, and in range */
+    if (new_mtu < 0 || new_mtu < dev->min_mtu) {
+        NL_SET_ERR_MSG(extack, "mtu less than device minimum");
+        return -EINVAL;
+    }
+    
+    if (dev->max_mtu > 0 && new_mtu > dev->max_mtu) {
+        NL_SET_ERR_MSG(extack, "mtu greater than device maximum");
+        return -EINVAL;
+    }
+    return 0;
+}
+
+/**
+ *    call_netdevice_notifiers_mtu - call all network notifier blocks
+ *    @val: value passed unmodified to notifier function
+ *    @dev: net_device pointer passed unmodified to notifier function
+ *    @arg: additional u32 argument passed to the notifier function
+ *
+ *    Call all network notifier blocks.  Parameters and return value
+ *    are as for raw_notifier_call_chain().
+ */
+static int call_netdevice_notifiers_mtu(unsigned long val,
+                                        struct net_device *dev, u32 arg)
+{
+    struct netdev_notifier_info_ext info = {
+        .info.dev = dev,
+        .ext.mtu = arg,
+    };
+    
+    BUILD_BUG_ON(offsetof(struct netdev_notifier_info_ext, info) != 0);
+    
+    return call_netdevice_notifiers_info(val, &info.info);
+}
+
+/**
+ *    dev_set_mtu_ext - Change maximum transfer unit
+ *    @dev: device
+ *    @new_mtu: new transfer unit
+ *    @extack: netlink extended ack
+ *
+ *    Change the maximum transfer size of the network device.
+ */
+int dev_set_mtu_ext(struct net_device *dev, int new_mtu,
+                    struct netlink_ext_ack *extack)
+{
+    int err, orig_mtu;
+    
+    if (new_mtu == dev->mtu)
+        return 0;
+    
+    err = dev_validate_mtu(dev, new_mtu, extack);
+    if (err)
+        return err;
+    
+    if (!netif_device_present(dev))
+        return -ENODEV;
+    
+    err = call_netdevice_notifiers(NETDEV_PRECHANGEMTU, dev);
+    err = notifier_to_errno(err);
+    if (err)
+        return err;
+    
+    orig_mtu = dev->mtu;
+    err = __dev_set_mtu(dev, new_mtu);
+    
+    if (!err) {
+        err = call_netdevice_notifiers_mtu(NETDEV_CHANGEMTU, dev,
+                                           orig_mtu);
+        err = notifier_to_errno(err);
+        if (err) {
+            /* setting mtu back and notifying everyone again,
+             * so that they have a chance to revert changes.
+             */
+            __dev_set_mtu(dev, orig_mtu);
+            call_netdevice_notifiers_mtu(NETDEV_CHANGEMTU, dev,
+                                         new_mtu);
+        }
+    }
+    return err;
+}
+
+int dev_set_mtu(struct net_device *dev, int new_mtu)
+{
+    struct netlink_ext_ack extack;
+    int err;
+    
+    memset(&extack, 0, sizeof(extack));
+    err = dev_set_mtu_ext(dev, new_mtu, &extack);
+//    if (err && extack._msg)
+//        net_err_ratelimited("%s: %s\n", dev->name, extack._msg);
+    return err;
+}
+EXPORT_SYMBOL(dev_set_mtu);
+
 
 /**
  *    dev_change_tx_queue_len - Change TX queue length of a netdevice
@@ -2573,3 +3191,247 @@ int netif_rx(struct sk_buff *skb)
     return ret;
 }
 EXPORT_SYMBOL(netif_rx);
+
+
+static int __dev_set_allmulti(struct net_device *dev, int inc, bool notify)
+{
+    unsigned int old_flags = dev->flags, old_gflags = dev->gflags;
+
+    ASSERT_RTNL();
+
+    dev->flags |= IFF_ALLMULTI;
+    dev->allmulti += inc;
+    if (dev->allmulti == 0) {
+        /*
+         * Avoid overflow.
+         * If inc causes overflow, untouch allmulti and return error.
+         */
+        if (inc < 0)
+            dev->flags &= ~IFF_ALLMULTI;
+        else {
+            dev->allmulti -= inc;
+            pr_warn("%s: allmulti touches roof, set allmulti failed. allmulti feature of device might be broken.\n",
+                dev->name);
+            return -EOVERFLOW;
+        }
+    }
+    if (dev->flags ^ old_flags) {
+        dev_change_rx_flags(dev, IFF_ALLMULTI);
+        dev_set_rx_mode(dev);
+        if (notify)
+            __dev_notify_flags(dev, old_flags,
+                       dev->gflags ^ old_gflags);
+    }
+    return 0;
+}
+
+/**
+ *    dev_set_allmulti    - update allmulti count on a device
+ *    @dev: device
+ *    @inc: modifier
+ *
+ *    Add or remove reception of all multicast frames to a device. While the
+ *    count in the device remains above zero the interface remains listening
+ *    to all interfaces. Once it hits zero the device reverts back to normal
+ *    filtering operation. A negative @inc value is used to drop the counter
+ *    when releasing a resource needing all multicasts.
+ *    Return 0 if successful or a negative errno code on error.
+ */
+
+int dev_set_allmulti(struct net_device *dev, int inc)
+{
+    return __dev_set_allmulti(dev, inc, true);
+}
+EXPORT_SYMBOL(dev_set_allmulti);
+
+/*
+ *    Upload unicast and multicast address lists to device and
+ *    configure RX filtering. When the device doesn't support unicast
+ *    filtering it is put in promiscuous mode while unicast addresses
+ *    are present.
+ */
+void __dev_set_rx_mode(struct net_device *dev)
+{
+    const struct net_device_ops *ops = dev->netdev_ops;
+
+    /* dev_open will call this function so the list will stay sane. */
+    if (!(dev->flags&IFF_UP))
+        return;
+
+    if (!netif_device_present(dev))
+        return;
+
+    if (!(dev->priv_flags & IFF_UNICAST_FLT)) {
+        /* Unicast addresses changes may only happen under the rtnl,
+         * therefore calling __dev_set_promiscuity here is safe.
+         */
+        if (!netdev_uc_empty(dev) && !dev->uc_promisc) {
+            __dev_set_promiscuity(dev, 1, false);
+            dev->uc_promisc = true;
+        } else if (netdev_uc_empty(dev) && dev->uc_promisc) {
+            __dev_set_promiscuity(dev, -1, false);
+            dev->uc_promisc = false;
+        }
+    }
+
+    if (ops->ndo_set_rx_mode)
+        ops->ndo_set_rx_mode(dev);
+}
+
+void dev_set_rx_mode(struct net_device *dev)
+{
+    netif_addr_lock_bh(dev);
+    __dev_set_rx_mode(dev);
+    netif_addr_unlock_bh(dev);
+}
+
+/**
+ *    dev_get_flags - get flags reported to userspace
+ *    @dev: device
+ *
+ *    Get the combination of flag bits exported through APIs to userspace.
+ */
+unsigned int dev_get_flags(const struct net_device *dev)
+{
+    unsigned int flags;
+
+    flags = (dev->flags & ~(IFF_PROMISC |
+                IFF_ALLMULTI |
+                IFF_RUNNING |
+                IFF_LOWER_UP |
+                IFF_DORMANT)) |
+        (dev->gflags & (IFF_PROMISC |
+                IFF_ALLMULTI));
+
+    if (netif_running(dev)) {
+        if (netif_oper_up(dev))
+            flags |= IFF_RUNNING;
+        if (netif_carrier_ok(dev))
+            flags |= IFF_LOWER_UP;
+        if (netif_dormant(dev))
+            flags |= IFF_DORMANT;
+    }
+
+    return flags;
+}
+EXPORT_SYMBOL(dev_get_flags);
+
+int __dev_change_flags(struct net_device *dev, unsigned int flags,
+               struct netlink_ext_ack *extack)
+{
+    unsigned int old_flags = dev->flags;
+    int ret;
+
+    ASSERT_RTNL();
+
+    /*
+     *    Set the flags on our device.
+     */
+
+    dev->flags = (flags & (IFF_DEBUG | IFF_NOTRAILERS | IFF_NOARP |
+                   IFF_DYNAMIC | IFF_MULTICAST | IFF_PORTSEL |
+                   IFF_AUTOMEDIA)) |
+             (dev->flags & (IFF_UP | IFF_VOLATILE | IFF_PROMISC |
+                    IFF_ALLMULTI));
+
+    /*
+     *    Load in the correct multicast list now the flags have changed.
+     */
+
+    if ((old_flags ^ flags) & IFF_MULTICAST)
+        dev_change_rx_flags(dev, (int)IFF_MULTICAST);
+
+    dev_set_rx_mode(dev);
+
+    /*
+     *    Have we downed the interface. We handle IFF_UP ourselves
+     *    according to user attempts to set it, rather than blindly
+     *    setting it.
+     */
+
+    ret = 0;
+    if ((old_flags ^ flags) & IFF_UP) {
+        if (old_flags & IFF_UP)
+            __dev_close(dev);
+        else
+            ret = __dev_open(dev, extack);
+    }
+
+    if ((flags ^ dev->gflags) & IFF_PROMISC) {
+        int inc = (flags & IFF_PROMISC) ? 1 : -1;
+        unsigned int old_flags = dev->flags;
+
+        dev->gflags ^= IFF_PROMISC;
+
+        if (__dev_set_promiscuity(dev, inc, false) >= 0)
+            if (dev->flags != old_flags)
+                dev_set_rx_mode(dev);
+    }
+
+    /* NOTE: order of synchronization of IFF_PROMISC and IFF_ALLMULTI
+     * is important. Some (broken) drivers set IFF_PROMISC, when
+     * IFF_ALLMULTI is requested not asking us and not reporting.
+     */
+    if ((flags ^ dev->gflags) & IFF_ALLMULTI) {
+        int inc = (flags & IFF_ALLMULTI) ? 1 : -1;
+
+        dev->gflags ^= IFF_ALLMULTI;
+        __dev_set_allmulti(dev, inc, false);
+    }
+
+    return ret;
+}
+
+void __dev_notify_flags(struct net_device *dev, unsigned int old_flags,
+            unsigned int gchanges)
+{
+    unsigned int changes = dev->flags ^ old_flags;
+
+    if (gchanges)
+        rtmsg_ifinfo(RTM_NEWLINK, dev, gchanges, GFP_ATOMIC);
+
+    if (changes & IFF_UP) {
+        if (dev->flags & IFF_UP)
+            call_netdevice_notifiers(NETDEV_UP, dev);
+        else
+            call_netdevice_notifiers(NETDEV_DOWN, dev);
+    }
+
+    if (dev->flags & IFF_UP &&
+        (changes & ~(IFF_UP | IFF_PROMISC | IFF_ALLMULTI | IFF_VOLATILE))) {
+        struct netdev_notifier_change_info change_info = {
+            .info = {
+                .dev = dev,
+            },
+            .flags_changed = changes,
+        };
+
+        call_netdevice_notifiers_info(NETDEV_CHANGE, &change_info.info);
+    }
+}
+
+
+/**
+ *    dev_change_flags - change device settings
+ *    @dev: device
+ *    @flags: device state flags
+ *    @extack: netlink extended ack
+ *
+ *    Change settings on device based state flags. The flags are
+ *    in the userspace exported format.
+ */
+int dev_change_flags(struct net_device *dev, unsigned int flags,
+             struct netlink_ext_ack *extack)
+{
+    int ret;
+    unsigned int changes, old_flags = dev->flags, old_gflags = dev->gflags;
+
+    ret = __dev_change_flags(dev, flags, extack);
+    if (ret < 0)
+        return ret;
+
+    changes = (old_flags ^ dev->flags) | (old_gflags ^ dev->gflags);
+    __dev_notify_flags(dev, old_flags, changes);
+    return ret;
+}
+EXPORT_SYMBOL(dev_change_flags);

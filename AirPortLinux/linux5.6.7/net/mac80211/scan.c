@@ -401,10 +401,10 @@ static void __ieee80211_scan_completed(struct ieee80211_hw *hw, bool aborted)
         ieee80211_prep_hw_scan(local)) {
         int rc;
 
-//        rc = drv_hw_scan(local,
-//            rcu_dereference_protected(local->scan_sdata,
-//                          lockdep_is_held(&local->mtx)),
-//            local->hw_scan_req);
+        rc = drv_hw_scan(local,
+            rcu_dereference_protected(local->scan_sdata,
+                          lockdep_is_held(&local->mtx)),
+            local->hw_scan_req);
 
         if (rc == 0)
             return;
@@ -743,7 +743,7 @@ static int __ieee80211_start_scan(struct ieee80211_sub_if_data *sdata,
 
         /* Notify driver scan is starting, keep order of operations
          * same as normal software scan, in case that matters. */
-//        drv_sw_scan_start(local, sdata, local->scan_addr);
+        drv_sw_scan_start(local, sdata, local->scan_addr);
 
         ieee80211_configure_filter(local); /* accept probe-responses */
 
@@ -772,7 +772,7 @@ static int __ieee80211_start_scan(struct ieee80211_sub_if_data *sdata,
 
     if (hw_scan) {
         WARN_ON(!ieee80211_prep_hw_scan(local));
-//        rc = drv_hw_scan(local, sdata, local->hw_scan_req);
+        rc = drv_hw_scan(local, sdata, local->hw_scan_req);
     } else {
         rc = ieee80211_start_sw_scan(local, sdata);
     }

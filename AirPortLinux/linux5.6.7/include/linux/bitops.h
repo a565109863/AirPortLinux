@@ -423,4 +423,33 @@ find_first_zero_bit(volatile void *p, int max)
     return max;
 }
 
+static inline int find_next_zero_bit(const unsigned long *vaddr, int size,
+                     int offset)
+{
+    const unsigned long *p = vaddr + (offset >> 5);
+    int bit = offset & 31UL, res;
+
+    if (offset >= size)
+        return size;
+
+    if (bit) {
+        unsigned long num = ~*p++ & (~0UL << bit);
+        offset -= bit;
+
+        /* Look for zero in first longword */
+        __asm__ __volatile__ ("bfffo %1{#0,#0},%0"
+                      : "=d" (res) : "d" (num & -num));
+        if (res < 32) {
+            offset += res ^ 31;
+            return offset < size ? offset : size;
+        }
+        offset += 32;
+
+        if (offset >= size)
+            return size;
+    }
+    /* No zero yet, search remaining full bytes for a zero */
+    return offset + find_first_zero_bit(&p, size - offset);
+}
+
 #endif

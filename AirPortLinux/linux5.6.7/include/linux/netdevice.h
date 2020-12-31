@@ -66,6 +66,24 @@ struct notifier_block {
 };
 
 
+//#define IFF_UP          0x1             /* interface is up */
+//#define IFF_BROADCAST   0x2             /* broadcast address valid */
+//#define IFF_DEBUG       0x4             /* turn on debugging */
+//#define IFF_LOOPBACK    0x8             /* is a loopback net */
+//#define IFF_POINTOPOINT 0x10            /* interface is point-to-point link */
+//#define IFF_NOTRAILERS  0x20            /* obsolete: avoid use of trailers */
+//#define IFF_RUNNING     0x40            /* resources allocated */
+//#define IFF_NOARP       0x80            /* no address resolution protocol */
+//#define IFF_PROMISC     0x100           /* receive all packets */
+//#define IFF_ALLMULTI    0x200           /* receive all multicast packets */
+//#define IFF_OACTIVE     0x400           /* transmission in progress */
+//#define IFF_SIMPLEX     0x800           /* can't hear own transmissions */
+//#define IFF_LINK0       0x1000          /* per link layer defined bit */
+//#define IFF_LINK1       0x2000          /* per link layer defined bit */
+//#define IFF_LINK2       0x4000          /* per link layer defined bit */
+//#define IFF_ALTPHYS     IFF_LINK2       /* use alternate physical connection */
+//#define IFF_MULTICAST   0x8000          /* supports multicast */
+
 enum net_device_flags {
 /* for compatibility with glibc net/if.h */
 //#if __UAPI_DEF_IF_NET_DEVICE_FLAGS
@@ -86,13 +104,30 @@ enum net_device_flags {
    IFF_AUTOMEDIA            = 1<<14, /* sysfs */
    IFF_DYNAMIC            = 1<<15, /* sysfs */
 //#endif /* __UAPI_DEF_IF_NET_DEVICE_FLAGS */
-#if __UAPI_DEF_IF_NET_DEVICE_FLAGS_LOWER_UP_DORMANT_ECHO
+//#if __UAPI_DEF_IF_NET_DEVICE_FLAGS_LOWER_UP_DORMANT_ECHO
    IFF_LOWER_UP            = 1<<16, /* volatile */
    IFF_DORMANT            = 1<<17, /* volatile */
    IFF_ECHO            = 1<<18, /* volatile */
-#endif /* __UAPI_DEF_IF_NET_DEVICE_FLAGS_LOWER_UP_DORMANT_ECHO */
+//#endif /* __UAPI_DEF_IF_NET_DEVICE_FLAGS_LOWER_UP_DORMANT_ECHO */
 };
 
+
+#define IFF_VOLATILE    (IFF_LOOPBACK|IFF_POINTOPOINT|IFF_BROADCAST|IFF_ECHO|\
+        IFF_MASTER|IFF_SLAVE|IFF_RUNNING|IFF_LOWER_UP|IFF_DORMANT)
+
+#define    IFALIASZ    256
+#define    ALTIFNAMSIZ    128
+
+/* RFC 2863 operational status */
+enum {
+    IF_OPER_UNKNOWN,
+    IF_OPER_NOTPRESENT,
+    IF_OPER_DOWN,
+    IF_OPER_LOWERLAYERDOWN,
+    IF_OPER_TESTING,
+    IF_OPER_DORMANT,
+    IF_OPER_UP,
+};
 
 
 __be16 eth_type_trans(struct sk_buff *skb, struct net_device *dev);
@@ -1073,7 +1108,7 @@ struct netdev_net_notifier {
  * int (*ndo_validate_addr)(struct net_device *dev);
  *    Test if Media Access Control address is valid for the device.
  *
- * int (*ndo_do_ioctl)(struct net_device *dev, struct ifreq *ifr, int cmd);
+ * int (*ndo_do_ioctl)(struct net_device *dev, struct _ifreq *ifr, int cmd);
  *    Called when a user requests an ioctl which can't be handled by
  *    the generic interface code. If not defined ioctls return
  *    not supported error code.
@@ -1347,7 +1382,7 @@ struct net_device_ops {
                                void *addr);
     int            (*ndo_validate_addr)(struct net_device *dev);
     int            (*ndo_do_ioctl)(struct net_device *dev,
-                            struct ifreq *ifr, int cmd);
+                            struct _ifreq *ifr, int cmd);
     int            (*ndo_set_config)(struct net_device *dev,
                               struct ifmap *map);
     int            (*ndo_change_mtu)(struct net_device *dev,
@@ -2719,13 +2754,12 @@ static inline struct net_device *next_net_device(struct net_device *dev)
 
 static inline struct net_device *next_net_device_rcu(struct net_device *dev)
 {
-//    struct list_head *lh;
-//    struct net *net;
-//
-//    net = dev_net(dev);
-//    lh = rcu_dereference(list_next_rcu(&dev->dev_list));
-//    return lh == &net->dev_base_head ? NULL : net_device_entry(lh);
-    return dev;
+    struct list_head *lh;
+    struct net *net;
+
+    net = dev_net(dev);
+    lh = rcu_dereference(list_next_rcu(&dev->dev_list));
+    return lh == &net->dev_base_head ? NULL : net_device_entry(lh);
 }
 
 static inline struct net_device *first_net_device(struct net *net)
@@ -2736,10 +2770,9 @@ static inline struct net_device *first_net_device(struct net *net)
 
 static inline struct net_device *first_net_device_rcu(struct net *net)
 {
-//    struct list_head *lh = rcu_dereference(list_next_rcu(&net->dev_base_head));
-//
-//    return lh == &net->dev_base_head ? NULL : net_device_entry(lh);
-    return net->loopback_dev;
+    struct list_head *lh = rcu_dereference(list_next_rcu(&net->dev_base_head));
+
+    return lh == &net->dev_base_head ? NULL : net_device_entry(lh);
 }
 
 int netdev_boot_setup_check(struct net_device *dev);
@@ -3797,10 +3830,10 @@ int netdev_rx_handler_register(struct net_device *dev,
 void netdev_rx_handler_unregister(struct net_device *dev);
 
 bool dev_valid_name(const char *name);
-int dev_ioctl(struct net *net, unsigned int cmd, struct ifreq *ifr,
+int dev_ioctl(struct net *net, unsigned int cmd, struct _ifreq *ifr,
         bool *need_copyout);
 int dev_ifconf(struct net *net, struct ifconf *, int);
-int dev_ethtool(struct net *net, struct ifreq *);
+//int dev_ethtool(struct net *net, struct _ifreq *);
 unsigned int dev_get_flags(const struct net_device *);
 int __dev_change_flags(struct net_device *dev, unsigned int flags,
                struct netlink_ext_ack *extack);

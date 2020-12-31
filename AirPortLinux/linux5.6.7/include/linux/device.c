@@ -16,7 +16,7 @@ devm_request_threaded_irq(struct device *dev, unsigned int irq,
                           irq_handler_t handler, irq_handler_t thread_fn,
                           unsigned long irqflags, const char *devname,
                           void *dev_id) {
-    dev->ih = new pci_intr_handle();
+    pci_intr_handle *ih = new pci_intr_handle();
     
     int index;
     irq = -1;
@@ -33,15 +33,15 @@ devm_request_threaded_irq(struct device *dev, unsigned int irq,
         }
     }
     
-    dev->ih->irq = irq;
-    dev->ih->intrstr = "msi";
-    dev->ih->dev = dev->dev->fPciDevice;  // pci device reference
+    ih->irq = irq;
+    ih->intrstr = "msi";
+    ih->dev = dev->dev->fPciDevice;  // pci device reference
     
-    dev->ih->workloop = dev->dev->fWorkloop;
+    ih->workloop = dev->dev->fWorkloop;
     
-    dev->ih->dev_id = dev_id;
-    dev->ih->thread_fn = thread_fn;
-    dev->ih->filter_fn = handler;
+    ih->dev_id = dev_id;
+    ih->thread_fn = thread_fn;
+    ih->filter_fn = handler;
     
 //    dev->ih->intr = IOInterruptEventSource::interruptEventSource(dev->ih, (IOInterruptEventAction)interrupt_func, dev->ih->dev, dev->ih->source);
 //
@@ -51,14 +51,17 @@ devm_request_threaded_irq(struct device *dev, unsigned int irq,
 //        return 0;
 //    dev->ih->intr->enable();
     
-    dev->ih->fintr = IOFilterInterruptEventSource::filterInterruptEventSource(dev->ih, (IOInterruptEventAction)interrupt_func, interrupt_filter, dev->ih->dev, dev->ih->irq);
+    ih->fintr = IOFilterInterruptEventSource::filterInterruptEventSource(ih, (IOInterruptEventAction)interrupt_func, interrupt_filter, ih->dev, ih->irq);
     
-    if (dev->ih->fintr == 0)
+    if (ih->fintr == 0)
         return 0;
-    if (dev->ih->workloop->addEventSource(dev->ih->fintr) != kIOReturnSuccess)
+    if (ih->workloop->addEventSource(ih->fintr) != kIOReturnSuccess)
         return 0;
     
-    dev->ih->fintr->enable();
+    ih->fintr->enable();
+    
+    *dev->ih = ih;
+    (*dev->ih)++;
     
     return 0;
 }

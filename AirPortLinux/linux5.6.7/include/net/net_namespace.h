@@ -9,6 +9,7 @@
 #include <linux/refcount.h>
 #include <linux/workqueue.h>
 #include <linux/list.h>
+#include <linux/rculist.h>
 //#include <linux/sysctl.h>
 //#include <linux/uidgid.h>
 
@@ -62,7 +63,7 @@ enum {
 //struct netns_ipvs;
 //struct bpf_prog;
 
-#define CONFIG_NET_NS 1
+//#define CONFIG_NET_NS 1
 
 #define NETDEV_HASHBITS    8
 #define NETDEV_HASHENTRIES (1 << NETDEV_HASHBITS)
@@ -233,10 +234,10 @@ extern struct net init_net;
 //
 //static inline void net_ns_barrier(void) {}
 //#endif /* CONFIG_NET_NS */
-//
-//
-//extern struct list_head net_namespace_list;
-//
+
+
+extern struct list_head net_namespace_list;
+
 //struct net *get_net_ns_by_pid(pid_t pid);
 //struct net *get_net_ns_by_fd(int fd);
 //
@@ -357,7 +358,7 @@ static inline struct net *read_pnet(const possible_net_t *pnet)
 #else
 #define __net_init    __init
 #define __net_exit    __ref
-#define __net_initdata    __initdata
+#define __net_initdata
 #define __net_initconst    __initconst
 #endif
 //

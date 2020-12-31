@@ -5,6 +5,7 @@
 #include <linux/types.h>
 #include <linux/device.h>
 #include <linux/pci.h>
+#include <net/wireless/core.h>
 
 OSDefineMetaClassAndStructors(AirPortLinux, IOController);
 //OSDefineMetaClassAndStructors(IOKitTimeout, OSObject)
@@ -19,7 +20,7 @@ int _start(struct kmod_info*, void*) {
     return 0;
 };
 
-struct ifnet *_ifp;
+//struct ifnet *_ifp;
 struct pci_dev *_pdev;
 
 bool AirPortLinux::init(OSDictionary* parameters) {
@@ -61,6 +62,7 @@ IOService* AirPortLinux::probe(IOService* provider, SInt32 *score)
     
     struct pci_dev *__pdev = IONew(struct pci_dev, 1);
     __pdev->dev.dev = this;
+    __pdev->dev.dev->fPciDevice = _fPciDevice;
     __pdev->vendor = _fPciDevice->extendedConfigRead16(kIOPCIConfigVendorID);
     __pdev->device = _fPciDevice->extendedConfigRead16(kIOPCIConfigDeviceID);
     __pdev->subsystem_vendor = _fPciDevice->extendedConfigRead16(kIOPCIConfigSubSystemVendorID);
@@ -140,9 +142,14 @@ bool AirPortLinux::start(IOService* provider) {
         return NULL;
     DebugLog("--%s: line = %d err = %d", __FUNCTION__, __LINE__, err);
     
-    DebugLog("--%s: line = %d err = %d", __FUNCTION__, __LINE__, err);
-    DebugLog("--%s: line = %d err = %d", __FUNCTION__, __LINE__, err);
-    return NULL;
+    struct _ifreq ifr = {};
+    int ret;
+
+    strncpy(ifr.ifr_name, "wlan0", sizeof(ifr.ifr_name));
+    ret = ioctl(&init_net, SIOCGIFHWADDR, &ifr, NULL);
+    DebugLog("--%s: ifr.ifr_name = %s, address %s\n", __FUNCTION__, ifr.ifr_name, ether_sprintf((u_char *)ifr.ifr_hwaddr.sa_data));
+    DebugLog("--%s: ifr.ifr_name = %s, address %s\n", __FUNCTION__, ifr.ifr_name, ether_sprintf((u_char *)ifr.ifr_hwaddr.sa_data));
+//    return NULL;
     
     fWatchdogTimer = IOTimerEventSource::timerEventSource(this, OSMemberFunctionCast(IOTimerEventSource::Action, this, &AirPortLinux::if_watchdog));
     
@@ -152,7 +159,20 @@ bool AirPortLinux::start(IOService* provider) {
     }
     fWorkloop->addEventSource(fWatchdogTimer);
     
+    if (!attachInterface((IONetworkInterface**) &this->iface, true)) {
+        panic("AirPortLinux: Failed to attach interface!");
+    }
+    
+    
+    this->mediumDict = OSDictionary::withCapacity(1);
+    this->addMediumType(kIOMediumIEEE80211Auto, 128000,  MEDIUM_TYPE_AUTO);
+    this->publishMediumDictionary(this->mediumDict);
+    this->setCurrentMedium(this->mediumTable[MEDIUM_TYPE_AUTO]);
+    this->setSelectedMedium(this->mediumTable[MEDIUM_TYPE_AUTO]);
+    
+    
     registerService();
+    this->iface->registerService();
     
     return true;
 }
@@ -165,31 +185,11 @@ void AirPortLinux::stop(IOService* provider) {
         }
     }
     
-//    if (_ifp->iface){
-//        struct ieee80211com *ic = (struct ieee80211com *)_ifp;
-//        ieee80211_ifdetach(&ic->ic_ac.ac_if);
-//        _ifp->iface = NULL;
-//    }
-    
     super::stop(provider);
 }
 
 void AirPortLinux::free() {
     IOLog("AirPortLinux: Free");
-    
-//    ((pci_intr_handle_t)if_softc->sc_ih)->intr->disable();
-//
-//    if (fWorkloop) {
-//        if (((pci_intr_handle_t)if_softc->sc_ih)->intr) {
-//            fWorkloop->removeEventSource(((pci_intr_handle_t)if_softc->sc_ih)->intr);
-//            RELEASE(((pci_intr_handle_t)if_softc->sc_ih)->intr);
-//        }
-//        if (fCommandGate) {
-//            fWorkloop->removeEventSource(fCommandGate);
-//            RELEASE(fCommandGate);
-//        }
-//        RELEASE(fWorkloop);
-//    }
     
     RELEASE(fCommandGate);
     RELEASE(mediumDict);
@@ -198,15 +198,27 @@ void AirPortLinux::free() {
     super::free();
 }
 
-IOReturn AirPortLinux::getHardwareAddress(IOEthernetAddress* addr) {
-    //    addr->bytes[0] = 0xAA;
-    //    addr->bytes[1] = 0x99;
-    //    addr->bytes[2] = 0x88;
-    //    addr->bytes[3] = 0x77;
-    //    addr->bytes[4] = 0x66;
-    //    addr->bytes[5] = 0x55;
-//    struct ieee80211com *ic = (struct ieee80211com *)_ifp;
-//    bcopy(ic->ic_myaddr, addr->bytes, kIOEthernetAddressSize);
+IOReturn AirPortLinux::getHardwareAddress(IOEthernetAddress* addr)
+{
+//    struct cfg80211_registered_device *rdev = (struct cfg80211_registered_device *)_pdev->dev.platform_data;
+//
+//    if (rdev->wiphy.n_addresses > 0) {
+//        bcopy(rdev->wiphy.addresses[0].addr, addr->bytes, kIOEthernetAddressSize);
+//    }
+    
+    struct _ifreq ifr = {};
+    int ret;
+    
+    strncpy(ifr.ifr_name, "wlan0", sizeof(ifr.ifr_name));
+    ret = ioctl(&init_net, SIOCGIFHWADDR, &ifr, NULL);
+    if (ret) {
+        return kIOReturnError;
+    }
+    
+    DebugLog("--%s: ifr.ifr_name = %s, address %s\n", __FUNCTION__, ifr.ifr_name, ether_sprintf((u_char *)ifr.ifr_hwaddr.sa_data));
+    
+    bcopy(ifr.ifr_hwaddr.sa_data, addr->bytes, kIOEthernetAddressSize);
+    
     return kIOReturnSuccess;
 }
 
@@ -260,6 +272,20 @@ AirPortLinux::registerWithPolicyMaker(IOService* provider)
     return provider->registerPowerDriver( this, powerStateArray, 2 );
 }
 
+IOReturn AirPortLinux::setPowerState(unsigned long powerStateOrdinal, IOService *policyMaker)
+{
+    IOReturn result = IOPMAckImplied;
+    
+    if (powerStateOrdinal == powerState) {
+        goto done;
+    }
+
+    fCommandGate->runAction(setPowerStateAction, &powerStateOrdinal);
+
+done:
+    return result;
+}
+
 bool AirPortLinux::configureInterface(IONetworkInterface * netif)
 {
     IONetworkData *data;
@@ -288,15 +314,7 @@ IOReturn AirPortLinux::enable(IONetworkInterface *netif) {
     
     kprintf("enable() ===>\n");
     
-//    setLinkStatus((kIONetworkLinkValid | kIONetworkLinkActive), mediumTable[MEDIUM_TYPE_AUTO], _ifp->if_baudrate, NULL);
-//
-////    const char *ifconfig = "nwid FAST_88FED0 wpakey 126abc!@ABC wpaprotos wpa1,wpa2";
-//    const char *configStr = this->IFConfig->getCStringNoCopy();
-//    ifconfig(configStr);
-    
-//    ifnet *ifp = &if_softc.sc_ic.ic_if;
-//    if (ifp->iface) ifp->iface->postMessage(APPLE80211_M_POWER_CHANGED);
-//    if (fOutputQueue) fOutputQueue->setCapacity(200); // FIXME !!!!
+    setLinkStatus((kIONetworkLinkValid | kIONetworkLinkActive), mediumTable[MEDIUM_TYPE_AUTO], 128000, NULL);
     
     result = kIOReturnSuccess;
     
@@ -319,8 +337,7 @@ IOReturn AirPortLinux::disable(IONetworkInterface *netif) {
 }
 
 IOReturn AirPortLinux::getMaxPacketSize( UInt32* maxSize ) const {
-    *maxSize = 1500;
-    return kIOReturnSuccess;
+    return super::getMaxPacketSize(maxSize);
 }
 
 IOReturn AirPortLinux::setPromiscuousMode(IOEnetPromiscuousMode mode) {
@@ -336,7 +353,7 @@ IOReturn AirPortLinux::setMulticastList(IOEthernetAddress* addr, UInt32 len) {
 }
 
 const OSString* AirPortLinux::newVendorString() const {
-    return OSString::withCString("Intel");
+    return OSString::withCString("Apple");
 }
 
 const OSString* AirPortLinux::newModelString() const {
@@ -356,6 +373,64 @@ const OSString* AirPortLinux::newModelString() const {
 
 
 
+IOReturn AirPortLinux::setPowerStateAction(OSObject *owner, void *arg1, void *arg2, void *arg3, void *arg4)
+{
+    AirPortLinux* dev = OSDynamicCast(AirPortLinux, owner);
+    if (dev == NULL)
+        return kIOReturnError;
+    unsigned long *powerStateOrdinal = (unsigned long *)arg1;
+    
+    dev->changePowerState(dev->iface, *powerStateOrdinal);
+    return kIOReturnSuccess;
+}
+
+IOReturn AirPortLinux::changePowerState(IOInterface *interface, int powerStateOrdinal)
+{
+    IOReturn ret = kIOReturnSuccess;
+    
+    if (powerState == powerStateOrdinal) {
+        return ret;
+    }
+    
+    switch (powerStateOrdinal) {
+        case APPLE_POWER_ON:
+//            DPRINTF(("Setting power on\n"));
+            
+            if (firstUp) {
+                firstUp = false;
+                
+                const char *configArr[] = {"up", "debug"};
+//                ifconfig(configArr, nitems(configArr));
+                ifup(__FUNCTION__);
+            }else {
+//                this->ca->ca_activate((struct device *)if_softc, DVACT_WAKEUP);
+            }
+            
+            this->fWatchdogTimer->setTimeoutMS(kTimeoutMS);
+
+#ifdef Ethernet
+            this->fTimerEventSource->setAction(&AirPortOpenBSD::autoASSOC);
+            this->fTimerEventSource->setTimeoutUS(1);
+#endif
+            
+            ret =  kIOReturnSuccess;
+            break;
+        case APPLE_POWER_OFF:
+//            DPRINTF(("Setting power off\n"));
+            this->fWatchdogTimer->cancelTimeout();
+            
+//            this->ca->ca_activate((struct device *)if_softc, DVACT_QUIESCE);
+            ret = kIOReturnSuccess;
+            break;
+        default:
+            ret = kIOReturnError;
+            break;
+    };
+
+    powerState = powerStateOrdinal;
+    
+    return ret;
+}
 
 void
 AirPortLinux::ether_ifattach()

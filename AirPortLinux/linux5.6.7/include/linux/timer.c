@@ -25,15 +25,16 @@ void IOTimeout::timeout_run(OSObject* obj, IOTimerEventSource* timer)
     if (vt == NULL) {
         return;
     }
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
     vt->tl->function(vt->tl);
 }
 
-void __init_timer(struct timer_list *timer,
-                               void (*callback) (struct timer_list *),
-                               unsigned int flags)
+void init_timer_key(struct timer_list *timer,
+                    void (*func)(struct timer_list *), unsigned int flags,
+                    const char *name)
 {
-    timer->function = callback;
+    timer->function = func;
+    timer->name = name;
     
     if (timer->vt == NULL) {
         timer->vt = new IOTimeout();
@@ -52,7 +53,7 @@ int __mod_timer(struct timer_list *timer, unsigned long expires, int flag)
         return 0;
     }
     
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d, timer->expires = %lu", __FUNCTION__, __LINE__, timer->expires);
     timer->expires = expires;
     timer->vt->timer->cancelTimeout();
     timer->vt->timer->setTimeoutUS(timer->expires);

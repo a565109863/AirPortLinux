@@ -416,8 +416,8 @@ static int ieee80211_key_replace(struct ieee80211_sub_if_data *sdata,
     if (WARN_ON(!_new && !old))
         return 0;
 
-//    if (_new)
-//        list_add_tail_rcu(&_new->list, &sdata->key_list);
+    if (_new)
+        list_add_tail_rcu(&_new->list, &sdata->key_list);
 
     WARN_ON(_new && old && _new->conf.keyidx != old->conf.keyidx);
 

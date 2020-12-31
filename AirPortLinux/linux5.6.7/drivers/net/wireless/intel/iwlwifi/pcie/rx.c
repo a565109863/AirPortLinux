@@ -2064,19 +2064,19 @@ void iwl_pcie_free_ict(struct iwl_trans *trans)
  */
 int iwl_pcie_alloc_ict(struct iwl_trans *trans)
 {
-//	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
-//
-//	trans_pcie->ict_tbl =
-//		(__le32 *)dma_alloc_coherent(trans->dev, ICT_SIZE,
-//				   &trans_pcie->ict_tbl_dma, GFP_KERNEL);
-//	if (!trans_pcie->ict_tbl)
-//		return -ENOMEM;
-//
-//	/* just an API sanity check ... it is guaranteed to be aligned */
-//	if (WARN_ON(trans_pcie->ict_tbl_dma & (ICT_SIZE - 1))) {
-//		iwl_pcie_free_ict(trans);
-//		return -EINVAL;
-//	}
+	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
+
+	trans_pcie->ict_tbl =
+		(__le32 *)dma_alloc_coherent(trans->dev, ICT_SIZE,
+				   &trans_pcie->ict_tbl_dma, GFP_KERNEL);
+	if (!trans_pcie->ict_tbl)
+		return -ENOMEM;
+
+	/* just an API sanity check ... it is guaranteed to be aligned */
+	if (WARN_ON(trans_pcie->ict_tbl_dma & (ICT_SIZE - 1))) {
+		iwl_pcie_free_ict(trans);
+		return -EINVAL;
+	}
 
 	return 0;
 }

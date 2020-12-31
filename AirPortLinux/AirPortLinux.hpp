@@ -14,7 +14,7 @@ typedef unsigned int ifnet_ctl_cmd_t;
 #include "iwlwifi.h"
 //#include "firmware/firmware.h"
 //
-//#include "help_ifconfig.h"
+#include "help_ifconfig.h"
 
 #define DebugLog(x, args...) \
 if(1) { \
@@ -60,6 +60,12 @@ public:
     bool start(IOService *provider) APPLE_KEXT_OVERRIDE;
     void stop(IOService *provider) APPLE_KEXT_OVERRIDE;
     IOReturn getHardwareAddress(IOEthernetAddress* addrP) APPLE_KEXT_OVERRIDE;
+    
+    /* Power Management Support */
+    IOReturn registerWithPolicyMaker(IOService *policyMaker) APPLE_KEXT_OVERRIDE;
+    IOReturn setPowerState(unsigned long powerStateOrdinal, IOService *policyMaker) APPLE_KEXT_OVERRIDE;
+    
+    /* IOController methods. */
     IOReturn enable(IONetworkInterface *netif) APPLE_KEXT_OVERRIDE;
     IOReturn disable(IONetworkInterface *netif) APPLE_KEXT_OVERRIDE;
     UInt32 outputPacket(mbuf_t, void * param) APPLE_KEXT_OVERRIDE;
@@ -67,7 +73,6 @@ public:
     IOReturn setPromiscuousMode(IOEnetPromiscuousMode mode) APPLE_KEXT_OVERRIDE;
     IOReturn setMulticastMode(IOEnetMulticastMode mode) APPLE_KEXT_OVERRIDE;
     IOReturn setMulticastList(IOEthernetAddress* addr, UInt32 len) APPLE_KEXT_OVERRIDE;
-    IOReturn registerWithPolicyMaker(IOService *policyMaker) APPLE_KEXT_OVERRIDE;
     bool configureInterface(IONetworkInterface *netif) APPLE_KEXT_OVERRIDE;
     
     IOReturn getMaxPacketSize(UInt32* maxSize) const APPLE_KEXT_OVERRIDE;
@@ -200,6 +205,9 @@ private:
     // 353
     IOReturn getNSS(IOInterface *interface, struct apple80211_nss_data *data);
     
+private:
+    static IOReturn setPowerStateAction(OSObject *owner, void *arg1, void *arg2, void *arg3, void *arg4);
+    
 public:
     
     int chanspec2applechannel(int flags);
@@ -211,7 +219,7 @@ public:
     bool isRun80211X();
     void scanComplete();
     void scanFreeResults();
-    IOReturn powerState(IOInterface *interface, int powerState);
+    IOReturn changePowerState(IOInterface *interface, int powerState);
     void ether_ifattach();
     void ether_ifdetach();
     int enqueueInputPacket2(mbuf_t m);
@@ -240,6 +248,8 @@ public:
     IONetworkMedium *autoMedium;
     IONetworkMedium *mediumTable[MEDIUM_TYPE_INVALID];
     
+    IO80211Interface *iface;
+    
     IOLock *fwLoadLock;
 
     OSData *firmwareData;
@@ -247,7 +257,10 @@ public:
     IONetworkStats *netStats;
 //    IOOutputQueueStats *outputStats;
     IOEthernetStats *etherStats;
-    bool power_state;
+    
+    /* power management data */
+    unsigned long powerState;
+//    bool power_state;
     
     OSDictionary* mediumDict;
     
@@ -296,6 +309,10 @@ public:
     int assoc_data_index = 0;
     int times = 0;
     
+    
+    
+    
+//    struct _ifreq ifr;
 
 };
 

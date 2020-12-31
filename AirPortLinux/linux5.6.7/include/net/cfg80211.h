@@ -19,7 +19,7 @@
 #include <linux/nl80211.h>
 #include <linux/if_ether.h>
 #include <linux/ieee80211.h>
-//#include <linux/net.h>
+#include <linux/net.h>
 #include <net/regulatory.h>
 
 /**
@@ -1157,7 +1157,7 @@ struct sta_txpwr {
  */
 struct station_parameters {
     const u8 *supported_rates;
-//    struct net_device *vlan;
+    struct net_device *vlan;
     u32 sta_flags_mask, sta_flags_set;
     u32 sta_modify_mask;
     int listen_interval;

@@ -226,8 +226,6 @@ void lockdep_rcu_suspicious(const char *file, const int line, const char *s);
 
 #define lockdep_is_held(x) x
 
-#define list_del_rcu list_del
-
 
 /*
  * For trivial one-depth nesting of a lock-class, the following

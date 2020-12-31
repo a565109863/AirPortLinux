@@ -1,173 +1,53 @@
-//
-//  rtnetlink.h
-//  AppleIntelWiFi
-//
-//  Created by Zhong-Mac on 2020/4/28.
-//  Copyright © 2020 Zhong-Mac. All rights reserved.
-//
+/* SPDX-License-Identifier: GPL-2.0 */
+#ifndef __LINUX_RTNETLINK_H
+#define __LINUX_RTNETLINK_H
 
-#ifndef rtnetlink_h
-#define rtnetlink_h
 
-enum {
-    RTM_BASE    = 16,
-#define RTM_BASE    RTM_BASE
-    
-    RTM_NEWLINK    = 16,
-#define RTM_NEWLINK    RTM_NEWLINK
-    RTM_DELLINK,
-#define RTM_DELLINK    RTM_DELLINK
-    RTM_GETLINK,
-#define RTM_GETLINK    RTM_GETLINK
-    RTM_SETLINK,
-#define RTM_SETLINK    RTM_SETLINK
-    
-    RTM_NEWADDR    = 20,
-#define RTM_NEWADDR    RTM_NEWADDR
-    RTM_DELADDR,
-#define RTM_DELADDR    RTM_DELADDR
-    RTM_GETADDR,
-#define RTM_GETADDR    RTM_GETADDR
-    
-    RTM_NEWROUTE    = 24,
-#define RTM_NEWROUTE    RTM_NEWROUTE
-    RTM_DELROUTE,
-#define RTM_DELROUTE    RTM_DELROUTE
-    RTM_GETROUTE,
-#define RTM_GETROUTE    RTM_GETROUTE
-    
-    RTM_NEWNEIGH    = 28,
-#define RTM_NEWNEIGH    RTM_NEWNEIGH
-    RTM_DELNEIGH,
-#define RTM_DELNEIGH    RTM_DELNEIGH
-    RTM_GETNEIGH,
-#define RTM_GETNEIGH    RTM_GETNEIGH
-    
-    RTM_NEWRULE    = 32,
-#define RTM_NEWRULE    RTM_NEWRULE
-    RTM_DELRULE,
-#define RTM_DELRULE    RTM_DELRULE
-    RTM_GETRULE,
-#define RTM_GETRULE    RTM_GETRULE
-    
-    RTM_NEWQDISC    = 36,
-#define RTM_NEWQDISC    RTM_NEWQDISC
-    RTM_DELQDISC,
-#define RTM_DELQDISC    RTM_DELQDISC
-    RTM_GETQDISC,
-#define RTM_GETQDISC    RTM_GETQDISC
-    
-    RTM_NEWTCLASS    = 40,
-#define RTM_NEWTCLASS    RTM_NEWTCLASS
-    RTM_DELTCLASS,
-#define RTM_DELTCLASS    RTM_DELTCLASS
-    RTM_GETTCLASS,
-#define RTM_GETTCLASS    RTM_GETTCLASS
-    
-    RTM_NEWTFILTER    = 44,
-#define RTM_NEWTFILTER    RTM_NEWTFILTER
-    RTM_DELTFILTER,
-#define RTM_DELTFILTER    RTM_DELTFILTER
-    RTM_GETTFILTER,
-#define RTM_GETTFILTER    RTM_GETTFILTER
-    
-    RTM_NEWACTION    = 48,
-#define RTM_NEWACTION   RTM_NEWACTION
-    RTM_DELACTION,
-#define RTM_DELACTION   RTM_DELACTION
-    RTM_GETACTION,
-#define RTM_GETACTION   RTM_GETACTION
-    
-    RTM_NEWPREFIX    = 52,
-#define RTM_NEWPREFIX    RTM_NEWPREFIX
-    
-    RTM_GETMULTICAST = 58,
-#define RTM_GETMULTICAST RTM_GETMULTICAST
-    
-    RTM_GETANYCAST    = 62,
-#define RTM_GETANYCAST    RTM_GETANYCAST
-    
-    RTM_NEWNEIGHTBL    = 64,
-#define RTM_NEWNEIGHTBL    RTM_NEWNEIGHTBL
-    RTM_GETNEIGHTBL    = 66,
-#define RTM_GETNEIGHTBL    RTM_GETNEIGHTBL
-    RTM_SETNEIGHTBL,
-#define RTM_SETNEIGHTBL    RTM_SETNEIGHTBL
-    
-    RTM_NEWNDUSEROPT = 68,
-#define RTM_NEWNDUSEROPT RTM_NEWNDUSEROPT
-    
-    RTM_NEWADDRLABEL = 72,
-#define RTM_NEWADDRLABEL RTM_NEWADDRLABEL
-    RTM_DELADDRLABEL,
-#define RTM_DELADDRLABEL RTM_DELADDRLABEL
-    RTM_GETADDRLABEL,
-#define RTM_GETADDRLABEL RTM_GETADDRLABEL
-    
-    RTM_GETDCB = 78,
-#define RTM_GETDCB RTM_GETDCB
-    RTM_SETDCB,
-#define RTM_SETDCB RTM_SETDCB
-    
-    RTM_NEWNETCONF = 80,
-#define RTM_NEWNETCONF RTM_NEWNETCONF
-    RTM_DELNETCONF,
-#define RTM_DELNETCONF RTM_DELNETCONF
-    RTM_GETNETCONF = 82,
-#define RTM_GETNETCONF RTM_GETNETCONF
-    
-    RTM_NEWMDB = 84,
-#define RTM_NEWMDB RTM_NEWMDB
-    RTM_DELMDB = 85,
-#define RTM_DELMDB RTM_DELMDB
-    RTM_GETMDB = 86,
-#define RTM_GETMDB RTM_GETMDB
-    
-    RTM_NEWNSID = 88,
-#define RTM_NEWNSID RTM_NEWNSID
-    RTM_DELNSID = 89,
-#define RTM_DELNSID RTM_DELNSID
-    RTM_GETNSID = 90,
-#define RTM_GETNSID RTM_GETNSID
-    
-    RTM_NEWSTATS = 92,
-#define RTM_NEWSTATS RTM_NEWSTATS
-    RTM_GETSTATS = 94,
-#define RTM_GETSTATS RTM_GETSTATS
-    
-    RTM_NEWCACHEREPORT = 96,
-#define RTM_NEWCACHEREPORT RTM_NEWCACHEREPORT
-    
-    RTM_NEWCHAIN = 100,
-#define RTM_NEWCHAIN RTM_NEWCHAIN
-    RTM_DELCHAIN,
-#define RTM_DELCHAIN RTM_DELCHAIN
-    RTM_GETCHAIN,
-#define RTM_GETCHAIN RTM_GETCHAIN
-    
-    RTM_NEWNEXTHOP = 104,
-#define RTM_NEWNEXTHOP    RTM_NEWNEXTHOP
-    RTM_DELNEXTHOP,
-#define RTM_DELNEXTHOP    RTM_DELNEXTHOP
-    RTM_GETNEXTHOP,
-#define RTM_GETNEXTHOP    RTM_GETNEXTHOP
-    
-    RTM_NEWLINKPROP = 108,
-#define RTM_NEWLINKPROP    RTM_NEWLINKPROP
-    RTM_DELLINKPROP,
-#define RTM_DELLINKPROP    RTM_DELLINKPROP
-    RTM_GETLINKPROP,
-#define RTM_GETLINKPROP    RTM_GETLINKPROP
-    
-    RTM_NEWVLAN = 112,
-#define RTM_NEWNVLAN    RTM_NEWVLAN
-    RTM_DELVLAN,
-#define RTM_DELVLAN    RTM_DELVLAN
-    RTM_GETVLAN,
-#define RTM_GETVLAN    RTM_GETVLAN
-    
-    __RTM_MAX,
-#define RTM_MAX        (((__RTM_MAX + 3) & ~3) - 1)
-};
+#include <linux/mutex.h>
+#include <linux/netdevice.h>
+#include <linux/wait.h>
+#include <linux/refcount.h>
+#include <uapi/linux/rtnetlink.h>
+
+
+extern int rtnetlink_send(struct sk_buff *skb, struct net *net, u32 pid, u32 group, int echo);
+extern int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 pid);
+extern void rtnl_notify(struct sk_buff *skb, struct net *net, u32 pid,
+            u32 group, struct nlmsghdr *nlh, gfp_t flags);
+//extern void rtnl_set_sk_err(struct net *net, u32 group, int error);
+extern int rtnetlink_put_metrics(struct sk_buff *skb, u32 *metrics);
+extern int rtnl_put_cacheinfo(struct sk_buff *skb, struct dst_entry *dst,
+                  u32 id, long expires, u32 error);
+
+void rtmsg_ifinfo(int type, struct net_device *dev, unsigned change, gfp_t flags);
+void rtmsg_ifinfo_newnet(int type, struct net_device *dev, unsigned int change,
+             gfp_t flags, int *new_nsid, int new_ifindex);
+struct sk_buff *rtmsg_ifinfo_build_skb(int type, struct net_device *dev,
+                       unsigned change, u32 event,
+                       gfp_t flags, int *new_nsid,
+                       int new_ifindex);
+void rtmsg_ifinfo_send(struct sk_buff *skb, struct net_device *dev,
+               gfp_t flags);
+
+
+#ifdef CONFIG_PROVE_LOCKING
+extern bool lockdep_rtnl_is_held(void);
+#else
+static inline bool lockdep_rtnl_is_held(void)
+{
+    return true;
+}
+#endif /* #ifdef CONFIG_PROVE_LOCKING */
+
+/**
+ * rcu_dereference_rtnl - rcu_dereference with debug checking
+ * @p: The pointer to read, prior to dereferencing
+ *
+ * Do an rcu_dereference(p), but check caller either holds rcu_read_lock()
+ * or RTNL. Note : Please prefer rtnl_dereference() or rcu_dereference()
+ */
+#define rcu_dereference_rtnl(p)                    \
+    rcu_dereference_check(p, lockdep_rtnl_is_held())
+
 
 #endif /* rtnetlink_h */

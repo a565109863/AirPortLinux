@@ -368,9 +368,10 @@ static inline __u64 __be64_to_cpup(const __be64 *p)
 #define USEC_PER_JIFFY    (USEC_PER_SEC / HZ)
 
 
-#define CONFIG_IWLMVM 1
+#define CONFIG_IWLDVM   1
+#define CONFIG_IWLMVM   1
 #define CONFIG_CFG80211 1
-#define CONFIG_ACPI 1
+#define CONFIG_ACPI     1
 
 #define IS_ENABLED(x) (x)
 
@@ -437,9 +438,6 @@ static inline int __must_check PTR_ERR_OR_ZERO(__force const void *ptr)
 #define smp_wmb()
 #define rcu_assign_pointer(p, v) \
 ({ \
-if (!__builtin_constant_p(v) || \
-((v) != NULL)) \
-smp_wmb(); \
 (p) = (v); \
 })
 
@@ -451,7 +449,7 @@ smp_wmb(); \
 
 #define rtnl_dereference(x) x
 
-#define num_online_cpus() -1
+#define num_online_cpus() 8
 #define cpumask_next(x, y) 1
 #define cpumask_set_cpu(x, y)
 #define irq_set_affinity_hint(x, y) 0

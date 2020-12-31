@@ -389,13 +389,14 @@ static bool schedule_delayed_work(struct delayed_work *dwork,
 
 extern struct workqueue_struct *system_wq;
 
+bool mod_delayed_work_on(int cpu, struct workqueue_struct *wq,
+            struct delayed_work *dwork, unsigned long delay);
 
 static inline bool mod_delayed_work(struct workqueue_struct *wq,
                     struct delayed_work *dwork,
                     unsigned long delay)
 {
-//    return mod_delayed_work_on(WORK_CPU_UNBOUND, wq, dwork, delay);
-    return true;
+    return mod_delayed_work_on(WORK_CPU_UNBOUND, wq, dwork, delay);
 }
 
 
@@ -404,10 +405,35 @@ static inline struct delayed_work *to_delayed_work(struct work_struct *work)
     return container_of(work, struct delayed_work, work);
 }
 
-static
-void schedule_work(struct work_struct *work)
+/**
+ * schedule_work_on - put work task on a specific cpu
+ * @cpu: cpu to put the work task on
+ * @work: job to be done
+ *
+ * This puts a job on a specific cpu
+ */
+static inline bool schedule_work_on(int cpu, struct work_struct *work)
 {
- 
+    return queue_work_on(cpu, system_wq, work);
+}
+
+/**
+ * schedule_work - put work task in global workqueue
+ * @work: job to be done
+ *
+ * Returns %false if @work was already on the kernel-global workqueue and
+ * %true otherwise.
+ *
+ * This puts a job in the kernel-global workqueue if it was not already
+ * queued and leaves it in the same position on the kernel-global
+ * workqueue otherwise.
+ *
+ * Shares the same memory-ordering properties of queue_work(), cf. the
+ * DocBook header of queue_work().
+ */
+static inline bool schedule_work(struct work_struct *work)
+{
+    return queue_work(system_wq, work);
 }
 
 

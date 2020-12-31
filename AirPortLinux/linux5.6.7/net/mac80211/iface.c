@@ -1776,7 +1776,7 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
 
         ndev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
         if (!ndev->tstats) {
-//            free_netdev(ndev);
+            free_netdev(ndev);
             return -ENOMEM;
         }
 
@@ -1788,11 +1788,11 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
                     - ETH_HLEN /* ethernet hard_header_len */
                     + IEEE80211_ENCRYPT_HEADROOM;
         ndev->needed_tailroom = IEEE80211_ENCRYPT_TAILROOM;
-
+        
         ret = dev_alloc_name(ndev, ndev->name);
         if (ret < 0) {
             ieee80211_if_free(ndev);
-//            free_netdev(ndev);
+            free_netdev(ndev);
             return ret;
         }
 
@@ -1880,7 +1880,7 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
 
         ret = register_netdevice(ndev);
         if (ret) {
-//            free_netdev(ndev);
+            free_netdev(ndev);
             return ret;
         }
     }
