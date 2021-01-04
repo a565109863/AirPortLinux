@@ -10,12 +10,17 @@
 #define help_ifconfig_h
 
 #include <net/core/dev_ioctl.h>
+#include <linux/wireless.h>
 
 extern struct net init_net;
 
 
-int ioctl(struct net *net, unsigned int cmd, struct _ifreq *ifr, bool *need_copyout);
+#define sock_net(sk) &init_net
+
+int ioctl(int sk, unsigned int cmd, void *);
+long sock_ioctl(int sk, unsigned cmd, unsigned long arg);
 
 int ifup(const char *ifname);
+int ifdown(const char *ifname);
 
 #endif /* help_ifconfig_h */

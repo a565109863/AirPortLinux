@@ -1417,7 +1417,7 @@ struct ieee80211_local {
 static inline struct ieee80211_sub_if_data *
 IEEE80211_DEV_TO_SUB_IF(struct net_device *dev)
 {
-    return NULL;//(struct ieee80211_sub_if_data *)netdev_priv(dev);
+    return (struct ieee80211_sub_if_data *)netdev_priv(dev);
 }
 
 static inline struct ieee80211_sub_if_data *
@@ -1551,7 +1551,7 @@ static inline bool txq_has_queue(struct ieee80211_txq *txq)
 {
     struct txq_info *txqi = to_txq_info(txq);
 
-    return 1;//!(skb_queue_empty(&txqi->frags) && !txqi->tin.backlog_packets);
+    return !(skb_queue_empty(&txqi->frags) && !txqi->tin.backlog_packets);
 }
 
 static inline int ieee80211_bssid_match(const u8 *raddr, const u8 *addr)

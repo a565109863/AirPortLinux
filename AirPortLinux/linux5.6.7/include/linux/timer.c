@@ -26,7 +26,30 @@ void IOTimeout::timeout_run(OSObject* obj, IOTimerEventSource* timer)
         return;
     }
     kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
-    vt->tl->function(vt->tl);
+    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    DebugLog("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+//    vt->tl->function(vt->tl);
 }
 
 void init_timer_key(struct timer_list *timer,
@@ -53,10 +76,10 @@ int __mod_timer(struct timer_list *timer, unsigned long expires, int flag)
         return 0;
     }
     
-    kprintf("--%s: line = %d, timer->expires = %lu", __FUNCTION__, __LINE__, timer->expires);
     timer->expires = expires;
+//    DebugLog("--%s: line = %d, timer->expires = %lu", __FUNCTION__, __LINE__, timer->expires);
     timer->vt->timer->cancelTimeout();
-    timer->vt->timer->setTimeoutUS(timer->expires);
+    timer->vt->timer->setTimeoutUS(timer->expires * 1000);
     
     return 0;
 }

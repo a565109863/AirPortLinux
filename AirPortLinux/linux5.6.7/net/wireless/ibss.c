@@ -238,7 +238,7 @@ int cfg80211_ibss_wext_join(struct cfg80211_registered_device *rdev,
 			    struct wireless_dev *wdev)
 {
 	struct cfg80211_cached_keys *ck = NULL;
-	enum nl80211_band band;
+	int band;
 	int i, err;
 
 	ASSERT_WDEV_LOCK(wdev);
@@ -292,7 +292,7 @@ int cfg80211_ibss_wext_join(struct cfg80211_registered_device *rdev,
 	wdev->wext.ibss.privacy = wdev->wext.default_key != -1;
 
 	if (wdev->wext.keys && wdev->wext.keys->def != -1) {
-		ck = kmemdup(wdev->wext.keys, sizeof(*ck), GFP_KERNEL);
+		ck = (struct cfg80211_cached_keys *)kmemdup(wdev->wext.keys, sizeof(*ck), GFP_KERNEL);
 		if (!ck)
 			return -ENOMEM;
 		for (i = 0; i < CFG80211_MAX_WEP_KEYS; i++)
@@ -464,7 +464,7 @@ int cfg80211_ibss_wext_siwap(struct net_device *dev,
 {
 	struct wireless_dev *wdev = dev->ieee80211_ptr;
 	struct cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
-	u8 *bssid = ap_addr->sa_data;
+	u8 *bssid = (u8 *)ap_addr->sa_data;
 	int err;
 
 	/* call only for ibss! */
@@ -533,7 +533,7 @@ int cfg80211_ibss_wext_giwap(struct net_device *dev,
 	else if (wdev->wext.ibss.bssid)
 		memcpy(ap_addr->sa_data, wdev->wext.ibss.bssid, ETH_ALEN);
 	else
-		eth_zero_addr(ap_addr->sa_data);
+		eth_zero_addr((u8 *)ap_addr->sa_data);
 
 	wdev_unlock(wdev);
 

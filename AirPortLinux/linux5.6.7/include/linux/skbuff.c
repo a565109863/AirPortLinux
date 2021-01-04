@@ -2966,7 +2966,7 @@ skb_zerocopy(struct sk_buff *to, struct sk_buff *from, int len, int hlen)
     } else {
         plen = min_t(int, skb_headlen(from), len);
         if (plen) {
-            page = virt_to_head_page(from->head);
+            page = virt_to_head_page(from->head, from->len);
             offset = from->data - (unsigned char *)page_address(page);
             __skb_fill_page_desc(to, 0, page, offset, plen);
             get_page(page);
@@ -3641,7 +3641,7 @@ static inline skb_frag_t skb_head_frag_to_page_desc(struct sk_buff *frag_skb)
     skb_frag_t head_frag;
     struct page *page;
 
-    page = virt_to_head_page(frag_skb->head);
+    page = virt_to_head_page(frag_skb->head, frag_skb->len);
     __skb_frag_set_page(&head_frag, page);
     skb_frag_off_set(&head_frag, frag_skb->data -
              (unsigned char *)page_address(page));
@@ -5171,7 +5171,7 @@ bool skb_try_coalesce(struct sk_buff *to, struct sk_buff *from,
 
         delta = from->truesize - SKB_DATA_ALIGN(sizeof(struct sk_buff));
 
-        page = virt_to_head_page(from->head);
+        page = virt_to_head_page(from->head, from->len);
         offset = from->data - (unsigned char *)page_address(page);
 
         skb_fill_page_desc(to, to_shinfo->nr_frags,

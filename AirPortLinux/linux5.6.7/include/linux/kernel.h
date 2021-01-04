@@ -165,21 +165,32 @@ static inline void kfree(const void *p)
 //    if (p >= __kfree_ignore_start && p < __kfree_ignore_end)
 //        return;
 //    free(p);
+    p = NULL;
+}
+
+
+static inline void kfree(void *p, size_t n, size_t size)
+{
+//    if (p >= __kfree_ignore_start && p < __kfree_ignore_end)
+//        return;
+    free(p, 1, n * size);
+    p = NULL;
+//    free(void* addr, int type, vm_size_t len)
 }
 
 static void kzfree(const void *p)
 {
-    
+    p = NULL;
 }
 
 static void vfree(const void *p)
 {
-    
+    p = NULL;
 }
 
 static inline void free_pages_exact(void *p, size_t s)
 {
-    kfree(p);
+    kfree(p, 1, s);
 }
 
 
@@ -371,7 +382,7 @@ static char *kasprintf(gfp_t gfp, const char *fmt, ...)
 }
 
 
-static int copy_to_user(void *kaddr, void * udaddr, size_t len)
+static int copy_to_user(void * udaddr, void *kaddr, size_t len)
 {
     memcpy(udaddr, kaddr, len);
     return 0;

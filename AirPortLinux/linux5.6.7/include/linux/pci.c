@@ -347,7 +347,7 @@ static int msix_capability_init(struct pci_dev *dev, struct msix_entry *entries,
 static int __pci_enable_msix(struct pci_dev *dev, struct msix_entry *entries,
                  int nvec, struct irq_affinity *affd, int flags)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+//    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     
     int nr_entries;
     int i, j;
@@ -396,7 +396,7 @@ static int __pci_enable_msix(struct pci_dev *dev, struct msix_entry *entries,
         if (count == 0)
             return -EINVAL;
         
-        DebugLog("--%s: line = %d count = %d", __FUNCTION__, __LINE__, count);
+        kprintf("--%s: line = %d count = %d", __FUNCTION__, __LINE__, count);
         if (nvec > count)
             return count;
     }
@@ -779,9 +779,9 @@ void __iomem * const *pcim_iomap_table(struct pci_dev *pdev)
  */
 int pci_find_capability(struct pci_dev *dev, int cap)
 {
-    UInt8 pos;
-    UInt32 value = dev->dev.dev->fPciDevice->findPCICapability(cap, &pos);
-    return pos;
+    UInt8 _offset;
+    UInt32 value = dev->dev.dev->fPciDevice->findPCICapability(cap, &_offset);
+    return _offset;
 }
 EXPORT_SYMBOL(pci_find_capability);
 
@@ -992,6 +992,58 @@ void pci_pm_init(struct pci_dev *dev)
         dev->imm_ready = 1;
 }
 
+void set_pcie_port_type(struct pci_dev *pdev)
+{
+    int pos;
+    u16 reg16;
+//    int type;
+//    struct pci_dev *parent;
+    
+    pos = pci_find_capability(pdev, PCI_CAP_ID_EXP);
+    if (!pos)
+        return;
+    
+    pdev->pcie_cap = pos;
+    pci_read_config_word(pdev, pos + PCI_EXP_FLAGS, &reg16);
+    pdev->pcie_flags_reg = reg16;
+    pci_read_config_word(pdev, pos + PCI_EXP_DEVCAP, &reg16);
+    pdev->pcie_mpss = reg16 & PCI_EXP_DEVCAP_PAYLOAD;
+    
+//    parent = pci_upstream_bridge(pdev);
+//    if (!parent)
+//        return;
+//
+//    /*
+//     * Some systems do not identify their upstream/downstream ports
+//     * correctly so detect impossible configurations here and correct
+//     * the port type accordingly.
+//     */
+//    type = pci_pcie_type(pdev);
+//    if (type == PCI_EXP_TYPE_DOWNSTREAM) {
+//        /*
+//         * If pdev claims to be downstream port but the parent
+//         * device is also downstream port assume pdev is actually
+//         * upstream port.
+//         */
+//        if (pcie_downstream_port(parent)) {
+//            pci_info(pdev, "claims to be downstream port but is acting as upstream port, correcting type\n");
+//            pdev->pcie_flags_reg &= ~PCI_EXP_FLAGS_TYPE;
+//            pdev->pcie_flags_reg |= PCI_EXP_TYPE_UPSTREAM;
+//        }
+//    } else if (type == PCI_EXP_TYPE_UPSTREAM) {
+//        /*
+//         * If pdev claims to be upstream port but the parent
+//         * device is also upstream port assume pdev is actually
+//         * downstream port.
+//         */
+//        if (pci_pcie_type(parent) == PCI_EXP_TYPE_UPSTREAM) {
+//            pci_info(pdev, "claims to be upstream port but is acting as downstream port, correcting type\n");
+//            pdev->pcie_flags_reg &= ~PCI_EXP_FLAGS_TYPE;
+//            pdev->pcie_flags_reg |= PCI_EXP_TYPE_DOWNSTREAM;
+//        }
+//    }
+}
+
 void pci_init_capabilities(struct pci_dev *dev)
 {
 //    pci_ea_init(dev);        /* Enhanced Allocation */
@@ -1019,4 +1071,7 @@ void pci_init_capabilities(struct pci_dev *dev)
 //
 //    if (pci_probe_reset_function(dev) == 0)
 //        dev->reset_fn = 1;
+    
+    set_pcie_port_type(dev);
+
 }

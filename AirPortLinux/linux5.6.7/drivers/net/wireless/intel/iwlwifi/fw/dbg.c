@@ -2270,7 +2270,7 @@ int iwl_fw_dbg_collect_desc(struct iwl_fw_runtime *fwrt,
 	fwrt->dump.desc = desc;
 	fwrt->dump.monitor_only = monitor_only;
 
-	schedule_delayed_work(&fwrt->dump.wks[0].wk, usecs_to_jiffies(delay));
+//    schedule_delayed_work(&fwrt->dump.wks[0].wk, usecs_to_jiffies(delay));
 
 	return 0;
 }

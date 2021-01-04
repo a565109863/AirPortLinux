@@ -223,7 +223,6 @@ int iwl_pcie_rx_stop(struct iwl_trans *trans)
 static void iwl_pcie_rxq_inc_wr_ptr(struct iwl_trans *trans,
 				    struct iwl_rxq *rxq)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	u32 reg;
 
 	lockdep_assert_held(&rxq->lock);
@@ -416,7 +415,6 @@ void iwl_pcie_rxq_restock(struct iwl_trans *trans, struct iwl_rxq *rxq)
 static struct page *iwl_pcie_rx_alloc_page(struct iwl_trans *trans,
 					   u32 *offset, gfp_t priority)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	unsigned int rbsize = iwl_trans_get_rb_size(trans_pcie->rx_buf_size);
 	unsigned int allocsize = PAGE_SIZE << trans_pcie->rx_page_order;
@@ -427,6 +425,7 @@ static struct page *iwl_pcie_rx_alloc_page(struct iwl_trans *trans,
 		gfp_mask |= __GFP_COMP;
 
 	if (trans_pcie->alloc_page) {
+        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 		spin_lock_bh(&trans_pcie->alloc_page_lock);
 		/* recheck */
 		if (trans_pcie->alloc_page) {
@@ -443,6 +442,7 @@ static struct page *iwl_pcie_rx_alloc_page(struct iwl_trans *trans,
 		spin_unlock_bh(&trans_pcie->alloc_page_lock);
 	}
 
+    kprintf("--%s: line = %d rbsize = %d, allocsize = %d, rx_page_order = %d", __FUNCTION__, __LINE__, rbsize, allocsize, trans_pcie->rx_page_order);
 	/* Alloc a new receive buffer page*/
 	page = alloc_pages(gfp_mask, trans_pcie->rx_page_order);
 	if (!page) {
@@ -460,6 +460,7 @@ static struct page *iwl_pcie_rx_alloc_page(struct iwl_trans *trans,
 	}
 
 	if (2 * rbsize <= allocsize) {
+        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 		spin_lock_bh(&trans_pcie->alloc_page_lock);
 		if (!trans_pcie->alloc_page) {
 			get_page(page);
@@ -503,6 +504,8 @@ void iwl_pcie_rxq_alloc_rbs(struct iwl_trans *trans, gfp_t priority,
 		page = iwl_pcie_rx_alloc_page(trans, &offset, priority);
 		if (!page)
 			return;
+        
+        kprintf("--%s: line = %d, offset = %d", __FUNCTION__, __LINE__, offset);
 
 		spin_lock(&rxq->lock);
 
@@ -765,7 +768,6 @@ static void iwl_pcie_free_rxq_dma(struct iwl_trans *trans,
 static int iwl_pcie_alloc_rxq_dma(struct iwl_trans *trans,
 				  struct iwl_rxq *rxq)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct device *dev = trans->dev;
 	int i;
@@ -834,7 +836,6 @@ err:
 
 static int iwl_pcie_rx_alloc(struct iwl_trans *trans)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct iwl_rb_allocator *rba = &trans_pcie->rba;
 	int i, ret;
@@ -895,9 +896,15 @@ err:
 		trans_pcie->base_rb_stts = NULL;
 		trans_pcie->base_rb_stts_dma = 0;
 	}
-	kfree(trans_pcie->rx_pool);
-	kfree(trans_pcie->global_table);
-	kfree(trans_pcie->rxq);
+//	kfree(trans_pcie->rx_pool);
+//	kfree(trans_pcie->global_table);
+//	kfree(trans_pcie->rxq);
+    
+    kfree(trans_pcie->rx_pool, RX_POOL_SIZE(trans_pcie->num_rx_bufs),
+          sizeof(trans_pcie->rx_pool[0]));
+    kfree(trans_pcie->global_table, RX_POOL_SIZE(trans_pcie->num_rx_bufs),
+          sizeof(trans_pcie->global_table[0]));
+    kfree(trans_pcie->rxq, trans->num_rx_queues, sizeof(struct iwl_rxq));
 
 	return ret;
 }
@@ -1078,7 +1085,6 @@ int iwl_pcie_dummy_napi_poll(struct napi_struct *napi, int budget)
 
 static int _iwl_pcie_rx_init(struct iwl_trans *trans)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct iwl_rxq *def_rxq;
 	struct iwl_rb_allocator *rba = &trans_pcie->rba;
@@ -1158,7 +1164,6 @@ static int _iwl_pcie_rx_init(struct iwl_trans *trans)
 
 int iwl_pcie_rx_init(struct iwl_trans *trans)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	int ret = _iwl_pcie_rx_init(trans);
 
@@ -1230,9 +1235,15 @@ void iwl_pcie_rx_free(struct iwl_trans *trans)
 //		if (rxq->napi.poll)
 //			netif_napi_del(&rxq->napi);
 	}
-	kfree(trans_pcie->rx_pool);
-	kfree(trans_pcie->global_table);
-	kfree(trans_pcie->rxq);
+//	kfree(trans_pcie->rx_pool);
+//	kfree(trans_pcie->global_table);
+//	kfree(trans_pcie->rxq);
+    
+    kfree(trans_pcie->rx_pool, RX_POOL_SIZE(trans_pcie->num_rx_bufs),
+          sizeof(trans_pcie->rx_pool[0]));
+    kfree(trans_pcie->global_table, RX_POOL_SIZE(trans_pcie->num_rx_bufs),
+          sizeof(trans_pcie->global_table[0]));
+    kfree(trans_pcie->rxq, trans->num_rx_queues, sizeof(struct iwl_rxq));
 
 	if (trans_pcie->alloc_page)
 		__free_pages(trans_pcie->alloc_page, trans_pcie->rx_page_order);
@@ -1477,7 +1488,6 @@ out_err:
  */
 static void iwl_pcie_rx_handle(struct iwl_trans *trans, int queue)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct napi_struct *napi;
 	struct iwl_rxq *rxq;
@@ -1752,7 +1762,6 @@ static u32 iwl_pcie_int_cause_ict(struct iwl_trans *trans)
 
 void iwl_pcie_handle_rfkill_irq(struct iwl_trans *trans)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct isr_statistics *isr_stats = &trans_pcie->isr_stats;
 	bool hw_rfkill, prev, report;
@@ -1793,8 +1802,6 @@ void iwl_pcie_handle_rfkill_irq(struct iwl_trans *trans)
 
 irqreturn_t iwl_pcie_irq_handler(int irq, void *dev_id)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
-    
 	struct iwl_trans *trans = (struct iwl_trans *)dev_id;
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct isr_statistics *isr_stats = &trans_pcie->isr_stats;

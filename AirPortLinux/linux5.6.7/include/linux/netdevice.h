@@ -65,6 +65,8 @@ struct notifier_block {
     int priority;
 };
 
+#define CONFIG_CFG80211_WEXT    1
+#define CONFIG_WEXT_CORE        1
 
 //#define IFF_UP          0x1             /* interface is up */
 //#define IFF_BROADCAST   0x2             /* broadcast address valid */

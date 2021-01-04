@@ -14,28 +14,59 @@
 #include <linux/slab.h>
 #include <linux/kernel.h>
 
+struct single_page {
+    IOMemoryDescriptor  *memDes;
+    IODMACommand        *memCmd;
+    UInt64              offset;
+    size_t              size;
+//    int                 nsegs;
+    IOPhysicalSegment   segs;
+    dma_addr_t          paddr;
+    caddr_t             vaddr;
+};
+
+
+struct mult_page {
+    IODMACommand                *dmaCmd;
+    UInt64                      offset;
+    size_t                      size;
+//    int                         nsegs;
+    IOPhysicalSegment           segs;
+    dma_addr_t                  paddr;
+    caddr_t                     vaddr;
+};
 
 struct page {
+    struct list_head list;
+//    struct rcu_head rcu;
     int32_t    name;
     int32_t    sect;
     int32_t    arch;
     int32_t    desc;
     int32_t    file;
     
+    void        *ptr;
+    
     uint32_t    dm_mapsize;    /* size of the mapping */
-    int        dm_nsegs;    /* # valid segments in mapping */
+    int         dm_nsegs;    /* # valid segments in mapping */
     IOPhysicalSegment *dm_segs;    /* segments; variable length */
     
-    uint32_t alignment;
+//    uint32_t alignment;
     IOBufferMemoryDescriptor *bufDes;
     IODMACommand *dmaCmd;
-    IOMbufNaturalMemoryCursor*    mbufCursor;
+    UInt64 offset;
+//    IOMbufNaturalMemoryCursor*    mbufCursor;
     
+//    IOBufferMemoryDescriptor    *bufDes;
+//    int                 mult_page_index;
+//    int                 mult_page_num;
+//    struct mult_page    *mult_page;
+//    struct single_page  single_page;
     
-    IOPhysicalSegment    seg;
+//    IOPhysicalSegment    seg;
     dma_addr_t        paddr;
     caddr_t            vaddr;
-    uint32_t        size;
+//    uint32_t        size;
 };
 
 #define free_pages(a,b)
@@ -43,45 +74,34 @@ struct page {
 static
 void get_page(struct page * page)
 {
-//    page++;
+//    if (page->mult_page_index >= page->mult_page_num) {
+//        page = NULL;
+//    } else {
+//        page->mult_page_index++;
+//    }
 }
 
 
-static void __free_page(struct page * page)
-{
-//    page++;
-}
+void __free_page(struct page * page);
 
 static void __free_pages(struct page * page, u32 _rx_page_order)
 {
 //    page++;
+    __free_page(page);
 }
 
 
-static inline void *page_address(const struct page *page)
-{
-    return page->vaddr;
-}
-static inline void set_page_address(struct page *page, void *address)
-{
-//    page->virtual = address;
-}
+void *page_address(struct page *page);
 
-
-static inline struct page *virt_to_head_page(const void *x)
-{
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
-//    struct page *page = virt_to_page(x);
-//
-//    return compound_head(page);
-    return NULL;
-}
-
+//static inline void set_page_address(struct page *page, void *address)
+//{
+////    page->virtual = address;
+//}
 
 
 static inline int get_order(unsigned long size)
 {
-    return (int)size;//hack
+//    return (int)size;//hack
     int order;
     
     size = (size - 1) >> (PAGE_SHIFT - 1);

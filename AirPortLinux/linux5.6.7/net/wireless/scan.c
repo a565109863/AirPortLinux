@@ -2103,11 +2103,11 @@ cfg80211_get_dev_from_ifindex(struct net *net, int ifindex)
 
     dev = dev_get_by_index(net, ifindex);
     if (!dev)
-        return ERR_PTR(-ENODEV);
+        return (struct cfg80211_registered_device *)ERR_PTR(-ENODEV);
     if (dev->ieee80211_ptr)
         rdev = wiphy_to_rdev(dev->ieee80211_ptr->wiphy);
     else
-        rdev = ERR_PTR(-ENODEV);
+        rdev = (struct cfg80211_registered_device *)ERR_PTR(-ENODEV);
     dev_put(dev);
     return rdev;
 }
@@ -2121,7 +2121,7 @@ int cfg80211_wext_siwscan(struct net_device *dev,
     struct iw_scan_req *wreq = NULL;
     struct cfg80211_scan_request *creq = NULL;
     int i, err, n_channels = 0;
-    enum nl80211_band band;
+    int band;
 
     if (!netif_running(dev))
         return -ENETDOWN;
@@ -2147,7 +2147,7 @@ int cfg80211_wext_siwscan(struct net_device *dev,
     else
         n_channels = ieee80211_get_num_supported_channels(wiphy);
 
-    creq = kzalloc(sizeof(*creq) + sizeof(struct cfg80211_ssid) +
+    creq = (struct cfg80211_scan_request *)kzalloc(sizeof(*creq) + sizeof(struct cfg80211_ssid) +
                n_channels * sizeof(void *),
                GFP_ATOMIC);
     if (!creq) {
@@ -2158,7 +2158,7 @@ int cfg80211_wext_siwscan(struct net_device *dev,
     creq->wiphy = wiphy;
     creq->wdev = dev->ieee80211_ptr;
     /* SSIDs come after channels */
-    creq->ssids = (void *)&creq->channels[n_channels];
+    creq->ssids = (struct cfg80211_ssid *)&creq->channels[n_channels];
     creq->n_channels = n_channels;
     creq->n_ssids = 1;
     creq->scan_start = jiffies;
@@ -2275,7 +2275,7 @@ static char *ieee80211_scan_add_ies(struct iw_request_info *info,
         iwe.u.data.length = next - pos;
         current_ev = iwe_stream_add_point_check(info, current_ev,
                             end_buf, &iwe,
-                            (void *)pos);
+                            (char *)pos);
         if (IS_ERR(current_ev))
             return current_ev;
         pos = next;
@@ -2287,7 +2287,7 @@ static char *ieee80211_scan_add_ies(struct iw_request_info *info,
         iwe.u.data.length = end - pos;
         current_ev = iwe_stream_add_point_check(info, current_ev,
                             end_buf, &iwe,
-                            (void *)pos);
+                            (char *)pos);
         if (IS_ERR(current_ev))
             return current_ev;
     }
@@ -2400,7 +2400,7 @@ ieee80211_bss(struct wiphy *wiphy, struct iw_request_info *info,
             current_ev = iwe_stream_add_point_check(info,
                                 current_ev,
                                 end_buf, &iwe,
-                                (u8 *)ie + 2);
+                                (char *)((u8 *)ie + 2));
             if (IS_ERR(current_ev))
                 goto unlock;
             break;
@@ -2412,7 +2412,7 @@ ieee80211_bss(struct wiphy *wiphy, struct iw_request_info *info,
             current_ev = iwe_stream_add_point_check(info,
                                 current_ev,
                                 end_buf, &iwe,
-                                (u8 *)ie + 2);
+                                (char *)((u8 *)ie + 2));
             if (IS_ERR(current_ev))
                 goto unlock;
             break;
@@ -2423,70 +2423,70 @@ ieee80211_bss(struct wiphy *wiphy, struct iw_request_info *info,
             cfg = (u8 *)ie + 2;
             memset(&iwe, 0, sizeof(iwe));
             iwe.cmd = IWEVCUSTOM;
-            sprintf(buf, "Mesh Network Path Selection Protocol ID: "
+            sprintf((char *)buf, "Mesh Network Path Selection Protocol ID: "
                 "0x%02X", cfg[0]);
-            iwe.u.data.length = strlen(buf);
+            iwe.u.data.length = strlen((const char *)buf);
             current_ev = iwe_stream_add_point_check(info,
                                 current_ev,
                                 end_buf,
-                                &iwe, buf);
+                                &iwe, (char *)buf);
             if (IS_ERR(current_ev))
                 goto unlock;
-            sprintf(buf, "Path Selection Metric ID: 0x%02X",
+            sprintf((char *)buf, "Path Selection Metric ID: 0x%02X",
                 cfg[1]);
-            iwe.u.data.length = strlen(buf);
+            iwe.u.data.length = strlen((const char *)buf);
             current_ev = iwe_stream_add_point_check(info,
                                 current_ev,
                                 end_buf,
-                                &iwe, buf);
+                                &iwe, (char *)buf);
             if (IS_ERR(current_ev))
                 goto unlock;
-            sprintf(buf, "Congestion Control Mode ID: 0x%02X",
+            sprintf((char *)buf, "Congestion Control Mode ID: 0x%02X",
                 cfg[2]);
-            iwe.u.data.length = strlen(buf);
+            iwe.u.data.length = strlen((const char *)buf);
             current_ev = iwe_stream_add_point_check(info,
                                 current_ev,
                                 end_buf,
-                                &iwe, buf);
+                                &iwe, (char *)buf);
             if (IS_ERR(current_ev))
                 goto unlock;
-            sprintf(buf, "Synchronization ID: 0x%02X", cfg[3]);
-            iwe.u.data.length = strlen(buf);
+            sprintf((char *)buf, "Synchronization ID: 0x%02X", cfg[3]);
+            iwe.u.data.length = strlen((const char *)buf);
             current_ev = iwe_stream_add_point_check(info,
                                 current_ev,
                                 end_buf,
-                                &iwe, buf);
+                                &iwe, (char *)buf);
             if (IS_ERR(current_ev))
                 goto unlock;
-            sprintf(buf, "Authentication ID: 0x%02X", cfg[4]);
-            iwe.u.data.length = strlen(buf);
+            sprintf((char *)buf, "Authentication ID: 0x%02X", cfg[4]);
+            iwe.u.data.length = strlen((const char *)buf);
             current_ev = iwe_stream_add_point_check(info,
                                 current_ev,
                                 end_buf,
-                                &iwe, buf);
+                                &iwe, (char *)buf);
             if (IS_ERR(current_ev))
                 goto unlock;
-            sprintf(buf, "Formation Info: 0x%02X", cfg[5]);
-            iwe.u.data.length = strlen(buf);
+            sprintf((char *)buf, "Formation Info: 0x%02X", cfg[5]);
+            iwe.u.data.length = strlen((const char *)buf);
             current_ev = iwe_stream_add_point_check(info,
                                 current_ev,
                                 end_buf,
-                                &iwe, buf);
+                                &iwe, (char *)buf);
             if (IS_ERR(current_ev))
                 goto unlock;
-            sprintf(buf, "Capabilities: 0x%02X", cfg[6]);
-            iwe.u.data.length = strlen(buf);
+            sprintf((char *)buf, "Capabilities: 0x%02X", cfg[6]);
+            iwe.u.data.length = strlen((const char *)buf);
             current_ev = iwe_stream_add_point_check(info,
                                 current_ev,
                                 end_buf,
-                                &iwe, buf);
+                                &iwe, (char *)buf);
             if (IS_ERR(current_ev))
                 goto unlock;
             break;
         case WLAN_EID_SUPP_RATES:
         case WLAN_EID_EXT_SUPP_RATES:
             /* display all supported rates in readable format */
-            p = current_ev + iwe_stream_lcp_len(info);
+            p = (u8 *)(current_ev + iwe_stream_lcp_len(info));
 
             memset(&iwe, 0, sizeof(iwe));
             iwe.cmd = SIOCGIWRATE;
@@ -2497,15 +2497,15 @@ ieee80211_bss(struct wiphy *wiphy, struct iw_request_info *info,
                 iwe.u.bitrate.value =
                     ((ie[i + 2] & 0x7f) * 500000);
                 tmp = p;
-                p = iwe_stream_add_value(info, current_ev, p,
-                             end_buf, &iwe,
+                p = (u8 *)iwe_stream_add_value(info, current_ev, (char *)p,
+                                         end_buf, &iwe,
                              IW_EV_PARAM_LEN);
                 if (p == tmp) {
-                    current_ev = ERR_PTR(-E2BIG);
+                    current_ev = (char *)ERR_PTR(-E2BIG);
                     goto unlock;
                 }
             }
-            current_ev = p;
+            current_ev = (char *)p;
             break;
         }
         rem -= ie[1] + 2;
@@ -2531,19 +2531,19 @@ ieee80211_bss(struct wiphy *wiphy, struct iw_request_info *info,
 
     memset(&iwe, 0, sizeof(iwe));
     iwe.cmd = IWEVCUSTOM;
-    sprintf(buf, "tsf=%016llx", (unsigned long long)(ies->tsf));
-    iwe.u.data.length = strlen(buf);
+    sprintf((char *)buf, "tsf=%016llx", (unsigned long long)(ies->tsf));
+    iwe.u.data.length = strlen((const char *)buf);
     current_ev = iwe_stream_add_point_check(info, current_ev, end_buf,
-                        &iwe, buf);
+                        &iwe, (char *)buf);
     if (IS_ERR(current_ev))
         goto unlock;
     memset(&iwe, 0, sizeof(iwe));
     iwe.cmd = IWEVCUSTOM;
-    sprintf(buf, " Last beacon: %ums ago",
+    sprintf((char *)buf, " Last beacon: %ums ago",
         elapsed_jiffies_msecs(bss->ts));
-    iwe.u.data.length = strlen(buf);
+    iwe.u.data.length = strlen((const char *)buf);
     current_ev = iwe_stream_add_point_check(info, current_ev,
-                        end_buf, &iwe, buf);
+                        end_buf, &iwe, (char *)buf);
     if (IS_ERR(current_ev))
         goto unlock;
 

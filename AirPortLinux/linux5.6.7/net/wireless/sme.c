@@ -704,14 +704,14 @@ void __cfg80211_connect_result(struct net_device *dev,
 			memset(&wrqu, 0, sizeof(wrqu));
 			wrqu.data.length = cr->req_ie_len;
 			wireless_send_event(dev, IWEVASSOCREQIE, &wrqu,
-					    cr->req_ie);
+					    (const char *)cr->req_ie);
 		}
 
 		if (cr->resp_ie && cr->status == WLAN_STATUS_SUCCESS) {
 			memset(&wrqu, 0, sizeof(wrqu));
 			wrqu.data.length = cr->resp_ie_len;
 			wireless_send_event(dev, IWEVASSOCRESPIE, &wrqu,
-					    cr->resp_ie);
+                                (const char *)cr->resp_ie);
 		}
 
 		memset(&wrqu, 0, sizeof(wrqu));
@@ -930,14 +930,14 @@ void __cfg80211_roamed(struct wireless_dev *wdev,
 		memset(&wrqu, 0, sizeof(wrqu));
 		wrqu.data.length = info->req_ie_len;
 		wireless_send_event(wdev->netdev, IWEVASSOCREQIE,
-				    &wrqu, info->req_ie);
+				    &wrqu, (const char *)info->req_ie);
 	}
 
 	if (info->resp_ie) {
 		memset(&wrqu, 0, sizeof(wrqu));
 		wrqu.data.length = info->resp_ie_len;
 		wireless_send_event(wdev->netdev, IWEVASSOCRESPIE,
-				    &wrqu, info->resp_ie);
+				    &wrqu, (const char *)info->resp_ie);
 	}
 
 	memset(&wrqu, 0, sizeof(wrqu));

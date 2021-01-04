@@ -13,6 +13,9 @@
 #include <net/rtnetlink.h>
 
 
+static int call_netdevice_notifiers_extack(unsigned long val,
+                                           struct net_device *dev,
+                                           struct netlink_ext_ack *extack);
 
 /**
  *    netdev_increment_features - increment feature set by one
@@ -2367,15 +2370,15 @@ static void dev_change_rx_flags(struct net_device *dev, int flags)
 static int call_netdevice_notifiers_info(unsigned long val,
                                          struct netdev_notifier_info *info)
 {
-    //    struct net *net = dev_net(info->dev);
-    //    int ret;
-    //
-    //    ASSERT_RTNL();
-    //
-    //    /* Run per-netns notifier block chain first, then run the global one.
-    //     * Hopefully, one day, the global one is going to be removed after
-    //     * all notifier block registrators get converted to be per-netns.
-    //     */
+        struct net *net = dev_net(info->dev);
+        int ret;
+    
+        ASSERT_RTNL();
+    
+        /* Run per-netns notifier block chain first, then run the global one.
+         * Hopefully, one day, the global one is going to be removed after
+         * all notifier block registrators get converted to be per-netns.
+         */
     //    ret = raw_notifier_call_chain(&net->netdev_chain, val, info);
     //    if (ret & NOTIFY_STOP_MASK)
     //        return ret;
@@ -2465,7 +2468,7 @@ void dev_activate(struct net_device *dev)
     /* Delay activation until next carrier-on event */
         return;
     
-    need_watchdog = 0;
+    need_watchdog = 10;
 //    netdev_for_each_tx_queue(dev, transition_one_qdisc, &need_watchdog);
 //    if (dev_ingress_queue(dev))
 //        transition_one_qdisc(dev, dev_ingress_queue(dev), NULL);
@@ -2493,11 +2496,11 @@ static int __dev_open(struct net_device *dev, struct netlink_ext_ack *extack)
      * or ndo_poll may be running while we open the device
      */
 //    netpoll_poll_disable(dev);
-//
-//    ret = call_netdevice_notifiers_extack(NETDEV_PRE_UP, dev, extack);
-//    ret = notifier_to_errno(ret);
-//    if (ret)
-//        return ret;
+
+    ret = call_netdevice_notifiers_extack(NETDEV_PRE_UP, dev, extack);
+    ret = notifier_to_errno(ret);
+    if (ret)
+        return ret;
     
     set_bit(__LINK_STATE_START, &dev->state);
     
@@ -3348,7 +3351,7 @@ int __dev_change_flags(struct net_device *dev, unsigned int flags,
      *    according to user attempts to set it, rather than blindly
      *    setting it.
      */
-
+    
     ret = 0;
     if ((old_flags ^ flags) & IFF_UP) {
         if (old_flags & IFF_UP)

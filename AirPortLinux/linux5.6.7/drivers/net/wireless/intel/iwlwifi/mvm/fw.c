@@ -1105,14 +1105,18 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 			goto error;
 	}
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	ret = iwl_send_phy_cfg_cmd(mvm);
 	if (ret)
 		goto error;
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	ret = iwl_mvm_send_bt_init_conf(mvm);
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	if (ret)
 		goto error;
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	/* Init RSS configuration */
 	if (mvm->trans->trans_cfg->device_family >= IWL_DEVICE_FAMILY_22000) {
 		ret = iwl_configure_rxq(mvm);
@@ -1123,6 +1127,7 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 		}
 	}
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	if (iwl_mvm_has_new_rx_api(mvm)) {
 		ret = iwl_send_rss_cfg_cmd(mvm);
 		if (ret) {
@@ -1132,6 +1137,7 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 		}
 	}
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	/* init the fw <-> mac80211 STA mapping */
 	for (i = 0; i < ARRAY_SIZE(mvm->fw_id_to_mac_id); i++)
 		RCU_INIT_POINTER(mvm->fw_id_to_mac_id[i], NULL);
@@ -1141,17 +1147,20 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 	/* reset quota debouncing buffer - 0xff will yield invalid data */
 	memset(&mvm->last_quota_cmd, 0xff, sizeof(mvm->last_quota_cmd));
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	if (fw_has_capa(&mvm->fw->ucode_capa, IWL_UCODE_TLV_CAPA_DQA_SUPPORT)) {
 		ret = iwl_mvm_send_dqa_cmd(mvm);
 		if (ret)
 			goto error;
 	}
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	/* Add auxiliary station for scanning */
 	ret = iwl_mvm_add_aux_sta(mvm);
 	if (ret)
 		goto error;
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	/* Add all the PHY contexts */
 	i = 0;
 	while (!sband && i < NUM_NL80211_BANDS)
@@ -1162,6 +1171,7 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 
 	chan = &sband->channels[0];
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	cfg80211_chandef_create(&chandef, chan, NL80211_CHAN_NO_HT);
 	for (i = 0; i < NUM_PHY_CTX; i++) {
 		/*
@@ -1175,6 +1185,7 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 			goto error;
 	}
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	if (iwl_mvm_is_tt_in_fw(mvm)) {
 		/* in order to give the responsibility of ct-kill and
 		 * TX backoff to FW we need to send empty temperature reporting
@@ -1186,6 +1197,7 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 		iwl_mvm_tt_tx_backoff(mvm, 0);
 	}
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 #ifdef CONFIG_THERMAL
 	/* TODO: read the budget from BIOS / Platform NVM */
 
@@ -1201,13 +1213,16 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 	}
 #endif
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	if (!fw_has_capa(&mvm->fw->ucode_capa, IWL_UCODE_TLV_CAPA_SET_LTR_GEN2))
 		WARN_ON(iwl_mvm_config_ltr(mvm));
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	ret = iwl_mvm_power_update_device(mvm);
 	if (ret)
 		goto error;
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	/*
 	 * RTNL is not taken during Ct-kill, but we don't need to scan/Tx
 	 * anyway, so don't init MCC.
@@ -1218,6 +1233,7 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 			goto error;
 	}
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	if (fw_has_capa(&mvm->fw->ucode_capa, IWL_UCODE_TLV_CAPA_UMAC_SCAN)) {
 		mvm->scan_type = IWL_SCAN_TYPE_NOT_SET;
 		mvm->hb_scan_type = IWL_SCAN_TYPE_NOT_SET;
@@ -1226,16 +1242,20 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 			goto error;
 	}
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	if (test_bit(IWL_MVM_STATUS_IN_HW_RESTART, &mvm->status))
 		iwl_mvm_send_recovery_cmd(mvm, ERROR_RECOVERY_UPDATE_DB);
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	if (iwl_acpi_get_eckv(mvm->dev, &mvm->ext_clock_valid))
 		IWL_DEBUG_INFO(mvm, "ECKV table doesn't exist in BIOS\n");
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	ret = iwl_mvm_ppag_init(mvm);
 	if (ret)
 		goto error;
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	ret = iwl_mvm_sar_init(mvm);
 	if (ret == 0) {
 		ret = iwl_mvm_sar_geo_init(mvm);
@@ -1249,11 +1269,14 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 		IWL_ERR(mvm, "BIOS contains WGDS but no WRDS\n");
 	}
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	if (ret < 0)
 		goto error;
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	iwl_mvm_leds_sync(mvm);
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	IWL_DEBUG_INFO(mvm, "RT uCode started.\n");
 	return 0;
  error:

@@ -31,6 +31,10 @@
 		18205DF9257CED7F00C6E091 /* rx.c in Sources */ = {isa = PBXBuildFile; fileRef = 18205DF7257CED7F00C6E091 /* rx.c */; };
 		18205DFA257CED7F00C6E091 /* rx.c in Sources */ = {isa = PBXBuildFile; fileRef = 18205DF7257CED7F00C6E091 /* rx.c */; };
 		18205DFB257CED7F00C6E091 /* rx.c in Sources */ = {isa = PBXBuildFile; fileRef = 18205DF7257CED7F00C6E091 /* rx.c */; };
+		183145E9259F32EE00037B92 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 183145E8259F32EE00037B92 /* socket.c */; };
+		183145EA259F32EE00037B92 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 183145E8259F32EE00037B92 /* socket.c */; };
+		183145EB259F32EE00037B92 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 183145E8259F32EE00037B92 /* socket.c */; };
+		183145EC259F32EE00037B92 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 183145E8259F32EE00037B92 /* socket.c */; };
 		1837C6652598594E005B3510 /* dev_ioctl.h in Headers */ = {isa = PBXBuildFile; fileRef = 1837C6632598594E005B3510 /* dev_ioctl.h */; };
 		1837C6662598594E005B3510 /* dev_ioctl.h in Headers */ = {isa = PBXBuildFile; fileRef = 1837C6632598594E005B3510 /* dev_ioctl.h */; };
 		1837C6672598594E005B3510 /* dev_ioctl.h in Headers */ = {isa = PBXBuildFile; fileRef = 1837C6632598594E005B3510 /* dev_ioctl.h */; };
@@ -227,6 +231,10 @@
 		18A4E43D257D3B8E002D9E40 /* kmemleak.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A4E437257D3B8E002D9E40 /* kmemleak.c */; };
 		18A4E43E257D3B8E002D9E40 /* kmemleak.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A4E437257D3B8E002D9E40 /* kmemleak.c */; };
 		18A4E43F257D3B8E002D9E40 /* kmemleak.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A4E437257D3B8E002D9E40 /* kmemleak.c */; };
+		18A55953259F02F000D357ED /* wext-core.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A55952259F02F000D357ED /* wext-core.c */; };
+		18A55954259F02F000D357ED /* wext-core.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A55952259F02F000D357ED /* wext-core.c */; };
+		18A55955259F02F000D357ED /* wext-core.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A55952259F02F000D357ED /* wext-core.c */; };
+		18A55956259F02F000D357ED /* wext-core.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A55952259F02F000D357ED /* wext-core.c */; };
 		18A9AEA62593A57100E1EB58 /* nlattr.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A9AEA52593A57100E1EB58 /* nlattr.c */; };
 		18A9AEA72593A57100E1EB58 /* nlattr.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A9AEA52593A57100E1EB58 /* nlattr.c */; };
 		18A9AEA82593A57100E1EB58 /* nlattr.c in Sources */ = {isa = PBXBuildFile; fileRef = 18A9AEA52593A57100E1EB58 /* nlattr.c */; };
@@ -431,6 +439,10 @@
 		37439C25259B7D4100AE387D /* _string.c in Sources */ = {isa = PBXBuildFile; fileRef = 37439C23259B7D4100AE387D /* _string.c */; };
 		37439C26259B7D4100AE387D /* _string.c in Sources */ = {isa = PBXBuildFile; fileRef = 37439C23259B7D4100AE387D /* _string.c */; };
 		37439C27259B7D4100AE387D /* _string.c in Sources */ = {isa = PBXBuildFile; fileRef = 37439C23259B7D4100AE387D /* _string.c */; };
+		37BE2861259F4FD600EE7379 /* wext-sme.c in Sources */ = {isa = PBXBuildFile; fileRef = 37BE2860259F4FD600EE7379 /* wext-sme.c */; };
+		37BE2862259F4FD600EE7379 /* wext-sme.c in Sources */ = {isa = PBXBuildFile; fileRef = 37BE2860259F4FD600EE7379 /* wext-sme.c */; };
+		37BE2863259F4FD600EE7379 /* wext-sme.c in Sources */ = {isa = PBXBuildFile; fileRef = 37BE2860259F4FD600EE7379 /* wext-sme.c */; };
+		37BE2864259F4FD600EE7379 /* wext-sme.c in Sources */ = {isa = PBXBuildFile; fileRef = 37BE2860259F4FD600EE7379 /* wext-sme.c */; };
 		37C6D1F02584EB5200977605 /* he.c in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D1EF2584EB5200977605 /* he.c */; };
 		37C6D1F12584EB5200977605 /* he.c in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D1EF2584EB5200977605 /* he.c */; };
 		37C6D1F22584EB5200977605 /* he.c in Sources */ = {isa = PBXBuildFile; fileRef = 37C6D1EF2584EB5200977605 /* he.c */; };
@@ -2112,6 +2124,7 @@
 		18205DED257CDE5200C6E091 /* util.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = util.c; sourceTree = "<group>"; };
 		18205DF2257CEAB900C6E091 /* mesh_pathtbl.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = mesh_pathtbl.c; sourceTree = "<group>"; };
 		18205DF7257CED7F00C6E091 /* rx.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = rx.c; sourceTree = "<group>"; };
+		183145E8259F32EE00037B92 /* socket.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = socket.c; sourceTree = "<group>"; };
 		1837C6632598594E005B3510 /* dev_ioctl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dev_ioctl.h; sourceTree = "<group>"; };
 		1837C6642598594E005B3510 /* dev_ioctl.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = dev_ioctl.c; sourceTree = "<group>"; };
 		1841ECBA257D43080071277A /* shash.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = shash.c; sourceTree = "<group>"; };
@@ -2161,6 +2174,7 @@
 		18A4E42D257D3B78002D9E40 /* highmem.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = highmem.c; sourceTree = "<group>"; };
 		18A4E436257D3B8E002D9E40 /* kmemleak.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kmemleak.h; sourceTree = "<group>"; };
 		18A4E437257D3B8E002D9E40 /* kmemleak.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = kmemleak.c; sourceTree = "<group>"; };
+		18A55952259F02F000D357ED /* wext-core.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "wext-core.c"; sourceTree = "<group>"; };
 		18A9AEA52593A57100E1EB58 /* nlattr.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = nlattr.c; sourceTree = "<group>"; };
 		18A9AEAE2593A63C00E1EB58 /* netlink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = netlink.h; sourceTree = "<group>"; };
 		18A9AEC92593AB0C00E1EB58 /* scm.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = scm.h; sourceTree = "<group>"; };
@@ -2212,6 +2226,7 @@
 		3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-34.ucode"; sourceTree = "<group>"; };
 		374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-27.ucode"; sourceTree = "<group>"; };
 		37439C23259B7D4100AE387D /* _string.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = _string.c; sourceTree = "<group>"; };
+		37BE2860259F4FD600EE7379 /* wext-sme.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = "wext-sme.c"; sourceTree = "<group>"; };
 		37C6D1EF2584EB5200977605 /* he.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = he.c; sourceTree = "<group>"; };
 		37CFF28B2573CFF00047098B /* AirPortLinux.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirPortLinux.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		37CFF28E2573CFF00047098B /* AirPortLinux.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AirPortLinux.hpp; sourceTree = "<group>"; };
@@ -2820,6 +2835,7 @@
 				18A9AEDE2593C66E00E1EB58 /* rfkill */,
 				18A9AEC92593AB0C00E1EB58 /* scm.h */,
 				18FC284E259A50BF009A0A6B /* sock.h */,
+				183145E8259F32EE00037B92 /* socket.c */,
 				18FC2833259A431C009A0A6B /* net_namespace.h */,
 				37CFF2C92573ECC00047098B /* wireless */,
 			);
@@ -2859,8 +2875,10 @@
 				18A4E3B0257D072C002D9E40 /* trace.c */,
 				37CFF2D62573ECC00047098B /* trace.h */,
 				18205DED257CDE5200C6E091 /* util.c */,
+				37BE2860259F4FD600EE7379 /* wext-sme.c */,
 				37CFF2D22573ECC00047098B /* wext-compat.c */,
 				37CFF2DB2573ECC00047098B /* wext-compat.h */,
+				18A55952259F02F000D357ED /* wext-core.c */,
 			);
 			path = wireless;
 			sourceTree = "<group>";
@@ -4989,6 +5007,7 @@
 				37CFF4E02573ECC10047098B /* offloading.c in Sources */,
 				37CFF5C82573ECC10047098B /* if.c in Sources */,
 				37CFF4832573ECC10047098B /* reg.c in Sources */,
+				183145E9259F32EE00037B92 /* socket.c in Sources */,
 				37CFF4C32573ECC10047098B /* led.c in Sources */,
 				18AB83AF257E619D0007F651 /* skcipher.c in Sources */,
 				37CFF5552573ECC10047098B /* drv.c in Sources */,
@@ -5082,6 +5101,7 @@
 				37CFF5592573ECC10047098B /* tx.c in Sources */,
 				189E84292584DE88005C902E /* chan.c in Sources */,
 				37CFF6132573EE480047098B /* AirPortLinux_Util.cpp in Sources */,
+				18A55953259F02F000D357ED /* wext-core.c in Sources */,
 				18205DF8257CED7F00C6E091 /* rx.c in Sources */,
 				37CFF5612573ECC10047098B /* nl80211.c in Sources */,
 				37CFF5222573ECC10047098B /* mac80211.c in Sources */,
@@ -5128,6 +5148,7 @@
 				18C0AF982590642A0035E189 /* timer.c in Sources */,
 				188478102591F15E00672FE6 /* dev.c in Sources */,
 				189E843D2584E47F005C902E /* airtime.c in Sources */,
+				37BE2861259F4FD600EE7379 /* wext-sme.c in Sources */,
 				37CFF56E2573ECC10047098B /* memneq.c in Sources */,
 				37CFF4A32573ECC10047098B /* aes_cmac.c in Sources */,
 				370E05A225926A5300F0FBD5 /* ethtool.c in Sources */,
@@ -5208,6 +5229,7 @@
 				37CFF6442573EF640047098B /* wme.c in Sources */,
 				37CFF6452573EF640047098B /* aead_api.c in Sources */,
 				37CFF6462573EF640047098B /* debugfs_key.c in Sources */,
+				183145EA259F32EE00037B92 /* socket.c in Sources */,
 				37CFF6472573EF640047098B /* key.c in Sources */,
 				18AB83B0257E619D0007F651 /* skcipher.c in Sources */,
 				37CFF6482573EF640047098B /* tx.c in Sources */,
@@ -5301,6 +5323,7 @@
 				37CFF68D2573EF640047098B /* 7000.c in Sources */,
 				37CFF68E2573EF640047098B /* iwl-drv.c in Sources */,
 				37CFF68F2573EF640047098B /* iwl-nvm-parse.c in Sources */,
+				18A55954259F02F000D357ED /* wext-core.c in Sources */,
 				189E842A2584DE88005C902E /* chan.c in Sources */,
 				37CFF6902573EF640047098B /* iwl-eeprom-read.c in Sources */,
 				18205DF9257CED7F00C6E091 /* rx.c in Sources */,
@@ -5347,6 +5370,7 @@
 				37CFF6B02573EF650047098B /* pci.c in Sources */,
 				18C0AF992590642A0035E189 /* timer.c in Sources */,
 				188478112591F15E00672FE6 /* dev.c in Sources */,
+				37BE2862259F4FD600EE7379 /* wext-sme.c in Sources */,
 				189E843E2584E47F005C902E /* airtime.c in Sources */,
 				37CFF6B12573EF650047098B /* errno.c in Sources */,
 				370E05A325926A5300F0FBD5 /* ethtool.c in Sources */,
@@ -5427,6 +5451,7 @@
 				37CFF8FA2573F0080047098B /* wme.c in Sources */,
 				37CFF8FB2573F0080047098B /* aead_api.c in Sources */,
 				37CFF8FC2573F0080047098B /* debugfs_key.c in Sources */,
+				183145EB259F32EE00037B92 /* socket.c in Sources */,
 				37CFF8FD2573F0080047098B /* key.c in Sources */,
 				18AB83B1257E619D0007F651 /* skcipher.c in Sources */,
 				37CFF8FE2573F0080047098B /* tx.c in Sources */,
@@ -5520,6 +5545,7 @@
 				37CFF9432573F0090047098B /* 7000.c in Sources */,
 				37CFF9442573F0090047098B /* iwl-drv.c in Sources */,
 				37CFF9452573F0090047098B /* iwl-nvm-parse.c in Sources */,
+				18A55955259F02F000D357ED /* wext-core.c in Sources */,
 				189E842B2584DE88005C902E /* chan.c in Sources */,
 				37CFF9462573F0090047098B /* iwl-eeprom-read.c in Sources */,
 				18205DFA257CED7F00C6E091 /* rx.c in Sources */,
@@ -5566,6 +5592,7 @@
 				37CFF9662573F0090047098B /* pci.c in Sources */,
 				18C0AF9A2590642A0035E189 /* timer.c in Sources */,
 				188478122591F15E00672FE6 /* dev.c in Sources */,
+				37BE2863259F4FD600EE7379 /* wext-sme.c in Sources */,
 				189E843F2584E47F005C902E /* airtime.c in Sources */,
 				37CFF9672573F0090047098B /* errno.c in Sources */,
 				370E05A425926A5300F0FBD5 /* ethtool.c in Sources */,
@@ -5646,6 +5673,7 @@
 				37CFF9AA2573F1E70047098B /* wme.c in Sources */,
 				37CFF9AB2573F1E70047098B /* aead_api.c in Sources */,
 				37CFF9AC2573F1E70047098B /* debugfs_key.c in Sources */,
+				183145EC259F32EE00037B92 /* socket.c in Sources */,
 				37CFF9AD2573F1E70047098B /* key.c in Sources */,
 				18AB83B2257E619D0007F651 /* skcipher.c in Sources */,
 				37CFF9AE2573F1E70047098B /* tx.c in Sources */,
@@ -5739,6 +5767,7 @@
 				37CFF9F32573F1E80047098B /* 7000.c in Sources */,
 				37CFF9F42573F1E80047098B /* iwl-drv.c in Sources */,
 				37CFF9F52573F1E80047098B /* iwl-nvm-parse.c in Sources */,
+				18A55956259F02F000D357ED /* wext-core.c in Sources */,
 				189E842C2584DE88005C902E /* chan.c in Sources */,
 				37CFF9F62573F1E80047098B /* iwl-eeprom-read.c in Sources */,
 				18205DFB257CED7F00C6E091 /* rx.c in Sources */,
@@ -5785,6 +5814,7 @@
 				37CFFA162573F1E80047098B /* pci.c in Sources */,
 				18C0AF9B2590642A0035E189 /* timer.c in Sources */,
 				188478132591F15E00672FE6 /* dev.c in Sources */,
+				37BE2864259F4FD600EE7379 /* wext-sme.c in Sources */,
 				189E84402584E47F005C902E /* airtime.c in Sources */,
 				37CFFA172573F1E80047098B /* errno.c in Sources */,
 				370E05A525926A5300F0FBD5 /* ethtool.c in Sources */,

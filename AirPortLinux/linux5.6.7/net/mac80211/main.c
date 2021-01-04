@@ -171,7 +171,7 @@ int ieee80211_hw_config(struct ieee80211_local *local, u32 changed)
                  IEEE80211_CONF_CHANGE_POWER);
 
     if (changed && local->open_count) {
-//        ret = drv_config(local, changed);
+        ret = drv_config(local, changed);
         /*
          * Goal:
          * HW reconfiguration should never fail, the driver has told

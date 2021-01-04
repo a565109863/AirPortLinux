@@ -197,6 +197,7 @@ int iwl_mvm_send_bt_init_conf(struct iwl_mvm *mvm)
 	struct iwl_bt_coex_cmd bt_cmd = {};
 	u32 mode;
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	lockdep_assert_held(&mvm->mutex);
 
 	if (unlikely(mvm->bt_force_ant_mode != BT_FORCE_ANT_DIS)) {
@@ -216,22 +217,27 @@ int iwl_mvm_send_bt_init_conf(struct iwl_mvm *mvm)
 		goto send_cmd;
 	}
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	mode = iwlwifi_mod_params.bt_coex_active ? BT_COEX_NW : BT_COEX_DISABLE;
 	bt_cmd.mode = cpu_to_le32(mode);
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	if (IWL_MVM_BT_COEX_SYNC2SCO)
 		bt_cmd.enabled_modules |=
 			cpu_to_le32(BT_COEX_SYNC2SCO_ENABLED);
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	if (iwl_mvm_is_mplut_supported(mvm))
 		bt_cmd.enabled_modules |= cpu_to_le32(BT_COEX_MPLUT_ENABLED);
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	bt_cmd.enabled_modules |= cpu_to_le32(BT_COEX_HIGH_BAND_RET);
 
 send_cmd:
 	memset(&mvm->last_bt_notif, 0, sizeof(mvm->last_bt_notif));
 	memset(&mvm->last_bt_ci_cmd, 0, sizeof(mvm->last_bt_ci_cmd));
 
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
 	return iwl_mvm_send_cmd_pdu(mvm, BT_CONFIG, 0, sizeof(bt_cmd), &bt_cmd);
 }
 

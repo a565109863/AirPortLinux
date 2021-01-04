@@ -581,7 +581,7 @@ __ieee80211_amsdu_copy_frag(struct sk_buff *skb, struct sk_buff *frame,
     int head_size = skb->len - skb->data_len;
     int cur_len;
 
-    frag_page = virt_to_head_page(skb->head);
+    frag_page = virt_to_head_page(skb->head, skb->len);
     frag_ptr = (char *)skb->data;
     frag_size = head_size;
 

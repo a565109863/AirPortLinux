@@ -9,6 +9,7 @@
 #include "dma-mapping.h"
 #include "device.h"
 
+LIST_HEAD(page_list);
 
 int dma_set_mask(struct device *dev, u64 mask)
 {
@@ -26,6 +27,20 @@ int dma_set_mask(struct device *dev, u64 mask)
     return 0;
 }
 
+void *page_address(struct page *page)
+{
+    if (page->bufDes == NULL) {
+        page->bufDes = IOBufferMemoryDescriptor::inTaskWithPhysicalMask(kernel_task, (kIODirectionInOut | kIOMemoryPhysicallyContiguous | kIOMapInhibitCache), page->dm_mapsize, DMA_BIT_MASK(64));
+        if (page->bufDes == NULL) {
+            return NULL;
+        }
+        page->vaddr = (caddr_t)page->bufDes->getBytesNoCopy();
+        bzero(page->vaddr, page->bufDes->getLength());
+    }
+    
+    return page->vaddr;
+}
+
 int dma_alloc_from_dev_coherent(struct device *dev, ssize_t size,
         dma_addr_t *dma_handle, void **ret)
 {
@@ -33,7 +48,6 @@ int dma_alloc_from_dev_coherent(struct device *dev, ssize_t size,
     UInt32 numSegs = 1;
     IOBufferMemoryDescriptor *bufDes;
     IODMACommand *dmaCmd;
-    IOMbufNaturalMemoryCursor*    mbufCursor;
     IOPhysicalSegment dm_segs;    /* segments; variable length */
     
     bufDes = IOBufferMemoryDescriptor::inTaskWithPhysicalMask(kernel_task, (kIODirectionInOut | kIOMemoryPhysicallyContiguous | kIOMapInhibitCache), size, *dev->dma_mask);
@@ -81,19 +95,8 @@ void *dma_alloc_attrs(struct device *dev, size_t size, dma_addr_t *dma_handle,
 
     if (dma_alloc_from_dev_coherent(dev, size, dma_handle, &cpu_addr))
         return cpu_addr;
-//
-//    /* let the implementation decide on the zone to allocate from: */
-//    flag &= ~(__GFP_DMA | __GFP_DMA32 | __GFP_HIGHMEM);
-//
-//    if (dma_is_direct(ops))
-//        cpu_addr = dma_direct_alloc(dev, size, dma_handle, flag, attrs);
-//    else if (ops->alloc)
-//        cpu_addr = ops->alloc(dev, size, dma_handle, flag, attrs);
-//    else
-//        return NULL;
-
-//    debug_dma_alloc_coherent(dev, size, *dma_handle, cpu_addr);
-    return cpu_addr;
+    
+    return NULL;
 }
 EXPORT_SYMBOL(dma_alloc_attrs);
 
@@ -103,28 +106,65 @@ struct page *alloc_pages(gfp_t gtp, size_t size)
 {
     kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct page *page = (struct page *)kmalloc(sizeof(struct page), GFP_KERNEL);
-    page->dm_mapsize = size;
-    page->dm_segs = (IOPhysicalSegment *)kcalloc(PAGE_SIZE, sizeof(IOPhysicalSegment), GFP_KERNEL);
-    page->bufDes = IOBufferMemoryDescriptor::inTaskWithPhysicalMask(kernel_task, (kIODirectionInOut | kIOMemoryPhysicallyContiguous | kIOMapInhibitCache), page->dm_mapsize, 0xFFFFFFFFFFFFF000ull);
-    if (page->bufDes == NULL) {
-        return NULL;
-    }
-    page->vaddr = (caddr_t)page->bufDes->getBytesNoCopy();
-    bzero(page->vaddr, page->bufDes->getLength());
+    page->dm_mapsize = PAGE_SIZE << size;
+    page->dm_segs = (IOPhysicalSegment *)kcalloc(BIT(size), sizeof(IOPhysicalSegment), GFP_KERNEL);
+    
+//    page->dm_mapsize = PAGE_SIZE << size;
+//    page->mult_page_num = BIT(size);
+//    page->mult_page_index = 0;
+//    page->mult_page = (struct mult_page *)kcalloc(page->mult_page_num, sizeof(struct mult_page), GFP_KERNEL);
+    
+    list_add(&page->list, &page_list);
     
     return page;
+}
+
+void __free_page(struct page * page)
+{
+//    page++;
+//    struct page *tmp;
+//    list_for_each_entry(tmp, &page_list, list) {
+//        if (tmp == page) {
+//            kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+////            if (tmp->dmaCmd) {
+////                tmp->dmaCmd->clearMemoryDescriptor();
+////                tmp->dmaCmd->release();
+////                tmp->dmaCmd = NULL;
+////            }
+////            if (tmp->bufDes) {
+////                tmp->bufDes->complete();
+////                tmp->bufDes->release();
+////                tmp->bufDes = NULL;
+////            }
+////            if (tmp->memDes) {
+////                tmp->memDes->complete();
+////                tmp->memDes->release();
+////                tmp->memDes = NULL;
+////            }
+//
+//            list_del(&tmp->list);
+//            break;
+//        }
+//    }
+    
+    free(page, 1, sizeof(struct page));
 }
 
 dma_addr_t dma_map_page_attrs(struct device *dev,
             struct page *page, size_t offset, size_t size,
             enum dma_data_direction dir, unsigned long attrs)
 {
-    
-    //  UInt64 offset = 0;
     UInt32 numSegs = 1;
     
+    page->offset = offset;
     if (page->bufDes == NULL) {
-        return NULL;
+        page->bufDes = IOBufferMemoryDescriptor::inTaskWithPhysicalMask(kernel_task, (kIODirectionInOut | kIOMemoryPhysicallyContiguous | kIOMapInhibitCache), page->dm_mapsize, *dev->dma_mask);
+        if (page->bufDes == NULL) {
+            return NULL;
+        }
+        page->vaddr = (caddr_t)page->bufDes->getBytesNoCopy();
+        bzero(page->vaddr, page->bufDes->getLength());
+//        DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
     }
     
     if (page->bufDes->prepare(dir) != kIOReturnSuccess) {
@@ -135,12 +175,12 @@ dma_addr_t dma_map_page_attrs(struct device *dev,
     page->dmaCmd = IODMACommand::withSpecification(kIODMACommandOutputHost64, 64, 0, IODMACommand::kMapped, 0, 1);
     
     if (page->dmaCmd == NULL) {
-        printf("withSpecification()\n");
+        printf("withSpecification() failed.\n");
         return NULL;
     }
     
     if (page->dmaCmd->prepare(offset, size) != kIOReturnSuccess) {
-        printf("prepare()\n");
+        printf("prepare() failed.\n");
         return NULL;
     }
     
@@ -149,12 +189,185 @@ dma_addr_t dma_map_page_attrs(struct device *dev,
         return NULL;
     }
     
+    kprintf("--%s: 80211 line = %d, offset = %lu, page->dm_mapsize = %d, size = %lu", __FUNCTION__, __LINE__, offset, page->dm_mapsize, size);
+    
     if (page->dmaCmd->genIOVMSegments((UInt64 *)&offset, &page->dm_segs[0], &numSegs) != kIOReturnSuccess) {
         printf("genIOVMSegments() failed.\n");
         return NULL;
     }
     
+    kprintf("--%s: 80211 line = %d, location = %llu, single_page->offset = %llu, offset = %lu, numSegs = %d, len = %llu", __FUNCTION__, __LINE__, page->dm_segs[0].location, page->offset, offset, numSegs, page->bufDes->getLength());
+    
+    
     page->paddr = page->dm_segs[0].location;
     
     return page->paddr;
+    
+}
+
+
+void dma_unmap_page_attrs(struct device *dev, dma_addr_t addr,
+    size_t size, enum dma_data_direction dir, unsigned long attrs)
+{
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    
+//    struct page *tmp;
+//    list_for_each_entry(tmp, &page_list, list) {
+//        if (attrs == 1) {
+////            struct mult_page *mult_page = &tmp->mult_page[tmp->mult_page_index];
+////
+////            if (mult_page->dmaCmd) {
+////                mult_page->dmaCmd->clearMemoryDescriptor();
+////                mult_page->dmaCmd->release();
+////                mult_page->dmaCmd = NULL;
+////            }
+//        } else {
+//
+//            struct single_page  *single_page = &tmp->single_page;
+//            int order = get_order(single_page->size);
+//            if (single_page->paddr == addr && order == 0 && single_page->offset == tmp->dm_mapsize) {
+//                kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+//                if (single_page->memCmd) {
+//                    single_page->memCmd->clearMemoryDescriptor();
+//                    single_page->memCmd->release();
+//                    single_page->memCmd = NULL;
+//                }
+//                if (single_page->memDes) {
+//                    single_page->memDes->complete();
+//                    single_page->memDes->release();
+//                    single_page->memDes = NULL;
+//                }
+//
+////            list_del(&tmp->list);
+//                break;
+//            }
+//        }
+//    }
+    
+    //    const struct dma_map_ops *ops = get_dma_ops(dev);
+    //
+    //    BUG_ON(!valid_dma_direction(dir));
+    //    if (dma_is_direct(ops))
+    //        dma_direct_unmap_page(dev, addr, size, dir, attrs);
+    //    else if (ops->unmap_page)
+    //        ops->unmap_page(dev, addr, size, dir, attrs);
+    //    debug_dma_unmap_page(dev, addr, size, dir);
+}
+
+dma_addr_t dma_map_single_attrs(struct device *dev, void *ptr,
+    size_t size, enum dma_data_direction dir, unsigned long attrs)
+{
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+//    debug_dma_map_single(dev, ptr, size);
+//    return dma_map_page_attrs(dev, virt_to_page(ptr), offset_in_page(ptr),
+//                              size, dir, 1);
+
+    
+    UInt64 offset = 0;
+    UInt32 numSegs = 1;
+    
+    struct page *page = alloc_pages(GFP_ATOMIC, 0);
+    
+    page->ptr = ptr;
+    
+    if (page->bufDes == NULL) {
+        page->bufDes = IOBufferMemoryDescriptor::inTaskWithPhysicalMask(kernel_task, (kIODirectionInOut | kIOMemoryPhysicallyContiguous | kIOMapInhibitCache), page->dm_mapsize, *dev->dma_mask);
+        if (page->bufDes == NULL) {
+            return NULL;
+        }
+        page->vaddr = (caddr_t)page->bufDes->getBytesNoCopy();
+        bzero(page->vaddr, page->bufDes->getLength());
+//        DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
+    }
+    
+    bcopy(page->ptr, page->vaddr, size);
+    page->ptr = page->vaddr;
+    
+    if (page->bufDes->prepare() != kIOReturnSuccess) {
+        printf("prepare()\n");
+        return NULL;
+    }
+    
+    page->dmaCmd = IODMACommand::withSpecification(kIODMACommandOutputHost64, 64, 0, IODMACommand::kMapped, 0, 1);
+    
+    if (page->dmaCmd == NULL) {
+        printf("withSpecification() failed.\n");
+        return NULL;
+    }
+    
+    if (page->dmaCmd->setMemoryDescriptor(page->bufDes) != kIOReturnSuccess) {
+        printf("setMemoryDescriptor() failed.\n");
+        return NULL;
+    }
+    
+    kprintf("--%s: 80211 line = %d, offset = %llu, page->dm_mapsize = %d, size = %lu", __FUNCTION__, __LINE__, offset, page->dm_mapsize, size);
+    
+    if (page->dmaCmd->genIOVMSegments((UInt64 *)&offset, &page->dm_segs[0], &numSegs) != kIOReturnSuccess) {
+        printf("genIOVMSegments() failed.\n");
+        return NULL;
+    }
+    
+    kprintf("--%s: 80211 line = %d, location = %llu, single_page->offset = %llu, offset = %llu, numSegs = %d, len = %llu", __FUNCTION__, __LINE__, page->dm_segs[0].location, page->offset, offset, numSegs, page->bufDes->getLength());
+    
+    page->paddr = page->dm_segs[0].location;
+    
+    return page->paddr;
+    
+//    
+//    
+//    int err = 0;
+//    
+//    UInt64 offset = 0;
+//    UInt32 numSegs = 1;
+//    
+//    IOMemoryDescriptor *bufDes;
+//    IODMACommand *dmaCmd;
+//    IOPhysicalSegment dm_segs;
+//    
+//    bufDes = IOBufferMemoryDescriptor::withAddress(ptr, size, dir);
+//    if (bufDes == NULL) {
+//        err = 1;
+//        goto done;
+//    }
+//    
+//    if (bufDes->prepare() != kIOReturnSuccess) {
+//        printf("prepare()\n");
+//        err = 1;
+//        goto fail1;
+//    }
+//    
+//    dmaCmd = IODMACommand::withSpecification(kIODMACommandOutputHost64, 64, 0, IODMACommand::kMapped, 0, 1);
+//    if (dmaCmd == NULL) {
+//        printf("withSpecification()\n");
+//        err = 1;
+//        goto fail2;
+//    }
+//    
+//    if (dmaCmd->setMemoryDescriptor(bufDes) != kIOReturnSuccess) {
+//        printf("setMemoryDescriptor() failed.\n");
+//        err = 1;
+//        goto fail3;
+//    }
+//    
+//    if (dmaCmd->genIOVMSegments(&offset, &dm_segs, &numSegs) != kIOReturnSuccess) {
+//        printf("genIOVMSegments() failed.\n");
+//        err = 1;
+//        goto fail4;
+//    }
+//    
+//done:
+//    return dm_segs.location;
+//    
+//fail4:
+//    dmaCmd->clearMemoryDescriptor();
+//    
+//fail3:
+//    dmaCmd->release();
+//    dmaCmd = NULL;
+//fail2:
+//    bufDes->complete();
+//fail1:
+//    bufDes->release();
+//    bufDes = NULL;
+//    return NULL;
 }

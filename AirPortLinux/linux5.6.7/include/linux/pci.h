@@ -142,31 +142,6 @@ struct pci_driver {
     int multithread_probe;
 };
 
-//
-//struct pci_dev {
-//    __u32 vendor;
-//    __u32 device;
-//    __u32 subsystem_vendor;
-//    __u32 subsystem_device;
-//    __u32 _class;
-//    struct device dev;
-//    int cfg_size;
-//    u16        pcie_flags_reg;
-//    u8        pcie_cap;    /* PCIe capability offset */
-//    u8        msi_cap;    /* MSI capability offset */
-//    u8        msix_cap;
-//    u8        pm_cap;
-//    pci_power_t    current_state;    /* Current operating state. In ACPI, */
-//    pci_channel_state_t error_state;    /* Current connectivity state */
-//    unsigned int    pme_support:5;
-//    unsigned int irq;
-//    u32 saved_config_space[16];
-//
-//
-//    unsigned int    msi_enabled:1;
-//    unsigned int    msix_enabled:1;
-//};
-
 /* The pci_dev structure describes PCI devices */
 struct pci_dev {
     struct list_head bus_list;    /* Node in per-bus list */
@@ -273,19 +248,19 @@ struct pci_dev {
     unsigned int    irq_reroute_variant:2;    /* Needs IRQ rerouting variant */
     unsigned int    msi_enabled:1;
     unsigned int    msix_enabled:1;
-    unsigned int    ari_enabled:1;        /* ARI forwarding */
-    unsigned int    ats_enabled:1;        /* Address Translation Svc */
-    unsigned int    pasid_enabled:1;    /* Process Address Space ID */
-    unsigned int    pri_enabled:1;        /* Page Request Interface */
-    unsigned int    is_managed:1;
-    unsigned int    needs_freset:1;        /* Requires fundamental reset */
-    unsigned int    state_saved:1;
-    unsigned int    is_physfn:1;
-    unsigned int    is_virtfn:1;
-    unsigned int    reset_fn:1;
-    unsigned int    is_hotplug_bridge:1;
-    unsigned int    shpc_managed:1;        /* SHPC owned by shpchp */
-    unsigned int    is_thunderbolt:1;    /* Thunderbolt controller */
+//    unsigned int    ari_enabled:1;        /* ARI forwarding */
+//    unsigned int    ats_enabled:1;        /* Address Translation Svc */
+//    unsigned int    pasid_enabled:1;    /* Process Address Space ID */
+//    unsigned int    pri_enabled:1;        /* Page Request Interface */
+//    unsigned int    is_managed:1;
+//    unsigned int    needs_freset:1;        /* Requires fundamental reset */
+//    unsigned int    state_saved:1;
+//    unsigned int    is_physfn:1;
+//    unsigned int    is_virtfn:1;
+//    unsigned int    reset_fn:1;
+//    unsigned int    is_hotplug_bridge:1;
+//    unsigned int    shpc_managed:1;        /* SHPC owned by shpchp */
+//    unsigned int    is_thunderbolt:1;    /* Thunderbolt controller */
     /*
      * Devices marked being untrusted are the ones that can potentially
      * execute DMA attacks and similar. They are typically connected
@@ -439,16 +414,16 @@ static inline int pci_pcie_type(const struct pci_dev *dev)
 
 static inline struct pci_dev *pcie_find_root_port(struct pci_dev *dev)
 {
-    while (1) {
-        if (!pci_is_pcie(dev))
-            break;
-        if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT)
-            return dev;
-//        if (!dev->bus->self)
+//    while (1) {
+//        if (!pci_is_pcie(dev))
 //            break;
-//        dev = dev->bus->self;
-    }
-    return NULL;
+//        if (pci_pcie_type(dev) == PCI_EXP_TYPE_ROOT_PORT)
+//            return dev;
+////        if (!dev->bus->self)
+////            break;
+////        dev = dev->bus->self;
+//    }
+    return dev;
 }
 
 /**

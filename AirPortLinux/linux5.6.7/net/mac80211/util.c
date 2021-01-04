@@ -2509,8 +2509,8 @@ int ieee80211_reconfig(struct ieee80211_local *local)
      * If this is for hw restart things are still running.
      * We may want to change that later, however.
      */
-//    if (local->open_count && (!suspended || reconfig_due_to_wowlan))
-//        drv_reconfig_complete(local, IEEE80211_RECONFIG_TYPE_RESTART);
+    if (local->open_count && (!suspended || reconfig_due_to_wowlan))
+        drv_reconfig_complete(local, IEEE80211_RECONFIG_TYPE_RESTART);
 
     if (!suspended)
         return 0;
@@ -2523,8 +2523,8 @@ int ieee80211_reconfig(struct ieee80211_local *local)
 
     ieee80211_flush_completed_scan(local, false);
 
-//    if (local->open_count && !reconfig_due_to_wowlan)
-//        drv_reconfig_complete(local, IEEE80211_RECONFIG_TYPE_SUSPEND);
+    if (local->open_count && !reconfig_due_to_wowlan)
+        drv_reconfig_complete(local, IEEE80211_RECONFIG_TYPE_SUSPEND);
 
     list_for_each_entry(sdata, &local->interfaces, list) {
         if (!ieee80211_sdata_running(sdata))
@@ -3904,20 +3904,20 @@ int ieee80211_check_combinations(struct ieee80211_sub_if_data *sdata,
         params.num_different_channels++;
     }
 
-//    list_for_each_entry_rcu(sdata_iter, &local->interfaces, list) {
-//        struct wireless_dev *wdev_iter;
-//
-//        wdev_iter = &sdata_iter->wdev;
-//
-//        if (sdata_iter == sdata ||
-//            !ieee80211_sdata_running(sdata_iter) ||
-//            cfg80211_iftype_allowed(local->hw.wiphy,
-//                        wdev_iter->iftype, 0, 1))
-//            continue;
-//
-//        params.iftype_num[wdev_iter->iftype]++;
-//        total++;
-//    }
+    list_for_each_entry_rcu(sdata_iter, &local->interfaces, list) {
+        struct wireless_dev *wdev_iter;
+
+        wdev_iter = &sdata_iter->wdev;
+
+        if (sdata_iter == sdata ||
+            !ieee80211_sdata_running(sdata_iter) ||
+            cfg80211_iftype_allowed(local->hw.wiphy,
+                        wdev_iter->iftype, 0, 1))
+            continue;
+
+        params.iftype_num[wdev_iter->iftype]++;
+        total++;
+    }
 
     if (total == 1 && !params.radar_detect)
         return 0;

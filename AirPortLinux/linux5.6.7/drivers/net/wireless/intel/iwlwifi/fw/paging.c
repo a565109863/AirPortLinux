@@ -126,6 +126,7 @@ static int iwl_alloc_fw_paging_mem(struct iwl_fw_runtime *fwrt,
 		/* For CSS allocate 4KB, for others PAGING_BLOCK_SIZE (32K) */
 		size = blk_idx ? PAGING_BLOCK_SIZE : FW_PAGING_SIZE;
 		order = get_order(size);
+        kprintf("--%s: line = %d size = %d, order = %d", __FUNCTION__, __LINE__, size, order);
 		block = alloc_pages(GFP_KERNEL, order);
 		if (!block) {
 			/* free all the previous pages since we failed */

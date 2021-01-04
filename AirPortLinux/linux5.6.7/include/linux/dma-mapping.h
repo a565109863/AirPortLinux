@@ -64,7 +64,7 @@ static inline int dma_set_mask_and_coherent(struct device *dev, u64 mask)
 
 
 enum dma_data_direction {
-    DMA_BIDIRECTIONAL = kIODirectionOutIn,
+    DMA_BIDIRECTIONAL = kIODirectionOutIn | kIODirectionInOut,
     DMA_TO_DEVICE = kIODirectionOut,
     DMA_FROM_DEVICE = kIODirectionIn,
     DMA_NONE = kIODirectionNone,
@@ -108,6 +108,7 @@ static inline void dma_sync_single_for_device(struct device *dev,
 static void dma_free_attrs(struct device *dev, size_t size, void *cpu_addr,
                            dma_addr_t dma_handle, unsigned long attrs)
 {
+    memset(cpu_addr, 0, size);
 }
 
 static inline void dma_free_coherent(struct device *dev, size_t size,
@@ -116,18 +117,8 @@ static inline void dma_free_coherent(struct device *dev, size_t size,
     return dma_free_attrs(dev, size, cpu_addr, dma_handle, 0);
 }
 
-static inline void dma_unmap_page_attrs(struct device *dev, dma_addr_t addr,
-                                        size_t size, enum dma_data_direction dir, unsigned long attrs)
-{
-//    const struct dma_map_ops *ops = get_dma_ops(dev);
-//
-//    BUG_ON(!valid_dma_direction(dir));
-//    if (dma_is_direct(ops))
-//        dma_direct_unmap_page(dev, addr, size, dir, attrs);
-//    else if (ops->unmap_page)
-//        ops->unmap_page(dev, addr, size, dir, attrs);
-//    debug_dma_unmap_page(dev, addr, size, dir);
-}
+void dma_unmap_page_attrs(struct device *dev, dma_addr_t addr,
+                          size_t size, enum dma_data_direction dir, unsigned long attrs);
 
 struct page *alloc_pages(gfp_t gtp, size_t size);
 #define alloc_page(gfp_mask) alloc_pages(gfp_mask, 1)
@@ -137,8 +128,8 @@ dma_addr_t dma_map_page_attrs(struct device *dev,
         struct page *page, size_t offset, size_t size,
          enum dma_data_direction dir, unsigned long attrs);
 
-#define dma_unmap_page(d, a, s, r) dma_unmap_page_attrs(d, a, s, r, 0)
-#define dma_map_page(d, p, o, s, r) dma_map_page_attrs(d, p, o, s, r, 0)
+#define dma_unmap_page(d, a, s, r) dma_unmap_page_attrs(d, a, s, r, 1)
+#define dma_map_page(d, p, o, s, r) dma_map_page_attrs(d, p, o, s, r, 1)
 
 static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
 {
@@ -151,29 +142,28 @@ static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
 
 static struct page *__virt_to_page(void *ptr, size_t ptrlen)
 {
-    struct page *page = (struct page *)kmalloc(sizeof(struct page), GFP_KERNEL);
+    struct page *page = alloc_pages(GFP_ATOMIC, 0);
     page->dm_mapsize = ptrlen;
-    page->bufDes = (IOBufferMemoryDescriptor *)IOBufferMemoryDescriptor::withAddress(ptr, page->dm_mapsize, kIODirectionInOut);
-    if (page->bufDes == NULL) {
-        return NULL;
-    }
+    
+    void *_new = page_address(page);
+    bcopy(ptr, _new, ptrlen);
+    ptr = _new;
     
     return page;
 }
 
-#define virt_to_page(x) __virt_to_page(x, size)
+#define virt_to_page(x) __virt_to_page((void *)x, size)
 #define offset_in_page(x) 0
 
-static inline dma_addr_t dma_map_single_attrs(struct device *dev, void *ptr,
-                                              size_t size, enum dma_data_direction dir, unsigned long attrs)
+static inline struct page *virt_to_head_page(const void *ptr, size_t size)
 {
     kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
-//    debug_dma_map_single(dev, ptr, size);
-    return dma_map_page_attrs(dev, virt_to_page(ptr), offset_in_page(ptr),
-                              size, dir, attrs);
-    
-    return 0;
+    return virt_to_page(ptr);
 }
+
+
+dma_addr_t dma_map_single_attrs(struct device *dev, void *ptr,
+          size_t size, enum dma_data_direction dir, unsigned long attrs);
 
 static inline void dma_unmap_single_attrs(struct device *dev, dma_addr_t addr,
                                           size_t size, enum dma_data_direction dir, unsigned long attrs)

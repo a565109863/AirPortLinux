@@ -8,9 +8,7 @@
 
 #include "AirPortLinux.hpp"
 //
-//extern struct ifnet *_ifp;
-//
-//void AirPortLinux::firmwareLoadComplete( OSKextRequestTag requestTag, OSReturn result, const void *resourceData, uint32_t resourceDataLength, void *context) {
+//void AirPortLinux::loadfirmware( OSKextRequestTag requestTag, OSReturn result, const void *resourceData, uint32_t resourceDataLength, void *context) {
 //    AirPortLinux *dev = (AirPortLinux *)context;
 //    if(result == kOSReturnSuccess) {
 //        dev->firmwareData = OSData::withBytes(resourceData, resourceDataLength);
@@ -19,44 +17,45 @@
 //    IOLockWakeup(dev->fwLoadLock, dev, true);
 //}
 //
-//void AirPortLinux::firmwareLoadComplete(const char* name) {
-//    for (int i = 0; i < firmwares_total; i++) {
-//        if (strcmp(firmwares[i].name, name) == 0) {
-//            firmware fw = firmwares[i];
-//            this->firmwareData = OSData::withBytes(fw.data, fw.size);
-//            return;
-//        }
-//    }
-//}
+////void AirPortLinux::loadfirmware(const char* name) {
+////    for (int i = 0; i < firmwares_total; i++) {
+////        if (strcmp(firmwares[i].name, name) == 0) {
+////            firmware fw = firmwares[i];
+////            this->firmwareData = OSData::withBytes(fw.data, fw.size);
+////            return;
+////        }
+////    }
+////}
 //
 //int AirPortLinux::loadfirmware(const char *firmware_name, u_char **bufp, size_t *buflen)
 //{
-////    IOLockLock(this->fwLoadLock);
-////
-////    OSReturn ret = OSKextRequestResource(OSKextGetCurrentIdentifier(),
-////                                         firmware_name,
-////                                         firmwareLoadComplete,
-////                                         this,
-////                                         NULL);
-////    if(ret != kOSReturnSuccess) {
-////        IOLog("%s Unable to load firmware file %08x\n", __FUNCTION__, ret);
-////        IOLockUnlock(this->fwLoadLock);
-////        return 1;
-////    }
-////    IOLockSleep(this->fwLoadLock, this, THREAD_INTERRUPTIBLE);
-////    IOLockUnlock(this->fwLoadLock);
-//    
-//    firmwareLoadComplete(firmware_name);
-//    
+//    //    IOLockLock(this->fwLoadLock);
+//    //
+//    //    OSReturn ret = OSKextRequestResource(OSKextGetCurrentIdentifier(),
+//    //                                         firmware_name,
+//    //                                         firmwareLoadComplete,
+//    //                                         this,
+//    //                                         NULL);
+//    //    if(ret != kOSReturnSuccess) {
+//    //        IOLog("%s Unable to load firmware file %08x\n", __FUNCTION__, ret);
+//    //        IOLockUnlock(this->fwLoadLock);
+//    //        return 1;
+//    //    }
+//    //    IOLockSleep(this->fwLoadLock, this, THREAD_INTERRUPTIBLE);
+//    //    IOLockUnlock(this->fwLoadLock);
+//
+//    //    FWFamily = new AirPortLinuxFWFamily();
+//    //    this->firmwareData = this->fw->loadfirmware(firmware_name);
+//
 //    *buflen = this->firmwareData->getLength();
 //    *bufp = (u_char *)malloc(*buflen, M_DEVBUF, M_NOWAIT);
 //    memcpy(*bufp , (u_char*)this->firmwareData->getBytesNoCopy(), *buflen);
-//    
+//
 //    this->firmwareData->release();
 //    this->firmwareData = NULL;
-//    
-////    *bufp = (u_char *)this->firmwareData->getBytesNoCopy();
-//    
+//
+//    //    *bufp = (u_char *)this->firmwareData->getBytesNoCopy();
+//
 //    return 0;
 //}
 //
@@ -69,17 +68,17 @@
 //            panic("%s ifq->iface == NULL!!!\n", __FUNCTION__);
 //            break;
 //        }
-////        ifp->fInterface->inputPacket(m, mbuf_len(m), IONetworkInterface::kInputOptionQueuePacket, 0);
+//        //        ifp->fInterface->inputPacket(m, mbuf_len(m), IONetworkInterface::kInputOptionQueuePacket, 0);
 //        int err = this->enqueueInputPacket2(m);
 //        if (err != kIOReturnSuccess)
 //            continue;
-//        
+//
 //        packets ++;
 //        if (ifp->netStat != NULL) {
 //            ifp->if_ipackets++;
 //        }
 //    }
-//    
+//
 //    if (packets)
 //        this->flushInputQueue2();
 //}
@@ -101,7 +100,7 @@
 //bool AirPortLinux::isConnected()
 //{
 //    struct ieee80211com *ic = (struct ieee80211com *)_ifp;
-//    
+//
 //    return ic->ic_state == IEEE80211_S_RUN &&
 //    (ic->ic_opmode != IEEE80211_M_STA ||
 //     !(ic->ic_flags & IEEE80211_F_RSNON) ||
@@ -111,7 +110,7 @@
 //bool AirPortLinux::isRun80211X()
 //{
 //    struct ieee80211com *ic = (struct ieee80211com *)_ifp;
-//    
+//
 //    return ic->ic_state == IEEE80211_S_RUN &&
 //    (ic->ic_opmode != IEEE80211_M_STA || (ic->ic_rsnakms & IEEE80211_AKM_8021X || ic->ic_rsnakms & IEEE80211_AKM_SHA256_8021X));
 //}
@@ -121,29 +120,29 @@
 //    // find the scan result corresponding to the given assoc params
 //    if (!ad) return NULL;
 //
-////    scanFreeResults();
+//    //    scanFreeResults();
 //    scanComplete();
-//    
+//
 //    if (scanResults->getCount() == 0) return NULL;
-//    
+//
 //    bool emptyBSSID = (strncmp((char*)&ad->ad_bssid, (char *)empty_macaddr, APPLE80211_ADDR_LEN) == 0);
-//    
+//
 //    for (int i = 0; i < scanResults->getCount(); i++) {
 //        OSObject* scanObj = scanResults->getObject(scanIndex++);
 //        if (scanObj == NULL) {
 //            continue;
 //        }
-//        
+//
 //        OSData* scanresult = OSDynamicCast(OSData, scanObj);
 //        struct ieee80211_nodereq *na_node = (struct ieee80211_nodereq *)scanresult->getBytesNoCopy();
-//        
+//
 //        if (!emptyBSSID && strncmp((char*) &ad->ad_bssid, (char*) na_node->nr_bssid, APPLE80211_ADDR_LEN) == 0) {
 //            return na_node;
 //        }
-//        
+//
 //        if (strncmp((char*) na_node->nr_nwid,
-//                (char*) ad->ad_ssid,
-//                min(ad->ad_ssid_len, na_node->nr_nwid_len)) != 0)
+//                    (char*) ad->ad_ssid,
+//                    min(ad->ad_ssid_len, na_node->nr_nwid_len)) != 0)
 //        {
 //            continue;
 //        } else {
@@ -180,8 +179,8 @@
 //    if (nr->nr_ie != NULL && nr->nr_ie_len > 0) {
 //        oneResult->asr_ie_len = nr->nr_ie_len;
 //        oneResult->asr_ie_data = nr->nr_ie;
-////        oneResult->asr_ie_data = IOMalloc(oneResult->asr_ie_len);
-////        bcopy(nr->nr_ie, oneResult->asr_ie_data, oneResult->asr_ie_len);
+//        //        oneResult->asr_ie_data = IOMalloc(oneResult->asr_ie_len);
+//        //        bcopy(nr->nr_ie, oneResult->asr_ie_data, oneResult->asr_ie_len);
 //    }
 //
 //    return 0;
@@ -208,40 +207,40 @@
 //        {
 //            continue;
 //        }
-//        
+//
 //        OSData* scanresult = OSData::withBytes(na_node, sizeof(*na_node));
 //        if (!scanresult) {
 //            continue;
 //        }
-//        
+//
 //        scanResults->setObject(scanresult);
 //
 //        RELEASE(scanresult);
 //    }
-//    
+//
 //    IOFree(na, sizeof(struct ieee80211_nodereq_all));
 //    IOFree(nr, 512 * sizeof(struct ieee80211_nodereq));
 //}
-//
-//void AirPortLinux::scanFreeResults()
-//{
-//    scanResults->flushCollection();
-//    scanIndex = 0;
-//    return;
-//}
-//
-//void AirPortLinux::scanDone(OSObject *owner, ...)
-//{
+
+void AirPortLinux::scanFreeResults()
+{
+    scanResults->flushCollection();
+    scanIndex = 0;
+    return;
+}
+
+void AirPortLinux::scanDone(OSObject *owner, ...)
+{
 //    struct device *dev = (struct device *)_ifp->if_softc;
-//    
-////    dev->dev->scanFreeResults();
+//
+//    //    dev->dev->scanFreeResults();
 //    dev->dev->scanComplete();
 //#ifndef Ethernet
 //    _ifp->iface->postMessage(APPLE80211_M_SCAN_DONE);
 //    _ifp->iface->postMessage(APPLE80211_M_COUNTRY_CODE_CHANGED);
 //#endif
-//}
-//
+}
+
 //OSString *AirPortLinux::getNVRAMProperty(char *name)
 //{
 //    OSString *value = OSString::withCString("");
@@ -252,17 +251,17 @@
 //    {
 //        if (OSData *buf = OSDynamicCast(OSData, nvram->getProperty(name))) {
 //            buf->appendByte('\0', 1);
-//            
+//
 //            ret = snprintf(val, buf->getLength(), "%s", buf->getBytesNoCopy());
 //            IOLog("Get NARAM value %s=%s successed ret = %d", name,val, ret);
 //            if (ret == -1)
 //                return value;
 //            value = OSString::withCString(val);
-//            
+//
 //            IOLog("Get NARAM value %s=%s successed", name,val);
 //        }else
 //        {
-//             IOLog("Get NARAM value %s failed: Cna't getProperty %s", name, name);
+//            IOLog("Get NARAM value %s failed: Cna't getProperty %s", name, name);
 //        }
 //        nvram->release();
 //    } else {
