@@ -39,28 +39,7 @@
      (~ULL(0) >> (BITS_PER_LONG_LONG - 1 - (h))))
 
 
-//static inline UInt64 OSBitwiseAtomic64(unsigned long and_mask, unsigned long or_mask, unsigned long xor_mask, unsigned long * value)
-//{
-//    unsigned long    oldValue;
-//    unsigned long    newValue;
-//
-//    do {
-//        oldValue = *value;
-//        newValue = ((oldValue & and_mask) | or_mask) ^ xor_mask;
-//    } while (! OSCompareAndSwap64(oldValue, newValue, value));
-//
-//    return oldValue;
-//}
-//
-//static inline unsigned long OSBitAndAtomic64(unsigned long mask, unsigned long * value)
-//{
-//    return OSBitwiseAtomic64(mask, 0, 0, value);
-//}
-//
-//static inline unsigned long OSBitOrAtomic64(unsigned long mask, unsigned long * value)
-//{
-//    return OSBitwiseAtomic64(-1, mask, 0, value);
-//}
+extern int logType;
 
 #define __set_bit(nr, vaddr)    setbit(vaddr, nr)
 #define __clear_bit(nr, vaddr)    clrbit(vaddr, nr)
@@ -69,60 +48,9 @@
 #define set_bit    __set_bit
 #define clear_bit    __clear_bit
 #define test_bit    __test_bit
-#define test_and_set_bit(nr, vaddr)    test_bit(nr, vaddr) & set_bit(nr, vaddr)
+#define __test_and_set_bit(nr, vaddr)    test_bit(nr, vaddr) & set_bit(nr, vaddr)
 #define test_and_clear_bit(nr, vaddr)    test_bit(nr, vaddr) & clear_bit(nr, vaddr)
-
-
-//static inline void __clear_bit(int nr, volatile unsigned long *addr)
-//{
-//    unsigned long mask = BIT_MASK(nr);
-//    unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-//
-//    *p &= ~mask;
-//}
-//
-//static inline void clear_bit(int nr, volatile unsigned long *addr)
-//{
-//    unsigned long mask = BIT_MASK(nr);
-//    unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-//    OSBitAndAtomic64(~mask, p);
-//}
-
-
-//static inline int
-//test_bit(int nr, const volatile unsigned long *addr)
-//{
-//    return (OSAddAtomic(0, addr) & (1 << nr)) != 0;
-//}
-
-//static inline int test_and_set_bit(int nr, volatile unsigned long *addr)
-//{
-//    unsigned long mask = BIT_MASK(nr);
-//    unsigned long *p = ((unsigned long *)addr) + BIT_WORD(nr);
-//    unsigned long old;
-////    unsigned long flags;
-//
-//    old = *p;
-//    *p = old | mask;
-//
-//    return (old & mask) != 0;
-//}
-
-//
-//#define test_and_clear_bit(x,y)        \
-//({        \
-//    int r;        \
-//    r=test_bit(x, y);        \
-//    clear_bit(x, y);        \
-//    r;        \
-//})
-//#define test_and_set_bit(x,y)        \
-//({        \
-//    int r;        \
-//    r=test_bit(x, y);        \
-//    set_bit(x, y);        \
-//    r;        \
-//})
+#define test_and_set_bit(nr, vaddr)   __test_and_set_bit(nr, vaddr)
 
 
 #endif    /* __LINUX_BITS_H */

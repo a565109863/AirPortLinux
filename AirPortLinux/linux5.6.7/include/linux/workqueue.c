@@ -11,6 +11,9 @@
 
 struct workqueue_struct *system_wq = alloc_workqueue("system_wq", 1, 1);
 
+struct workqueue_struct *system_freezable_wq = alloc_workqueue("events_freezable",
+                                      WQ_FREEZABLE, 0);
+
 void queue_work_run(void* tqarg, wait_result_t waitResult)
 {
     struct workqueue_struct *wq = (struct workqueue_struct *)tqarg;
@@ -25,8 +28,9 @@ void queue_work_run(void* tqarg, wait_result_t waitResult)
             
             mutex_unlock(&wq->mutex);
             
-            kprintf("-----%s: line = %d", __FUNCTION__, __LINE__);
+            kprintf("-----%s: line = %d, res->func_name = %s", __FUNCTION__, __LINE__, res->func_name);
             (*res->func)(res);
+            kprintf("-----%s: line = %d, res->func_name = %s end", __FUNCTION__, __LINE__, res->func_name);
 //            kfree(res);
         }
         

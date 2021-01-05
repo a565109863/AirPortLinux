@@ -255,30 +255,30 @@ static void __ieee80211_wake_txqs(struct ieee80211_sub_if_data *sdata, int ac)
 
     sdata->vif.txqs_stopped[ac] = false;
 
-//    list_for_each_entry_rcu(sta, &local->sta_list, list) {
-//        if (sdata != sta->sdata)
-//            continue;
-//
-//        for (i = 0; i < ARRAY_SIZE(sta->sta.txq); i++) {
-//            struct ieee80211_txq *txq = sta->sta.txq[i];
-//
-//            if (!txq)
-//                continue;
-//
-//            txqi = to_txq_info(txq);
-//
-//            if (ac != txq->ac)
-//                continue;
-//
-//            if (!test_and_clear_bit(IEEE80211_TXQ_STOP_NETIF_TX,
-//                        &txqi->flags))
-//                continue;
-//
-//            spin_unlock(&fq->lock);
-//            drv_wake_tx_queue(local, txqi);
-//            spin_lock(&fq->lock);
-//        }
-//    }
+    list_for_each_entry_rcu(sta, &local->sta_list, list) {
+        if (sdata != sta->sdata)
+            continue;
+
+        for (i = 0; i < ARRAY_SIZE(sta->sta.txq); i++) {
+            struct ieee80211_txq *txq = sta->sta.txq[i];
+
+            if (!txq)
+                continue;
+
+            txqi = to_txq_info(txq);
+
+            if (ac != txq->ac)
+                continue;
+
+            if (!test_and_clear_bit(IEEE80211_TXQ_STOP_NETIF_TX,
+                        &txqi->flags))
+                continue;
+
+            spin_unlock(&fq->lock);
+            drv_wake_tx_queue(local, txqi);
+            spin_lock(&fq->lock);
+        }
+    }
 
     if (!vif->txq)
         goto out;
@@ -291,7 +291,7 @@ static void __ieee80211_wake_txqs(struct ieee80211_sub_if_data *sdata, int ac)
 
     spin_unlock(&fq->lock);
 
-//    drv_wake_tx_queue(local, txqi);
+    drv_wake_tx_queue(local, txqi);
     local_bh_enable();
     return;
 out:
@@ -318,17 +318,17 @@ _ieee80211_wake_txqs(struct ieee80211_local *local, unsigned long *flags)
             continue;
 
         spin_unlock_irqrestore(&local->queue_stop_reason_lock, *flags);
-//        list_for_each_entry_rcu(sdata, &local->interfaces, list) {
-//            int ac;
-//
-//            for (ac = 0; ac < n_acs; ac++) {
-//                int ac_queue = sdata->vif.hw_queue[ac];
-//
-//                if (ac_queue == i ||
-//                    sdata->vif.cab_queue == i)
-//                    __ieee80211_wake_txqs(sdata, ac);
-//            }
-//        }
+        list_for_each_entry_rcu(sdata, &local->interfaces, list) {
+            int ac;
+
+            for (ac = 0; ac < n_acs; ac++) {
+                int ac_queue = sdata->vif.hw_queue[ac];
+
+                if (ac_queue == i ||
+                    sdata->vif.cab_queue == i)
+                    __ieee80211_wake_txqs(sdata, ac);
+            }
+        }
         spin_lock_irqsave(&local->queue_stop_reason_lock, *flags);
     }
 
@@ -356,26 +356,26 @@ void ieee80211_propagate_queue_wake(struct ieee80211_local *local, int queue)
     if (local->hw.queues < IEEE80211_NUM_ACS)
         n_acs = 1;
 
-//    list_for_each_entry_rcu(sdata, &local->interfaces, list) {
-//        int ac;
-//
-//        if (!sdata->dev)
-//            continue;
-//
-//        if (sdata->vif.cab_queue != IEEE80211_INVAL_HW_QUEUE &&
-//            local->queue_stop_reasons[sdata->vif.cab_queue] != 0)
-//            continue;
-//
-//        for (ac = 0; ac < n_acs; ac++) {
-//            int ac_queue = sdata->vif.hw_queue[ac];
-//
-//            if (ac_queue == queue ||
-//                (sdata->vif.cab_queue == queue &&
-//                 local->queue_stop_reasons[ac_queue] == 0 &&
-//                 skb_queue_empty(&local->pending[ac_queue])))
-//                netif_wake_subqueue(sdata->dev, ac);
-//        }
-//    }
+    list_for_each_entry_rcu(sdata, &local->interfaces, list) {
+        int ac;
+
+        if (!sdata->dev)
+            continue;
+
+        if (sdata->vif.cab_queue != IEEE80211_INVAL_HW_QUEUE &&
+            local->queue_stop_reasons[sdata->vif.cab_queue] != 0)
+            continue;
+
+        for (ac = 0; ac < n_acs; ac++) {
+            int ac_queue = sdata->vif.hw_queue[ac];
+
+            if (ac_queue == queue ||
+                (sdata->vif.cab_queue == queue &&
+                 local->queue_stop_reasons[ac_queue] == 0 &&
+                 skb_queue_empty(&local->pending[ac_queue])))
+                netif_wake_subqueue(sdata->dev, ac);
+        }
+    }
 }
 
 static void __ieee80211_wake_queue(struct ieee80211_hw *hw, int queue,
@@ -385,7 +385,7 @@ static void __ieee80211_wake_queue(struct ieee80211_hw *hw, int queue,
 {
     struct ieee80211_local *local = hw_to_local(hw);
 
-//    trace_wake_queue(local, queue, reason);
+    trace_wake_queue(local, queue, reason);
 
     if (WARN_ON(queue >= hw->queues))
         return;
@@ -459,7 +459,7 @@ static void __ieee80211_stop_queue(struct ieee80211_hw *hw, int queue,
     struct ieee80211_sub_if_data *sdata;
     int n_acs = IEEE80211_NUM_ACS;
 
-//    trace_stop_queue(local, queue, reason);
+    trace_stop_queue(local, queue, reason);
 
     if (WARN_ON(queue >= hw->queues))
         return;
@@ -476,25 +476,25 @@ static void __ieee80211_stop_queue(struct ieee80211_hw *hw, int queue,
         n_acs = 1;
 
     rcu_read_lock();
-//    list_for_each_entry_rcu(sdata, &local->interfaces, list) {
-//        int ac;
-//
-//        if (!sdata->dev)
-//            continue;
-//
-//        for (ac = 0; ac < n_acs; ac++) {
-//            if (sdata->vif.hw_queue[ac] == queue ||
-//                sdata->vif.cab_queue == queue) {
-//                if (!local->ops->wake_tx_queue) {
-//                    netif_stop_subqueue(sdata->dev, ac);
-//                    continue;
-//                }
-//                spin_lock(&local->fq.lock);
-//                sdata->vif.txqs_stopped[ac] = true;
-//                spin_unlock(&local->fq.lock);
-//            }
-//        }
-//    }
+    list_for_each_entry_rcu(sdata, &local->interfaces, list) {
+        int ac;
+
+        if (!sdata->dev)
+            continue;
+
+        for (ac = 0; ac < n_acs; ac++) {
+            if (sdata->vif.hw_queue[ac] == queue ||
+                sdata->vif.cab_queue == queue) {
+                if (!local->ops->wake_tx_queue) {
+                    netif_stop_subqueue(sdata->dev, ac);
+                    continue;
+                }
+                spin_lock(&local->fq.lock);
+                sdata->vif.txqs_stopped[ac] = true;
+                spin_unlock(&local->fq.lock);
+            }
+        }
+    }
     rcu_read_unlock();
 }
 
@@ -681,7 +681,7 @@ void __ieee80211_flush_queues(struct ieee80211_local *local,
                     IEEE80211_QUEUE_STOP_REASON_FLUSH,
                     false);
 
-//    drv_flush(local, sdata, queues, drop);
+    drv_flush(local, sdata, queues, drop);
 
     ieee80211_wake_queues_by_reason(&local->hw, queues,
                     IEEE80211_QUEUE_STOP_REASON_FLUSH,
@@ -721,24 +721,24 @@ static void __iterate_interfaces(struct ieee80211_local *local,
     struct ieee80211_sub_if_data *sdata;
     bool active_only = iter_flags & IEEE80211_IFACE_ITER_ACTIVE;
 
-//    list_for_each_entry_rcu(sdata, &local->interfaces, list) {
-//        switch (sdata->vif.type) {
-//        case NL80211_IFTYPE_MONITOR:
-//            if (!(sdata->u.mntr.flags & MONITOR_FLAG_ACTIVE))
-//                continue;
-//            break;
-//        case NL80211_IFTYPE_AP_VLAN:
-//            continue;
-//        default:
-//            break;
-//        }
-//        if (!(iter_flags & IEEE80211_IFACE_ITER_RESUME_ALL) &&
-//            active_only && !(sdata->flags & IEEE80211_SDATA_IN_DRIVER))
-//            continue;
-//        if (ieee80211_sdata_running(sdata) || !active_only)
-//            iterator(data, sdata->vif.addr,
-//                 &sdata->vif);
-//    }
+    list_for_each_entry_rcu(sdata, &local->interfaces, list) {
+        switch (sdata->vif.type) {
+        case NL80211_IFTYPE_MONITOR:
+            if (!(sdata->u.mntr.flags & MONITOR_FLAG_ACTIVE))
+                continue;
+            break;
+        case NL80211_IFTYPE_AP_VLAN:
+            continue;
+        default:
+            break;
+        }
+        if (!(iter_flags & IEEE80211_IFACE_ITER_RESUME_ALL) &&
+            active_only && !(sdata->flags & IEEE80211_SDATA_IN_DRIVER))
+            continue;
+        if (ieee80211_sdata_running(sdata) || !active_only)
+            iterator(data, sdata->vif.addr,
+                 &sdata->vif);
+    }
 
     sdata = rcu_dereference_check(local->monitor_sdata,
                       lockdep_is_held(&local->iflist_mtx) ||
@@ -800,12 +800,12 @@ static void __iterate_stations(struct ieee80211_local *local,
 {
     struct sta_info *sta;
 
-//    list_for_each_entry_rcu(sta, &local->sta_list, list) {
-//        if (!sta->uploaded)
-//            continue;
-//
-//        iterator(data, &sta->sta);
-//    }
+    list_for_each_entry_rcu(sta, &local->sta_list, list) {
+        if (!sta->uploaded)
+            continue;
+
+        iterator(data, &sta->sta);
+    }
 }
 
 void ieee80211_iterate_stations_atomic(struct ieee80211_hw *hw,
@@ -1442,6 +1442,7 @@ void ieee80211_regulatory_limit_wmm_params(struct ieee80211_sub_if_data *sdata,
 void ieee80211_set_wmm_default(struct ieee80211_sub_if_data *sdata,
                    bool bss_notify, bool enable_qos)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = sdata->local;
     struct ieee80211_tx_queue_params qparam;
     struct ieee80211_chanctx_conf *chanctx_conf;
@@ -1537,7 +1538,7 @@ void ieee80211_set_wmm_default(struct ieee80211_sub_if_data *sdata,
         qparam.uapsd = false;
 
         sdata->tx_conf[ac] = qparam;
-//        drv_conf_tx(local, sdata, ac, &qparam);
+        drv_conf_tx(local, sdata, ac, &qparam);
     }
 
     if (sdata->vif.type != NL80211_IFTYPE_MONITOR &&
@@ -1979,13 +1980,13 @@ u32 ieee80211_sta_get_rates(struct ieee80211_sub_if_data *sdata,
 
 void ieee80211_stop_device(struct ieee80211_local *local)
 {
-//    ieee80211_led_radio(local, false);
-//    ieee80211_mod_tpt_led_trig(local, 0, IEEE80211_TPT_LEDTRIG_FL_RADIO);
+    ieee80211_led_radio(local, false);
+    ieee80211_mod_tpt_led_trig(local, 0, IEEE80211_TPT_LEDTRIG_FL_RADIO);
 
     cancel_work_sync(&local->reconfig_filter);
 
     flush_workqueue(local->workqueue);
-//    drv_stop(local);
+    drv_stop(local);
 }
 
 static void ieee80211_flush_completed_scan(struct ieee80211_local *local,
@@ -2065,7 +2066,7 @@ static void ieee80211_assign_chanctx(struct ieee80211_local *local,
                      lockdep_is_held(&local->chanctx_mtx));
     if (conf) {
         ctx = container_of(conf, struct ieee80211_chanctx, conf);
-//        drv_assign_vif_chanctx(local, sdata, ctx);
+        drv_assign_vif_chanctx(local, sdata, ctx);
     }
     mutex_unlock(&local->chanctx_mtx);
 }
@@ -2078,15 +2079,15 @@ static void ieee80211_reconfig_stations(struct ieee80211_sub_if_data *sdata)
     /* add STAs back */
     mutex_lock(&local->sta_mtx);
     list_for_each_entry(sta, &local->sta_list, list) {
-        enum ieee80211_sta_state state;
+        int state;
 
         if (!sta->uploaded || sta->sdata != sdata)
             continue;
 
-//        for (state = IEEE80211_STA_NOTEXIST;
-//             state < sta->sta_state; state++)
-//            WARN_ON(drv_sta_state(local, sta->sdata, sta, state,
-//                          state + 1));
+        for (state = IEEE80211_STA_NOTEXIST;
+             state < sta->sta_state; state++)
+            WARN_ON(drv_sta_state(local, sta->sdata, sta, (enum ieee80211_sta_state)state,
+                          (enum ieee80211_sta_state)(state + 1)));
     }
     mutex_unlock(&local->sta_mtx);
 }
@@ -2096,8 +2097,8 @@ static int ieee80211_reconfig_nan(struct ieee80211_sub_if_data *sdata)
     struct cfg80211_nan_func *func, **funcs;
     int res, id, i = 0;
 
-//    res = drv_start_nan(sdata->local, sdata,
-//                &sdata->u.nan.conf);
+    res = drv_start_nan(sdata->local, sdata,
+                &sdata->u.nan.conf);
     if (WARN_ON(res))
         return res;
 
@@ -2119,7 +2120,7 @@ static int ieee80211_reconfig_nan(struct ieee80211_sub_if_data *sdata)
     spin_unlock_bh(&sdata->u.nan.func_lock);
 
     for (i = 0; funcs[i]; i++) {
-//        res = drv_add_nan_func(sdata->local, sdata, funcs[i]);
+        res = drv_add_nan_func(sdata->local, sdata, funcs[i]);
         if (WARN_ON(res))
             ieee80211_nan_func_terminated(&sdata->vif,
                               funcs[i]->instance_id,
@@ -2161,7 +2162,7 @@ int ieee80211_reconfig(struct ieee80211_local *local)
          * normally (e.g. pass rx frames).
          */
         local->suspended = false;
-//        res = drv_resume(local);
+        res = drv_resume(local);
         local->wowlan = false;
         if (res < 0) {
             local->resuming = false;
@@ -2198,7 +2199,7 @@ int ieee80211_reconfig(struct ieee80211_local *local)
      * the device may at times not work immediately. Propagate
      * the error.
      */
-//    res = drv_start(local);
+    res = drv_start(local);
     if (res) {
         if (suspended)
             WARN(1, "Hardware became unavailable upon resume. This could be a software issue prior to suspend or a hardware issue.\n");
@@ -2209,13 +2210,13 @@ int ieee80211_reconfig(struct ieee80211_local *local)
     }
 
     /* setup fragmentation threshold */
-//    drv_set_frag_threshold(local, hw->wiphy->frag_threshold);
-//
-//    /* setup RTS threshold */
-//    drv_set_rts_threshold(local, hw->wiphy->rts_threshold);
-//
-//    /* reset coverage class */
-//    drv_set_coverage_class(local, hw->wiphy->coverage_class);
+    drv_set_frag_threshold(local, hw->wiphy->frag_threshold);
+
+    /* setup RTS threshold */
+    drv_set_rts_threshold(local, hw->wiphy->rts_threshold);
+
+    /* reset coverage class */
+    drv_set_coverage_class(local, hw->wiphy->coverage_class);
 
     ieee80211_led_radio(local, true);
     ieee80211_mod_tpt_led_trig(local,
@@ -2226,7 +2227,7 @@ int ieee80211_reconfig(struct ieee80211_local *local)
     if (sdata) {
         /* in HW restart it exists already */
         WARN_ON(local->resuming);
-//        res = drv_add_interface(local, sdata);
+        res = drv_add_interface(local, sdata);
         if (WARN_ON(res)) {
             RCU_INIT_POINTER(local->monitor_sdata, NULL);
             synchronize_net();
@@ -2238,7 +2239,7 @@ int ieee80211_reconfig(struct ieee80211_local *local)
         if (sdata->vif.type != NL80211_IFTYPE_AP_VLAN &&
             sdata->vif.type != NL80211_IFTYPE_MONITOR &&
             ieee80211_sdata_running(sdata)) {
-//            res = drv_add_interface(local, sdata);
+            res = drv_add_interface(local, sdata);
             if (WARN_ON(res))
                 break;
         }
@@ -2248,12 +2249,12 @@ int ieee80211_reconfig(struct ieee80211_local *local)
      * report failure.
      */
     if (res) {
-//        list_for_each_entry_continue_reverse(sdata, &local->interfaces,
-//                             list)
-//            if (sdata->vif.type != NL80211_IFTYPE_AP_VLAN &&
-//                sdata->vif.type != NL80211_IFTYPE_MONITOR &&
-//                ieee80211_sdata_running(sdata))
-//                drv_remove_interface(local, sdata);
+        list_for_each_entry_continue_reverse(sdata, &local->interfaces,
+                             list)
+            if (sdata->vif.type != NL80211_IFTYPE_AP_VLAN &&
+                sdata->vif.type != NL80211_IFTYPE_MONITOR &&
+                ieee80211_sdata_running(sdata))
+                drv_remove_interface(local, sdata);
         ieee80211_handle_reconfig_failure(local);
         return res;
     }
@@ -2261,10 +2262,10 @@ int ieee80211_reconfig(struct ieee80211_local *local)
     /* add channel contexts */
     if (local->use_chanctx) {
         mutex_lock(&local->chanctx_mtx);
-//        list_for_each_entry(ctx, &local->chanctx_list, list)
-//            if (ctx->replace_state !=
-//                IEEE80211_CHANCTX_REPLACES_OTHER)
-//                WARN_ON(drv_add_chanctx(local, ctx));
+        list_for_each_entry(ctx, &local->chanctx_list, list)
+            if (ctx->replace_state !=
+                IEEE80211_CHANCTX_REPLACES_OTHER)
+                WARN_ON(drv_add_chanctx(local, ctx));
         mutex_unlock(&local->chanctx_mtx);
 
         sdata = rtnl_dereference(local->monitor_sdata);
@@ -2291,16 +2292,16 @@ int ieee80211_reconfig(struct ieee80211_local *local)
         case NL80211_IFTYPE_MONITOR:
             break;
         case NL80211_IFTYPE_ADHOC:
-//            if (sdata->vif.bss_conf.ibss_joined)
-//                WARN_ON(drv_join_ibss(local, sdata));
+            if (sdata->vif.bss_conf.ibss_joined)
+                WARN_ON(drv_join_ibss(local, sdata));
             /* fall through */
         default:
             ieee80211_reconfig_stations(sdata);
             /* fall through */
         case NL80211_IFTYPE_AP: /* AP stations are handled later */
-//            for (i = 0; i < IEEE80211_NUM_ACS; i++)
-//                drv_conf_tx(local, sdata, i,
-//                        &sdata->tx_conf[i]);
+            for (i = 0; i < IEEE80211_NUM_ACS; i++)
+                drv_conf_tx(local, sdata, i,
+                        &sdata->tx_conf[i]);
             break;
         }
 
@@ -2357,8 +2358,8 @@ int ieee80211_reconfig(struct ieee80211_local *local)
             if (sdata->vif.type == NL80211_IFTYPE_AP) {
                 changed |= BSS_CHANGED_AP_PROBE_RESP;
 
-//                if (rcu_access_pointer(sdata->u.ap.beacon))
-//                    drv_start_ap(local, sdata);
+                if (rcu_access_pointer(sdata->u.ap.beacon))
+                    drv_start_ap(local, sdata);
             }
 
             /* fall through */
@@ -2413,7 +2414,7 @@ int ieee80211_reconfig(struct ieee80211_local *local)
     /* APs are now beaconing, add back stations */
     mutex_lock(&local->sta_mtx);
     list_for_each_entry(sta, &local->sta_list, list) {
-        enum ieee80211_sta_state state;
+        int state;
 
         if (!sta->uploaded)
             continue;
@@ -2422,10 +2423,10 @@ int ieee80211_reconfig(struct ieee80211_local *local)
             sta->sdata->vif.type != NL80211_IFTYPE_AP_VLAN)
             continue;
 
-//        for (state = IEEE80211_STA_NOTEXIST;
-//             state < sta->sta_state; state++)
-//            WARN_ON(drv_sta_state(local, sta->sdata, sta, state,
-//                          state + 1));
+        for (state = IEEE80211_STA_NOTEXIST;
+             state < sta->sta_state; state++)
+            WARN_ON(drv_sta_state(local, sta->sdata, sta, (enum ieee80211_sta_state)state,
+                          (enum ieee80211_sta_state)(state + 1)));
     }
     mutex_unlock(&local->sta_mtx);
 
@@ -2628,7 +2629,7 @@ static void _ieee80211_enable_rssi_reports(struct ieee80211_sub_if_data *sdata,
                         int rssi_min_thold,
                         int rssi_max_thold)
 {
-//    trace_api_enable_rssi_reports(sdata, rssi_min_thold, rssi_max_thold);
+    trace_api_enable_rssi_reports(sdata, rssi_min_thold, rssi_max_thold);
 
     if (WARN_ON(sdata->vif.type != NL80211_IFTYPE_STATION))
         return;
@@ -3375,7 +3376,7 @@ void ieee80211_radar_detected(struct ieee80211_hw *hw)
 {
     struct ieee80211_local *local = hw_to_local(hw);
 
-//    trace_api_radar_detected(local);
+    trace_api_radar_detected(local);
 
     schedule_work(&local->radar_detected_work);
 }
@@ -3771,8 +3772,7 @@ EXPORT_SYMBOL(ieee80211_parse_p2p_noa);
 void ieee80211_recalc_dtim(struct ieee80211_local *local,
                struct ieee80211_sub_if_data *sdata)
 {
-//    u64 tsf = drv_get_tsf(local, sdata);
-    u64 tsf = NULL;
+    u64 tsf = drv_get_tsf(local, sdata);
     u64 dtim_count = 0;
     u16 beacon_int = sdata->vif.bss_conf.beacon_int * 1024;
     u8 dtim_period = sdata->vif.bss_conf.dtim_period;
@@ -3955,8 +3955,8 @@ int ieee80211_max_num_channels(struct ieee80211_local *local)
             ieee80211_chanctx_radar_detect(local, ctx);
     }
 
-//    list_for_each_entry_rcu(sdata, &local->interfaces, list)
-//        params.iftype_num[sdata->wdev.iftype]++;
+    list_for_each_entry_rcu(sdata, &local->interfaces, list)
+        params.iftype_num[sdata->wdev.iftype]++;
 
     err = cfg80211_iter_combinations(local->hw.wiphy, &params,
                      ieee80211_iter_max_chans,

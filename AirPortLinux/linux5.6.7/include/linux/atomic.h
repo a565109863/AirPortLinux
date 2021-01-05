@@ -45,6 +45,9 @@ static inline int atomic_dec_return( atomic_t *v)
 
 static inline void atomic_inc( atomic_t *v)
 {
+    if (v->counter == NULL) {
+        atomic_set(v, 0);
+    }
     v->counter++;
 }
 

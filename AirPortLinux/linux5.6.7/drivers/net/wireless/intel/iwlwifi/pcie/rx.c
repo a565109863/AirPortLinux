@@ -1325,6 +1325,9 @@ static void iwl_pcie_rx_handle_rb(struct iwl_trans *trans,
 			.truesize = max_len,
 		};
 
+//        if (logType) {
+//            DebugLog("--%s: 80211 line = %d, trans_pcie->rx_page_order = %d", __FUNCTION__, __LINE__, trans_pcie->rx_page_order);
+//        }
 		pkt = (struct iwl_rx_packet *)rxb_addr(&rxcb);
 
 		if (pkt->len_n_flags == cpu_to_le32(FH_RSCSR_FRAME_INVALID)) {

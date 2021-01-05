@@ -27,55 +27,74 @@ extern unsigned int __sw_hweight32(unsigned int w);
 extern unsigned long __sw_hweight64(__u64 w);
 
 
-
-static inline int find_first_bit(const unsigned long *vaddr, unsigned size)
+static inline int
+find_first_zero_bit(const unsigned long *p, int max)
 {
-    const unsigned long *p = vaddr;
-    int res = 32;
-    unsigned int words;
-    unsigned long num;
-
-    if (!size)
-        return 0;
-
-    words = (size + 31) >> 5;
-    while (!(num = *p++)) {
-        if (!--words)
-            goto out;
-    }
-
-    res ^= 31;
-out:
-    res += ((long)p - (long)vaddr - 4) * 8;
-    return res < size ? res : size;
-}
-#define find_first_bit find_first_bit
-
-
-static inline int find_next_bit(const unsigned long *vaddr, int size,
-                int offset)
-{
-    const unsigned long *p = vaddr + (offset >> 5);
-    int bit = offset & 31UL, res;
-
-    if (offset >= size)
-        return size;
-
-    if (bit) {
-        unsigned long num = *p++ & (~0UL << bit);
-        offset -= bit;
-
-        if (res < 32) {
-            offset += res ^ 31;
-            return offset < size ? offset : size;
+    int b;
+    volatile u_int *ptr = (volatile u_int *)p;
+    
+    for (b = 0; b < max; b += 32) {
+        if (ptr[b >> 5] != ~0) {
+            for (;;) {
+                if ((ptr[b >> 5] & (1 << (b & 0x1f))) == 0)
+                    return b;
+                b++;
+            }
         }
-        offset += 32;
-
-        if (offset >= size)
-            return size;
     }
-    /* No one yet, search remaining full bytes for a one */
-    return offset + find_first_bit(p, size - offset);
+    return max;
+}
+
+static inline int
+find_next_zero_bit(const unsigned long *p, int max, int b)
+{
+    volatile u_int *ptr = (volatile u_int *)p;
+    
+    for (; b < max; b += 32) {
+        if (ptr[b >> 5] != ~0) {
+            for (;;) {
+                if ((ptr[b >> 5] & (1 << (b & 0x1f))) == 0)
+                    return b;
+                b++;
+            }
+        }
+    }
+    return max;
+}
+
+static inline int
+find_first_bit(const unsigned long *p, int max)
+{
+    int b;
+    volatile u_int *ptr = (volatile u_int *)p;
+    
+    for (b = 0; b < max; b += 32) {
+        if (ptr[b >> 5] != 0) {
+            for (;;) {
+                if (ptr[b >> 5] & (1 << (b & 0x1f)))
+                    return b;
+                b++;
+            }
+        }
+    }
+    return max;
+}
+
+static inline int
+find_next_bit(const unsigned long *p, int max, int b)
+{
+    volatile u_int *ptr = (volatile u_int *)p;
+    
+    for (; b < max; b+= 32) {
+        if (ptr[b >> 5] != 0) {
+            for (;;) {
+                if (ptr[b >> 5] & (1 << (b & 0x1f)))
+                    return b;
+                b++;
+            }
+        }
+    }
+    return max;
 }
 
 
@@ -403,53 +422,6 @@ static inline unsigned long ffz(unsigned long word)
 }
 
 
-#define __test_and_set_bit(nr, vaddr)    test_and_set_bit(nr, vaddr)
-
-static inline int
-find_first_zero_bit(volatile void *p, int max)
-{
-    int b;
-    volatile u_int *ptr = (volatile u_int *)p;
-
-    for (b = 0; b < max; b += 32) {
-        if (ptr[b >> 5] != ~0) {
-            for (;;) {
-                if ((ptr[b >> 5] & (1 << (b & 0x1f))) == 0)
-                    return b;
-                b++;
-            }
-        }
-    }
-    return max;
-}
-
-static inline int find_next_zero_bit(const unsigned long *vaddr, int size,
-                     int offset)
-{
-    const unsigned long *p = vaddr + (offset >> 5);
-    int bit = offset & 31UL, res;
-
-    if (offset >= size)
-        return size;
-
-    if (bit) {
-        unsigned long num = ~*p++ & (~0UL << bit);
-        offset -= bit;
-
-        /* Look for zero in first longword */
-        __asm__ __volatile__ ("bfffo %1{#0,#0},%0"
-                      : "=d" (res) : "d" (num & -num));
-        if (res < 32) {
-            offset += res ^ 31;
-            return offset < size ? offset : size;
-        }
-        offset += 32;
-
-        if (offset >= size)
-            return size;
-    }
-    /* No zero yet, search remaining full bytes for a zero */
-    return offset + find_first_zero_bit(&p, size - offset);
-}
+//#define __test_and_set_bit(nr, vaddr)    test_and_set_bit(nr, vaddr)
 
 #endif

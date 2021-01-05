@@ -104,10 +104,12 @@ static void iwl_mvm_mac_tsf_id_iter(void *_data, u8 *mac,
 	struct iwl_mvm_vif *mvmvif = iwl_mvm_vif_from_mac80211(vif);
 	u16 min_bi;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/* Skip the interface for which we are trying to assign a tsf_id  */
 	if (vif == data->vif)
 		return;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/*
 	 * The TSF is a hardware/firmware resource, there are 4 and
 	 * the driver should assign and free them as needed. However,
@@ -134,17 +136,21 @@ static void iwl_mvm_mac_tsf_id_iter(void *_data, u8 *mac,
 		 * existing AP. The existing AP will get drift updates from the
 		 * new client context in this case.
 		 */
+            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 		if (vif->type != NL80211_IFTYPE_AP ||
 		    data->preferred_tsf != NUM_TSF_IDS ||
 		    !test_bit(mvmvif->tsf_id, data->available_tsf_ids))
 			break;
 
+            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 		min_bi = min(data->vif->bss_conf.beacon_int,
 			     vif->bss_conf.beacon_int);
 
+            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 		if (!min_bi)
 			break;
 
+            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 		if ((data->vif->bss_conf.beacon_int -
 		     vif->bss_conf.beacon_int) % min_bi == 0) {
 			data->preferred_tsf = mvmvif->tsf_id;
@@ -206,6 +212,7 @@ static void iwl_mvm_mac_tsf_id_iter(void *_data, u8 *mac,
 static void iwl_mvm_mac_iface_iterator(void *_data, u8 *mac,
 				       struct ieee80211_vif *vif)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_mvm_mac_iface_iterator_data *data = (struct iwl_mvm_mac_iface_iterator_data *)_data;
 	struct iwl_mvm_vif *mvmvif = iwl_mvm_vif_from_mac80211(vif);
 
@@ -223,6 +230,7 @@ static void iwl_mvm_mac_iface_iterator(void *_data, u8 *mac,
 	 */
 	__clear_bit(mvmvif->id, data->available_mac_ids);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/* find a suitable tsf_id */
 	iwl_mvm_mac_tsf_id_iter(_data, mac, vif);
 }

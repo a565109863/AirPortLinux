@@ -85,7 +85,7 @@ static inline void dma_sync_single_for_cpu(struct device *dev, dma_addr_t addr,
 //        ops->sync_single_for_cpu(dev, addr, size, dir);
 //    debug_dma_sync_single_for_cpu(dev, addr, size, dir);
     
-    IOBufferMemoryDescriptor::withPhysicalAddress(addr, size, dir);
+//    IOBufferMemoryDescriptor::withPhysicalAddress(addr, size, dir);
 }
 
 static inline void dma_sync_single_for_device(struct device *dev,
@@ -101,7 +101,7 @@ static inline void dma_sync_single_for_device(struct device *dev,
 //        ops->sync_single_for_device(dev, addr, size, dir);
 //    debug_dma_sync_single_for_device(dev, addr, size, dir);
     
-    IOBufferMemoryDescriptor::withPhysicalAddress(addr, size, dir);
+//    IOBufferMemoryDescriptor::withPhysicalAddress(addr, size, dir);
 }
 
 
@@ -140,25 +140,23 @@ static inline int dma_mapping_error(struct device *dev, dma_addr_t dma_addr)
     return 0;
 }
 
-static struct page *__virt_to_page(void *ptr, size_t ptrlen)
+static struct page *__virt_to_page(void *ptr)
 {
     struct page *page = alloc_pages(GFP_ATOMIC, 0);
-    page->dm_mapsize = ptrlen;
-    
-    void *_new = page_address(page);
-    bcopy(ptr, _new, ptrlen);
-    ptr = _new;
+    page->ptr = ptr;
     
     return page;
 }
 
-#define virt_to_page(x) __virt_to_page((void *)x, size)
+#define virt_to_page(x) __virt_to_page((void *)x)
 #define offset_in_page(x) 0
 
 static inline struct page *virt_to_head_page(const void *ptr, size_t size)
 {
     kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
-    return virt_to_page(ptr);
+    struct page *page = virt_to_page(ptr);
+    page->size = size;
+    return page;
 }
 
 

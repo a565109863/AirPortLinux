@@ -1818,11 +1818,57 @@ err_free_name:
 EXPORT_SYMBOL(register_netdevice);
 
 
+static int call_netdevice_notifier(struct notifier_block *nb, unsigned long val,
+                                   struct net_device *dev)
+{
+    struct netdev_notifier_info info = {
+        .dev = dev,
+    };
+    
+    return nb->notifier_call(nb, val, &info);
+}
+
+static int call_netdevice_register_notifiers(struct notifier_block *nb,
+                                             struct net_device *dev)
+{
+    int err;
+    
+    err = call_netdevice_notifier(nb, NETDEV_REGISTER, dev);
+    err = notifier_to_errno(err);
+    if (err)
+        return err;
+    
+    if (!(dev->flags & IFF_UP))
+        return 0;
+    
+    call_netdevice_notifier(nb, NETDEV_UP, dev);
+    return 0;
+}
+
+static int call_netdevice_register_net_notifiers(struct notifier_block *nb,
+                                                 struct net *net)
+{
+    struct net_device *dev;
+    int err;
+    
+    for_each_netdev(net, dev) {
+        err = call_netdevice_register_notifiers(nb, dev);
+        if (err)
+            goto rollback;
+    }
+    return 0;
+    
+rollback:
+//    for_each_netdev_continue_reverse(net, dev)
+//    call_netdevice_unregister_notifiers(nb, dev);
+    return err;
+}
+
 int register_netdevice_notifier(struct notifier_block *nb)
 {
-//    struct net *net;
-//    int err;
-//
+    struct net *net;
+    int err;
+
 //    /* Close race with setup_net() and cleanup_net() */
 //    down_write(&pernet_ops_rwsem);
 //    rtnl_lock();
@@ -1831,18 +1877,18 @@ int register_netdevice_notifier(struct notifier_block *nb)
 //        goto unlock;
 //    if (dev_boot_phase)
 //        goto unlock;
-//    for_each_net(net) {
-//        err = call_netdevice_register_net_notifiers(nb, net);
-//        if (err)
-//            goto rollback;
-//    }
+    for_each_net(net) {
+        err = call_netdevice_register_net_notifiers(nb, net);
+        if (err)
+            goto rollback;
+    }
 //
 //unlock:
 //    rtnl_unlock();
 //    up_write(&pernet_ops_rwsem);
 //    return err;
 //
-//rollback:
+rollback:
 //    for_each_net_continue_reverse(net)
 //        call_netdevice_unregister_net_notifiers(nb, net);
 //
@@ -3051,8 +3097,8 @@ EXPORT_SYMBOL(__skb_gso_segment);
 
 void linkwatch_init_dev(struct net_device *dev)
 {
-//    /* Handle pre-registration link state changes */
-//    if (!netif_carrier_ok(dev) || netif_dormant(dev))
+    /* Handle pre-registration link state changes */
+    if (!netif_carrier_ok(dev) || netif_dormant(dev));
 //        rfc2863_policy(dev);
 }
 
@@ -3438,3 +3484,17 @@ int dev_change_flags(struct net_device *dev, unsigned int flags,
     return ret;
 }
 EXPORT_SYMBOL(dev_change_flags);
+
+
+void netif_tx_wake_queue(struct netdev_queue *dev_queue)
+{
+    if (test_and_clear_bit(__QUEUE_STATE_DRV_XOFF, &dev_queue->state)) {
+//        struct Qdisc *q;
+//
+//        rcu_read_lock();
+//        q = rcu_dereference(dev_queue->qdisc);
+//        __netif_schedule(q);
+//        rcu_read_unlock();
+    }
+}
+EXPORT_SYMBOL(netif_tx_wake_queue);

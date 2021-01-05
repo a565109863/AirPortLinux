@@ -13,7 +13,8 @@
 
 extern struct pci_dev *_pdev;
 
-int wait_event_timeout(wait_queue_head_t q, int i, u32 timeout) {
+int wait_event_timeout(wait_queue_head_t q, int i, u32 timeout)
+{
     if (_pdev->dev.dev->fCommandGate == 0) {
         // no command gate so we just sleep
         IODelay(timeout);

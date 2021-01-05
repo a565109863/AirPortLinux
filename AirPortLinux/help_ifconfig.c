@@ -44,6 +44,8 @@ int ifup(const char *ifname)
 //        close(sk);
         return -1;
     }
+    
+    DebugLog("--%s: line = %d up", __FUNCTION__, __LINE__);
 //
 //    close(sk);
     return 0;

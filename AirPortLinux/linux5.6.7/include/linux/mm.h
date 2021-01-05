@@ -14,28 +14,6 @@
 #include <linux/slab.h>
 #include <linux/kernel.h>
 
-struct single_page {
-    IOMemoryDescriptor  *memDes;
-    IODMACommand        *memCmd;
-    UInt64              offset;
-    size_t              size;
-//    int                 nsegs;
-    IOPhysicalSegment   segs;
-    dma_addr_t          paddr;
-    caddr_t             vaddr;
-};
-
-
-struct mult_page {
-    IODMACommand                *dmaCmd;
-    UInt64                      offset;
-    size_t                      size;
-//    int                         nsegs;
-    IOPhysicalSegment           segs;
-    dma_addr_t                  paddr;
-    caddr_t                     vaddr;
-};
-
 struct page {
     struct list_head list;
 //    struct rcu_head rcu;
@@ -46,27 +24,17 @@ struct page {
     int32_t    file;
     
     void        *ptr;
-    
-    uint32_t    dm_mapsize;    /* size of the mapping */
-    int         dm_nsegs;    /* # valid segments in mapping */
-    IOPhysicalSegment *dm_segs;    /* segments; variable length */
+    uint32_t    size;
+    uint32_t                    dm_mapsize;    /* size of the mapping */
+    int                         dm_nsegs;    /* # valid segments in mapping */
+    IOPhysicalSegment           *dm_segs;    /* segments; variable length */
     
 //    uint32_t alignment;
-    IOBufferMemoryDescriptor *bufDes;
+    IOBufferMemoryDescriptor    *bufDes;
     IODMACommand *dmaCmd;
-    UInt64 offset;
-//    IOMbufNaturalMemoryCursor*    mbufCursor;
-    
-//    IOBufferMemoryDescriptor    *bufDes;
-//    int                 mult_page_index;
-//    int                 mult_page_num;
-//    struct mult_page    *mult_page;
-//    struct single_page  single_page;
-    
-//    IOPhysicalSegment    seg;
-    dma_addr_t        paddr;
-    caddr_t            vaddr;
-//    uint32_t        size;
+    UInt64                      offset;
+    dma_addr_t                  paddr;
+    caddr_t                     vaddr;
 };
 
 #define free_pages(a,b)

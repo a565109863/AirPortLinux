@@ -23,6 +23,8 @@ int _start(struct kmod_info*, void*) {
 //struct ifnet *_ifp;
 struct pci_dev *_pdev;
 
+int logType = 0;
+
 bool AirPortLinux::init(OSDictionary* parameters) {
     IOLog("AirPortLinux: Init");
     

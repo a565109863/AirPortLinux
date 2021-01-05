@@ -1558,7 +1558,6 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *trans,
 		copy_size = sizeof(struct iwl_cmd_header);
 		cmd_size = sizeof(struct iwl_cmd_header);
 	}
-    kprintf("--%s: line = %d, cmd_size = %d", __FUNCTION__, __LINE__, cmd_size);
 
 	/* need one for the header if the first is NOCOPY */
 	BUILD_BUG_ON(IWL_MAX_CMD_TBS_PER_TFD > IWL_NUM_OF_TBS - 1);
@@ -1605,8 +1604,6 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *trans,
 			if (!dup_buf)
 				return -ENOMEM;
             
-            kprintf("--%s: line = %d, dup_buf == cmddata[%d] = %d", __FUNCTION__, __LINE__, i, memcmp(dup_buf, cmddata[i], cmdlen[i]));
-            
 		} else {
 			/* NOCOPY must not be followed by normal! */
 			if (WARN_ON(had_nocopy)) {
@@ -1616,10 +1613,8 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *trans,
 			copy_size += cmdlen[i];
 		}
 		cmd_size += cmd->len[i];
-        kprintf("--%s: line = %d, cmd_size = %d", __FUNCTION__, __LINE__, cmd_size);
 	}
 
-    kprintf("--%s: line = %d, cmd_size = %d", __FUNCTION__, __LINE__, cmd_size);
 	/*
 	 * If any of the command structures end up being larger than
 	 * the TFD_MAX_PAYLOAD_SIZE and they aren't dynamically
@@ -1727,14 +1722,12 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *trans,
 	/* start the TFD with the minimum copy bytes */
 	tb0_size = min_t(int, copy_size, IWL_FIRST_TB_SIZE);
 	memcpy(&txq->first_tb_bufs[idx], &out_cmd->hdr, tb0_size);
-    kprintf("--%s: line = %d, tb0_size = %d", __FUNCTION__, __LINE__, tb0_size);
 	iwl_pcie_txq_build_tfd(trans, txq,
 			       iwl_pcie_get_first_tb_dma(txq, idx),
 			       tb0_size, true);
 
 	/* map first command fragment, if any remains */
 	if (copy_size > tb0_size) {
-        kprintf("--%s: line = %d, cmd_size = %d", __FUNCTION__, __LINE__, cmd_size);
 		phys_addr = (dma_addr_t)dma_map_single(trans->dev,
 					   ((u8 *)&out_cmd->hdr) + tb0_size,
 					   copy_size - tb0_size,
@@ -1761,7 +1754,6 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *trans,
 			continue;
 		if (cmd->dataflags[i] & IWL_HCMD_DFL_DUP)
 			data = dup_buf;
-        kprintf("--%s: line = %d, cmdlen[%d] = %d", __FUNCTION__, __LINE__, i, cmdlen[i]);
 		phys_addr = (dma_addr_t)dma_map_single(trans->dev, (void *)data,
 					   cmdlen[i], DMA_TO_DEVICE);
 		if (dma_mapping_error(trans->dev, phys_addr)) {
@@ -1784,7 +1776,6 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *trans,
 
 	/* start timer if queue currently empty */
     if (txq->read_ptr == txq->write_ptr && txq->wd_timeout) {
-        kprintf("--%s: line = %d, cmd_size = %d", __FUNCTION__, __LINE__, cmd_size);
 		mod_timer(&txq->stuck_timer, jiffies + txq->wd_timeout);
     }
 
@@ -1817,7 +1808,6 @@ static int iwl_pcie_enqueue_hcmd(struct iwl_trans *trans,
 void iwl_pcie_hcmd_complete(struct iwl_trans *trans,
 			    struct iwl_rx_cmd_buffer *rxb)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
 	u16 sequence = le16_to_cpu(pkt->hdr.sequence);
 	u8 group_id;

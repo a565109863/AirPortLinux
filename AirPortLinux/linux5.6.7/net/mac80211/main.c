@@ -67,13 +67,13 @@ void ieee80211_configure_filter(struct ieee80211_local *local)
     spin_lock_bh(&local->filter_lock);
     changed_flags = local->filter_flags ^ new_flags;
 
-//    mc = drv_prepare_multicast(local, &local->mc_list);
+    mc = drv_prepare_multicast(local, &local->mc_list);
     spin_unlock_bh(&local->filter_lock);
 
     /* be a bit nasty */
     new_flags |= (1<<31);
 
-//    drv_configure_filter(local, changed_flags, &new_flags, mc);
+    drv_configure_filter(local, changed_flags, &new_flags, mc);
 
     WARN_ON(new_flags & (1<<31));
 
@@ -141,13 +141,13 @@ static u32 ieee80211_hw_conf_chan(struct ieee80211_local *local)
     power = ieee80211_chandef_max_power(&chandef);
 
     rcu_read_lock();
-//    list_for_each_entry_rcu(sdata, &local->interfaces, list) {
-//        if (!rcu_access_pointer(sdata->vif.chanctx_conf))
-//            continue;
-//        if (sdata->vif.type == NL80211_IFTYPE_AP_VLAN)
-//            continue;
-//        power = min(power, sdata->vif.bss_conf.txpower);
-//    }
+    list_for_each_entry_rcu(sdata, &local->interfaces, list) {
+        if (!rcu_access_pointer(sdata->vif.chanctx_conf))
+            continue;
+        if (sdata->vif.type == NL80211_IFTYPE_AP_VLAN)
+            continue;
+        power = min(power, sdata->vif.bss_conf.txpower);
+    }
     rcu_read_unlock();
 
     if (local->hw.conf.power_level != power) {
@@ -200,7 +200,7 @@ void ieee80211_bss_info_change_notify(struct ieee80211_sub_if_data *sdata,
     if (!changed || sdata->vif.type == NL80211_IFTYPE_AP_VLAN)
         return;
 
-//    drv_bss_info_changed(local, sdata, &sdata->vif.bss_conf, changed);
+    drv_bss_info_changed(local, sdata, &sdata->vif.bss_conf, changed);
 }
 
 u32 ieee80211_reset_erp_info(struct ieee80211_sub_if_data *sdata)
@@ -293,8 +293,8 @@ void ieee80211_restart_hw(struct ieee80211_hw *hw)
 {
     struct ieee80211_local *local = hw_to_local(hw);
 
-//    trace_api_restart_hw(local);
-//
+    trace_api_restart_hw(local);
+
 //    wiphy_info(hw->wiphy,
 //           "Hardware restart was requested\n");
 
@@ -310,7 +310,7 @@ void ieee80211_restart_hw(struct ieee80211_hw *hw)
     local->in_reconfig = true;
     barrier();
 
-//    queue_work(system_freezable_wq, &local->restart_work);
+    queue_work(system_freezable_wq, &local->restart_work);
 }
 EXPORT_SYMBOL(ieee80211_restart_hw);
 
@@ -654,7 +654,7 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
     INIT_LIST_HEAD(&local->interfaces);
     INIT_LIST_HEAD(&local->mon_list);
 
-//    __hw_addr_init(&local->mc_list);
+    __hw_addr_init(&local->mc_list);
 
     mutex_init(&local->iflist_mtx);
     mutex_init(&local->mtx);
@@ -722,7 +722,7 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
     skb_queue_head_init(&local->skb_queue_unreliable);
     skb_queue_head_init(&local->skb_queue_tdls_chsw);
 
-//    ieee80211_alloc_led_names(local);
+    ieee80211_alloc_led_names(local);
 
     ieee80211_roc_setup(local);
 
@@ -1304,7 +1304,7 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
     rtnl_unlock();
  fail_rate:
  fail_flows:
-//    ieee80211_led_exit(local);
+    ieee80211_led_exit(local);
     destroy_workqueue(local->workqueue);
  fail_workqueue:
     if (local->wiphy_ciphers_allocated)
@@ -1349,16 +1349,16 @@ void ieee80211_unregister_hw(struct ieee80211_hw *hw)
     ieee80211_clear_tx_pending(local);
     rate_control_deinitialize(local);
 
-//    if (skb_queue_len(&local->skb_queue) ||
-//        skb_queue_len(&local->skb_queue_unreliable))
-//        wiphy_warn(local->hw.wiphy, "skb_queue not empty\n");
-//    skb_queue_purge(&local->skb_queue);
-//    skb_queue_purge(&local->skb_queue_unreliable);
-//    skb_queue_purge(&local->skb_queue_tdls_chsw);
+    if (skb_queue_len(&local->skb_queue) ||
+        skb_queue_len(&local->skb_queue_unreliable))
+        wiphy_warn(local->hw.wiphy, "skb_queue not empty\n");
+    skb_queue_purge(&local->skb_queue);
+    skb_queue_purge(&local->skb_queue_unreliable);
+    skb_queue_purge(&local->skb_queue_tdls_chsw);
 
     wiphy_unregister(local->hw.wiphy);
     destroy_workqueue(local->workqueue);
-//    ieee80211_led_exit(local);
+    ieee80211_led_exit(local);
     kfree(local->int_scan_req);
 }
 EXPORT_SYMBOL(ieee80211_unregister_hw);
@@ -1387,7 +1387,7 @@ void ieee80211_free_hw(struct ieee80211_hw *hw)
 
     sta_info_stop(local);
 
-//    ieee80211_free_led_names(local);
+    ieee80211_free_led_names(local);
 
     for (band = 0; band < NUM_NL80211_BANDS; band++) {
         if (!(local->sband_allocated & BIT(band)))

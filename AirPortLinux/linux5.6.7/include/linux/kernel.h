@@ -25,6 +25,10 @@
 #define KERN_DEBUG 0
 #define __KERNEL__ 1
 
+
+#define NOTIFY_DONE        0x0000        /* Don't care */
+#define NOTIFY_OK        0x0001        /* Suits me */
+
 #define    NUMA_NO_NODE    (-1)
 typedef unsigned int __wsum;
 
@@ -165,7 +169,7 @@ static inline void kfree(const void *p)
 //    if (p >= __kfree_ignore_start && p < __kfree_ignore_end)
 //        return;
 //    free(p);
-    p = NULL;
+//    p = NULL;
 }
 
 

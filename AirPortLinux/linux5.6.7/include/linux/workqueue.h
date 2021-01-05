@@ -154,6 +154,7 @@ struct work_struct {
     atomic_long_t data;
     struct list_head entry;
     work_func_t func;
+    char *func_name;
 #ifdef CONFIG_LOCKDEP
     struct lockdep_map lockdep_map;
 #endif
@@ -344,6 +345,7 @@ static inline void __init_work(struct work_struct *work, int onstack) { }
         (_work)->data = (atomic_long_t) WORK_DATA_INIT();    \
         INIT_LIST_HEAD(&(_work)->entry);            \
         (_work)->func = (_func);                \
+        (_work)->func_name = #_func;                \
     } while (0)
 
 #define INIT_WORK(_work, _func)                        \
@@ -386,8 +388,13 @@ static bool schedule_delayed_work(struct delayed_work *dwork,
     return queue_delayed_work(NULL, dwork, delay);
 }
 
-
 extern struct workqueue_struct *system_wq;
+//extern struct workqueue_struct *system_highpri_wq;
+//extern struct workqueue_struct *system_long_wq;
+//extern struct workqueue_struct *system_unbound_wq;
+extern struct workqueue_struct *system_freezable_wq;
+//extern struct workqueue_struct *system_power_efficient_wq;
+//extern struct workqueue_struct *system_freezable_power_efficient_wq;
 
 bool mod_delayed_work_on(int cpu, struct workqueue_struct *wq,
             struct delayed_work *dwork, unsigned long delay);

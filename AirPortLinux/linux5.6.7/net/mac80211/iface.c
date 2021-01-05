@@ -489,7 +489,8 @@ void ieee80211_del_virtual_monitor(struct ieee80211_local *local)
 int ieee80211_do_open(struct wireless_dev *wdev, bool coming_up)
 {
     struct ieee80211_sub_if_data *sdata = IEEE80211_WDEV_TO_SUB_IF(wdev);
-    struct net_device *dev = wdev->netdev;
+//    struct net_device *dev = wdev->netdev;
+    struct net_device *dev = sdata->dev;
     struct ieee80211_local *local = sdata->local;
     struct sta_info *sta;
     u32 changed = 0;

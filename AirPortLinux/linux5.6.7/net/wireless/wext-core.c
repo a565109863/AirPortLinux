@@ -1189,3 +1189,21 @@ char *iwe_stream_add_value(struct iw_request_info *info, char *event,
     return value;
 }
 EXPORT_SYMBOL(iwe_stream_add_value);
+
+
+/* IW event code */
+
+void wireless_nlevent_flush(void)
+{
+    struct sk_buff *skb;
+    struct net *net;
+    
+//    down_read(&net_rwsem);
+//    for_each_net(net) {
+//        while ((skb = skb_dequeue(&net->wext_nlevents)))
+//            rtnl_notify(skb, net, 0, RTNLGRP_LINK, NULL,
+//                        GFP_KERNEL);
+//    }
+//    up_read(&net_rwsem);
+}
+EXPORT_SYMBOL_GPL(wireless_nlevent_flush);

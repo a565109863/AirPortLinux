@@ -643,6 +643,8 @@ static int wiphy_verify_combinations(struct wiphy *wiphy)
     return 0;
 }
 
+static int __init cfg80211_init(void);
+
 int wiphy_register(struct wiphy *wiphy)
 {
     struct cfg80211_registered_device *rdev = wiphy_to_rdev(wiphy);
@@ -954,6 +956,8 @@ int wiphy_register(struct wiphy *wiphy)
 //        wiphy_unregister(&rdev->wiphy);
 //        return res;
 //    }
+    
+//    cfg80211_init();
 
     return 0;
 }
@@ -1258,175 +1262,173 @@ static int cfg80211_netdev_notifier_call(struct notifier_block *nb,
     struct cfg80211_registered_device *rdev;
     struct cfg80211_sched_scan_request *pos, *tmp;
     
-    return 0;
+    if (!wdev)
+        return NOTIFY_DONE;
 
-//    if (!wdev)
-//        return NOTIFY_DONE;
-//
-//    rdev = wiphy_to_rdev(wdev->wiphy);
-//
-//    WARN_ON(wdev->iftype == NL80211_IFTYPE_UNSPECIFIED);
-//
-//    switch (state) {
-//    case NETDEV_POST_INIT:
+    rdev = wiphy_to_rdev(wdev->wiphy);
+
+    WARN_ON(wdev->iftype == NL80211_IFTYPE_UNSPECIFIED);
+
+    switch (state) {
+    case NETDEV_POST_INIT:
 //        SET_NETDEV_DEVTYPE(dev, &wiphy_type);
-//        break;
-//    case NETDEV_REGISTER:
-//        /*
-//         * NB: cannot take rdev->mtx here because this may be
-//         * called within code protected by it when interfaces
-//         * are added with nl80211.
-//         */
-//        /* can only change netns with wiphy */
-//        dev->features |= NETIF_F_NETNS_LOCAL;
-//
+        break;
+    case NETDEV_REGISTER:
+        /*
+         * NB: cannot take rdev->mtx here because this may be
+         * called within code protected by it when interfaces
+         * are added with nl80211.
+         */
+        /* can only change netns with wiphy */
+        dev->features |= NETIF_F_NETNS_LOCAL;
+
 //        if (sysfs_create_link(&dev->dev.kobj, &rdev->wiphy.dev.kobj,
 //                      "phy80211")) {
 //            pr_err("failed to add phy80211 symlink to netdev!\n");
 //        }
-//        wdev->netdev = dev;
-//#ifdef CONFIG_CFG80211_WEXT
-//        wdev->wext.default_key = -1;
-//        wdev->wext.default_mgmt_key = -1;
-//        wdev->wext.connect.auth_type = NL80211_AUTHTYPE_AUTOMATIC;
-//#endif
-//
-//        if (wdev->wiphy->flags & WIPHY_FLAG_PS_ON_BY_DEFAULT)
-//            wdev->ps = true;
-//        else
-//            wdev->ps = false;
-//        /* allow mac80211 to determine the timeout */
-//        wdev->ps_timeout = -1;
-//
-//        if ((wdev->iftype == NL80211_IFTYPE_STATION ||
-//             wdev->iftype == NL80211_IFTYPE_P2P_CLIENT ||
-//             wdev->iftype == NL80211_IFTYPE_ADHOC) && !wdev->use_4addr)
-//            dev->priv_flags |= IFF_DONT_BRIDGE;
-//
-//        INIT_WORK(&wdev->disconnect_wk, cfg80211_autodisconnect_wk);
-//
-//        cfg80211_init_wdev(rdev, wdev);
-//        break;
-//    case NETDEV_GOING_DOWN:
-//        cfg80211_leave(rdev, wdev);
-//        break;
-//    case NETDEV_DOWN:
-//        cfg80211_update_iface_num(rdev, wdev->iftype, -1);
-//        if (rdev->scan_req && rdev->scan_req->wdev == wdev) {
-//            if (WARN_ON(!rdev->scan_req->notified))
-//                rdev->scan_req->info.aborted = true;
-//            ___cfg80211_scan_done(rdev, false);
-//        }
-//
-//        list_for_each_entry_safe(pos, tmp,
-//                     &rdev->sched_scan_req_list, list) {
-//            if (WARN_ON(pos->dev == wdev->netdev))
-//                cfg80211_stop_sched_scan_req(rdev, pos, false);
-//        }
-//
-//        rdev->opencount--;
-//        wake_up(&rdev->dev_wait);
-//        break;
-//    case NETDEV_UP:
-//        cfg80211_update_iface_num(rdev, wdev->iftype, 1);
-//        wdev_lock(wdev);
-//        switch (wdev->iftype) {
-//#ifdef CONFIG_CFG80211_WEXT
-//        case NL80211_IFTYPE_ADHOC:
-//            cfg80211_ibss_wext_join(rdev, wdev);
-//            break;
-//        case NL80211_IFTYPE_STATION:
-//            cfg80211_mgd_wext_connect(rdev, wdev);
-//            break;
-//#endif
-//#ifdef CONFIG_MAC80211_MESH
-//        case NL80211_IFTYPE_MESH_POINT:
-//            {
-//                /* backward compat code... */
-//                struct mesh_setup setup;
-//                memcpy(&setup, &default_mesh_setup,
-//                        sizeof(setup));
-//                 /* back compat only needed for mesh_id */
-//                setup.mesh_id = wdev->ssid;
-//                setup.mesh_id_len = wdev->mesh_id_up_len;
-//                if (wdev->mesh_id_up_len)
-//                    __cfg80211_join_mesh(rdev, dev,
-//                            &setup,
-//                            &default_mesh_config);
-//                break;
-//            }
-//#endif
-//        default:
-//            break;
-//        }
-//        wdev_unlock(wdev);
-//        rdev->opencount++;
-//
-//        /*
-//         * Configure power management to the driver here so that its
-//         * correctly set also after interface type changes etc.
-//         */
-//        if ((wdev->iftype == NL80211_IFTYPE_STATION ||
-//             wdev->iftype == NL80211_IFTYPE_P2P_CLIENT) &&
-//            rdev->ops->set_power_mgmt &&
-//            rdev_set_power_mgmt(rdev, dev, wdev->ps,
-//                    wdev->ps_timeout)) {
-//            /* assume this means it's off */
-//            wdev->ps = false;
-//        }
-//        break;
-//    case NETDEV_UNREGISTER:
-//        /*
-//         * It is possible to get NETDEV_UNREGISTER
-//         * multiple times. To detect that, check
-//         * that the interface is still on the list
-//         * of registered interfaces, and only then
-//         * remove and clean it up.
-//         */
-//        if (!list_empty(&wdev->list)) {
-//            __cfg80211_unregister_wdev(wdev, false);
+        wdev->netdev = dev;
+#ifdef CONFIG_CFG80211_WEXT
+        wdev->wext.default_key = -1;
+        wdev->wext.default_mgmt_key = -1;
+        wdev->wext.connect.auth_type = NL80211_AUTHTYPE_AUTOMATIC;
+#endif
+
+        if (wdev->wiphy->flags & WIPHY_FLAG_PS_ON_BY_DEFAULT)
+            wdev->ps = true;
+        else
+            wdev->ps = false;
+        /* allow mac80211 to determine the timeout */
+        wdev->ps_timeout = -1;
+
+        if ((wdev->iftype == NL80211_IFTYPE_STATION ||
+             wdev->iftype == NL80211_IFTYPE_P2P_CLIENT ||
+             wdev->iftype == NL80211_IFTYPE_ADHOC) && !wdev->use_4addr)
+            dev->priv_flags |= IFF_DONT_BRIDGE;
+
+        INIT_WORK(&wdev->disconnect_wk, cfg80211_autodisconnect_wk);
+
+        cfg80211_init_wdev(rdev, wdev);
+        break;
+    case NETDEV_GOING_DOWN:
+        cfg80211_leave(rdev, wdev);
+        break;
+    case NETDEV_DOWN:
+        cfg80211_update_iface_num(rdev, wdev->iftype, -1);
+        if (rdev->scan_req && rdev->scan_req->wdev == wdev) {
+            if (WARN_ON(!rdev->scan_req->notified))
+                rdev->scan_req->info.aborted = true;
+            ___cfg80211_scan_done(rdev, false);
+        }
+
+        list_for_each_entry_safe(pos, tmp,
+                     &rdev->sched_scan_req_list, list) {
+            if (WARN_ON(pos->dev == wdev->netdev))
+                cfg80211_stop_sched_scan_req(rdev, pos, false);
+        }
+
+        rdev->opencount--;
+        wake_up(&rdev->dev_wait);
+        break;
+    case NETDEV_UP:
+        cfg80211_update_iface_num(rdev, wdev->iftype, 1);
+        wdev_lock(wdev);
+        switch (wdev->iftype) {
+#ifdef CONFIG_CFG80211_WEXT
+        case NL80211_IFTYPE_ADHOC:
+            cfg80211_ibss_wext_join(rdev, wdev);
+            break;
+        case NL80211_IFTYPE_STATION:
+            cfg80211_mgd_wext_connect(rdev, wdev);
+            break;
+#endif
+#ifdef CONFIG_MAC80211_MESH
+        case NL80211_IFTYPE_MESH_POINT:
+            {
+                /* backward compat code... */
+                struct mesh_setup setup;
+                memcpy(&setup, &default_mesh_setup,
+                        sizeof(setup));
+                 /* back compat only needed for mesh_id */
+                setup.mesh_id = wdev->ssid;
+                setup.mesh_id_len = wdev->mesh_id_up_len;
+                if (wdev->mesh_id_up_len)
+                    __cfg80211_join_mesh(rdev, dev,
+                            &setup,
+                            &default_mesh_config);
+                break;
+            }
+#endif
+        default:
+            break;
+        }
+        wdev_unlock(wdev);
+        rdev->opencount++;
+
+        /*
+         * Configure power management to the driver here so that its
+         * correctly set also after interface type changes etc.
+         */
+        if ((wdev->iftype == NL80211_IFTYPE_STATION ||
+             wdev->iftype == NL80211_IFTYPE_P2P_CLIENT) &&
+            rdev->ops->set_power_mgmt &&
+            rdev_set_power_mgmt(rdev, dev, wdev->ps,
+                    wdev->ps_timeout)) {
+            /* assume this means it's off */
+            wdev->ps = false;
+        }
+        break;
+    case NETDEV_UNREGISTER:
+        /*
+         * It is possible to get NETDEV_UNREGISTER
+         * multiple times. To detect that, check
+         * that the interface is still on the list
+         * of registered interfaces, and only then
+         * remove and clean it up.
+         */
+        if (!list_empty(&wdev->list)) {
+            __cfg80211_unregister_wdev(wdev, false);
 //            sysfs_remove_link(&dev->dev.kobj, "phy80211");
-//        }
-//        /*
-//         * synchronise (so that we won't find this netdev
-//         * from other code any more) and then clear the list
-//         * head so that the above code can safely check for
-//         * !list_empty() to avoid double-cleanup.
-//         */
-//        synchronize_rcu();
-//        INIT_LIST_HEAD(&wdev->list);
-//        /*
-//         * Ensure that all events have been processed and
-//         * freed.
-//         */
-//        cfg80211_process_wdev_events(wdev);
-//
-//        if (WARN_ON(wdev->current_bss)) {
-//            cfg80211_unhold_bss(wdev->current_bss);
-//            cfg80211_put_bss(wdev->wiphy, &wdev->current_bss->pub);
-//            wdev->current_bss = NULL;
-//        }
-//        break;
-//    case NETDEV_PRE_UP:
+        }
+        /*
+         * synchronise (so that we won't find this netdev
+         * from other code any more) and then clear the list
+         * head so that the above code can safely check for
+         * !list_empty() to avoid double-cleanup.
+         */
+        synchronize_rcu();
+        INIT_LIST_HEAD(&wdev->list);
+        /*
+         * Ensure that all events have been processed and
+         * freed.
+         */
+        cfg80211_process_wdev_events(wdev);
+
+        if (WARN_ON(wdev->current_bss)) {
+            cfg80211_unhold_bss(wdev->current_bss);
+            cfg80211_put_bss(wdev->wiphy, &wdev->current_bss->pub);
+            wdev->current_bss = NULL;
+        }
+        break;
+    case NETDEV_PRE_UP:
 //        if (!cfg80211_iftype_allowed(wdev->wiphy, wdev->iftype,
 //                         wdev->use_4addr, 0))
 //            return notifier_from_errno(-EOPNOTSUPP);
 //
 //        if (rfkill_blocked(rdev->rfkill))
 //            return notifier_from_errno(-ERFKILL);
-//        break;
-//    default:
-//        return NOTIFY_DONE;
-//    }
-//
-//    wireless_nlevent_flush();
-//
-//    return NOTIFY_OK;
+        break;
+    default:
+        return NOTIFY_DONE;
+    }
+
+    wireless_nlevent_flush();
+
+    return NOTIFY_OK;
 }
 
-//struct notifier_block cfg80211_netdev_notifier = {
-//    .notifier_call = cfg80211_netdev_notifier_call,
-//};
+struct notifier_block cfg80211_netdev_notifier = {
+    .notifier_call = cfg80211_netdev_notifier_call,
+};
 
 static void cfg80211_pernet_exit(struct net *net)
 {
@@ -1456,10 +1458,10 @@ static int __init cfg80211_init(void)
 //    err = wiphy_sysfs_init();
 //    if (err)
 //        goto out_fail_sysfs;
-//
-//    err = register_netdevice_notifier(&cfg80211_netdev_notifier);
-//    if (err)
-//        goto out_fail_notifier;
+
+    err = register_netdevice_notifier(&cfg80211_netdev_notifier);
+    if (err)
+        goto out_fail_notifier;
 //
 //    err = nl80211_init();
 //    if (err)
@@ -1486,12 +1488,12 @@ static int __init cfg80211_init(void)
 //    nl80211_exit();
 //out_fail_nl80211:
 //    unregister_netdevice_notifier(&cfg80211_netdev_notifier);
-//out_fail_notifier:
+out_fail_notifier:
 //    wiphy_sysfs_exit();
 //out_fail_sysfs:
 //    unregister_pernet_device(&cfg80211_pernet_ops);
 //out_fail_pernet:
-//    return err;
+    return err;
 }
 //fs_initcall(cfg80211_init);
 

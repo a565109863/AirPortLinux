@@ -3754,6 +3754,7 @@ EXPORT_SYMBOL(regulatory_set_wiphy_regd);
 int regulatory_set_wiphy_regd_sync_rtnl(struct wiphy *wiphy,
                     struct ieee80211_regdomain *rd)
 {
+    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
     int ret;
 
     ASSERT_RTNL();
