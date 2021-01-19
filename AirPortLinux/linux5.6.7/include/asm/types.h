@@ -371,7 +371,7 @@ static inline __u64 __be64_to_cpup(const __be64 *p)
 #define CONFIG_IWLDVM   1
 #define CONFIG_IWLMVM   1
 #define CONFIG_CFG80211 1
-#define CONFIG_ACPI     1
+//#define CONFIG_ACPI     1
 
 #define IS_ENABLED(x) (x)
 
@@ -457,8 +457,14 @@ static inline int __must_check PTR_ERR_OR_ZERO(__force const void *ptr)
 
 #define IRQF_SHARED 0
 
-#define dev_err(dev, format...) kprintf(format)
-#define dev_warn(dev, format...) kprintf(format)
+#define dev_printk(level, dev, format...)  kprintf(format)
+#define dev_emerg(dev, format...)   kprintf(format)
+#define dev_alert(dev, format...)   kprintf(format)
+#define dev_crit(dev, format...)    kprintf(format)
+#define dev_err(dev, format...)     kprintf(format)
+#define dev_warn(dev, format...)    kprintf(format)
+#define dev_notice(dev, format...)  kprintf(format)
+#define dev_info(dev, format...)    kprintf(format)
 #define ksize(x) sizeof(&x)
 
 

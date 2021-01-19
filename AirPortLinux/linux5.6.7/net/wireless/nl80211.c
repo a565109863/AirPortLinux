@@ -24,7 +24,7 @@
 #include <net/net_namespace.h>
 #include <net/genetlink.h>
 #include <net/cfg80211.h>
-//#include <net/sock.h>
+#include <net/sock.h>
 //#include <net/inet_connection_sock.h>
 #include "core.h"
 #include "nl80211.h"
@@ -134,7 +134,7 @@ __cfg80211_rdev_from_attrs(struct net *netns, struct nlattr **attrs)
                 nla_get_u32(attrs[NL80211_ATTR_WIPHY]));
 
     if (attrs[NL80211_ATTR_WDEV]) {
-        u64 wdev_id = 1;// nla_get_u64(attrs[NL80211_ATTR_WDEV]);
+        u64 wdev_id = nla_get_u64(attrs[NL80211_ATTR_WDEV]);
         struct wireless_dev *wdev;
         bool found = false;
 
@@ -158,9 +158,9 @@ __cfg80211_rdev_from_attrs(struct net *netns, struct nlattr **attrs)
     }
 
     if (attrs[NL80211_ATTR_IFINDEX]) {
-        int ifindex = 1;// nla_get_u32(attrs[NL80211_ATTR_IFINDEX]);
+        int ifindex = nla_get_u32(attrs[NL80211_ATTR_IFINDEX]);
 
-        netdev = NULL;// __dev_get_by_index(netns, ifindex);
+        netdev = __dev_get_by_index(netns, ifindex);
         if (netdev) {
             if (netdev->ieee80211_ptr)
                 tmp = wiphy_to_rdev(
@@ -199,15 +199,14 @@ __cfg80211_rdev_from_attrs(struct net *netns, struct nlattr **attrs)
 static struct cfg80211_registered_device *
 cfg80211_get_dev_from_info(struct net *netns, struct genl_info *info)
 {
-//    return __cfg80211_rdev_from_attrs(netns, info->attrs);
-    return NULL;
+    return __cfg80211_rdev_from_attrs(netns, info->attrs);
 }
 
 static int validate_beacon_head(const struct nlattr *attr,
                 struct netlink_ext_ack *extack)
 {
-    const u8 *data = NULL;// nla_data(attr);
-    unsigned int len = 0;// nla_len(attr);
+    const u8 *data = (const u8 *)nla_data(attr);
+    unsigned int len = nla_len(attr);
     const struct element *elem;
     const struct ieee80211_mgmt *mgmt = (const struct ieee80211_mgmt *)data;
     unsigned int fixedlen = offsetof(struct ieee80211_mgmt,
@@ -231,15 +230,15 @@ static int validate_beacon_head(const struct nlattr *attr,
         return 0;
 
 err:
-//    NL_SET_ERR_MSG_ATTR(extack, attr, "malformed beacon head");
+    NL_SET_ERR_MSG_ATTR(extack, attr, "malformed beacon head");
     return -EINVAL;
 }
 
 static int validate_ie_attr(const struct nlattr *attr,
                 struct netlink_ext_ack *extack)
 {
-    const u8 *data = NULL;// nla_data(attr);
-    unsigned int len = 0;// nla_len(attr);
+    const u8 *data = (const u8 *)nla_data(attr);
+    unsigned int len = nla_len(attr);
     const struct element *elem;
 
     for_each_element(elem, data, len) {
@@ -249,7 +248,7 @@ static int validate_ie_attr(const struct nlattr *attr,
     if (for_each_element_completed(elem, data, len))
         return 0;
 
-//    NL_SET_ERR_MSG_ATTR(extack, attr, "malformed information elements");
+    NL_SET_ERR_MSG_ATTR(extack, attr, "malformed information elements");
     return -EINVAL;
 }
 
@@ -823,8 +822,8 @@ int nl80211_prepare_wdev_dump(struct netlink_callback *cb,
             return err;
         }
 
-//        *wdev = __cfg80211_wdev_from_attrs(sock_net(cb->skb->sk),
-//                           attrbuf);
+        *wdev = __cfg80211_wdev_from_attrs(sock_net(cb->skb->sk),
+                           attrbuf);
         kfree(attrbuf);
         if (IS_ERR(*wdev))
             return PTR_ERR(*wdev);
@@ -2492,16 +2491,16 @@ static int nl80211_dump_wiphy_parse(struct sk_buff *skb,
         struct cfg80211_registered_device *rdev;
         int ifidx = nla_get_u32(tb[NL80211_ATTR_IFINDEX]);
 
-//        netdev = __dev_get_by_index(sock_net(skb->sk), ifidx);
-//        if (!netdev) {
-//            ret = -ENODEV;
-//            goto out;
-//        }
-//        if (netdev->ieee80211_ptr) {
-//            rdev = wiphy_to_rdev(
-//                netdev->ieee80211_ptr->wiphy);
-//            state->filter_wiphy = rdev->wiphy_idx;
-//        }
+        netdev = __dev_get_by_index(sock_net(skb->sk), ifidx);
+        if (!netdev) {
+            ret = -ENODEV;
+            goto out;
+        }
+        if (netdev->ieee80211_ptr) {
+            rdev = wiphy_to_rdev(
+                netdev->ieee80211_ptr->wiphy);
+            state->filter_wiphy = rdev->wiphy_idx;
+        }
     }
 
     ret = 0;
@@ -2513,7 +2512,7 @@ out:
 static int nl80211_dump_wiphy(struct sk_buff *skb, struct netlink_callback *cb)
 {
     int idx = 0, ret;
-    struct nl80211_dump_wiphy_state *state = NULL; // (void *)cb->args[0];
+    struct nl80211_dump_wiphy_state *state = (struct nl80211_dump_wiphy_state *)cb->args[0];
     struct cfg80211_registered_device *rdev;
 
     rtnl_lock();
@@ -2534,8 +2533,8 @@ static int nl80211_dump_wiphy(struct sk_buff *skb, struct netlink_callback *cb)
     }
 
     list_for_each_entry(rdev, &cfg80211_rdev_list, list) {
-//        if (!net_eq(wiphy_net(&rdev->wiphy), sock_net(skb->sk)))
-//            continue;
+        if (!net_eq(wiphy_net(&rdev->wiphy), sock_net(skb->sk)))
+            continue;
         if (++idx <= state->start)
             continue;
         if (state->filter_wiphy != -1 &&
@@ -3283,7 +3282,7 @@ static int nl80211_send_iface(struct sk_buff *msg, u32 portid, u32 seq, int flag
  nla_put_failure_locked:
     wdev_unlock(wdev);
  nla_put_failure:
-//    genlmsg_cancel(msg, hdr);
+    genlmsg_cancel(msg, hdr);
     return -EMSGSIZE;
 }
 
@@ -3323,8 +3322,8 @@ static int nl80211_dump_interface(struct sk_buff *skb, struct netlink_callback *
     }
 
     list_for_each_entry(rdev, &cfg80211_rdev_list, list) {
-//        if (!net_eq(wiphy_net(&rdev->wiphy), sock_net(skb->sk)))
-//            continue;
+        if (!net_eq(wiphy_net(&rdev->wiphy), sock_net(skb->sk)))
+            continue;
         if (wp_idx < wp_start) {
             wp_idx++;
             continue;
@@ -7515,6 +7514,7 @@ nl80211_check_scan_flags(struct wiphy *wiphy, struct wireless_dev *wdev,
 
 static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct cfg80211_registered_device *rdev = (struct cfg80211_registered_device *)info->user_ptr[0];
     struct wireless_dev *wdev = (struct wireless_dev *)info->user_ptr[1];
     struct cfg80211_scan_request *request;
@@ -7525,17 +7525,21 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
 
     wiphy = &rdev->wiphy;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (wdev->iftype == NL80211_IFTYPE_NAN)
         return -EOPNOTSUPP;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!rdev->ops->scan)
         return -EOPNOTSUPP;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (rdev->scan_req || rdev->scan_msg) {
         err = -EBUSY;
         goto unlock;
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (info->attrs[NL80211_ATTR_SCAN_FREQUENCIES]) {
         n_channels = validate_scan_freqs(
                 info->attrs[NL80211_ATTR_SCAN_FREQUENCIES]);
@@ -7547,25 +7551,30 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
         n_channels = ieee80211_get_num_supported_channels(wiphy);
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (info->attrs[NL80211_ATTR_SCAN_SSIDS])
         nla_for_each_nested(attr, info->attrs[NL80211_ATTR_SCAN_SSIDS], tmp)
             n_ssids++;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (n_ssids > wiphy->max_scan_ssids) {
         err = -EINVAL;
         goto unlock;
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (info->attrs[NL80211_ATTR_IE])
         ie_len = nla_len(info->attrs[NL80211_ATTR_IE]);
     else
         ie_len = 0;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (ie_len > wiphy->max_scan_ie_len) {
         err = -EINVAL;
         goto unlock;
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     request = (struct cfg80211_scan_request *)kzalloc(sizeof(*request)
             + sizeof(*request->ssids) * n_ssids
             + sizeof(*request->channels) * n_channels
@@ -7575,6 +7584,7 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
         goto unlock;
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (n_ssids)
         request->ssids = (struct cfg80211_ssid *)&request->channels[n_channels];
     request->n_ssids = n_ssids;
@@ -7585,6 +7595,7 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
             request->ie = (const u8 *)(request->channels + n_channels);
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     i = 0;
     if (info->attrs[NL80211_ATTR_SCAN_FREQUENCIES]) {
         /* user specified, bail out if channel not found */
@@ -7628,6 +7639,7 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
         }
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!i) {
         err = -EINVAL;
         goto out_free;
@@ -7635,6 +7647,7 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
 
     request->n_channels = i;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     wdev_lock(wdev);
     if (!cfg80211_off_channel_oper_allowed(wdev)) {
         struct ieee80211_channel *chan;
@@ -7654,6 +7667,7 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
     }
     wdev_unlock(wdev);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     i = 0;
     if (n_ssids) {
         nla_for_each_nested(attr, info->attrs[NL80211_ATTR_SCAN_SSIDS], tmp) {
@@ -7667,6 +7681,7 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
         }
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (info->attrs[NL80211_ATTR_IE]) {
         request->ie_len = nla_len(info->attrs[NL80211_ATTR_IE]);
         memcpy((void *)request->ie,
@@ -7674,11 +7689,13 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
                request->ie_len);
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     for (i = 0; i < NUM_NL80211_BANDS; i++)
         if (wiphy->bands[i])
             request->rates[i] =
                 (1 << wiphy->bands[i]->n_bitrates) - 1;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (info->attrs[NL80211_ATTR_SCAN_SUPP_RATES]) {
         nla_for_each_nested(attr,
                     info->attrs[NL80211_ATTR_SCAN_SUPP_RATES],
@@ -7702,6 +7719,7 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
         }
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (info->attrs[NL80211_ATTR_MEASUREMENT_DURATION]) {
         if (!wiphy_ext_feature_isset(wiphy,
                     NL80211_EXT_FEATURE_SET_SCAN_DWELL)) {
@@ -7715,11 +7733,13 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
             nla_get_flag(info->attrs[NL80211_ATTR_MEASUREMENT_DURATION_MANDATORY]);
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     err = nl80211_check_scan_flags(wiphy, wdev, request, info->attrs,
                        false);
     if (err)
         goto out_free;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     request->no_cck =
         nla_get_flag(info->attrs[NL80211_ATTR_TX_NO_CCK_RATE]);
 
@@ -7742,13 +7762,16 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
     else
         eth_broadcast_addr(request->bssid);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     request->wdev = wdev;
     request->wiphy = &rdev->wiphy;
     request->scan_start = jiffies;
 
     rdev->scan_req = request;
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     err = rdev_scan(rdev, request);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!err) {
         nl80211_send_scan_start(rdev, wdev);
         if (wdev->netdev)
@@ -10260,11 +10283,11 @@ static int nl80211_wiphy_netns(struct sk_buff *skb, struct genl_info *info)
 
     err = 0;
 
-//    /* check if anything to do */
-//    if (!net_eq(wiphy_net(&rdev->wiphy), net))
-//        err = cfg80211_switch_netns(rdev, net);
-//
-//    put_net(net);
+    /* check if anything to do */
+    if (!net_eq(wiphy_net(&rdev->wiphy), net))
+        err = cfg80211_switch_netns(rdev, net);
+
+    put_net(net);
     return err;
 }
 
@@ -13040,11 +13063,11 @@ static int nl80211_prepare_vendor_dump(struct sk_buff *skb,
         goto out;
     }
 
-//    *wdev = __cfg80211_wdev_from_attrs(sock_net(skb->sk), attrbuf);
+    *wdev = __cfg80211_wdev_from_attrs(sock_net(skb->sk), attrbuf);
     if (IS_ERR(*wdev))
         *wdev = NULL;
 
-//    *rdev = __cfg80211_rdev_from_attrs(sock_net(skb->sk), attrbuf);
+    *rdev = __cfg80211_rdev_from_attrs(sock_net(skb->sk), attrbuf);
     if (IS_ERR(*rdev)) {
         err = PTR_ERR(*rdev);
         goto out;
@@ -13825,6 +13848,7 @@ static int nl80211_probe_mesh_link(struct sk_buff *skb, struct genl_info *info)
 static int nl80211_pre_doit(const struct genl_ops *ops, struct sk_buff *skb,
                 struct genl_info *info)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct cfg80211_registered_device *rdev;
     struct wireless_dev *wdev;
     struct net_device *dev;
@@ -13834,7 +13858,9 @@ static int nl80211_pre_doit(const struct genl_ops *ops, struct sk_buff *skb,
         rtnl_lock();
 
     if (ops->internal_flags & NL80211_FLAG_NEED_WIPHY) {
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         rdev = cfg80211_get_dev_from_info(genl_info_net(info), info);
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         if (IS_ERR(rdev)) {
             if (rtnl)
                 rtnl_unlock();
@@ -13844,40 +13870,51 @@ static int nl80211_pre_doit(const struct genl_ops *ops, struct sk_buff *skb,
     } else if (ops->internal_flags & NL80211_FLAG_NEED_NETDEV ||
            ops->internal_flags & NL80211_FLAG_NEED_WDEV) {
         ASSERT_RTNL();
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 
         wdev = __cfg80211_wdev_from_attrs(genl_info_net(info),
                           info->attrs);
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         if (IS_ERR(wdev)) {
             if (rtnl)
                 rtnl_unlock();
             return PTR_ERR(wdev);
         }
-
+        
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         dev = wdev->netdev;
         rdev = wiphy_to_rdev(wdev->wiphy);
-
+        
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         if (ops->internal_flags & NL80211_FLAG_NEED_NETDEV) {
+            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
             if (!dev) {
                 if (rtnl)
                     rtnl_unlock();
                 return -EINVAL;
             }
-
+            
+            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
             info->user_ptr[1] = dev;
         } else {
+            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
             info->user_ptr[1] = wdev;
         }
-
+        
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         if (ops->internal_flags & NL80211_FLAG_CHECK_NETDEV_UP &&
             !wdev_running(wdev)) {
+            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
             if (rtnl)
                 rtnl_unlock();
             return -ENETDOWN;
         }
-
+        
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         if (dev)
             dev_hold(dev);
-
+        
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         info->user_ptr[0] = rdev;
     }
 
@@ -15179,8 +15216,8 @@ void cfg80211_rx_unprot_mlme_mgmt(struct net_device *dev, const u8 *buf,
         cmd = NL80211_CMD_UNPROT_DISASSOCIATE;
 
     trace_cfg80211_rx_unprot_mlme_mgmt(dev, buf, len);
-//    nl80211_send_mlme_event(rdev, dev, buf, len, cmd, GFP_ATOMIC, -1,
-//                NULL, 0);
+    nl80211_send_mlme_event(rdev, dev, buf, len, (enum nl80211_commands)cmd, GFP_ATOMIC, -1,
+                NULL, 0);
 }
 EXPORT_SYMBOL(cfg80211_rx_unprot_mlme_mgmt);
 
@@ -17013,18 +17050,18 @@ int __init nl80211_init(void)
 {
     int err;
 
-//    err = genl_register_family(&nl80211_fam);
-//    if (err)
-//        return err;
-//
+    err = genl_register_family(&nl80211_fam);
+    if (err)
+        return err;
+
 //    err = netlink_register_notifier(&nl80211_netlink_notifier);
 //    if (err)
 //        goto err_out;
-//
-//    return 0;
-// err_out:
-//    genl_unregister_family(&nl80211_fam);
-//    return err;
+
+    return 0;
+ err_out:
+    genl_unregister_family(&nl80211_fam);
+    return err;
     return 0;
 }
 

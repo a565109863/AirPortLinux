@@ -44,3 +44,17 @@ int wakeup_sleep(wait_queue_head_t *q, bool one)
     
     return 0;
 }
+
+
+static int
+try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+{
+    return 0;
+}
+
+int default_wake_function(wait_queue_entry_t *curr, unsigned mode, int wake_flags,
+                          void *key)
+{
+    return try_to_wake_up((struct task_struct *)curr->_private, mode, wake_flags);
+}
+EXPORT_SYMBOL(default_wake_function);

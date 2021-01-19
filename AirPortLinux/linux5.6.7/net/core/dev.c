@@ -13,6 +13,17 @@
 #include <net/rtnetlink.h>
 
 
+#define DEFINE_READ_MOSTLY_HASHTABLE(name, bits)                \
+    struct hlist_head name[1 << (bits)] __read_mostly =            \
+            { [0 ... ((1 << (bits)) - 1)] = HLIST_HEAD_INIT }
+
+
+#define HASH_SIZE(name) (ARRAY_SIZE(name))
+
+
+static unsigned int napi_gen_id = NR_CPUS;
+static DEFINE_READ_MOSTLY_HASHTABLE(napi_hash, 8);
+
 static int call_netdevice_notifiers_extack(unsigned long val,
                                            struct net_device *dev,
                                            struct netlink_ext_ack *extack);
@@ -1832,7 +1843,6 @@ static int call_netdevice_register_notifiers(struct notifier_block *nb,
                                              struct net_device *dev)
 {
     int err;
-    
     err = call_netdevice_notifier(nb, NETDEV_REGISTER, dev);
     err = notifier_to_errno(err);
     if (err)
@@ -1909,6 +1919,42 @@ static void flush_gro_hash(struct napi_struct *napi)
         kfree_skb(skb);
         napi->gro_hash[i].count = 0;
     }
+}
+
+
+/* must be called under rcu_read_lock(), as we dont take a reference */
+static struct napi_struct *napi_by_id(unsigned int napi_id)
+{
+    unsigned int hash = napi_id % HASH_SIZE(napi_hash);
+    struct napi_struct *napi;
+
+    hlist_for_each_entry_rcu(napi, &napi_hash[hash], napi_hash_node)
+        if (napi->napi_id == napi_id)
+            return napi;
+
+    return NULL;
+}
+
+
+static void napi_hash_add(struct napi_struct *napi)
+{
+    if (test_bit(NAPI_STATE_NO_BUSY_POLL, &napi->state) ||
+        test_and_set_bit(NAPI_STATE_HASHED, &napi->state))
+        return;
+
+//    spin_lock(&napi_hash_lock);
+
+    /* 0..NR_CPUS range is reserved for sender_cpu use */
+    do {
+        if (unlikely(++napi_gen_id < MIN_NAPI_ID))
+            napi_gen_id = MIN_NAPI_ID;
+    } while (napi_by_id(napi_gen_id));
+    napi->napi_id = napi_gen_id;
+
+    hlist_add_head_rcu(&napi->napi_hash_node,
+               &napi_hash[napi->napi_id % HASH_SIZE(napi_hash)]);
+
+//    spin_unlock(&napi_hash_lock);
 }
 
 /* Warning : caller is responsible to make sure rcu grace period
@@ -3498,3 +3544,54 @@ void netif_tx_wake_queue(struct netdev_queue *dev_queue)
     }
 }
 EXPORT_SYMBOL(netif_tx_wake_queue);
+
+
+void netif_napi_add(struct net_device *dev, struct napi_struct *napi,
+            int (*poll)(struct napi_struct *, int), int weight)
+{
+    INIT_LIST_HEAD(&napi->poll_list);
+//    hrtimer_init(&napi->timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_PINNED);
+//    napi->timer.function = napi_watchdog;
+//    init_gro_hash(napi);
+    napi->skb = NULL;
+    INIT_LIST_HEAD(&napi->rx_list);
+    napi->rx_count = 0;
+    napi->poll = poll;
+    if (weight > NAPI_POLL_WEIGHT)
+        netdev_err_once(dev, "%s() called with weight %d\n", __func__,
+                weight);
+    napi->weight = weight;
+    list_add(&napi->dev_list, &dev->napi_list);
+    napi->dev = dev;
+#ifdef CONFIG_NETPOLL
+    napi->poll_owner = -1;
+#endif
+    set_bit(NAPI_STATE_SCHED, &napi->state);
+    napi_hash_add(napi);
+}
+EXPORT_SYMBOL(netif_napi_add);
+
+/**
+ *    netif_receive_skb_list - process many receive buffers from network
+ *    @head: list of skbs to process.
+ *
+ *    Since return value of netif_receive_skb() is normally ignored, and
+ *    wouldn't be meaningful for a list, this function returns void.
+ *
+ *    This function may only be called from softirq context and interrupts
+ *    should be enabled.
+ */
+void netif_receive_skb_list(struct list_head *head)
+{
+    struct sk_buff *skb;
+    
+    if (list_empty(head))
+        return;
+//    if (trace_netif_receive_skb_list_entry_enabled()) {
+//        list_for_each_entry(skb, head, list)
+//        trace_netif_receive_skb_list_entry(skb);
+//    }
+//    netif_receive_skb_list_internal(head);
+//    trace_netif_receive_skb_list_exit(0);
+}
+EXPORT_SYMBOL(netif_receive_skb_list);

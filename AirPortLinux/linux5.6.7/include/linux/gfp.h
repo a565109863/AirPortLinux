@@ -149,4 +149,9 @@ typedef unsigned int __bitwise fmode_t;
 #define GFP_DMA        __GFP_DMA
 #define GFP_DMA32    __GFP_DMA32
 
+static inline bool gfpflags_allow_blocking(const gfp_t gfp_flags)
+{
+    return !!(gfp_flags & __GFP_DIRECT_RECLAIM);
+}
+
 #endif /* gfp_h */

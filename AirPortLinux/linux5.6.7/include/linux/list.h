@@ -13,6 +13,12 @@
 #define LIST_POISON2  (0x00200200 + POISON_POINTER_DELTA)
 
 /*
+ * Magic number "tsta" to indicate a static timer initializer
+ * for the object debugging code.
+ */
+#define TIMER_ENTRY_STATIC    ((struct hlist_node *) 0x300 + POISON_POINTER_DELTA)
+
+/*
  * Simple doubly linked list implementation.
  *
  * Some of the internal functions ("__xxx") are useful when

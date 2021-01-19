@@ -684,34 +684,43 @@ static noinline int iw_handler_get_iwstats(struct net_device *    dev,
 
 static iw_handler get_handler(struct net_device *dev, unsigned int cmd)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     /* Don't "optimise" the following variable, it will crash */
     unsigned int    index;        /* *MUST* be unsigned */
     const struct iw_handler_def *handlers = NULL;
-
+    
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 #ifdef CONFIG_CFG80211_WEXT
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     if (dev->ieee80211_ptr && dev->ieee80211_ptr->wiphy)
         handlers = dev->ieee80211_ptr->wiphy->wext;
 #endif
 #ifdef CONFIG_WIRELESS_EXT
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     if (dev->wireless_handlers)
         handlers = dev->wireless_handlers;
 #endif
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 
     if (!handlers)
         return NULL;
-
+    
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     /* Try as a standard command */
     index = IW_IOCTL_IDX(cmd);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     if (index < handlers->num_standard)
         return handlers->standard[index];
-
+    
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 #ifdef CONFIG_WEXT_PRIV
     /* Try as a private command */
     index = cmd - SIOCIWFIRSTPRIV;
     if (index < handlers->num_private)
         return handlers->private[index];
 #endif
-
+    
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     /* Not found */
     return NULL;
 }
@@ -921,9 +930,11 @@ static int wireless_process_ioctl(struct net *net, struct iwreq *iwr,
                   wext_ioctl_func standard,
                   wext_ioctl_func _private)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct net_device *dev;
     iw_handler    handler;
-
+    
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     /* Permissions are already checked in dev_ioctl() before calling us.
      * The copy_to/from_user() of ifr is also dealt with in there */
 
@@ -931,6 +942,7 @@ static int wireless_process_ioctl(struct net *net, struct iwreq *iwr,
     if ((dev = __dev_get_by_name(net, iwr->ifr_name)) == NULL)
         return -ENODEV;
     
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     /* A bunch of special cases, then the generic case...
      * Note that 'cmd' is already filtered in dev_ioctl() with
      * (cmd >= SIOCIWFIRST && cmd <= SIOCIWLAST) */
@@ -938,18 +950,22 @@ static int wireless_process_ioctl(struct net *net, struct iwreq *iwr,
         return standard(dev, iwr, cmd, info,
                 &iw_handler_get_iwstats);
     
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 #ifdef CONFIG_WEXT_PRIV
     if (cmd == SIOCGIWPRIV && dev->wireless_handlers)
         return standard(dev, iwr, cmd, info,
                 iw_handler_get_private);
 #endif
     
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     /* Basic check */
     if (!netif_device_present(dev))
         return -ENODEV;
     
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     /* New driver API : try to find the handler */
     handler = get_handler(dev, cmd);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     if (handler) {
         /* Standard and private are not the same */
         if (cmd < SIOCIWFIRSTPRIV)
@@ -979,11 +995,14 @@ static int wext_ioctl_dispatch(struct net *net, struct iwreq *iwr,
                    wext_ioctl_func standard,
                    wext_ioctl_func _private)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     int ret = wext_permission_check(cmd);
-
+    
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     if (ret)
         return ret;
     
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     dev_load(net, iwr->ifr_name);
     rtnl_lock();
     ret = wireless_process_ioctl(net, iwr, cmd, info, standard, _private);
@@ -1038,6 +1057,7 @@ static int ioctl_standard_call(struct net_device *    dev,
 #ifdef CONFIG_WEXT_CORE
 int wext_handle_ioctl(struct net *net, unsigned int cmd, void __user *arg)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct iw_request_info info = { .cmd = cmd, .flags = 0 };
     struct iwreq iwr;
     int ret;

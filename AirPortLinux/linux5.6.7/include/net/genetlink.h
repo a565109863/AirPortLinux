@@ -103,11 +103,11 @@ static inline struct net *genl_info_net(struct genl_info *info)
 {
     return read_pnet(&info->_net);
 }
-//
-//static inline void genl_info_net_set(struct genl_info *info, struct net *net)
-//{
-//    write_pnet(&info->_net, net);
-//}
+
+static inline void genl_info_net_set(struct genl_info *info, struct net *net)
+{
+    write_pnet(&info->_net, net);
+}
 
 #define GENL_SET_ERR_MSG(info, msg) NL_SET_ERR_MSG((info)->extack, msg)
 
@@ -137,11 +137,11 @@ struct genl_dumpit_info {
     struct nlattr **attrs;
 };
 
-//static inline const struct genl_dumpit_info *
-//genl_dumpit_info(struct netlink_callback *cb)
-//{
-//    return cb->data;
-//}
+static inline const struct genl_dumpit_info *
+genl_dumpit_info(struct netlink_callback *cb)
+{
+    return (struct genl_dumpit_info *)cb->data;
+}
 
 /**
  * struct genl_ops - generic netlink operations
@@ -165,9 +165,9 @@ struct genl_ops {
     u8            flags;
     u8            validate;
 };
-//
-//int genl_register_family(struct genl_family *family);
-//int genl_unregister_family(const struct genl_family *family);
+
+int genl_register_family(struct genl_family *family);
+int genl_unregister_family(const struct genl_family *family);
 //void genl_notify(const struct genl_family *family, struct sk_buff *skb,
 //         struct genl_info *info, u32 group, gfp_t flags);
 
@@ -426,4 +426,10 @@ static inline int genlmsg_reply(struct sk_buff *skb, struct genl_info *info)
 //    group = family->mcgrp_offset + group;
 //    return netlink_has_listeners(net->genl_sock, group);
 //}
+
+const struct genl_family *genl_family_find_byname(char *name);
+static int genl_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh,
+                        struct netlink_ext_ack *extack);
+void genl_rcv(struct sk_buff *skb);
+
 #endif    /* __NET_GENERIC_NETLINK_H */

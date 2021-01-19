@@ -37,7 +37,7 @@
 
 //#include <linux/hardirq.h>
 #include <linux/kernel.h>
-#include <linux/list.h>
+#include <linux/rculist.h>
 #include <linux/list_nulls.h>
 #include <linux/timer.h>
 //#include <linux/cache.h>
@@ -652,11 +652,11 @@ struct sock {
 // or a list and the lookup is made under lock preventing hash table
 // modifications.
 // */
-//
-//static __always_inline void sock_hold(struct sock *sk)
-//{
-//    refcount_inc(&sk->sk_refcnt);
-//}
+
+static __always_inline void sock_hold(struct sock *sk)
+{
+    refcount_inc(&sk->sk_refcnt);
+}
 //
 ///* Ungrab socket in the context, which assumes that socket refcnt
 // cannot hit zero, f.e. it is true in context of any socketcall.
@@ -742,17 +742,17 @@ struct sock {
 //    sock_hold(sk);
 //    __sk_nulls_add_node_rcu(sk, list);
 //}
-//
-//static inline void __sk_del_bind_node(struct sock *sk)
-//{
-//    __hlist_del(&sk->sk_bind_node);
-//}
-//
-//static inline void sk_add_bind_node(struct sock *sk,
-//                                    struct hlist_head *list)
-//{
-//    hlist_add_head(&sk->sk_bind_node, list);
-//}
+
+static inline void __sk_del_bind_node(struct sock *sk)
+{
+    __hlist_del(&sk->sk_bind_node);
+}
+
+static inline void sk_add_bind_node(struct sock *sk,
+                                    struct hlist_head *list)
+{
+    hlist_add_head(&sk->sk_bind_node, list);
+}
 //
 //#define sk_for_each(__sk, list) \
 //hlist_for_each_entry(__sk, list, sk_node)
@@ -769,8 +769,8 @@ struct sock {
 //hlist_nulls_for_each_entry_from(__sk, node, sk_nulls_node)
 //#define sk_for_each_safe(__sk, tmp, list) \
 //hlist_for_each_entry_safe(__sk, tmp, list, sk_node)
-//#define sk_for_each_bound(__sk, list) \
-//hlist_for_each_entry(__sk, list, sk_bind_node)
+#define sk_for_each_bound(__sk, list) \
+hlist_for_each_entry(__sk, list, sk_bind_node)
 //
 ///**
 // * sk_for_each_entry_offset_rcu - iterate over a list at a given struct offset
@@ -794,53 +794,53 @@ struct sock {
 //     */
 //    return sk->sk_socket->file->f_cred->user_ns;
 //}
-//
-///* Sock flags */
-//enum sock_flags {
-//    SOCK_DEAD,
-//    SOCK_DONE,
-//    SOCK_URGINLINE,
-//    SOCK_KEEPOPEN,
-//    SOCK_LINGER,
-//    SOCK_DESTROY,
-//    SOCK_BROADCAST,
-//    SOCK_TIMESTAMP,
-//    SOCK_ZAPPED,
-//    SOCK_USE_WRITE_QUEUE, /* whether to call sk->sk_write_space in sock_wfree */
-//    SOCK_DBG, /* %SO_DEBUG setting */
-//    SOCK_RCVTSTAMP, /* %SO_TIMESTAMP setting */
-//    SOCK_RCVTSTAMPNS, /* %SO_TIMESTAMPNS setting */
-//    SOCK_LOCALROUTE, /* route locally only, %SO_DONTROUTE setting */
-//    SOCK_QUEUE_SHRUNK, /* write queue has been shrunk recently */
-//    SOCK_MEMALLOC, /* VM depends on this socket for swapping */
-//    SOCK_TIMESTAMPING_RX_SOFTWARE,  /* %SOF_TIMESTAMPING_RX_SOFTWARE */
-//    SOCK_FASYNC, /* fasync() active */
-//    SOCK_RXQ_OVFL,
-//    SOCK_ZEROCOPY, /* buffers from userspace */
-//    SOCK_WIFI_STATUS, /* push wifi status to userspace */
-//    SOCK_NOFCS, /* Tell NIC not to do the Ethernet FCS.
-//                 * Will use last 4 bytes of packet sent from
-//                 * user-space instead.
-//                 */
-//    SOCK_FILTER_LOCKED, /* Filter cannot be changed anymore */
-//    SOCK_SELECT_ERR_QUEUE, /* Wake select on error queue */
-//    SOCK_RCU_FREE, /* wait rcu grace period in sk_destruct() */
-//    SOCK_TXTIME,
-//    SOCK_XDP, /* XDP is attached */
-//    SOCK_TSTAMP_NEW, /* Indicates 64 bit timestamps always */
-//};
-//
-//#define SK_FLAGS_TIMESTAMP ((1UL << SOCK_TIMESTAMP) | (1UL << SOCK_TIMESTAMPING_RX_SOFTWARE))
-//
-//static inline void sock_copy_flags(struct sock *nsk, struct sock *osk)
-//{
-//    nsk->sk_flags = osk->sk_flags;
-//}
-//
-//static inline void sock_set_flag(struct sock *sk, enum sock_flags flag)
-//{
-//    __set_bit(flag, &sk->sk_flags);
-//}
+
+/* Sock flags */
+enum sock_flags {
+    SOCK_DEAD,
+    SOCK_DONE,
+    SOCK_URGINLINE,
+    SOCK_KEEPOPEN,
+    SOCK_LINGER,
+    SOCK_DESTROY,
+    SOCK_BROADCAST,
+    SOCK_TIMESTAMP,
+    SOCK_ZAPPED,
+    SOCK_USE_WRITE_QUEUE, /* whether to call sk->sk_write_space in sock_wfree */
+    SOCK_DBG, /* %SO_DEBUG setting */
+    SOCK_RCVTSTAMP, /* %SO_TIMESTAMP setting */
+    SOCK_RCVTSTAMPNS, /* %SO_TIMESTAMPNS setting */
+    SOCK_LOCALROUTE, /* route locally only, %SO_DONTROUTE setting */
+    SOCK_QUEUE_SHRUNK, /* write queue has been shrunk recently */
+    SOCK_MEMALLOC, /* VM depends on this socket for swapping */
+    SOCK_TIMESTAMPING_RX_SOFTWARE,  /* %SOF_TIMESTAMPING_RX_SOFTWARE */
+    SOCK_FASYNC, /* fasync() active */
+    SOCK_RXQ_OVFL,
+    SOCK_ZEROCOPY, /* buffers from userspace */
+    SOCK_WIFI_STATUS, /* push wifi status to userspace */
+    SOCK_NOFCS, /* Tell NIC not to do the Ethernet FCS.
+                 * Will use last 4 bytes of packet sent from
+                 * user-space instead.
+                 */
+    SOCK_FILTER_LOCKED, /* Filter cannot be changed anymore */
+    SOCK_SELECT_ERR_QUEUE, /* Wake select on error queue */
+    SOCK_RCU_FREE, /* wait rcu grace period in sk_destruct() */
+    SOCK_TXTIME,
+    SOCK_XDP, /* XDP is attached */
+    SOCK_TSTAMP_NEW, /* Indicates 64 bit timestamps always */
+};
+
+#define SK_FLAGS_TIMESTAMP ((1UL << SOCK_TIMESTAMP) | (1UL << SOCK_TIMESTAMPING_RX_SOFTWARE))
+
+static inline void sock_copy_flags(struct sock *nsk, struct sock *osk)
+{
+    nsk->sk_flags = osk->sk_flags;
+}
+
+static inline void sock_set_flag(struct sock *sk, enum sock_flags flag)
+{
+    __set_bit(flag, &sk->sk_flags);
+}
 //
 //static inline void sock_reset_flag(struct sock *sk, enum sock_flags flag)
 //{
@@ -1074,127 +1074,127 @@ struct sock {
 //    memset(&sk->sk_node.pprev, 0,
 //           size - offsetof(struct sock, sk_node.pprev));
 //}
-//
-///* Networking protocol blocks we attach to sockets.
-// * socket layer -> transport layer interface
-// */
-//struct proto {
-//    void            (*close)(struct sock *sk,
-//                             long timeout);
-//    int            (*pre_connect)(struct sock *sk,
-//                                  struct sockaddr *uaddr,
-//                                  int addr_len);
-//    int            (*connect)(struct sock *sk,
-//                              struct sockaddr *uaddr,
-//                              int addr_len);
-//    int            (*disconnect)(struct sock *sk, int flags);
-//
-//    struct sock *        (*accept)(struct sock *sk, int flags, int *err,
-//                                   bool kern);
-//
-//    int            (*ioctl)(struct sock *sk, int cmd,
-//                            unsigned long arg);
-//    int            (*init)(struct sock *sk);
-//    void            (*destroy)(struct sock *sk);
-//    void            (*shutdown)(struct sock *sk, int how);
-//    int            (*setsockopt)(struct sock *sk, int level,
-//                                 int optname, char __user *optval,
-//                                 unsigned int optlen);
-//    int            (*getsockopt)(struct sock *sk, int level,
-//                                 int optname, char __user *optval,
-//                                 int __user *option);
-//    void            (*keepalive)(struct sock *sk, int valbool);
-//#ifdef CONFIG_COMPAT
-//    int            (*compat_setsockopt)(struct sock *sk,
-//                                        int level,
-//                                        int optname, char __user *optval,
-//                                        unsigned int optlen);
-//    int            (*compat_getsockopt)(struct sock *sk,
-//                                        int level,
-//                                        int optname, char __user *optval,
-//                                        int __user *option);
-//    int            (*compat_ioctl)(struct sock *sk,
-//                                   unsigned int cmd, unsigned long arg);
-//#endif
-//    int            (*sendmsg)(struct sock *sk, struct msghdr *msg,
-//                              size_t len);
-//    int            (*recvmsg)(struct sock *sk, struct msghdr *msg,
-//                              size_t len, int noblock, int flags,
-//                              int *addr_len);
-//    int            (*sendpage)(struct sock *sk, struct page *page,
-//                               int offset, size_t size, int flags);
-//    int            (*bind)(struct sock *sk,
-//                           struct sockaddr *uaddr, int addr_len);
-//
-//    int            (*backlog_rcv) (struct sock *sk,
-//                                   struct sk_buff *skb);
-//
-//    void        (*release_cb)(struct sock *sk);
-//
-//    /* Keeping track of sk's, looking them up, and port selection methods. */
-//    int            (*hash)(struct sock *sk);
-//    void            (*unhash)(struct sock *sk);
-//    void            (*rehash)(struct sock *sk);
-//    int            (*get_port)(struct sock *sk, unsigned short snum);
-//
-//    /* Keeping track of sockets in use */
-//#ifdef CONFIG_PROC_FS
-//    unsigned int        inuse_idx;
-//#endif
-//
-//    bool            (*stream_memory_free)(const struct sock *sk, int wake);
-//    bool            (*stream_memory_read)(const struct sock *sk);
-//    /* Memory pressure */
-//    void            (*enter_memory_pressure)(struct sock *sk);
-//    void            (*leave_memory_pressure)(struct sock *sk);
-//    atomic_long_t        *memory_allocated;    /* Current allocated memory. */
-//    struct percpu_counter    *sockets_allocated;    /* Current number of sockets. */
-//    /*
-//     * Pressure flag: try to collapse.
-//     * Technical note: it is used by multiple contexts non atomically.
-//     * All the __sk_mem_schedule() is of this nature: accounting
-//     * is strict, actions are advisory and have some latency.
-//     */
-//    unsigned long        *memory_pressure;
-//    long            *sysctl_mem;
-//
-//    int            *sysctl_wmem;
-//    int            *sysctl_rmem;
-//    u32            sysctl_wmem_offset;
-//    u32            sysctl_rmem_offset;
-//
-//    int            max_header;
-//    bool            no_autobind;
-//
-//    struct kmem_cache    *slab;
-//    unsigned int        obj_size;
-//    slab_flags_t        slab_flags;
-//    unsigned int        useroffset;    /* Usercopy region offset */
-//    unsigned int        usersize;    /* Usercopy region size */
-//
-//    struct percpu_counter    *orphan_count;
-//
-//    struct request_sock_ops    *rsk_prot;
-//    struct timewait_sock_ops *twsk_prot;
-//
-//    union {
-//        struct inet_hashinfo    *hashinfo;
-//        struct udp_table    *udp_table;
-//        struct raw_hashinfo    *raw_hash;
-//        struct smc_hashinfo    *smc_hash;
-//    } h;
-//
-//    struct module        *owner;
-//
-//    char            name[32];
-//
-//    struct list_head    node;
-//#ifdef SOCK_REFCNT_DEBUG
-//    atomic_t        socks;
-//#endif
-//    int            (*diag_destroy)(struct sock *sk, int err);
-//} __randomize_layout;
-//
+
+/* Networking protocol blocks we attach to sockets.
+ * socket layer -> transport layer interface
+ */
+struct proto {
+    void            (*close)(struct sock *sk,
+                             long timeout);
+    int            (*pre_connect)(struct sock *sk,
+                                  struct sockaddr *uaddr,
+                                  int addr_len);
+    int            (*connect)(struct sock *sk,
+                              struct sockaddr *uaddr,
+                              int addr_len);
+    int            (*disconnect)(struct sock *sk, int flags);
+
+    struct sock *        (*accept)(struct sock *sk, int flags, int *err,
+                                   bool kern);
+
+    int            (*ioctl)(struct sock *sk, int cmd,
+                            unsigned long arg);
+    int            (*init)(struct sock *sk);
+    void            (*destroy)(struct sock *sk);
+    void            (*shutdown)(struct sock *sk, int how);
+    int            (*setsockopt)(struct sock *sk, int level,
+                                 int optname, char __user *optval,
+                                 unsigned int optlen);
+    int            (*getsockopt)(struct sock *sk, int level,
+                                 int optname, char __user *optval,
+                                 int __user *option);
+    void            (*keepalive)(struct sock *sk, int valbool);
+#ifdef CONFIG_COMPAT
+    int            (*compat_setsockopt)(struct sock *sk,
+                                        int level,
+                                        int optname, char __user *optval,
+                                        unsigned int optlen);
+    int            (*compat_getsockopt)(struct sock *sk,
+                                        int level,
+                                        int optname, char __user *optval,
+                                        int __user *option);
+    int            (*compat_ioctl)(struct sock *sk,
+                                   unsigned int cmd, unsigned long arg);
+#endif
+    int            (*sendmsg)(struct sock *sk, struct msghdr *msg,
+                              size_t len);
+    int            (*recvmsg)(struct sock *sk, struct msghdr *msg,
+                              size_t len, int noblock, int flags,
+                              int *addr_len);
+    int            (*sendpage)(struct sock *sk, struct page *page,
+                               int offset, size_t size, int flags);
+    int            (*bind)(struct sock *sk,
+                           struct sockaddr *uaddr, int addr_len);
+
+    int            (*backlog_rcv) (struct sock *sk,
+                                   struct sk_buff *skb);
+
+    void        (*release_cb)(struct sock *sk);
+
+    /* Keeping track of sk's, looking them up, and port selection methods. */
+    int            (*hash)(struct sock *sk);
+    void            (*unhash)(struct sock *sk);
+    void            (*rehash)(struct sock *sk);
+    int            (*get_port)(struct sock *sk, unsigned short snum);
+
+    /* Keeping track of sockets in use */
+#ifdef CONFIG_PROC_FS
+    unsigned int        inuse_idx;
+#endif
+
+    bool            (*stream_memory_free)(const struct sock *sk, int wake);
+    bool            (*stream_memory_read)(const struct sock *sk);
+    /* Memory pressure */
+    void            (*enter_memory_pressure)(struct sock *sk);
+    void            (*leave_memory_pressure)(struct sock *sk);
+    atomic_long_t        *memory_allocated;    /* Current allocated memory. */
+    struct percpu_counter    *sockets_allocated;    /* Current number of sockets. */
+    /*
+     * Pressure flag: try to collapse.
+     * Technical note: it is used by multiple contexts non atomically.
+     * All the __sk_mem_schedule() is of this nature: accounting
+     * is strict, actions are advisory and have some latency.
+     */
+    unsigned long        *memory_pressure;
+    long            *sysctl_mem;
+
+    int            *sysctl_wmem;
+    int            *sysctl_rmem;
+    u32            sysctl_wmem_offset;
+    u32            sysctl_rmem_offset;
+
+    int            max_header;
+    bool            no_autobind;
+
+    struct kmem_cache    *slab;
+    unsigned int        obj_size;
+    slab_flags_t        slab_flags;
+    unsigned int        useroffset;    /* Usercopy region offset */
+    unsigned int        usersize;    /* Usercopy region size */
+
+    struct percpu_counter    *orphan_count;
+
+    struct request_sock_ops    *rsk_prot;
+    struct timewait_sock_ops *twsk_prot;
+
+    union {
+        struct inet_hashinfo    *hashinfo;
+        struct udp_table    *udp_table;
+        struct raw_hashinfo    *raw_hash;
+        struct smc_hashinfo    *smc_hash;
+    } h;
+
+    struct module        *owner;
+
+    char            name[32];
+
+    struct list_head    node;
+#ifdef SOCK_REFCNT_DEBUG
+    atomic_t        socks;
+#endif
+    int            (*diag_destroy)(struct sock *sk, int err);
+} __randomize_layout;
+
 //int proto_register(struct proto *prot, int alloc_slab);
 //void proto_unregister(struct proto *prot);
 //int sock_load_diag_module(int family, int protocol);
@@ -1368,21 +1368,21 @@ struct sock {
 //#define SOCK_RCVBUF_LOCK    2
 //#define SOCK_BINDADDR_LOCK    4
 //#define SOCK_BINDPORT_LOCK    8
-//
-//struct socket_alloc {
-//    struct socket socket;
-//    struct inode vfs_inode;
-//};
-//
-//static inline struct socket *SOCKET_I(struct inode *inode)
-//{
-//    return &container_of(inode, struct socket_alloc, vfs_inode)->socket;
-//}
-//
-//static inline struct inode *SOCK_INODE(struct socket *socket)
-//{
-//    return &container_of(socket, struct socket_alloc, socket)->vfs_inode;
-//}
+
+struct socket_alloc {
+    struct socket socket;
+    struct inode vfs_inode;
+};
+
+static inline struct socket *SOCKET_I(struct inode *inode)
+{
+    return &container_of(inode, struct socket_alloc, vfs_inode)->socket;
+}
+
+static inline struct inode *SOCK_INODE(struct socket *socket)
+{
+    return &container_of(socket, struct socket_alloc, socket)->vfs_inode;
+}
 //
 ///*
 // * Functions for memory accounting
@@ -1417,13 +1417,13 @@ struct sock {
 //{
 //    return (amt + SK_MEM_QUANTUM - 1) >> SK_MEM_QUANTUM_SHIFT;
 //}
-//
-//static inline bool sk_has_account(struct sock *sk)
-//{
-//    /* return true if protocol supports memory accounting */
-//    return !!sk->sk_prot->memory_allocated;
-//}
-//
+
+static inline bool sk_has_account(struct sock *sk)
+{
+    /* return true if protocol supports memory accounting */
+    return !!sk->sk_prot->memory_allocated;
+}
+
 //static inline bool sk_wmem_schedule(struct sock *sk, int size)
 //{
 //    if (!sk_has_account(sk))
@@ -1457,14 +1457,14 @@ struct sock {
 //    if (sk->sk_forward_alloc > SK_MEM_QUANTUM)
 //        __sk_mem_reclaim(sk, sk->sk_forward_alloc - 1);
 //}
-//
-//static inline void sk_mem_charge(struct sock *sk, int size)
-//{
-//    if (!sk_has_account(sk))
-//        return;
-//    sk->sk_forward_alloc -= size;
-//}
-//
+
+static inline void sk_mem_charge(struct sock *sk, int size)
+{
+    if (!sk_has_account(sk))
+        return;
+    sk->sk_forward_alloc -= size;
+}
+
 //static inline void sk_mem_uncharge(struct sock *sk, int size)
 //{
 //    if (!sk_has_account(sk))
@@ -1608,10 +1608,13 @@ struct sock {
 //
 //    return !sk->sk_lock.owned && !spin_is_locked(&sk->sk_lock.slock);
 //}
-//
-//struct sock *sk_alloc(struct net *net, int family, gfp_t priority,
-//                      struct proto *prot, int kern);
-//void sk_free(struct sock *sk);
+
+struct sock *sk_alloc(struct net *net, int family, gfp_t priority,
+                      struct proto *prot, int kern);
+static void sk_free(struct sock *sk)
+{
+    
+}
 //void sk_destruct(struct sock *sk);
 //struct sock *sk_clone_lock(const struct sock *sk, const gfp_t priority);
 //void sk_free_unlock_clone(struct sock *sk);
@@ -1709,9 +1712,9 @@ struct sock {
 ///*
 // *    Default socket callbacks and setup code
 // */
-//
-///* Initialise core socket variables */
-//void sock_init_data(struct socket *sock, struct sock *sk);
+
+/* Initialise core socket variables */
+void sock_init_data(struct socket *sock, struct sock *sk);
 //
 ///*
 // * Socket reference counting postulates.
@@ -1737,13 +1740,13 @@ struct sock {
 // *   BR_NETPROTO_LOCK, so that it has not this race condition. UNIX sockets
 // *   use separate SMP lock, so that they are prone too.
 // */
-//
-///* Ungrab socket and destroy it, if it was the last reference. */
-//static inline void sock_put(struct sock *sk)
-//{
-//    if (refcount_dec_and_test(&sk->sk_refcnt))
-//        sk_free(sk);
-//}
+
+/* Ungrab socket and destroy it, if it was the last reference. */
+static inline void sock_put(struct sock *sk)
+{
+    if (refcount_dec_and_test(&sk->sk_refcnt))
+        sk_free(sk);
+}
 ///* Generic version of sock_put(), dealing with all sockets
 // * (TCP_TIMEWAIT, TCP_NEW_SYN_RECV, ESTABLISHED...)
 // */
@@ -1764,13 +1767,13 @@ struct sock {
 //        return;
 //    sk->sk_tx_queue_mapping = tx_queue;
 //}
-//
-//#define NO_QUEUE_MAPPING    USHRT_MAX
-//
-//static inline void sk_tx_queue_clear(struct sock *sk)
-//{
-//    sk->sk_tx_queue_mapping = NO_QUEUE_MAPPING;
-//}
+
+#define NO_QUEUE_MAPPING    USHRT_MAX
+
+static inline void sk_tx_queue_clear(struct sock *sk)
+{
+    sk->sk_tx_queue_mapping = NO_QUEUE_MAPPING;
+}
 //
 //static inline int sk_tx_queue_get(const struct sock *sk)
 //{
@@ -1793,29 +1796,29 @@ struct sock {
 //    }
 //#endif
 //}
-//
-//static inline void sk_rx_queue_clear(struct sock *sk)
-//{
-//#ifdef CONFIG_XPS
-//    sk->sk_rx_queue_mapping = NO_QUEUE_MAPPING;
-//#endif
-//}
-//
-//#ifdef CONFIG_XPS
-//static inline int sk_rx_queue_get(const struct sock *sk)
-//{
-//    if (sk && sk->sk_rx_queue_mapping != NO_QUEUE_MAPPING)
-//        return sk->sk_rx_queue_mapping;
-//
-//    return -1;
-//}
-//#endif
-//
-//static inline void sk_set_socket(struct sock *sk, struct socket *sock)
-//{
-//    sk_tx_queue_clear(sk);
-//    sk->sk_socket = sock;
-//}
+
+static inline void sk_rx_queue_clear(struct sock *sk)
+{
+#ifdef CONFIG_XPS
+    sk->sk_rx_queue_mapping = NO_QUEUE_MAPPING;
+#endif
+}
+
+#ifdef CONFIG_XPS
+static inline int sk_rx_queue_get(const struct sock *sk)
+{
+    if (sk && sk->sk_rx_queue_mapping != NO_QUEUE_MAPPING)
+        return sk->sk_rx_queue_mapping;
+
+    return -1;
+}
+#endif
+
+static inline void sk_set_socket(struct sock *sk, struct socket *sock)
+{
+    sk_tx_queue_clear(sk);
+    sk->sk_socket = sock;
+}
 //
 //static inline wait_queue_head_t *sk_sleep(struct sock *sk)
 //{
@@ -2286,10 +2289,10 @@ struct sock {
 //    return refcount_read(&sk->sk_wmem_alloc) < (READ_ONCE(sk->sk_sndbuf) >> 1);
 //}
 //
-//static inline gfp_t gfp_any(void)
-//{
-//    return in_softirq() ? GFP_ATOMIC : GFP_KERNEL;
-//}
+static inline gfp_t gfp_any(void)
+{
+    return 1 ? GFP_ATOMIC : GFP_KERNEL;
+}
 //
 //static inline long sock_rcvtimeo(const struct sock *sk, bool noblock)
 //{
@@ -2407,8 +2410,8 @@ struct sock {
 //
 //void __sock_recv_ts_and_drops(struct msghdr *msg, struct sock *sk,
 //                              struct sk_buff *skb);
-//
-//#define SK_DEFAULT_STAMP (-1L * NSEC_PER_SEC)
+
+#define SK_DEFAULT_STAMP (-1L * NSEC_PER_SEC)
 //static inline void sock_recv_ts_and_drops(struct msghdr *msg, struct sock *sk,
 //                                          struct sk_buff *skb)
 //{
@@ -2481,19 +2484,22 @@ struct sock {
 //    }
 //    __kfree_skb(skb);
 //}
-//
+
+
+#define sock_net(sk) &init_net
+
 //static inline
-//struct net *sock_net(const struct sock *sk)
+//struct net *sock_net(struct sock *sk)
 //{
 //    return read_pnet(&sk->sk_net);
 //}
-//
-//static inline
-//void sock_net_set(struct sock *sk, struct net *net)
-//{
-//    write_pnet(&sk->sk_net, net);
-//}
-//
+
+static inline
+void sock_net_set(struct sock *sk, struct net *net)
+{
+    write_pnet(&sk->sk_net, net);
+}
+
 //static inline struct sock *skb_steal_sock(struct sk_buff *skb)
 //{
 //    if (skb->sk) {
@@ -2556,17 +2562,17 @@ struct sock {
 //bool sk_net_capable(const struct sock *sk, int cap);
 //
 //void sk_get_meminfo(const struct sock *sk, u32 *meminfo);
-//
-///* Take into consideration the size of the struct sk_buff overhead in the
-// * determination of these values, since that is non-constant across
-// * platforms.  This makes socket queueing behavior and performance
-// * not depend upon such differences.
-// */
-//#define _SK_MEM_PACKETS        256
-//#define _SK_MEM_OVERHEAD    SKB_TRUESIZE(256)
-//#define SK_WMEM_MAX        (_SK_MEM_OVERHEAD * _SK_MEM_PACKETS)
-//#define SK_RMEM_MAX        (_SK_MEM_OVERHEAD * _SK_MEM_PACKETS)
-//
+
+/* Take into consideration the size of the struct sk_buff overhead in the
+ * determination of these values, since that is non-constant across
+ * platforms.  This makes socket queueing behavior and performance
+ * not depend upon such differences.
+ */
+#define _SK_MEM_PACKETS        256
+#define _SK_MEM_OVERHEAD    SKB_TRUESIZE(256)
+#define SK_WMEM_MAX        (_SK_MEM_OVERHEAD * _SK_MEM_PACKETS)
+#define SK_RMEM_MAX        (_SK_MEM_OVERHEAD * _SK_MEM_PACKETS)
+
 //extern __u32 sysctl_wmem_max;
 //extern __u32 sysctl_rmem_max;
 //

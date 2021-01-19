@@ -23,7 +23,7 @@
 #include <linux/spinlock.h>
 #include <linux/etherdevice.h>
 #include <linux/leds.h>
-//#include <linux/idr.h>
+#include <linux/idr.h>
 #include <linux/rhashtable.h>
 #include <net/ieee80211_radiotap.h>
 #include <net/cfg80211.h>
@@ -869,7 +869,7 @@ struct ieee80211_if_nan {
 
     /* protects function_inst_ids */
     spinlock_t func_lock;
-//    struct idr function_inst_ids;
+    struct idr function_inst_ids;
 };
 
 struct ieee80211_sub_if_data {
@@ -1397,7 +1397,7 @@ struct ieee80211_local {
     unsigned long hw_roc_start_time;
     u64 roc_cookie_counter;
 
-//    struct idr ack_status_frames;
+    struct idr ack_status_frames;
     spinlock_t ack_status_lock;
 
     struct ieee80211_sub_if_data __rcu *p2p_sdata;

@@ -14,7 +14,7 @@ extern bool lockdep_genl_is_held(void);
 
 /* for synchronisation between af_netlink and genetlink */
 extern atomic_t genl_sk_destructing_cnt;
-//extern wait_queue_head_t genl_sk_destructing_waitq;
+extern wait_queue_head_t genl_sk_destructing_waitq;
 
 /**
  * rcu_dereference_genl - rcu_dereference with debug checking

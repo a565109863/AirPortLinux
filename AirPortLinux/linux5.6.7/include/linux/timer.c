@@ -93,6 +93,7 @@ int __mod_timer(struct timer_list *timer, unsigned long expires, int flag)
  */
 void add_timer_on(struct timer_list *timer, int cpu)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     BUG_ON(timer_pending(timer) || !timer->function);
     
     unsigned long expires = 0;
@@ -117,6 +118,7 @@ EXPORT_SYMBOL_GPL(add_timer_on);
  */
 void add_timer(struct timer_list *timer)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     BUG_ON(timer_pending(timer));
     mod_timer(timer, timer->expires);
 }

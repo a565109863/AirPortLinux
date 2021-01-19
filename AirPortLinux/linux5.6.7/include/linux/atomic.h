@@ -18,6 +18,17 @@
 #define atomic64_set(v,i)    WRITE_ONCE((v)->counter, (i))
 
 
+#define __atomic_add_barrier(i, v) WRITE_ONCE((v)->counter, (i))
+
+static inline int atomic_add_return(int i, atomic_t *v)
+{
+    WRITE_ONCE((v)->counter, (i));
+    return (v)->counter + i;
+}
+
+#define atomic_add(i,v)            (void)atomic_add_return((i), (v))
+
+
 #define ATOMIC_LONG_INIT(i)        ATOMIC64_INIT(i)
 
 

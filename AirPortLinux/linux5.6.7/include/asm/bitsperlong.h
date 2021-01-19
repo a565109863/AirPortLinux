@@ -5,38 +5,81 @@
 
 #include <libkern/OSTypes.h>
 #include <libkern/OSAtomic.h>
+#include <libkern/libkern.h>
 
 
 #define BITS_PER_LONG 64
 #define BITS_PER_LONG_LONG 64
 
 
-static inline int fls64(UInt64 x)
+#define swap(a, b) \
+    do { __typeof(a) __tmp = (a); (a) = (b); (b) = __tmp; } while(0)
+
+static inline int
+fls64(long long mask)
 {
-    int bitpos = -1;
-    /*
-     * AMD64 says BSRQ won't clobber the dest reg if x==0; Intel64 says the
-     * dest reg is undefined if x==0, but their CPU architect says its
-     * value is written to set it to the same as before.
-     */
-    asm("bsrq %1,%q0"
-        : "+r" (bitpos)
-        : "rm" (x));
-    return bitpos + 1;
+    int bit;
+    
+    if (mask == 0)
+        return (0);
+    for (bit = 1; mask != 1; bit++)
+        mask = (unsigned long long)mask >> 1;
+    return (bit);
 }
 
-#define fls fls64
+//#define fls fls64
 
 static inline unsigned long __ffs(unsigned long x)
 {
-    return ffs(x) - 1;
+    return fls64(x) - 1;
 }
+
+static inline unsigned long __fls(unsigned long x)
+{
+    return fls64(x) - 1;
+}
+
 
 static inline int __fls(int x)
 {
     return fls(x) - 1;
 }
 
+
+
+/* If normalization is done by loops, the even/odd algorithm is a win. */
+static unsigned long gcd(unsigned long a, unsigned long b)
+{
+    unsigned long r = a | b;
+
+    if (!a || !b)
+        return r;
+
+    /* Isolate lsbit of r */
+    r &= -r;
+
+    while (!(b & r))
+        b >>= 1;
+    if (b == r)
+        return r;
+
+    for (;;) {
+        while (!(a & r))
+            a >>= 1;
+        if (a == r)
+            return r;
+        if (a == b)
+            return a;
+
+        if (a < b)
+            swap(a, b);
+        a -= b;
+        a >>= 1;
+        if (a & r)
+            a += b;
+        a >>= 1;
+    }
+}
 
 
 

@@ -22,6 +22,8 @@
 #include <linux/net.h>
 #include <net/regulatory.h>
 
+int __init cfg80211_init(void);
+
 /**
  * DOC: Introduction
  *
@@ -4989,18 +4991,16 @@ struct wireless_dev {
 
 static inline u8 *wdev_address(struct wireless_dev *wdev)
 {
-    return NULL;
-//    if (wdev->netdev)
-//        return wdev->netdev->dev_addr;
-//    return wdev->address;
+    if (wdev->netdev)
+        return wdev->netdev->dev_addr;
+    return wdev->address;
 }
 
 static inline bool wdev_running(struct wireless_dev *wdev)
 {
-    return NULL;
-//    if (wdev->netdev)
-//        return netif_running(wdev->netdev);
-//    return wdev->is_running;
+    if (wdev->netdev)
+        return netif_running(wdev->netdev);
+    return wdev->is_running;
 }
 
 /**

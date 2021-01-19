@@ -2067,6 +2067,10 @@ static int iwl_mvm_check_running_scans(struct iwl_mvm *mvm, int type)
 
 void iwl_mvm_scan_timeout_wk(struct work_struct *work)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    
 	struct delayed_work *delayed_work = to_delayed_work(work);
 	struct iwl_mvm *mvm = container_of(delayed_work, struct iwl_mvm,
 					   scan_timeout_dwork);

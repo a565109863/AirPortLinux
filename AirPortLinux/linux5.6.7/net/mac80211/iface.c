@@ -489,8 +489,7 @@ void ieee80211_del_virtual_monitor(struct ieee80211_local *local)
 int ieee80211_do_open(struct wireless_dev *wdev, bool coming_up)
 {
     struct ieee80211_sub_if_data *sdata = IEEE80211_WDEV_TO_SUB_IF(wdev);
-//    struct net_device *dev = wdev->netdev;
-    struct net_device *dev = sdata->dev;
+    struct net_device *dev = wdev->netdev;
     struct ieee80211_local *local = sdata->local;
     struct sta_info *sta;
     u32 changed = 0;
@@ -1464,9 +1463,9 @@ static void ieee80211_setup_sdata(struct ieee80211_sub_if_data *sdata,
         sdata->vif.bss_conf.bssid = NULL;
         break;
     case NL80211_IFTYPE_NAN:
-//        idr_init(&sdata->u.nan.function_inst_ids);
-//        spin_lock_init(&sdata->u.nan.func_lock);
-//        sdata->vif.bss_conf.bssid = sdata->vif.addr;
+        idr_init(&sdata->u.nan.function_inst_ids);
+        spin_lock_init(&sdata->u.nan.func_lock);
+        sdata->vif.bss_conf.bssid = sdata->vif.addr;
         break;
     case NL80211_IFTYPE_AP_VLAN:
     case NL80211_IFTYPE_P2P_DEVICE:

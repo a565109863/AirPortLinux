@@ -458,4 +458,22 @@ static inline bool schedule_work(struct work_struct *work)
 #define DECLARE_WORK(n, f) \
 struct work_struct n = __WORK_INITIALIZER((n), (f))
 
+
+#define __TIMER_LOCKDEP_MAP_INITIALIZER(_kn)
+
+#define __TIMER_INITIALIZER(_function, _flags) {        \
+.entry = { .next = TIMER_ENTRY_STATIC },    \
+.function = (_function),            \
+}
+
+#define __DELAYED_WORK_INITIALIZER(n, f, tflags) {            \
+.work = __WORK_INITIALIZER((n).work, (f)),            \
+.timer = __TIMER_INITIALIZER(delayed_work_timer_fn,\
+(tflags) | TIMER_IRQSAFE),        \
+}
+
+#define DECLARE_DELAYED_WORK(n, f)                    \
+struct delayed_work n = __DELAYED_WORK_INITIALIZER(n, f, 0)
+
+
 #endif /* workqueue_h */

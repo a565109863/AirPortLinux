@@ -230,7 +230,7 @@ void cfg80211_stop_p2p_device(struct cfg80211_registered_device *rdev,
     if (!wdev_running(wdev))
         return;
 
-//    rdev_stop_p2p_device(rdev, wdev);
+    rdev_stop_p2p_device(rdev, wdev);
     wdev->is_running = false;
 
     rdev->opencount--;
@@ -253,7 +253,7 @@ void cfg80211_stop_nan(struct cfg80211_registered_device *rdev,
     if (!wdev_running(wdev))
         return;
 
-//    rdev_stop_nan(rdev, wdev);
+    rdev_stop_nan(rdev, wdev);
     wdev->is_running = false;
 
     rdev->opencount--;
@@ -328,8 +328,8 @@ void cfg80211_destroy_ifaces(struct cfg80211_registered_device *rdev)
     ASSERT_RTNL();
 
     list_for_each_entry_safe(wdev, tmp, &rdev->wiphy.wdev_list, list) {
-//        if (wdev->nl_owner_dead)
-//            rdev_del_virtual_intf(rdev, wdev);
+        if (wdev->nl_owner_dead)
+            rdev_del_virtual_intf(rdev, wdev);
     }
 }
 
@@ -643,7 +643,7 @@ static int wiphy_verify_combinations(struct wiphy *wiphy)
     return 0;
 }
 
-static int __init cfg80211_init(void);
+//static int __init cfg80211_init(void);
 
 int wiphy_register(struct wiphy *wiphy)
 {
@@ -913,7 +913,7 @@ int wiphy_register(struct wiphy *wiphy)
         request.alpha2[0] = '9';
         request.alpha2[1] = '9';
 
-//        nl80211_send_reg_change_event(&request);
+        nl80211_send_reg_change_event(&request);
     }
 
     /* Check that nobody globally advertises any capabilities they do not
@@ -956,8 +956,6 @@ int wiphy_register(struct wiphy *wiphy)
 //        wiphy_unregister(&rdev->wiphy);
 //        return res;
 //    }
-    
-//    cfg80211_init();
 
     return 0;
 }
@@ -1007,8 +1005,8 @@ void wiphy_unregister(struct wiphy *wiphy)
      * it impossible to find from userspace.
      */
 //    debugfs_remove_recursive(rdev->wiphy.debugfsdir);
-//    list_del_rcu(&rdev->list);
-//    synchronize_rcu();
+    list_del_rcu(&rdev->list);
+    synchronize_rcu();
 
     /*
      * If this device got a regulatory hint tell core its
@@ -1257,7 +1255,7 @@ void cfg80211_init_wdev(struct cfg80211_registered_device *rdev,
 static int cfg80211_netdev_notifier_call(struct notifier_block *nb,
                      unsigned long state, void *ptr)
 {
-    struct net_device *dev = (struct net_device *)ptr;// netdev_notifier_info_to_dev(ptr);
+    struct net_device *dev = netdev_notifier_info_to_dev((const struct netdev_notifier_info *)ptr);
     struct wireless_dev *wdev = dev->ieee80211_ptr;
     struct cfg80211_registered_device *rdev;
     struct cfg80211_sched_scan_request *pos, *tmp;
@@ -1410,10 +1408,10 @@ static int cfg80211_netdev_notifier_call(struct notifier_block *nb,
         }
         break;
     case NETDEV_PRE_UP:
-//        if (!cfg80211_iftype_allowed(wdev->wiphy, wdev->iftype,
-//                         wdev->use_4addr, 0))
-//            return notifier_from_errno(-EOPNOTSUPP);
-//
+        if (!cfg80211_iftype_allowed(wdev->wiphy, wdev->iftype,
+                         wdev->use_4addr, 0))
+            return -EOPNOTSUPP; //notifier_from_errno(-EOPNOTSUPP);
+
 //        if (rfkill_blocked(rdev->rfkill))
 //            return notifier_from_errno(-ERFKILL);
         break;
@@ -1442,57 +1440,59 @@ static void cfg80211_pernet_exit(struct net *net)
     rtnl_unlock();
 }
 
-//static struct pernet_operations cfg80211_pernet_ops = {
-//    .exit = cfg80211_pernet_exit,
-//};
+static struct pernet_operations cfg80211_pernet_ops = {
+    .exit = cfg80211_pernet_exit,
+};
 
-static int __init cfg80211_init(void)
+int __init cfg80211_init(void)
 {
     int err;
-    return 0;
+//    return 0;
 
-//    err = register_pernet_device(&cfg80211_pernet_ops);
-//    if (err)
-//        goto out_fail_pernet;
+    err = register_pernet_device(&cfg80211_pernet_ops);
+    if (err)
+        goto out_fail_pernet;
 //
 //    err = wiphy_sysfs_init();
 //    if (err)
 //        goto out_fail_sysfs;
+    
+    net_ns_init();
 
     err = register_netdevice_notifier(&cfg80211_netdev_notifier);
     if (err)
         goto out_fail_notifier;
-//
-//    err = nl80211_init();
-//    if (err)
-//        goto out_fail_nl80211;
-//
+
+    err = nl80211_init();
+    if (err)
+        goto out_fail_nl80211;
+
 //    ieee80211_debugfs_dir = debugfs_create_dir("ieee80211", NULL);
 //
 //    err = regulatory_init();
 //    if (err)
 //        goto out_fail_reg;
-//
-//    cfg80211_wq = alloc_ordered_workqueue("cfg80211", WQ_MEM_RECLAIM);
-//    if (!cfg80211_wq) {
-//        err = -ENOMEM;
-//        goto out_fail_wq;
-//    }
-//
-//    return 0;
-//
-//out_fail_wq:
+
+    cfg80211_wq = alloc_ordered_workqueue("cfg80211", WQ_MEM_RECLAIM);
+    if (!cfg80211_wq) {
+        err = -ENOMEM;
+        goto out_fail_wq;
+    }
+
+    return 0;
+
+out_fail_wq:
 //    regulatory_exit();
 //out_fail_reg:
 //    debugfs_remove(ieee80211_debugfs_dir);
 //    nl80211_exit();
-//out_fail_nl80211:
+out_fail_nl80211:
 //    unregister_netdevice_notifier(&cfg80211_netdev_notifier);
 out_fail_notifier:
 //    wiphy_sysfs_exit();
 //out_fail_sysfs:
 //    unregister_pernet_device(&cfg80211_pernet_ops);
-//out_fail_pernet:
+out_fail_pernet:
     return err;
 }
 //fs_initcall(cfg80211_init);

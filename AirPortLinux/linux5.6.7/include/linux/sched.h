@@ -11,5 +11,6 @@
 
 #include <linux/types.h>
 
+#define    MAX_SCHEDULE_TIMEOUT        LONG_MAX
 
 #endif /* sched_h */

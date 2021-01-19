@@ -907,13 +907,13 @@ static int iwl_mvm_ppag_init(struct iwl_mvm *mvm)
 
 #else /* CONFIG_ACPI */
 
-inline int iwl_mvm_sar_select_profile(struct iwl_mvm *mvm,
+int iwl_mvm_sar_select_profile(struct iwl_mvm *mvm,
 				      int prof_a, int prof_b)
 {
 	return -ENOENT;
 }
 
-inline int iwl_mvm_get_sar_geo_profile(struct iwl_mvm *mvm)
+int iwl_mvm_get_sar_geo_profile(struct iwl_mvm *mvm)
 {
 	return -ENOENT;
 }
@@ -1232,22 +1232,22 @@ int iwl_mvm_up(struct iwl_mvm *mvm)
 	if (iwl_acpi_get_eckv(mvm->dev, &mvm->ext_clock_valid))
 		IWL_DEBUG_INFO(mvm, "ECKV table doesn't exist in BIOS\n");
 
-//    ret = iwl_mvm_ppag_init(mvm);
-//    if (ret)
-//        goto error;
+    ret = iwl_mvm_ppag_init(mvm);
+    if (ret)
+        goto error;
 
-//    ret = iwl_mvm_sar_init(mvm);
-//    if (ret == 0) {
-//        ret = iwl_mvm_sar_geo_init(mvm);
-//    } else if (ret > 0 && !iwl_sar_get_wgds_table(&mvm->fwrt)) {
-//        /*
-//         * If basic SAR is not available, we check for WGDS,
-//         * which should *not* be available either.  If it is
-//         * available, issue an error, because we can't use SAR
-//         * Geo without basic SAR.
-//         */
-//        IWL_ERR(mvm, "BIOS contains WGDS but no WRDS\n");
-//    }
+    ret = iwl_mvm_sar_init(mvm);
+    if (ret == 0) {
+        ret = iwl_mvm_sar_geo_init(mvm);
+    } else if (ret > 0 && !iwl_sar_get_wgds_table(&mvm->fwrt)) {
+        /*
+         * If basic SAR is not available, we check for WGDS,
+         * which should *not* be available either.  If it is
+         * available, issue an error, because we can't use SAR
+         * Geo without basic SAR.
+         */
+        IWL_ERR(mvm, "BIOS contains WGDS but no WRDS\n");
+    }
 
 	if (ret < 0)
 		goto error;

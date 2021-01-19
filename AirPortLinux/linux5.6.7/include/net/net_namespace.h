@@ -35,7 +35,7 @@
 //#include <net/netns/can.h>
 //#include <net/netns/xdp.h>
 //#include <linux/ns_common.h>
-//#include <linux/idr.h>
+#include <linux/idr.h>
 #include <linux/skbuff.h>
 //#include <linux/notifier.h>
 
@@ -51,6 +51,43 @@ enum {
     NETNSA_CURRENT_NSID,
     __NETNSA_MAX,
 };
+
+
+struct user_namespace {
+//    struct uid_gid_map    uid_map;
+//    struct uid_gid_map    gid_map;
+//    struct uid_gid_map    projid_map;
+    atomic_t        count;
+    struct user_namespace    *parent;
+    int            level;
+//    kuid_t            owner;
+//    kgid_t            group;
+//    struct ns_common    ns;
+    unsigned long        flags;
+    
+//#ifdef CONFIG_KEYS
+//    /* List of joinable keyrings in this namespace.  Modification access of
+//     * these pointers is controlled by keyring_sem.  Once
+//     * user_keyring_register is set, it won't be changed, so it can be
+//     * accessed directly with READ_ONCE().
+//     */
+//    struct list_head    keyring_name_list;
+//    struct key        *user_keyring_register;
+//    struct rw_semaphore    keyring_sem;
+//#endif
+//
+//    /* Register of per-UID persistent keyrings for this namespace */
+//#ifdef CONFIG_PERSISTENT_KEYRINGS
+//    struct key        *persistent_keyring_register;
+//#endif
+//    struct work_struct    work;
+//#ifdef CONFIG_SYSCTL
+//    struct ctl_table_set    set;
+//    struct ctl_table_header *sysctls;
+//#endif
+//    struct ucounts        *ucounts;
+//    int ucount_max[UCOUNT_COUNTS];
+} __randomize_layout;
 
 //
 //struct user_namespace;
@@ -102,7 +139,7 @@ struct net {
 #endif
     struct user_namespace   *user_ns;    /* Owning user namespace */
     struct ucounts        *ucounts;
-//    struct idr        netns_ids;
+    struct idr        netns_ids;
 
 //    struct ns_common    ns;
 
@@ -237,6 +274,7 @@ extern struct net init_net;
 
 
 extern struct list_head net_namespace_list;
+int net_ns_init(void);
 
 //struct net *get_net_ns_by_pid(pid_t pid);
 //struct net *get_net_ns_by_fd(int fd);
@@ -308,7 +346,7 @@ static inline struct net *maybe_get_net(struct net *net)
 static inline
 int net_eq(const struct net *net1, const struct net *net2)
 {
-    return 1;
+    return net1 == net2;
 }
 
 static inline int check_net(const struct net *net)
@@ -362,9 +400,9 @@ static inline struct net *read_pnet(const possible_net_t *pnet)
 #define __net_initconst    __initconst
 #endif
 //
-//int peernet2id_alloc(struct net *net, struct net *peer, gfp_t gfp);
-//int peernet2id(const struct net *net, struct net *peer);
-//bool peernet_has_id(const struct net *net, struct net *peer);
+int peernet2id_alloc(struct net *net, struct net *peer, gfp_t gfp);
+int peernet2id(const struct net *net, struct net *peer);
+bool peernet_has_id(const struct net *net, struct net *peer);
 //struct net *get_net_ns_by_id(const struct net *net, int id);
 
 struct pernet_operations {
@@ -398,29 +436,29 @@ struct pernet_operations {
     unsigned int *id;
     size_t size;
 };
-//
-///*
-// * Use these carefully.  If you implement a network device and it
-// * needs per network namespace operations use device pernet operations,
-// * otherwise use pernet subsys operations.
-// *
-// * Network interfaces need to be removed from a dying netns _before_
-// * subsys notifiers can be called, as most of the network code cleanup
-// * (which is done from subsys notifiers) runs with the assumption that
-// * dev_remove_pack has been called so no new packets will arrive during
-// * and after the cleanup functions have been called.  dev_remove_pack
-// * is not per namespace so instead the guarantee of no more packets
-// * arriving in a network namespace is provided by ensuring that all
-// * network devices and all sockets have left the network namespace
-// * before the cleanup methods are called.
-// *
-// * For the longest time the ipv4 icmp code was registered as a pernet
-// * device which caused kernel oops, and panics during network
-// * namespace cleanup.   So please don't get this wrong.
-// */
-//int register_pernet_subsys(struct pernet_operations *);
+
+/*
+ * Use these carefully.  If you implement a network device and it
+ * needs per network namespace operations use device pernet operations,
+ * otherwise use pernet subsys operations.
+ *
+ * Network interfaces need to be removed from a dying netns _before_
+ * subsys notifiers can be called, as most of the network code cleanup
+ * (which is done from subsys notifiers) runs with the assumption that
+ * dev_remove_pack has been called so no new packets will arrive during
+ * and after the cleanup functions have been called.  dev_remove_pack
+ * is not per namespace so instead the guarantee of no more packets
+ * arriving in a network namespace is provided by ensuring that all
+ * network devices and all sockets have left the network namespace
+ * before the cleanup methods are called.
+ *
+ * For the longest time the ipv4 icmp code was registered as a pernet
+ * device which caused kernel oops, and panics during network
+ * namespace cleanup.   So please don't get this wrong.
+ */
+int register_pernet_subsys(struct pernet_operations *);
 //void unregister_pernet_subsys(struct pernet_operations *);
-//int register_pernet_device(struct pernet_operations *);
+int register_pernet_device(struct pernet_operations *);
 //void unregister_pernet_device(struct pernet_operations *);
 //
 //struct ctl_table;

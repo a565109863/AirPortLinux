@@ -6,6 +6,7 @@
 #include <linux/device.h>
 #include <linux/pci.h>
 #include <net/wireless/core.h>
+#include <net/wireless/nl80211.h>
 
 OSDefineMetaClassAndStructors(AirPortLinux, IOController);
 //OSDefineMetaClassAndStructors(IOKitTimeout, OSObject)
@@ -126,6 +127,8 @@ bool AirPortLinux::start(IOService* provider) {
     if (err)
         return NULL;
     kprintf("--%s: line = %d err = %d", __FUNCTION__, __LINE__, err);
+    
+    cfg80211_init();
     
     fWatchdogTimer = IOTimerEventSource::timerEventSource(this, OSMemberFunctionCast(IOTimerEventSource::Action, this, &AirPortLinux::if_watchdog));
     

@@ -132,6 +132,24 @@ struct inode {
 } __randomize_layout;
 
 
+struct module {
+    struct module *next;
+    const char *name;
+    int gpl_compatible;
+//    struct symbol *unres;
+    int seen;
+    int skip;
+    int has_init;
+    int has_cleanup;
+//    struct buffer dev_table_buf;
+    char         srcversion[25];
+    int is_dot_o;
+    // Missing namespace dependencies
+//    struct namespace_list *missing_namespaces;
+//    // Actual imported namespaces
+//    struct namespace_list *imported_namespaces;
+};
+
 struct file_operations {
     struct module *owner;
     loff_t (*llseek) (struct file *, loff_t, int);
@@ -242,5 +260,25 @@ static int simple_open(struct inode *inode, struct file *file)
         file->private_data = inode->i_private;
     return 0;
 }
+
+
+/*
+ * "descriptor" for what we're up to with a read.
+ * This allows us to use the same read code yet
+ * have multiple different users of the data that
+ * we read from a file.
+ *
+ * The simplest case just copies the data to user
+ * mode.
+ */
+typedef struct {
+    size_t written;
+    size_t count;
+    union {
+        char __user *buf;
+        void *data;
+    } arg;
+    int error;
+} read_descriptor_t;
 
 #endif /* fs_h */

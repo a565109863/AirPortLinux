@@ -35,31 +35,31 @@ struct netlink_skb_parms {
 #define NETLINK_CREDS(skb)    (&NETLINK_CB((skb)).creds)
 
 
-//void netlink_table_grab(void);
-//void netlink_table_ungrab(void);
-//
-//#define NL_CFG_F_NONROOT_RECV    (1 << 0)
-//#define NL_CFG_F_NONROOT_SEND    (1 << 1)
-//
-///* optional Netlink kernel configuration parameters */
-//struct netlink_kernel_cfg {
-//    unsigned int    groups;
-//    unsigned int    flags;
-//    void        (*input)(struct sk_buff *skb);
-//    struct mutex    *cb_mutex;
-//    int        (*bind)(struct net *net, int group);
-//    void        (*unbind)(struct net *net, int group);
-//    bool        (*compare)(struct net *net, struct sock *sk);
-//};
-//
-//struct sock *__netlink_kernel_create(struct net *net, int unit,
-//                        struct module *module,
-//                        struct netlink_kernel_cfg *cfg);
-//static inline struct sock *
-//netlink_kernel_create(struct net *net, int unit, struct netlink_kernel_cfg *cfg)
-//{
-//    return __netlink_kernel_create(net, unit, THIS_MODULE, cfg);
-//}
+void netlink_table_grab(void);
+void netlink_table_ungrab(void);
+
+#define NL_CFG_F_NONROOT_RECV    (1 << 0)
+#define NL_CFG_F_NONROOT_SEND    (1 << 1)
+
+/* optional Netlink kernel configuration parameters */
+struct netlink_kernel_cfg {
+    unsigned int    groups;
+    unsigned int    flags;
+    void        (*input)(struct sk_buff *skb);
+    struct mutex    *cb_mutex;
+    int        (*bind)(struct net *net, int group);
+    void        (*unbind)(struct net *net, int group);
+    bool        (*compare)(struct net *net, struct sock *sk);
+};
+
+struct sock *__netlink_kernel_create(struct net *net, int unit,
+                        struct module *module,
+                        struct netlink_kernel_cfg *cfg);
+static inline struct sock *
+netlink_kernel_create(struct net *net, int unit, struct netlink_kernel_cfg *cfg)
+{
+    return __netlink_kernel_create(net, unit, THIS_MODULE, cfg);
+}
 
 /* this can be increased when necessary - don't expose to userland */
 #define NETLINK_MAX_COOKIE_LEN    20
@@ -110,18 +110,18 @@ struct netlink_ext_ack {
         __extack->bad_attr = (attr);        \
     }                        \
 } while (0)
-//
-//static inline void nl_set_extack_cookie_u64(struct netlink_ext_ack *extack,
-//                        u64 cookie)
-//{
-//    u64 __cookie = cookie;
-//
-//    if (!extack)
-//        return;
-//    memcpy(extack->cookie, &__cookie, sizeof(__cookie));
-//    extack->cookie_len = sizeof(__cookie);
-//}
-//
+
+static inline void nl_set_extack_cookie_u64(struct netlink_ext_ack *extack,
+                        u64 cookie)
+{
+    u64 __cookie = cookie;
+
+    if (!extack)
+        return;
+    memcpy(extack->cookie, &__cookie, sizeof(__cookie));
+    extack->cookie_len = sizeof(__cookie);
+}
+
 //static inline void nl_set_extack_cookie_u32(struct netlink_ext_ack *extack,
 //                        u32 cookie)
 //{
@@ -133,16 +133,16 @@ struct netlink_ext_ack {
 //    extack->cookie_len = sizeof(__cookie);
 //}
 //
-//void netlink_kernel_release(struct sock *sk);
-//int __netlink_change_ngroups(struct sock *sk, unsigned int groups);
-//int netlink_change_ngroups(struct sock *sk, unsigned int groups);
-//void __netlink_clear_multicast_users(struct sock *sk, unsigned int group);
+void netlink_kernel_release(struct sock *sk);
+int __netlink_change_ngroups(struct sock *sk, unsigned int groups);
+int netlink_change_ngroups(struct sock *sk, unsigned int groups);
+void __netlink_clear_multicast_users(struct sock *sk, unsigned int group);
 //void netlink_ack(struct sk_buff *in_skb, struct nlmsghdr *nlh, int err,
 //         const struct netlink_ext_ack *extack);
 //int netlink_has_listeners(struct sock *sk, unsigned int group);
 //bool netlink_strict_get_check(struct sk_buff *skb);
 //
-//int netlink_unicast(struct sock *ssk, struct sk_buff *skb, __u32 portid, int nonblock);
+int netlink_unicast(struct sock *ssk, struct sk_buff *skb, __u32 portid, int nonblock);
 int netlink_broadcast(struct sock *ssk, struct sk_buff *skb, __u32 portid,
               __u32 group, gfp_t allocation);
 //int netlink_broadcast_filtered(struct sock *ssk, struct sk_buff *skb,
@@ -155,10 +155,10 @@ int netlink_broadcast(struct sock *ssk, struct sk_buff *skb, __u32 portid,
 //
 ///* finegrained unicast helpers: */
 //struct sock *netlink_getsockbyfilp(struct file *filp);
-//int netlink_attachskb(struct sock *sk, struct sk_buff *skb,
-//              long *timeo, struct sock *ssk);
-//void netlink_detachskb(struct sock *sk, struct sk_buff *skb);
-//int netlink_sendskb(struct sock *sk, struct sk_buff *skb);
+int netlink_attachskb(struct sock *sk, struct sk_buff *skb,
+              long *timeo, struct sock *ssk);
+void netlink_detachskb(struct sock *sk, struct sk_buff *skb);
+int netlink_sendskb(struct sock *sk, struct sk_buff *skb);
 //
 //static inline struct sk_buff *
 //netlink_skb_clone(struct sk_buff *skb, gfp_t gfp_mask)
@@ -222,8 +222,8 @@ struct netlink_notify {
     int protocol;
 };
 
-//struct nlmsghdr *
-//__nlmsg_put(struct sk_buff *skb, u32 portid, u32 seq, int type, int len, int flags);
+struct nlmsghdr *
+__nlmsg_put(struct sk_buff *skb, u32 portid, u32 seq, int type, int len, int flags);
 
 struct netlink_dump_control {
     int (*start)(struct netlink_callback *);
@@ -233,10 +233,10 @@ struct netlink_dump_control {
     struct module *module;
     u16 min_dump_alloc;
 };
-//
-//int __netlink_dump_start(struct sock *ssk, struct sk_buff *skb,
-//                const struct nlmsghdr *nlh,
-//                struct netlink_dump_control *control);
+
+int __netlink_dump_start(struct sock *ssk, struct sk_buff *skb,
+                const struct nlmsghdr *nlh,
+                struct netlink_dump_control *control);
 //static inline int netlink_dump_start(struct sock *ssk, struct sk_buff *skb,
 //                     const struct nlmsghdr *nlh,
 //                     struct netlink_dump_control *control)
@@ -255,12 +255,12 @@ struct netlink_tap {
 //
 //int netlink_add_tap(struct netlink_tap *nt);
 //int netlink_remove_tap(struct netlink_tap *nt);
-//
-//bool __netlink_ns_capable(const struct netlink_skb_parms *nsp,
-//              struct user_namespace *ns, int cap);
-//bool netlink_ns_capable(const struct sk_buff *skb,
-//            struct user_namespace *ns, int cap);
-//bool netlink_capable(const struct sk_buff *skb, int cap);
+
+bool __netlink_ns_capable(const struct netlink_skb_parms *nsp,
+              struct user_namespace *ns, int cap);
+bool netlink_ns_capable(const struct sk_buff *skb,
+            struct user_namespace *ns, int cap);
+bool netlink_capable(const struct sk_buff *skb, int cap);
 //bool netlink_net_capable(const struct sk_buff *skb, int cap);
 
 #endif    /* __LINUX_NETLINK_H */

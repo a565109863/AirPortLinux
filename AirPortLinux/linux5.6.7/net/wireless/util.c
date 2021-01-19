@@ -1688,13 +1688,13 @@ static void cfg80211_calculate_bi_data(struct wiphy *wiphy, u32 new_beacon_int,
             continue;
 
         *beacon_int_different = true;
-//        *beacon_int_gcd = gcd(*beacon_int_gcd, wdev->beacon_interval);
+        *beacon_int_gcd = gcd(*beacon_int_gcd, wdev->beacon_interval);
     }
 
     if (new_beacon_int && *beacon_int_gcd != new_beacon_int) {
         if (*beacon_int_gcd)
             *beacon_int_different = true;
-//        *beacon_int_gcd = gcd(*beacon_int_gcd, new_beacon_int);
+        *beacon_int_gcd = gcd(*beacon_int_gcd, new_beacon_int);
     }
 }
 

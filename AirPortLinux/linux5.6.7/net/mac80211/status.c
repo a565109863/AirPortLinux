@@ -36,7 +36,7 @@ void ieee80211_tx_status_irqsafe(struct ieee80211_hw *hw,
         tmp--;
         I802_DEBUG_INC(local->tx_status_drop);
     }
-//    tasklet_schedule(&local->tasklet);
+    tasklet_schedule(&local->tasklet);
 }
 EXPORT_SYMBOL(ieee80211_tx_status_irqsafe);
 

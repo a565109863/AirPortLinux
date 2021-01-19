@@ -3548,9 +3548,9 @@ struct iwl_trans *iwl_trans_pcie_alloc(struct pci_dev *pdev,
 	pci_set_master(pdev);
 
 	ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(addr_size));
-//	if (!ret)
-//		ret = pci_set_consistent_dma_mask(pdev,
-//						  DMA_BIT_MASK(addr_size));
+	if (!ret)
+		ret = pci_set_consistent_dma_mask(pdev,
+						  DMA_BIT_MASK(addr_size));
 	if (ret) {
 		ret = pci_set_dma_mask(pdev, DMA_BIT_MASK(32));
 		if (!ret)

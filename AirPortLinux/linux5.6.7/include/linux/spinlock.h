@@ -15,7 +15,7 @@
 #define pthread_mutex_t         spinlock_t 
 #define DEFINE_SPINLOCK(x)    pthread_mutex_t x = NULL
 //#define DEFINE_SPINLOCK(x)    pthread_mutex_t x = PTHREAD_MUTEX_INITIALIZER
-#define __SPIN_LOCK_UNLOCKED(x)    (pthread_mutex_t)PTHREAD_MUTEX_INITIALIZER
+#define __SPIN_LOCK_UNLOCKED(x)    (pthread_mutex_t)NULL
 //#define spin_lock_init(x)    pthread_mutex_init(x, NULL)
 
 static inline void spin_lock_init(spinlock_t *lock)

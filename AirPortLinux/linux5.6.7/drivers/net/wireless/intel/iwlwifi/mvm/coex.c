@@ -310,7 +310,7 @@ static void iwl_mvm_bt_coex_tcm_based_ci(struct iwl_mvm *mvm,
 	if (data->primary_load >= data->secondary_load)
 		return;
 
-//	swap(data->primary, data->secondary);
+	swap(data->primary, data->secondary);
 }
 
 /* must be called under rcu_read_lock */

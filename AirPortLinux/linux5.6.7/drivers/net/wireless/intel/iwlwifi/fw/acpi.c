@@ -63,6 +63,7 @@
 #include "acpi.h"
 #include "fw/runtime.h"
 
+#ifdef CONFIG_ACPI
 void *iwl_acpi_get_object(struct device *dev, acpi_string method)
 {
     acpi_handle root_handle;
@@ -537,3 +538,5 @@ int iwl_sar_geo_init(struct iwl_fw_runtime *fwrt,
     return 0;
 }
 IWL_EXPORT_SYMBOL(iwl_sar_geo_init);
+
+#endif

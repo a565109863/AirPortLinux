@@ -49,5 +49,28 @@ static inline bool lockdep_rtnl_is_held(void)
 #define rcu_dereference_rtnl(p)                    \
     rcu_dereference_check(p, lockdep_rtnl_is_held())
 
+struct net_generic {
+    union {
+        struct {
+            unsigned int len;
+            struct rcu_head rcu;
+        } s;
+        
+        void *ptr[0];
+    };
+};
+
+static inline void *net_generic(const struct net *net, unsigned int id)
+{
+    struct net_generic *ng;
+    void *ptr;
+    
+    rcu_read_lock();
+    ng = rcu_dereference(net->gen);
+    ptr = ng->ptr[id];
+    rcu_read_unlock();
+    
+    return ptr;
+}
 
 #endif /* rtnetlink_h */

@@ -61,6 +61,7 @@ struct workqueue_struct * alloc_workqueue(char *wq_name, int how, int type)
 void __queue_work(int cpu, struct workqueue_struct *wq,
                          struct work_struct *work)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     mutex_lock(&wq->mutex);
     list_add_tail(&work->entry, &wq->list);
     IORecursiveLockWakeup(wq->mutex.lock, &wq->work_color, true);
@@ -119,11 +120,14 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
     struct timer_list *timer = &dwork->timer;
     struct work_struct *work = &dwork->work;
 
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     WARN_ON_ONCE(!wq);
     WARN_ON_ONCE(timer->function != delayed_work_timer_fn);
     WARN_ON_ONCE(timer_pending(timer));
     WARN_ON_ONCE(!list_empty(&work->entry));
 
+    kprintf("--%s: line = %d, fun = %s", __FUNCTION__, __LINE__, timer->name);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     /*
      * If @delay is 0, queue @dwork->work immediately.  This is for
      * both optimization and correctness.  The earliest @timer can
@@ -131,18 +135,23 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
      * on that there's no such delay when @delay is 0.
      */
     if (!delay) {
+        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
         __queue_work(cpu, wq, &dwork->work);
         return;
     }
 
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     dwork->wq = wq;
     dwork->cpu = cpu;
     timer->expires = jiffies + delay;
 
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     if (unlikely(cpu != WORK_CPU_UNBOUND))
         add_timer_on(timer, cpu);
     else
         add_timer(timer);
+    
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 }
 
 /**

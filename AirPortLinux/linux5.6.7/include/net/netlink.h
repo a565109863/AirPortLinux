@@ -910,8 +910,7 @@ static inline struct nlmsghdr *nlmsg_put(struct sk_buff *skb, u32 portid, u32 se
     if (unlikely(skb_tailroom(skb) < nlmsg_total_size(payload)))
         return NULL;
 
-//    return __nlmsg_put(skb, portid, seq, type, payload, flags);
-    return NULL;
+    return __nlmsg_put(skb, portid, seq, type, payload, flags);
 }
 
 /**
@@ -1042,8 +1041,8 @@ static inline int nlmsg_unicast(struct sock *sk, struct sk_buff *skb, u32 portid
 {
     int err;
 
-//    err = netlink_unicast(sk, skb, portid, MSG_DONTWAIT);
-//    if (err > 0)
+    err = netlink_unicast(sk, skb, portid, MSG_DONTWAIT);
+    if (err > 0)
         err = 0;
 
     return err;

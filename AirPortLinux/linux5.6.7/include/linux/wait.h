@@ -37,4 +37,29 @@ int wakeup_sleep(wait_queue_head_t *q, bool one);
 #define wake_up(q)      wakeup_sleep(q, true);
 #define wake_up_all(q)  wakeup_sleep(q, false);
 
+
+
+int default_wake_function(struct wait_queue_entry *wq_entry, unsigned mode, int flags, void *key);
+
+
+/*
+ * Macros for declaration and initialisaton of the datatypes
+ */
+
+#define __WAITQUEUE_INITIALIZER(name, tsk) {                    \
+.private    = tsk,                            \
+.func        = default_wake_function,                \
+.entry        = { NULL, NULL } }
+
+#define DECLARE_WAITQUEUE(name, tsk)                        \
+struct wait_queue_entry name = __WAITQUEUE_INITIALIZER(name, tsk)
+
+#define __WAIT_QUEUE_HEAD_INITIALIZER(name) {                    \
+.lock        = __SPIN_LOCK_UNLOCKED(name.lock),            \
+.head        = { &(name).head, &(name).head } }
+
+#define DECLARE_WAIT_QUEUE_HEAD(name) \
+struct wait_queue_head name = __WAIT_QUEUE_HEAD_INITIALIZER(name)
+
+
 #endif /* linux_wait_h */

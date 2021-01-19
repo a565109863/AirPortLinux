@@ -235,6 +235,7 @@ static bool ieee80211_scan_accept_presp(struct ieee80211_sub_if_data *sdata,
 
 void ieee80211_scan_rx(struct ieee80211_local *local, struct sk_buff *skb)
 {
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     struct ieee80211_rx_status *rx_status = IEEE80211_SKB_RXCB(skb);
     struct ieee80211_sub_if_data *sdata1, *sdata2;
     struct ieee80211_mgmt *mgmt = (struct ieee80211_mgmt *)skb->data;
@@ -440,7 +441,7 @@ static void __ieee80211_scan_completed(struct ieee80211_hw *hw, bool aborted)
 
     if (!hw_scan) {
         ieee80211_configure_filter(local);
-//        drv_sw_scan_complete(local, scan_sdata);
+        drv_sw_scan_complete(local, scan_sdata);
         ieee80211_offchannel_return(local);
     }
 
@@ -453,10 +454,10 @@ static void __ieee80211_scan_completed(struct ieee80211_hw *hw, bool aborted)
      * the scan was in progress; if there was none this will
      * just be a no-op for the particular interface.
      */
-//    list_for_each_entry_rcu(sdata, &local->interfaces, list) {
-//        if (ieee80211_sdata_running(sdata))
-//            ieee80211_queue_work(&sdata->local->hw, &sdata->work);
-//    }
+    list_for_each_entry_rcu(sdata, &local->interfaces, list) {
+        if (ieee80211_sdata_running(sdata))
+            ieee80211_queue_work(&sdata->local->hw, &sdata->work);
+    }
 
     if (was_scanning)
         ieee80211_start_next_roc(local);
@@ -467,7 +468,7 @@ void ieee80211_scan_completed(struct ieee80211_hw *hw,
 {
     struct ieee80211_local *local = hw_to_local(hw);
 
-//    trace_api_scan_completed(local, info->aborted);
+    trace_api_scan_completed(local, info->aborted);
 
     set_bit(SCAN_COMPLETED, &local->scanning);
     if (info->aborted)
@@ -482,6 +483,7 @@ EXPORT_SYMBOL(ieee80211_scan_completed);
 static int ieee80211_start_sw_scan(struct ieee80211_local *local,
                    struct ieee80211_sub_if_data *sdata)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     /* Software scan is not supported in multi-channel cases */
     if (local->use_chanctx)
         return -EOPNOTSUPP;
@@ -499,7 +501,7 @@ static int ieee80211_start_sw_scan(struct ieee80211_local *local,
      * nullfunc frames and probe requests will be dropped in
      * ieee80211_tx_h_check_assoc().
      */
-//    drv_sw_scan_start(local, sdata, local->scan_addr);
+    drv_sw_scan_start(local, sdata, local->scan_addr);
 
     local->leave_oper_channel_time = jiffies;
     local->next_scan_state = SCAN_DECISION;
@@ -523,6 +525,7 @@ static int ieee80211_start_sw_scan(struct ieee80211_local *local,
 
 static bool __ieee80211_can_leave_ch(struct ieee80211_sub_if_data *sdata)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = sdata->local;
     struct ieee80211_sub_if_data *sdata_iter;
 
@@ -547,6 +550,7 @@ static bool __ieee80211_can_leave_ch(struct ieee80211_sub_if_data *sdata)
 static bool ieee80211_can_scan(struct ieee80211_local *local,
                    struct ieee80211_sub_if_data *sdata)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!__ieee80211_can_leave_ch(sdata))
         return false;
 
@@ -648,6 +652,7 @@ static void ieee80211_scan_state_send_probe(struct ieee80211_local *local,
 static int __ieee80211_start_scan(struct ieee80211_sub_if_data *sdata,
                   struct cfg80211_scan_request *req)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = sdata->local;
     bool hw_scan = local->ops->hw_scan;
     int rc;
@@ -659,14 +664,16 @@ static int __ieee80211_start_scan(struct ieee80211_sub_if_data *sdata,
 
     if (!__ieee80211_can_leave_ch(sdata))
         return -EBUSY;
-
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!ieee80211_can_scan(local, sdata)) {
         /* wait for the work to finish/time out */
         rcu_assign_pointer(local->scan_req, req);
         rcu_assign_pointer(local->scan_sdata, sdata);
         return 0;
     }
-
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
  again:
     if (hw_scan) {
         u8 *ies;
@@ -767,13 +774,16 @@ static int __ieee80211_start_scan(struct ieee80211_sub_if_data *sdata,
         /* Do normal software scan */
         __set_bit(SCAN_SW_SCANNING, &local->scanning);
     }
-
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     ieee80211_recalc_idle(local);
 
     if (hw_scan) {
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         WARN_ON(!ieee80211_prep_hw_scan(local));
         rc = drv_hw_scan(local, sdata, local->hw_scan_req);
     } else {
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         rc = ieee80211_start_sw_scan(local, sdata);
     }
 
@@ -799,7 +809,8 @@ static int __ieee80211_start_scan(struct ieee80211_sub_if_data *sdata,
         hw_scan = false;
         goto again;
     }
-
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     return rc;
 }
 
@@ -989,6 +1000,7 @@ static void ieee80211_scan_state_resume(struct ieee80211_local *local,
 
 void ieee80211_scan_work(struct work_struct *work)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local =
         container_of(work, struct ieee80211_local, scan_work.work);
     struct ieee80211_sub_if_data *sdata;
@@ -1088,7 +1100,8 @@ int ieee80211_request_scan(struct ieee80211_sub_if_data *sdata,
                struct cfg80211_scan_request *req)
 {
     int res;
-
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     mutex_lock(&sdata->local->mtx);
     res = __ieee80211_start_scan(sdata, req);
     mutex_unlock(&sdata->local->mtx);
@@ -1210,10 +1223,10 @@ void ieee80211_scan_cancel(struct ieee80211_local *local)
          * scan on another band.
          */
         set_bit(SCAN_HW_CANCELLED, &local->scanning);
-//        if (local->ops->cancel_hw_scan)
-//            drv_cancel_hw_scan(local,
-//                rcu_dereference_protected(local->scan_sdata,
-//                        lockdep_is_held(&local->mtx)));
+        if (local->ops->cancel_hw_scan)
+            drv_cancel_hw_scan(local,
+                rcu_dereference_protected(local->scan_sdata,
+                        lockdep_is_held(&local->mtx)));
         goto out;
     }
 
@@ -1273,7 +1286,7 @@ int __ieee80211_request_sched_scan_start(struct ieee80211_sub_if_data *sdata,
                  req->ie_len, bands_used, rate_masks, &chandef,
                  flags);
 
-//    ret = drv_sched_scan_start(local, sdata, req, &sched_scan_ies);
+    ret = drv_sched_scan_start(local, sdata, req, &sched_scan_ies);
     if (ret == 0) {
         rcu_assign_pointer(local->sched_scan_sdata, sdata);
         rcu_assign_pointer(local->sched_scan_req, req);
@@ -1328,7 +1341,7 @@ int ieee80211_request_sched_scan_stop(struct ieee80211_local *local)
     sched_scan_sdata = rcu_dereference_protected(local->sched_scan_sdata,
                         lockdep_is_held(&local->mtx));
     if (sched_scan_sdata) {
-//        ret = drv_sched_scan_stop(local, sched_scan_sdata);
+        ret = drv_sched_scan_stop(local, sched_scan_sdata);
         if (!ret)
             RCU_INIT_POINTER(local->sched_scan_sdata, NULL);
     }
@@ -1342,7 +1355,7 @@ void ieee80211_sched_scan_results(struct ieee80211_hw *hw)
 {
     struct ieee80211_local *local = hw_to_local(hw);
 
-//    trace_api_sched_scan_results(local);
+    trace_api_sched_scan_results(local);
 
     cfg80211_sched_scan_results(hw->wiphy, 0);
 }
@@ -1380,7 +1393,7 @@ void ieee80211_sched_scan_stopped(struct ieee80211_hw *hw)
 {
     struct ieee80211_local *local = hw_to_local(hw);
 
-//    trace_api_sched_scan_stopped(local);
+    trace_api_sched_scan_stopped(local);
 
     /*
      * this shouldn't really happen, so for simplicity

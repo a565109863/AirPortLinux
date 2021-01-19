@@ -51,7 +51,7 @@ struct timer_list {
      * All fields that change during normal runtime grouped to the
      * same cacheline
      */
-//    struct hlist_node entry;
+    struct hlist_node entry;
     unsigned long expires;
 //    struct tvec_base *base;
     IOTimeout* vt;

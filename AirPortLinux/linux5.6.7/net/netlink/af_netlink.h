@@ -68,7 +68,19 @@ struct netlink_table {
     int            registered;
 };
 
+
+typedef struct {
+//    arch_rwlock_t raw_lock;
+#ifdef CONFIG_DEBUG_SPINLOCK
+    unsigned int magic, owner_cpu;
+    void *owner;
+#endif
+#ifdef CONFIG_DEBUG_LOCK_ALLOC
+    struct lockdep_map dep_map;
+#endif
+} rwlock_t;
+
 extern struct netlink_table *nl_table;
-//extern rwlock_t nl_table_lock;
+extern rwlock_t nl_table_lock;
 
 #endif

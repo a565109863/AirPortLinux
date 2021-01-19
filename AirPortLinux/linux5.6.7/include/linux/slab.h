@@ -12,6 +12,7 @@
 #include <linux/gfp.h>
 #include <linux/log2.h>
 #include <linux/kernel.h>
+#include <linux/module.h>
 
 #define SLAB_HWCACHE_ALIGN 0
 
@@ -33,7 +34,7 @@ struct kmem_cache {
 
 static void *kmem_cache_alloc(struct kmem_cache *kc, gfp_t flags) __assume_slab_alignment __malloc
 {
-    return malloc(sizeof(*kc));
+    return malloc(kc->object_size);
 }
 
 static void kmem_cache_free(struct kmem_cache *, void *)
@@ -54,8 +55,10 @@ static struct kmem_cache *kmem_cache_create(const char *name, unsigned int size,
             unsigned int align, slab_flags_t flags,
             void (*ctor)(void *))
 {
-    struct kmem_cache *kc = (struct kmem_cache *)kmalloc(size, flags);
+    struct kmem_cache *kc = (struct kmem_cache *)kmalloc(sizeof(struct kmem_cache), flags);
     kc->name = name;
+    kc->object_size = size;
+    kc->ctor = ctor;
     return kc;
 }
 static struct kmem_cache *kmem_cache_create_usercopy(const char *name,

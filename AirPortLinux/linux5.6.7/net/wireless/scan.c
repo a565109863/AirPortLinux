@@ -461,7 +461,7 @@ void ___cfg80211_scan_done(struct cfg80211_registered_device *rdev,
     ASSERT_RTNL();
 
     if (rdev->scan_msg) {
-//        nl80211_send_scan_msg(rdev, rdev->scan_msg);
+        nl80211_send_scan_msg(rdev, rdev->scan_msg);
         rdev->scan_msg = NULL;
         return;
     }
@@ -488,7 +488,7 @@ void ___cfg80211_scan_done(struct cfg80211_registered_device *rdev,
         spin_unlock_bh(&rdev->bss_lock);
     }
 
-//    msg = nl80211_build_scan_msg(rdev, wdev, request->info.aborted);
+    msg = nl80211_build_scan_msg(rdev, wdev, request->info.aborted);
 
 #ifdef CONFIG_CFG80211_WEXT
     if (wdev->netdev && !request->info.aborted) {
@@ -498,16 +498,16 @@ void ___cfg80211_scan_done(struct cfg80211_registered_device *rdev,
     }
 #endif
 
-//    if (wdev->netdev)
-//        dev_put(wdev->netdev);
+    if (wdev->netdev)
+        dev_put(wdev->netdev);
 
     rdev->scan_req = NULL;
     kfree(request);
 
     if (!send_message)
         rdev->scan_msg = msg;
-//    else
-//        nl80211_send_scan_msg(rdev, msg);
+    else
+        nl80211_send_scan_msg(rdev, msg);
 }
 
 void __cfg80211_scan_done(struct work_struct *wk)
@@ -539,7 +539,7 @@ void cfg80211_add_sched_scan_req(struct cfg80211_registered_device *rdev,
 {
     ASSERT_RTNL();
 
-//    list_add_rcu(&req->list, &rdev->sched_scan_req_list);
+    list_add_rcu(&req->list, &rdev->sched_scan_req_list);
 }
 
 static void cfg80211_del_sched_scan_req(struct cfg80211_registered_device *rdev,
@@ -547,7 +547,7 @@ static void cfg80211_del_sched_scan_req(struct cfg80211_registered_device *rdev,
 {
     ASSERT_RTNL();
 
-//    list_del_rcu(&req->list);
+    list_del_rcu(&req->list);
     kfree_rcu(req, rcu_head);
 }
 
@@ -556,12 +556,12 @@ cfg80211_find_sched_scan_req(struct cfg80211_registered_device *rdev, u64 reqid)
 {
     struct cfg80211_sched_scan_request *pos;
 
-//    WARN_ON_ONCE(!rcu_read_lock_held() && !lockdep_rtnl_is_held());
-//
-//    list_for_each_entry_rcu(pos, &rdev->sched_scan_req_list, list) {
-//        if (pos->reqid == reqid)
-//            return pos;
-//    }
+    WARN_ON_ONCE(!rcu_read_lock_held() && !lockdep_rtnl_is_held());
+
+    list_for_each_entry_rcu(pos, &rdev->sched_scan_req_list, list) {
+        if (pos->reqid == reqid)
+            return pos;
+    }
     return NULL;
 }
 
@@ -617,8 +617,8 @@ void cfg80211_sched_scan_results_wk(struct work_struct *work)
                 spin_unlock_bh(&rdev->bss_lock);
                 req->scan_start = jiffies;
             }
-//            nl80211_send_sched_scan(req,
-//                        NL80211_CMD_SCHED_SCAN_RESULTS);
+            nl80211_send_sched_scan(req,
+                        NL80211_CMD_SCHED_SCAN_RESULTS);
         }
     }
     rtnl_unlock();
@@ -674,7 +674,7 @@ int cfg80211_stop_sched_scan_req(struct cfg80211_registered_device *rdev,
             return err;
     }
 
-//    nl80211_send_sched_scan(req, NL80211_CMD_SCHED_SCAN_STOPPED);
+    nl80211_send_sched_scan(req, NL80211_CMD_SCHED_SCAN_STOPPED);
 
     cfg80211_del_sched_scan_req(rdev, req);
 
@@ -1442,12 +1442,12 @@ cfg80211_inform_single_bss_data(struct wiphy *wiphy,
 
     if (channel->band == NL80211_BAND_60GHZ) {
         bss_type = res->pub.capability & WLAN_CAPABILITY_DMG_TYPE_MASK;
-//        if (bss_type == WLAN_CAPABILITY_DMG_TYPE_AP ||
-//            bss_type == WLAN_CAPABILITY_DMG_TYPE_PBSS)
-//            regulatory_hint_found_beacon(wiphy, channel, gfp);
+        if (bss_type == WLAN_CAPABILITY_DMG_TYPE_AP ||
+            bss_type == WLAN_CAPABILITY_DMG_TYPE_PBSS)
+            regulatory_hint_found_beacon(wiphy, channel, gfp);
     } else {
-//        if (res->pub.capability & WLAN_CAPABILITY_ESS)
-//            regulatory_hint_found_beacon(wiphy, channel, gfp);
+        if (res->pub.capability & WLAN_CAPABILITY_ESS)
+            regulatory_hint_found_beacon(wiphy, channel, gfp);
     }
 
     if (non_tx_data) {
@@ -1861,12 +1861,12 @@ cfg80211_inform_single_bss_frame_data(struct wiphy *wiphy,
 
     if (channel->band == NL80211_BAND_60GHZ) {
         bss_type = res->pub.capability & WLAN_CAPABILITY_DMG_TYPE_MASK;
-//        if (bss_type == WLAN_CAPABILITY_DMG_TYPE_AP ||
-//            bss_type == WLAN_CAPABILITY_DMG_TYPE_PBSS)
-//            regulatory_hint_found_beacon(wiphy, channel, gfp);
+        if (bss_type == WLAN_CAPABILITY_DMG_TYPE_AP ||
+            bss_type == WLAN_CAPABILITY_DMG_TYPE_PBSS)
+            regulatory_hint_found_beacon(wiphy, channel, gfp);
     } else {
-//        if (res->pub.capability & WLAN_CAPABILITY_ESS)
-//            regulatory_hint_found_beacon(wiphy, channel, gfp);
+        if (res->pub.capability & WLAN_CAPABILITY_ESS)
+            regulatory_hint_found_beacon(wiphy, channel, gfp);
     }
 
     trace_cfg80211_return_bss(&res->pub);

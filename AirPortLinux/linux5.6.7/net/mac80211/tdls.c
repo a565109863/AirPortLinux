@@ -1408,7 +1408,7 @@ int ieee80211_tdls_oper(struct wiphy *wiphy, struct net_device *dev,
          * Note that this only forces the tasklet to flush pendings -
          * not to stop the tasklet from rescheduling itself.
          */
-//        tasklet_kill(&local->tx_pending_tasklet);
+        tasklet_kill(&local->tx_pending_tasklet);
         /* flush a potentially queued teardown packet */
         ieee80211_flush_queues(local, sdata, false);
 

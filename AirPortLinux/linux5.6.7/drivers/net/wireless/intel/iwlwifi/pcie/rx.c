@@ -896,9 +896,9 @@ err:
 		trans_pcie->base_rb_stts = NULL;
 		trans_pcie->base_rb_stts_dma = 0;
 	}
-//	kfree(trans_pcie->rx_pool);
-//	kfree(trans_pcie->global_table);
-//	kfree(trans_pcie->rxq);
+	kfree(trans_pcie->rx_pool);
+	kfree(trans_pcie->global_table);
+	kfree(trans_pcie->rxq);
     
     kfree(trans_pcie->rx_pool, RX_POOL_SIZE(trans_pcie->num_rx_bufs),
           sizeof(trans_pcie->rx_pool[0]));
@@ -1232,12 +1232,12 @@ void iwl_pcie_rx_free(struct iwl_trans *trans)
 
 		iwl_pcie_free_rxq_dma(trans, rxq);
 
-//		if (rxq->napi.poll)
-//			netif_napi_del(&rxq->napi);
+		if (rxq->napi.poll)
+			netif_napi_del(&rxq->napi);
 	}
-//	kfree(trans_pcie->rx_pool);
-//	kfree(trans_pcie->global_table);
-//	kfree(trans_pcie->rxq);
+	kfree(trans_pcie->rx_pool);
+	kfree(trans_pcie->global_table);
+	kfree(trans_pcie->rxq);
     
     kfree(trans_pcie->rx_pool, RX_POOL_SIZE(trans_pcie->num_rx_bufs),
           sizeof(trans_pcie->rx_pool[0]));

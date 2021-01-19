@@ -8,7 +8,7 @@
 #include <linux/list.h>
 #include <linux/delay.h>
 #include <linux/sched.h>
-//#include <linux/idr.h>
+#include <linux/idr.h>
 #include <linux/rculist.h>
 //#include <linux/nsproxy.h>
 #include <linux/fs.h>
@@ -24,17 +24,6 @@
 #include <net/netlink.h>
 #include <net/net_namespace.h>
 //#include <net/netns/generic.h>
-
-struct net_generic {
-    union {
-        struct {
-            unsigned int len;
-            struct rcu_head rcu;
-        } s;
-        
-        void *ptr[0];
-    };
-};
 
 
 /*
@@ -136,18 +125,18 @@ static int ops_init(const struct pernet_operations *ops, struct net *net)
     int err = -ENOMEM;
     void *data = NULL;
     
-//    if (ops->id && ops->size) {
-//        data = kzalloc(ops->size, GFP_KERNEL);
-//        if (!data)
-//            goto out;
-//
-//        err = net_assign_generic(net, *ops->id, data);
-//        if (err)
-//            goto cleanup;
-//    }
-//    err = 0;
-//    if (ops->init)
-//        err = ops->init(net);
+    if (ops->id && ops->size) {
+        data = kzalloc(ops->size, GFP_KERNEL);
+        if (!data)
+            goto out;
+
+        err = net_assign_generic(net, *ops->id, data);
+        if (err)
+            goto cleanup;
+    }
+    err = 0;
+    if (ops->init)
+        err = ops->init(net);
     if (!err)
         return 0;
     
@@ -160,9 +149,9 @@ out:
 
 static void ops_free(const struct pernet_operations *ops, struct net *net)
 {
-//    if (ops->id && ops->size) {
-//        kfree(net_generic(net, *ops->id));
-//    }
+    if (ops->id && ops->size) {
+        kfree(net_generic(net, *ops->id));
+    }
 }
 
 static void ops_pre_exit_list(const struct pernet_operations *ops,
@@ -170,32 +159,32 @@ static void ops_pre_exit_list(const struct pernet_operations *ops,
 {
     struct net *net;
     
-//    if (ops->pre_exit) {
-//        list_for_each_entry(net, net_exit_list, exit_list)
-//        ops->pre_exit(net);
-//    }
+    if (ops->pre_exit) {
+        list_for_each_entry(net, net_exit_list, exit_list)
+        ops->pre_exit(net);
+    }
 }
 
 static void ops_exit_list(const struct pernet_operations *ops,
                           struct list_head *net_exit_list)
 {
     struct net *net;
-//    if (ops->exit) {
-//        list_for_each_entry(net, net_exit_list, exit_list)
-//        ops->exit(net);
-//    }
-//    if (ops->exit_batch)
-//        ops->exit_batch(net_exit_list);
+    if (ops->exit) {
+        list_for_each_entry(net, net_exit_list, exit_list)
+        ops->exit(net);
+    }
+    if (ops->exit_batch)
+        ops->exit_batch(net_exit_list);
 }
 
 static void ops_free_list(const struct pernet_operations *ops,
                           struct list_head *net_exit_list)
 {
     struct net *net;
-//    if (ops->size && ops->id) {
-//        list_for_each_entry(net, net_exit_list, exit_list)
-//        ops_free(ops, net);
-//    }
+    if (ops->size && ops->id) {
+        list_for_each_entry(net, net_exit_list, exit_list)
+        ops_free(ops, net);
+    }
 }
 
 /* should be called with nsid_lock held */
@@ -208,8 +197,7 @@ static int alloc_netid(struct net *net, struct net *peer, int reqid)
         max = reqid + 1;
     }
     
-//    return idr_alloc(&net->netns_ids, peer, min, max, GFP_ATOMIC);
-    return 0;
+    return idr_alloc(&net->netns_ids, peer, min, max, GFP_ATOMIC);
 }
 
 /* This function is used by idr_for_each(). If net is equal to peer, the
@@ -220,21 +208,21 @@ static int alloc_netid(struct net *net, struct net *peer, int reqid)
 #define NET_ID_ZERO -1
 static int net_eq_idr(int id, void *net, void *peer)
 {
-//    if (net_eq(net, peer))
-//        return id ? : NET_ID_ZERO;
+    if (net_eq((const struct net *)net, (const struct net *)peer))
+        return id ? : NET_ID_ZERO;
     return 0;
 }
 
 /* Must be called from RCU-critical section or with nsid_lock held */
 static int __peernet2id(const struct net *net, struct net *peer)
 {
-//    int id = idr_for_each(&net->netns_ids, net_eq_idr, peer);
-//
-//    /* Magic value for id 0. */
-//    if (id == NET_ID_ZERO)
-//        return 0;
-//    if (id > 0)
-//        return id;
+    int id = idr_for_each(&net->netns_ids, net_eq_idr, peer);
+
+    /* Magic value for id 0. */
+    if (id == NET_ID_ZERO)
+        return 0;
+    if (id > 0)
+        return id;
     
     return NETNSA_NSID_NOT_ASSIGNED;
 }
@@ -263,15 +251,15 @@ int peernet2id_alloc(struct net *net, struct net *peer, gfp_t gfp)
      * we never hash a peer back to net->netns_ids, after it has
      * just been idr_remove()'d from there in cleanup_net().
      */
-//    if (!maybe_get_net(peer)) {
-//        spin_unlock(&net->nsid_lock);
-//        return NETNSA_NSID_NOT_ASSIGNED;
-//    }
+    if (!maybe_get_net(peer)) {
+        spin_unlock(&net->nsid_lock);
+        return NETNSA_NSID_NOT_ASSIGNED;
+    }
     
     id = alloc_netid(net, peer, -1);
     spin_unlock(&net->nsid_lock);
     
-//    put_net(peer);
+    put_net(peer);
     if (id < 0)
         return NETNSA_NSID_NOT_ASSIGNED;
     
@@ -310,14 +298,15 @@ struct net *get_net_ns_by_id(const struct net *net, int id)
         return NULL;
     
     rcu_read_lock();
-//    peer = idr_find(&net->netns_ids, id);
-//    if (peer)
-//        peer = maybe_get_net(peer);
+    peer = (struct net *)idr_find(&net->netns_ids, id);
+    if (peer)
+        peer = maybe_get_net(peer);
     rcu_read_unlock();
     
     return peer;
 }
 
+struct user_namespace init_user_ns = {};
 /*
  * setup_net runs the initializers for the network namespace object.
  */
@@ -333,7 +322,7 @@ static __net_init int setup_net(struct net *net, struct user_namespace *user_ns)
     get_random_bytes(&net->hash_mix, sizeof(u32));
     net->dev_base_seq = 1;
     net->user_ns = user_ns;
-//    idr_init(&net->netns_ids);
+    idr_init(&net->netns_ids);
     spin_lock_init(&net->nsid_lock);
 //    mutex_init(&net->ipv4.ra_mutex);
     
@@ -354,19 +343,19 @@ out_undo:
      */
     list_add(&net->exit_list, &net_exit_list);
     saved_ops = ops;
-//    list_for_each_entry_continue_reverse(ops, &pernet_list, list)
-//    ops_pre_exit_list(ops, &net_exit_list);
-//
-//    synchronize_rcu();
-//
-//    ops = saved_ops;
-//    list_for_each_entry_continue_reverse(ops, &pernet_list, list)
-//    ops_exit_list(ops, &net_exit_list);
-//
-//    ops = saved_ops;
-//    list_for_each_entry_continue_reverse(ops, &pernet_list, list)
-//    ops_free_list(ops, &net_exit_list);
-//
+    list_for_each_entry_continue_reverse(ops, &pernet_list, list)
+    ops_pre_exit_list(ops, &net_exit_list);
+
+    synchronize_rcu();
+
+    ops = saved_ops;
+    list_for_each_entry_continue_reverse(ops, &pernet_list, list)
+    ops_exit_list(ops, &net_exit_list);
+
+    ops = saved_ops;
+    list_for_each_entry_continue_reverse(ops, &pernet_list, list)
+    ops_free_list(ops, &net_exit_list);
+
 //    rcu_barrier();
     goto out;
 }
@@ -482,7 +471,7 @@ struct net *copy_net_ns(unsigned long flags,
 //    if (rv < 0)
 //        goto put_userns;
 //
-//    rv = setup_net(net, user_ns);
+    rv = setup_net(net, user_ns);
 //
 //    up_read(&pernet_ops_rwsem);
 //
@@ -1083,35 +1072,35 @@ struct net *copy_net_ns(unsigned long flags,
 //out:
 //    rtnl_set_sk_err(net, RTNLGRP_NSID, err);
 //}
-//
-//static int __init net_ns_init(void)
-//{
-//    struct net_generic *ng;
-//
-//#ifdef CONFIG_NET_NS
-//    net_cachep = kmem_cache_create("net_namespace", sizeof(struct net),
-//                                   SMP_CACHE_BYTES,
-//                                   SLAB_PANIC|SLAB_ACCOUNT, NULL);
-//
-//    /* Create workqueue for cleanup */
-//    netns_wq = create_singlethread_workqueue("netns");
-//    if (!netns_wq)
-//        panic("Could not create netns workq");
-//#endif
-//
-//    ng = net_alloc_generic();
-//    if (!ng)
-//        panic("Could not allocate generic netns");
-//
-//    rcu_assign_pointer(init_net.gen, ng);
-//
+
+int net_ns_init(void)
+{
+    struct net_generic *ng;
+
+#ifdef CONFIG_NET_NS
+    net_cachep = kmem_cache_create("net_namespace", sizeof(struct net),
+                                   SMP_CACHE_BYTES,
+                                   SLAB_PANIC|SLAB_ACCOUNT, NULL);
+
+    /* Create workqueue for cleanup */
+    netns_wq = create_singlethread_workqueue("netns");
+    if (!netns_wq)
+        panic("Could not create netns workq");
+#endif
+
+    ng = net_alloc_generic();
+    if (!ng)
+        panic("Could not allocate generic netns");
+
+    rcu_assign_pointer(init_net.gen, ng);
+
 //    down_write(&pernet_ops_rwsem);
-//    if (setup_net(&init_net, &init_user_ns))
-//        panic("Could not setup the initial network namespace");
-//
-//    init_net_initialized = true;
-//    up_write(&pernet_ops_rwsem);
-//
+    if (setup_net(&init_net, &init_user_ns))
+        panic("Could not setup the initial network namespace");
+
+    init_net_initialized = true;
+    up_write(&pernet_ops_rwsem);
+
 //    if (register_pernet_subsys(&net_ns_ops))
 //        panic("Could not register network namespace subsystems");
 //
@@ -1119,112 +1108,112 @@ struct net *copy_net_ns(unsigned long flags,
 //                  RTNL_FLAG_DOIT_UNLOCKED);
 //    rtnl_register(PF_UNSPEC, RTM_GETNSID, rtnl_net_getid, rtnl_net_dumpid,
 //                  RTNL_FLAG_DOIT_UNLOCKED);
-//
-//    return 0;
-//}
-//
+
+    return 0;
+}
+
 //pure_initcall(net_ns_init);
-//
+
 #ifdef CONFIG_NET_NS
-//static int __register_pernet_operations(struct list_head *list,
-//                                        struct pernet_operations *ops)
-//{
-//    struct net *net;
-//    int error;
-//    LIST_HEAD(net_exit_list);
-//
-//    list_add_tail(&ops->list, list);
-//    if (ops->init || (ops->id && ops->size)) {
-//        /* We held write locked pernet_ops_rwsem, and parallel
-//         * setup_net() and cleanup_net() are not possible.
-//         */
-//        for_each_net(net) {
-//            error = ops_init(ops, net);
-//            if (error)
-//                goto out_undo;
-//            list_add_tail(&net->exit_list, &net_exit_list);
-//        }
-//    }
-//    return 0;
-//
-//out_undo:
-//    /* If I have an error cleanup all namespaces I initialized */
-//    list_del(&ops->list);
-//    ops_pre_exit_list(ops, &net_exit_list);
-//    synchronize_rcu();
-//    ops_exit_list(ops, &net_exit_list);
-//    ops_free_list(ops, &net_exit_list);
-//    return error;
-//}
-//
-//static void __unregister_pernet_operations(struct pernet_operations *ops)
-//{
-//    struct net *net;
-//    LIST_HEAD(net_exit_list);
-//
-//    list_del(&ops->list);
-//    /* See comment in __register_pernet_operations() */
-//    for_each_net(net)
-//    list_add_tail(&net->exit_list, &net_exit_list);
-//    ops_pre_exit_list(ops, &net_exit_list);
-//    synchronize_rcu();
-//    ops_exit_list(ops, &net_exit_list);
-//    ops_free_list(ops, &net_exit_list);
-//}
-//
+static int __register_pernet_operations(struct list_head *list,
+                                        struct pernet_operations *ops)
+{
+    struct net *net;
+    int error;
+    LIST_HEAD(net_exit_list);
+
+    list_add_tail(&ops->list, list);
+    if (ops->init || (ops->id && ops->size)) {
+        /* We held write locked pernet_ops_rwsem, and parallel
+         * setup_net() and cleanup_net() are not possible.
+         */
+        for_each_net(net) {
+            error = ops_init(ops, net);
+            if (error)
+                goto out_undo;
+            list_add_tail(&net->exit_list, &net_exit_list);
+        }
+    }
+    return 0;
+
+out_undo:
+    /* If I have an error cleanup all namespaces I initialized */
+    list_del(&ops->list);
+    ops_pre_exit_list(ops, &net_exit_list);
+    synchronize_rcu();
+    ops_exit_list(ops, &net_exit_list);
+    ops_free_list(ops, &net_exit_list);
+    return error;
+}
+
+static void __unregister_pernet_operations(struct pernet_operations *ops)
+{
+    struct net *net;
+    LIST_HEAD(net_exit_list);
+
+    list_del(&ops->list);
+    /* See comment in __register_pernet_operations() */
+    for_each_net(net)
+    list_add_tail(&net->exit_list, &net_exit_list);
+    ops_pre_exit_list(ops, &net_exit_list);
+    synchronize_rcu();
+    ops_exit_list(ops, &net_exit_list);
+    ops_free_list(ops, &net_exit_list);
+}
+
 #else
-//
-//static int __register_pernet_operations(struct list_head *list,
-//                                        struct pernet_operations *ops)
-//{
-//    if (!init_net_initialized) {
-//        list_add_tail(&ops->list, list);
-//        return 0;
-//    }
-//
-//    return ops_init(ops, &init_net);
-//}
-//
-//static void __unregister_pernet_operations(struct pernet_operations *ops)
-//{
-//    if (!init_net_initialized) {
-//        list_del(&ops->list);
-//    } else {
-//        LIST_HEAD(net_exit_list);
-//        list_add(&init_net.exit_list, &net_exit_list);
-//        ops_pre_exit_list(ops, &net_exit_list);
-//        synchronize_rcu();
-//        ops_exit_list(ops, &net_exit_list);
-//        ops_free_list(ops, &net_exit_list);
-//    }
-//}
+
+static int __register_pernet_operations(struct list_head *list,
+                                        struct pernet_operations *ops)
+{
+    if (!init_net_initialized) {
+        list_add_tail(&ops->list, list);
+        return 0;
+    }
+
+    return ops_init(ops, &init_net);
+}
+
+static void __unregister_pernet_operations(struct pernet_operations *ops)
+{
+    if (!init_net_initialized) {
+        list_del(&ops->list);
+    } else {
+        LIST_HEAD(net_exit_list);
+        list_add(&init_net.exit_list, &net_exit_list);
+        ops_pre_exit_list(ops, &net_exit_list);
+        synchronize_rcu();
+        ops_exit_list(ops, &net_exit_list);
+        ops_free_list(ops, &net_exit_list);
+    }
+}
 
 #endif /* CONFIG_NET_NS */
-//
-//static DEFINE_IDA(net_generic_ids);
-//
-//static int register_pernet_operations(struct list_head *list,
-//                                      struct pernet_operations *ops)
-//{
-//    int error;
-//
-//    if (ops->id) {
-//        error = ida_alloc_min(&net_generic_ids, MIN_PERNET_OPS_ID,
-//                              GFP_KERNEL);
-//        if (error < 0)
-//            return error;
-//        *ops->id = error;
-//        max_gen_ptrs = max(max_gen_ptrs, *ops->id + 1);
-//    }
-//    error = __register_pernet_operations(list, ops);
-//    if (error) {
+
+static DEFINE_IDA(net_generic_ids);
+
+static int register_pernet_operations(struct list_head *list,
+                                      struct pernet_operations *ops)
+{
+    int error;
+
+    if (ops->id) {
+        error = ida_alloc_min(&net_generic_ids, MIN_PERNET_OPS_ID,
+                              GFP_KERNEL);
+        if (error < 0)
+            return error;
+        *ops->id = error;
+        max_gen_ptrs = max(max_gen_ptrs, *ops->id + 1);
+    }
+    error = __register_pernet_operations(list, ops);
+    if (error) {
 //        rcu_barrier();
-//        if (ops->id)
-//            ida_free(&net_generic_ids, *ops->id);
-//    }
-//
-//    return error;
-//}
+        if (ops->id)
+            ida_free(&net_generic_ids, *ops->id);
+    }
+
+    return error;
+}
 //
 //static void unregister_pernet_operations(struct pernet_operations *ops)
 //{
@@ -1233,35 +1222,35 @@ struct net *copy_net_ns(unsigned long flags,
 //    if (ops->id)
 //        ida_free(&net_generic_ids, *ops->id);
 //}
-//
-///**
-// *      register_pernet_subsys - register a network namespace subsystem
-// *    @ops:  pernet operations structure for the subsystem
-// *
-// *    Register a subsystem which has init and exit functions
-// *    that are called when network namespaces are created and
-// *    destroyed respectively.
-// *
-// *    When registered all network namespace init functions are
-// *    called for every existing network namespace.  Allowing kernel
-// *    modules to have a race free view of the set of network namespaces.
-// *
-// *    When a new network namespace is created all of the init
-// *    methods are called in the order in which they were registered.
-// *
-// *    When a network namespace is destroyed all of the exit methods
-// *    are called in the reverse of the order with which they were
-// *    registered.
-// */
-//int register_pernet_subsys(struct pernet_operations *ops)
-//{
-//    int error;
-//    down_write(&pernet_ops_rwsem);
-//    error =  register_pernet_operations(first_device, ops);
-//    up_write(&pernet_ops_rwsem);
-//    return error;
-//}
-//EXPORT_SYMBOL_GPL(register_pernet_subsys);
+
+/**
+ *      register_pernet_subsys - register a network namespace subsystem
+ *    @ops:  pernet operations structure for the subsystem
+ *
+ *    Register a subsystem which has init and exit functions
+ *    that are called when network namespaces are created and
+ *    destroyed respectively.
+ *
+ *    When registered all network namespace init functions are
+ *    called for every existing network namespace.  Allowing kernel
+ *    modules to have a race free view of the set of network namespaces.
+ *
+ *    When a new network namespace is created all of the init
+ *    methods are called in the order in which they were registered.
+ *
+ *    When a network namespace is destroyed all of the exit methods
+ *    are called in the reverse of the order with which they were
+ *    registered.
+ */
+int register_pernet_subsys(struct pernet_operations *ops)
+{
+    int error;
+    down_write(&pernet_ops_rwsem);
+    error =  register_pernet_operations(first_device, ops);
+    up_write(&pernet_ops_rwsem);
+    return error;
+}
+EXPORT_SYMBOL_GPL(register_pernet_subsys);
 //
 ///**
 // *      unregister_pernet_subsys - unregister a network namespace subsystem
@@ -1279,38 +1268,38 @@ struct net *copy_net_ns(unsigned long flags,
 //    up_write(&pernet_ops_rwsem);
 //}
 //EXPORT_SYMBOL_GPL(unregister_pernet_subsys);
-//
-///**
-// *      register_pernet_device - register a network namespace device
-// *    @ops:  pernet operations structure for the subsystem
-// *
-// *    Register a device which has init and exit functions
-// *    that are called when network namespaces are created and
-// *    destroyed respectively.
-// *
-// *    When registered all network namespace init functions are
-// *    called for every existing network namespace.  Allowing kernel
-// *    modules to have a race free view of the set of network namespaces.
-// *
-// *    When a new network namespace is created all of the init
-// *    methods are called in the order in which they were registered.
-// *
-// *    When a network namespace is destroyed all of the exit methods
-// *    are called in the reverse of the order with which they were
-// *    registered.
-// */
-//int register_pernet_device(struct pernet_operations *ops)
-//{
-//    int error;
-//    down_write(&pernet_ops_rwsem);
-//    error = register_pernet_operations(&pernet_list, ops);
-//    if (!error && (first_device == &pernet_list))
-//        first_device = &ops->list;
-//    up_write(&pernet_ops_rwsem);
-//    return error;
-//}
-//EXPORT_SYMBOL_GPL(register_pernet_device);
-//
+
+/**
+ *      register_pernet_device - register a network namespace device
+ *    @ops:  pernet operations structure for the subsystem
+ *
+ *    Register a device which has init and exit functions
+ *    that are called when network namespaces are created and
+ *    destroyed respectively.
+ *
+ *    When registered all network namespace init functions are
+ *    called for every existing network namespace.  Allowing kernel
+ *    modules to have a race free view of the set of network namespaces.
+ *
+ *    When a new network namespace is created all of the init
+ *    methods are called in the order in which they were registered.
+ *
+ *    When a network namespace is destroyed all of the exit methods
+ *    are called in the reverse of the order with which they were
+ *    registered.
+ */
+int register_pernet_device(struct pernet_operations *ops)
+{
+    int error;
+    down_write(&pernet_ops_rwsem);
+    error = register_pernet_operations(&pernet_list, ops);
+    if (!error && (first_device == &pernet_list))
+        first_device = &ops->list;
+    up_write(&pernet_ops_rwsem);
+    return error;
+}
+EXPORT_SYMBOL_GPL(register_pernet_device);
+
 ///**
 // *      unregister_pernet_device - unregister a network namespace netdevice
 // *    @ops: pernet operations structure to manipulate

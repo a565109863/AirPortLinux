@@ -412,8 +412,8 @@ static void __ieee80211_wake_queue(struct ieee80211_hw *hw, int queue,
         rcu_read_lock();
         ieee80211_propagate_queue_wake(local, queue);
         rcu_read_unlock();
-    } else;
-//        tasklet_schedule(&local->tx_pending_tasklet);
+    } else
+        tasklet_schedule(&local->tx_pending_tasklet);
 
     /*
      * Calling _ieee80211_wake_txqs here can be a problem because it may
@@ -424,8 +424,7 @@ static void __ieee80211_wake_queue(struct ieee80211_hw *hw, int queue,
      */
     if (local->ops->wake_tx_queue) {
         if (reason == IEEE80211_QUEUE_STOP_REASON_DRIVER)
-//            tasklet_schedule(&local->wake_txqs_tasklet);
-            ;
+            tasklet_schedule(&local->wake_txqs_tasklet);
         else
             _ieee80211_wake_txqs(local, flags);
     }
@@ -2114,8 +2113,8 @@ static int ieee80211_reconfig_nan(struct ieee80211_sub_if_data *sdata)
      */
     spin_lock_bh(&sdata->u.nan.func_lock);
 
-//    idr_for_each_entry(&sdata->u.nan.function_inst_ids, func, id)
-//        funcs[i++] = func;
+    idr_for_each_entry(&sdata->u.nan.function_inst_ids, func, id)
+        funcs[i++] = func;
 
     spin_unlock_bh(&sdata->u.nan.func_lock);
 

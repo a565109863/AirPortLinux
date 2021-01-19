@@ -167,6 +167,7 @@ long sock_ioctl(int sk, unsigned cmd, unsigned long arg)
     } else
 #ifdef CONFIG_WEXT_CORE
     if (cmd >= SIOCIWFIRST && cmd <= SIOCIWLAST) {
+        kprintf("--%s: line = %d, cmd = %d", __FUNCTION__, __LINE__, cmd);
         err = wext_handle_ioctl(net, cmd, argp);
     } else
 #endif
@@ -251,3 +252,168 @@ long sock_ioctl(int sk, unsigned cmd, unsigned long arg)
         }
     return err;
 }
+
+
+
+static struct inode *alloc_inode(struct super_block *sb)
+{
+//    const struct super_operations *ops = sb->s_op;
+    struct inode *inode;
+    
+//    if (ops->alloc_inode)
+//        inode = ops->alloc_inode(sb);
+//    else
+        struct socket_alloc *sa = (struct socket_alloc *)kmalloc(sizeof(struct socket_alloc), GFP_KERNEL);
+    inode = &sa->vfs_inode;
+//    if (!inode)
+//        return NULL;
+//
+//    if (unlikely(inode_init_always(sb, inode))) {
+//        if (ops->destroy_inode) {
+//            ops->destroy_inode(inode);
+//            if (!ops->free_inode)
+//                return NULL;
+//        }
+//        inode->free_inode = ops->free_inode;
+//        i_callback(&inode->i_rcu);
+//        return NULL;
+//    }
+    
+    return inode;
+}
+
+/**
+ *    new_inode_pseudo     - obtain an inode
+ *    @sb: superblock
+ *
+ *    Allocates a new inode for given superblock.
+ *    Inode wont be chained in superblock s_inodes list
+ *    This means :
+ *    - fs can't be unmount
+ *    - quotas, fsnotify, writeback can't work
+ */
+struct inode *new_inode_pseudo(struct super_block *sb)
+{
+    struct inode *inode = alloc_inode(sb);
+    
+    if (inode) {
+        spin_lock(&inode->i_lock);
+        inode->i_state = 0;
+        spin_unlock(&inode->i_lock);
+        INIT_LIST_HEAD(&inode->i_sb_list);
+    }
+    return inode;
+}
+
+
+/**
+ *    sock_alloc - allocate a socket
+ *
+ *    Allocate a new inode and socket object. The two are bound together
+ *    and initialised. The socket is then returned. If we are out of inodes
+ *    NULL is returned. This functions uses GFP_KERNEL internally.
+ */
+
+struct socket *sock_alloc(void)
+{
+    struct inode *inode;
+    struct socket *sock;
+    
+    inode = new_inode_pseudo(NULL);
+    if (!inode)
+        return NULL;
+    
+    sock = SOCKET_I(inode);
+    
+//    inode->i_ino = get_next_ino();
+//    inode->i_mode = S_IFSOCK | S_IRWXUGO;
+//    inode->i_uid = current_fsuid();
+//    inode->i_gid = current_fsgid();
+//    inode->i_op = &sockfs_inode_ops;
+    
+    return sock;
+}
+EXPORT_SYMBOL(sock_alloc);
+
+/**
+ *    sock_release - close a socket
+ *    @sock: socket to close
+ *
+ *    The socket is released from the protocol stack if it has a release
+ *    callback, and the inode is then released if the socket is bound to
+ *    an inode not a file.
+ */
+
+static void __sock_release(struct socket *sock, struct inode *inode)
+{
+    if (sock->ops) {
+        struct module *owner = sock->ops->owner;
+        
+//        if (inode)
+//            inode_lock(inode);
+        sock->ops->release(sock);
+        sock->sk = NULL;
+//        if (inode)
+//            inode_unlock(inode);
+        sock->ops = NULL;
+        module_put(owner);
+    }
+    
+    if (sock->wq.fasync_list)
+        pr_err("%s: fasync list not empty!\n", __func__);
+    
+    if (!sock->file) {
+//        iput(SOCK_INODE(sock));
+        return;
+    }
+    sock->file = NULL;
+}
+
+void sock_release(struct socket *sock)
+{
+    __sock_release(sock, NULL);
+}
+EXPORT_SYMBOL(sock_release);
+
+/**
+ *    sock_create_lite - creates a socket
+ *    @family: protocol family (AF_INET, ...)
+ *    @type: communication type (SOCK_STREAM, ...)
+ *    @protocol: protocol (0, ...)
+ *    @res: new socket
+ *
+ *    Creates a new socket and assigns it to @res, passing through LSM.
+ *    The new socket initialization is not complete, see kernel_accept().
+ *    Returns 0 or an error. On failure @res is set to %NULL.
+ *    This function internally uses GFP_KERNEL.
+ */
+
+int sock_create_lite(int family, int type, int protocol, struct socket **res)
+{
+    int err;
+    struct socket *sock = NULL;
+    
+//    err = security_socket_create(family, type, protocol, 1);
+//    if (err)
+//        goto out;
+    
+    sock = sock_alloc();
+    if (!sock) {
+        err = -ENOMEM;
+        goto out;
+    }
+    
+    sock->type = type;
+//    err = security_socket_post_create(sock, family, type, protocol, 1);
+//    if (err)
+//        goto out_release;
+    
+out:
+    *res = sock;
+    return err;
+out_release:
+    sock_release(sock);
+    sock = NULL;
+    goto out;
+}
+EXPORT_SYMBOL(sock_create_lite);

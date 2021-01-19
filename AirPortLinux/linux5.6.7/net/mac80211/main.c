@@ -295,8 +295,8 @@ void ieee80211_restart_hw(struct ieee80211_hw *hw)
 
     trace_api_restart_hw(local);
 
-//    wiphy_info(hw->wiphy,
-//           "Hardware restart was requested\n");
+    wiphy_info(hw->wiphy,
+           "Hardware restart was requested\n");
 
     /* use this reason, ieee80211_reconfig will unblock it */
     ieee80211_stop_queues_by_reason(hw, IEEE80211_MAX_QUEUE_MAP,
@@ -701,7 +701,7 @@ struct ieee80211_hw *ieee80211_alloc_hw_nm(size_t priv_data_len,
     INIT_WORK(&local->tdls_chsw_work, ieee80211_tdls_chsw_work);
 
     spin_lock_init(&local->ack_status_lock);
-//    idr_init(&local->ack_status_frames);
+    idr_init(&local->ack_status_frames);
 
     for (i = 0; i < IEEE80211_MAX_QUEUES; i++) {
         skb_queue_head_init(&local->pending[i]);
@@ -1318,8 +1318,8 @@ void ieee80211_unregister_hw(struct ieee80211_hw *hw)
 {
     struct ieee80211_local *local = hw_to_local(hw);
 
-//    tasklet_kill(&local->tx_pending_tasklet);
-//    tasklet_kill(&local->tasklet);
+    tasklet_kill(&local->tx_pending_tasklet);
+    tasklet_kill(&local->tasklet);
 
 #ifdef CONFIG_INET
     unregister_inetaddr_notifier(&local->ifa_notifier);
@@ -1381,9 +1381,9 @@ void ieee80211_free_hw(struct ieee80211_hw *hw)
     if (local->wiphy_ciphers_allocated)
         kfree(local->hw.wiphy->cipher_suites);
 
-//    idr_for_each(&local->ack_status_frames,
-//             ieee80211_free_ack_frame, NULL);
-//    idr_destroy(&local->ack_status_frames);
+    idr_for_each(&local->ack_status_frames,
+             ieee80211_free_ack_frame, NULL);
+    idr_destroy(&local->ack_status_frames);
 
     sta_info_stop(local);
 

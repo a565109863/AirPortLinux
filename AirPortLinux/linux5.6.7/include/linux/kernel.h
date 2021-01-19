@@ -104,6 +104,16 @@ static inline void *kcalloc(size_t n, size_t size, gfp_t flags)
 
 #define kvfree kfree
 
+
+static inline void *realloc(void* node, size_t s)
+{
+    void *p = kmalloc(s, __GFP_ZERO);
+    if (p && node) {
+        memcpy(p, node, s);
+    }
+    return p;
+}
+
 static inline void *__krealloc(void* node, size_t node_size, size_t s, gfp_t gfp)
 {
     if (node_size >= s) {
@@ -143,6 +153,12 @@ static void *vzalloc(unsigned long size)
     void *ret = IOMalloc(size);
     return ret;
 }
+
+static bool is_vmalloc_addr(const void *x)
+{
+    return true;
+}
+EXPORT_SYMBOL(is_vmalloc_addr);
 
 static inline void *alloc_pages_exact(size_t s, gfp_t gfp)
 {
@@ -229,6 +245,7 @@ static void *kmalloc_track_caller(size_t size, gfp_t gfp)
 #define pr_err kprintf
 #define pr_debug kprintf
 #define pr_info kprintf
+#define pr_err_ratelimited kprintf
 
 #define netdev_info(d, arg...) kprintf(arg)
 #define netdev_err(d, arg...) kprintf(arg)
@@ -342,6 +359,12 @@ __rem;                            \
 
 #define NR_CPUS 1
 
+/*        0 - Reserved to indicate value not set
+ *     1..NR_CPUS - Reserved for sender_cpu
+ *  NR_CPUS+1..~0 - Region available for NAPI IDs
+ */
+#define MIN_NAPI_ID ((unsigned int)(NR_CPUS + 1))
+
 #define for_each_possible_cpu(cpu) \
     for ((cpu) = 0; (cpu) < NR_CPUS; ++(cpu))
 
@@ -449,29 +472,6 @@ static bool mac_pton(const char *s, u8 *mac)
 }
 
 
-static void __dev_printk(const char *level, const struct device *dev,
-            struct va_format *vaf)
-{
-    printk("%s(NULL device *): %pV", level, vaf);
-}
-
-static void dev_printk(const char *level, const struct device *dev,
-        const char *fmt, ...)
-{
-    struct va_format vaf;
-    va_list args;
-
-    va_start(args, fmt);
-
-    vaf.fmt = fmt;
-    vaf.va = &args;
-
-    __dev_printk(level, dev, &vaf);
-
-    va_end(args);
-}
-
-
 #define max3(x, y, z) max((typeof(x))max(x, y), z)
 
 #ifdef MOJAVE
@@ -575,5 +575,14 @@ static inline unsigned long array_index_mask_nospec(unsigned long index,
                                     \
     (typeof(_i)) (_i & _mask);                    \
 })
+
+
+static inline __sum16 csum_fold(__wsum csum)
+{
+    u32 sum = (__force u32)csum;
+    sum = (sum & 0xffff) + (sum >> 16);
+    sum = (sum & 0xffff) + (sum >> 16);
+    return (__force __sum16)~sum;
+}
 
 #endif /* kernel_h */

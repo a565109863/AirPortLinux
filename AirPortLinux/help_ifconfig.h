@@ -14,9 +14,6 @@
 
 extern struct net init_net;
 
-
-#define sock_net(sk) &init_net
-
 int ioctl(int sk, unsigned int cmd, void *);
 long sock_ioctl(int sk, unsigned cmd, unsigned long arg);
 

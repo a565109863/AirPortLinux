@@ -260,9 +260,9 @@ static struct page *get_workaround_page(struct iwl_trans *trans,
 
 	page_ptr = (struct page **)((u8 *)skb->cb + trans_pcie->page_offs);
 
-//	ret = alloc_page(GFP_ATOMIC);
-//	if (!ret)
-//		return NULL;
+	ret = alloc_page(GFP_ATOMIC);
+	if (!ret)
+		return NULL;
 
 	/* set the chaining pointer to the previous page if there */
 	*(void **)((char *)page_address(ret) + PAGE_SIZE - sizeof(void *)) = *page_ptr;
