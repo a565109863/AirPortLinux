@@ -102,19 +102,20 @@ EXPORT_SYMBOL(dma_alloc_attrs);
 
 
 
-struct page *alloc_pages(gfp_t gtp, size_t size)
+struct page *alloc_pages(gfp_t gtp, size_t order)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+//    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct page *page = (struct page *)kmalloc(sizeof(struct page), GFP_KERNEL);
-    page->dm_mapsize = PAGE_SIZE << size;
-    page->dm_segs = (IOPhysicalSegment *)kcalloc(BIT(size), sizeof(IOPhysicalSegment), GFP_KERNEL);
+    page->order = order;
+    page->dm_mapsize = PAGE_SIZE << order;
+    page->dm_segs = (IOPhysicalSegment *)kcalloc(BIT(order), sizeof(IOPhysicalSegment), GFP_KERNEL);
     
     list_add(&page->list, &page_list);
     
     return page;
 }
 
-void __free_page(struct page * page)
+void __free_page(struct page *page)
 {
 //    page++;
 //    struct page *tmp;
@@ -131,18 +132,13 @@ void __free_page(struct page * page)
 ////                tmp->bufDes->release();
 ////                tmp->bufDes = NULL;
 ////            }
-////            if (tmp->memDes) {
-////                tmp->memDes->complete();
-////                tmp->memDes->release();
-////                tmp->memDes = NULL;
-////            }
 //
-//            list_del(&tmp->list);
+////            list_del(&tmp->list);
 //            break;
 //        }
 //    }
-    
-//    free(page, 1, sizeof(struct page));
+//    
+//    free(page, 1, sizeof(*page));
 }
 
 dma_addr_t dma_map_page_attrs(struct device *dev,
@@ -151,11 +147,9 @@ dma_addr_t dma_map_page_attrs(struct device *dev,
 {
     UInt32 numSegs = 1;
     
-    page->offset = offset;
-    
     if (page->ptr != NULL) {
         page->dm_mapsize = size;
-        page->size = size;
+//        page->size = size;
     }
     
     if (page->bufDes == NULL) {
@@ -164,11 +158,12 @@ dma_addr_t dma_map_page_attrs(struct device *dev,
             return NULL;
         }
         page->vaddr = (caddr_t)page->bufDes->getBytesNoCopy();
-        bzero(page->vaddr, page->bufDes->getLength());
     }
     
+    bzero(page->vaddr + offset, size);
+    
     if (page->ptr != NULL) {
-        bcopy(page->ptr, page->vaddr, page->size);
+        bcopy(page->ptr, page->vaddr, size);
         page->ptr = page->vaddr;
     }
     
@@ -194,19 +189,19 @@ dma_addr_t dma_map_page_attrs(struct device *dev,
         return NULL;
     }
     
-    kprintf("--%s: 80211 line = %d, offset = %lu, page->dm_mapsize = %d, size = %lu", __FUNCTION__, __LINE__, offset, page->dm_mapsize, size);
+//    kprintf("--%s: 80211 line = %d, offset = %lu, page->dm_mapsize = %d, size = %lu", __FUNCTION__, __LINE__, offset, page->dm_mapsize, size);
     
     if (page->dmaCmd->genIOVMSegments((UInt64 *)&offset, &page->dm_segs[0], &numSegs) != kIOReturnSuccess) {
         printf("genIOVMSegments() failed.\n");
         return NULL;
     }
     
-    kprintf("--%s: 80211 line = %d, location = %llu, single_page->offset = %llu, offset = %lu, numSegs = %d, len = %llu", __FUNCTION__, __LINE__, page->dm_segs[0].location, page->offset, offset, numSegs, page->bufDes->getLength());
+//    kprintf("--%s: 80211 line = %d, location = %llu, single_page->offset = %llu, offset = %lu, numSegs = %d, len = %llu", __FUNCTION__, __LINE__, page->dm_segs[0].location, page->offset, offset, numSegs, page->bufDes->getLength());
     
     
-    page->paddr = page->dm_segs[0].location;
+//    page->paddr = page->dm_segs[0].location;
     
-    return page->paddr;
+    return page->dm_segs[0].location;
     
 }
 

@@ -120,11 +120,11 @@ const struct ieee80211_regdomain __rcu *cfg80211_regdomain;
  */
 static int reg_num_devs_support_basehint;
 
-///*
-// * State variable indicating if the platform on which the devices
-// * are attached is operating in an indoor environment. The state variable
-// * is relevant for all registered devices.
-// */
+/*
+ * State variable indicating if the platform on which the devices
+ * are attached is operating in an indoor environment. The state variable
+ * is relevant for all registered devices.
+ */
 static bool reg_is_indoor;
 static spinlock_t reg_indoor_lock;
 
@@ -136,14 +136,12 @@ static void print_regdomain(const struct ieee80211_regdomain *rd);
 
 static const struct ieee80211_regdomain *get_cfg80211_regdom(void)
 {
-//    return rcu_dereference_rtnl(cfg80211_regdomain);
-    return NULL;
+    return rcu_dereference_rtnl(cfg80211_regdomain);
 }
 
 const struct ieee80211_regdomain *get_wiphy_regdom(struct wiphy *wiphy)
 {
-//    return rcu_dereference_rtnl(wiphy->regd);
-    return NULL;
+    return rcu_dereference_rtnl(wiphy->regd);
 }
 
 static const char *reg_dfs_region_str(enum nl80211_dfs_regions dfs_region)
@@ -226,38 +224,38 @@ static const struct ieee80211_regdomain world_regdom = {
     .n_reg_rules = 8,
     .alpha2 =  "00",
     .reg_rules = {
-//        /* IEEE 802.11b/g, channels 1..11 */
-//        REG_RULE(2412-10, 2462+10, 40, 6, 20, 0),
-//        /* IEEE 802.11b/g, channels 12..13. */
-//        REG_RULE(2467-10, 2472+10, 20, 6, 20,
-//            NL80211_RRF_NO_IR | NL80211_RRF_AUTO_BW),
-//        /* IEEE 802.11 channel 14 - Only JP enables
-//         * this and for 802.11b only */
-//        REG_RULE(2484-10, 2484+10, 20, 6, 20,
-//            NL80211_RRF_NO_IR |
-//            NL80211_RRF_NO_OFDM),
-//        /* IEEE 802.11a, channel 36..48 */
-//        REG_RULE(5180-10, 5240+10, 80, 6, 20,
-//                        NL80211_RRF_NO_IR |
-//                        NL80211_RRF_AUTO_BW),
-//
-//        /* IEEE 802.11a, channel 52..64 - DFS required */
-//        REG_RULE(5260-10, 5320+10, 80, 6, 20,
-//            NL80211_RRF_NO_IR |
-//            NL80211_RRF_AUTO_BW |
-//            NL80211_RRF_DFS),
-//
-//        /* IEEE 802.11a, channel 100..144 - DFS required */
-//        REG_RULE(5500-10, 5720+10, 160, 6, 20,
-//            NL80211_RRF_NO_IR |
-//            NL80211_RRF_DFS),
-//
-//        /* IEEE 802.11a, channel 149..165 */
-//        REG_RULE(5745-10, 5825+10, 80, 6, 20,
-//            NL80211_RRF_NO_IR),
-//
-//        /* IEEE 802.11ad (60GHz), channels 1..3 */
-//        REG_RULE(56160+2160*1-1080, 56160+2160*3+1080, 2160, 0, 0, 0),
+        /* IEEE 802.11b/g, channels 1..11 */
+        REG_RULE(2412-10, 2462+10, 40, 6, 20, 0),
+        /* IEEE 802.11b/g, channels 12..13. */
+        REG_RULE(2467-10, 2472+10, 20, 6, 20,
+            NL80211_RRF_NO_IR | NL80211_RRF_AUTO_BW),
+        /* IEEE 802.11 channel 14 - Only JP enables
+         * this and for 802.11b only */
+        REG_RULE(2484-10, 2484+10, 20, 6, 20,
+            NL80211_RRF_NO_IR |
+            NL80211_RRF_NO_OFDM),
+        /* IEEE 802.11a, channel 36..48 */
+        REG_RULE(5180-10, 5240+10, 80, 6, 20,
+                        NL80211_RRF_NO_IR |
+                        NL80211_RRF_AUTO_BW),
+
+        /* IEEE 802.11a, channel 52..64 - DFS required */
+        REG_RULE(5260-10, 5320+10, 80, 6, 20,
+            NL80211_RRF_NO_IR |
+            NL80211_RRF_AUTO_BW |
+            NL80211_RRF_DFS),
+
+        /* IEEE 802.11a, channel 100..144 - DFS required */
+        REG_RULE(5500-10, 5720+10, 160, 6, 20,
+            NL80211_RRF_NO_IR |
+            NL80211_RRF_DFS),
+
+        /* IEEE 802.11a, channel 149..165 */
+        REG_RULE(5745-10, 5825+10, 80, 6, 20,
+            NL80211_RRF_NO_IR),
+
+        /* IEEE 802.11ad (60GHz), channels 1..3 */
+        REG_RULE(56160+2160*1-1080, 56160+2160*3+1080, 2160, 0, 0, 0),
     }
 };
 
@@ -1932,6 +1930,7 @@ static bool reg_is_world_roaming(struct wiphy *wiphy)
 static void handle_reg_beacon(struct wiphy *wiphy, unsigned int chan_idx,
                   struct reg_beacon *reg_beacon)
 {
+    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
     struct ieee80211_supported_band *sband;
     struct ieee80211_channel *chan;
     bool channel_changed = false;
@@ -1961,6 +1960,7 @@ static void handle_reg_beacon(struct wiphy *wiphy, unsigned int chan_idx,
         channel_changed = true;
     }
 
+    kprintf("--%s: line = %d irq channel_changed = %d, chan_before = %d, chan = %d", __FUNCTION__, __LINE__, channel_changed, chan_before.hw_value, chan->hw_value);
     if (channel_changed)
         nl80211_send_beacon_hint_event(wiphy, &chan_before, chan);
 }
@@ -1972,6 +1972,7 @@ static void handle_reg_beacon(struct wiphy *wiphy, unsigned int chan_idx,
 static void wiphy_update_new_beacon(struct wiphy *wiphy,
                     struct reg_beacon *reg_beacon)
 {
+    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
     unsigned int i;
     struct ieee80211_supported_band *sband;
 
@@ -2215,9 +2216,9 @@ static void reg_check_channels(void)
      * Give usermode a chance to do something nicer (move to another
      * channel, orderly disconnection), before forcing a disconnection.
      */
-//    mod_delayed_work(system_power_efficient_wq,
-//             &reg_check_chans,
-//             msecs_to_jiffies(REG_ENFORCE_GRACE_MS));
+    mod_delayed_work(system_power_efficient_wq,
+             &reg_check_chans,
+             msecs_to_jiffies(REG_ENFORCE_GRACE_MS));
 }
 
 static void wiphy_update_regulatory(struct wiphy *wiphy,
@@ -2898,8 +2899,11 @@ static void reg_process_self_managed_hints(void)
 static void reg_todo(struct work_struct *work)
 {
     rtnl_lock();
+    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
     reg_process_pending_hints();
+    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
     reg_process_pending_beacon_hints();
+    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
     reg_process_self_managed_hints();
     rtnl_unlock();
 }
@@ -3720,21 +3724,21 @@ static int __regulatory_set_wiphy_regd(struct wiphy *wiphy,
          "wiphy should have REGULATORY_WIPHY_SELF_MANAGED\n"))
         return -EPERM;
 
-//    if (WARN(!is_valid_rd(rd), "Invalid regulatory domain detected\n")) {
-//        print_regdomain_info(rd);
-//        return -EINVAL;
-//    }
-//
-//    regd = reg_copy_regd(rd);
-//    if (IS_ERR(regd))
-//        return PTR_ERR(regd);
-//
-//    rdev = wiphy_to_rdev(wiphy);
-//
-//    spin_lock(&reg_requests_lock);
-//    prev_regd = rdev->requested_regd;
-//    rdev->requested_regd = regd;
-//    spin_unlock(&reg_requests_lock);
+    if (WARN(!is_valid_rd(rd), "Invalid regulatory domain detected\n")) {
+        print_regdomain_info(rd);
+        return -EINVAL;
+    }
+
+    regd = reg_copy_regd(rd);
+    if (IS_ERR(regd))
+        return PTR_ERR(regd);
+
+    rdev = wiphy_to_rdev(wiphy);
+
+    spin_lock(&reg_requests_lock);
+    prev_regd = rdev->requested_regd;
+    rdev->requested_regd = regd;
+    spin_unlock(&reg_requests_lock);
 
     kfree(prev_regd);
     return 0;
@@ -3748,7 +3752,7 @@ int regulatory_set_wiphy_regd(struct wiphy *wiphy,
     if (ret)
         return ret;
 
-//    schedule_work(&reg_work);
+    schedule_work(&reg_work);
     return 0;
 }
 EXPORT_SYMBOL(regulatory_set_wiphy_regd);
@@ -4001,27 +4005,27 @@ void regulatory_propagate_dfs_state(struct wiphy *wiphy,
 //late_initcall(regulatory_init_db);
 //#endif
 //
-//int __init regulatory_init(void)
-//{
+int __init regulatory_init(void)
+{
 //    reg_pdev = platform_device_register_simple("regulatory", 0, NULL, 0);
 //    if (IS_ERR(reg_pdev))
 //        return PTR_ERR(reg_pdev);
-//
-//    spin_lock_init(&reg_requests_lock);
-//    spin_lock_init(&reg_pending_beacons_lock);
-//    spin_lock_init(&reg_indoor_lock);
-//
-//    rcu_assign_pointer(cfg80211_regdomain, cfg80211_world_regdom);
-//
-//    user_alpha2[0] = '9';
-//    user_alpha2[1] = '7';
-//
-//#ifdef MODULE
-//    return regulatory_init_db();
-//#else
-//    return 0;
-//#endif
-//}
+
+    spin_lock_init(&reg_requests_lock);
+    spin_lock_init(&reg_pending_beacons_lock);
+    spin_lock_init(&reg_indoor_lock);
+
+    rcu_assign_pointer(cfg80211_regdomain, cfg80211_world_regdom);
+
+    user_alpha2[0] = '9';
+    user_alpha2[1] = '7';
+
+#ifdef MODULE
+    return regulatory_init_db();
+#else
+    return 0;
+#endif
+}
 //
 //void regulatory_exit(void)
 //{

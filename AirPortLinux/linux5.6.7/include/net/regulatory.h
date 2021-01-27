@@ -228,7 +228,7 @@ struct ieee80211_regdomain {
     u32 n_reg_rules;
     char alpha2[3];
     enum nl80211_dfs_regions dfs_region;
-    struct ieee80211_reg_rule reg_rules[];
+    struct ieee80211_reg_rule reg_rules[8];
 };
 
 #define MHZ_TO_KHZ(freq) ((freq) * 1000)

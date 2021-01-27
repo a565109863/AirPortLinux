@@ -608,7 +608,6 @@ static inline int pci_register_driver(struct pci_driver *drv, struct pci_dev *pd
         return err;
     }
     
-//    pdev->dev.driver_data = (void *)found_id->driver_data;
     pdev->dev.ent = found_id;
     
     pci_init_capabilities(pdev);

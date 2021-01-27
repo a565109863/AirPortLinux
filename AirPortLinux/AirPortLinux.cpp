@@ -7,10 +7,11 @@
 #include <linux/pci.h>
 #include <net/wireless/core.h>
 #include <net/wireless/nl80211.h>
+#include "iwl-trans.h"
 
 OSDefineMetaClassAndStructors(AirPortLinux, IOController);
 //OSDefineMetaClassAndStructors(IOKitTimeout, OSObject)
-#define super IO80211Controller
+#define super IOController
 
 int _stop(struct kmod_info*, void*) {
     IOLog("_stop(struct kmod_info*, void*) has been invoked\n");
@@ -65,17 +66,16 @@ IOService* AirPortLinux::probe(IOService* provider, SInt32 *score)
     return this;
     
 fail:
-    IODelete(_pdev, struct pci_dev, 1);
+    IODelete(__pdev, struct pci_dev, 1);
     return NULL;
 }
 
 bool AirPortLinux::start(IOService* provider) {
     IOLog("AirPortLinux: Start");
     DebugLog("---%s: line = %d RTX TX: ", __FUNCTION__, __LINE__);
-    DebugLog("---%s: line = %d RTX TX: ", __FUNCTION__, __LINE__);
     
     if (!super::start(provider)) {
-        IOLog("AirPortLinux: Failed to call IO80211Controller::start!");
+        IOLog("AirPortLinux: Failed to call super::start!");
         return false;
     }
     
@@ -85,29 +85,26 @@ bool AirPortLinux::start(IOService* provider) {
         return false;
     }
     
-    fPciDevice->retain();
+    //
+    //    if (!fPciDevice->open(this)) {
+    //        IOLog("AirPortLinux: Failed to open provider.\n");
+    //        return false;
+    //    }
     
-    if (!fPciDevice->open(this)) {
-        IOLog("AirPortLinux: Failed to open provider.\n");
-        return false;
-    }
+    //    if (fPciDevice->requestPowerDomainState(kIOPMPowerOn,
+    //                                            (IOPowerConnection *) getParentEntry(gIOPowerPlane),
+    //                                            IOPMLowestState ) != IOPMNoErr) {
+    //        IOLog("%s Power thingi failed\n", getName());
+    //        return  false;
+    //    }
     
-    if (fPciDevice->requestPowerDomainState(kIOPMPowerOn,
-                                            (IOPowerConnection *) getParentEntry(gIOPowerPlane),
-                                            IOPMLowestState ) != IOPMNoErr) {
-        IOLog("%s Power thingi failed\n", getName());
-        return  false;
-    }
-    
-    fWorkloop = OSDynamicCast(IO80211WorkLoop, getWorkLoop());
+    fWorkloop = OSDynamicCast(WorkLoop, getWorkLoop());
     if (!fWorkloop) {
         IOLog("AirPortLinux: Failed to get workloop!");
         return false;
     }
     
-    fWorkloop->retain();
-    
-    fCommandGate = IOCommandGate::commandGate(this, (IOCommandGate::Action)tsleepHandler);
+    fCommandGate = getCommandGate();
     if (!fCommandGate) {
         IOLog("AirPortLinux: Failed to create command gate!");
         return false;
@@ -118,10 +115,33 @@ bool AirPortLinux::start(IOService* provider) {
         return false;
     }
     
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
-    fCommandGate->enable();
+    fWatchdogTimer = IOTimerEventSource::timerEventSource(this, OSMemberFunctionCast(IOTimerEventSource::Action, this, &AirPortLinux::if_watchdog));
+    
+    if (!fWatchdogTimer) {
+        IOLog("AirPortLinux: Failed to create IOTimerEventSource.\n");
+        return false;
+    }
+    
+    if (fWorkloop->addEventSource(fWatchdogTimer) != kIOReturnSuccess) {
+        IOLog("AirPortLinux: Failed to register fWatchdogTimer event source!");
+        return false;
+    }
+    
+    fTimerEventSource = IOTimerEventSource::timerEventSource(this);
+    if (!fTimerEventSource) {
+        IOLog("AirPortLinux: Failed to create timer event source!\n");
+        return false;
+    }
+    
+    if (fWorkloop->addEventSource(fTimerEventSource) != kIOReturnSuccess) {
+        IOLog("AirPortLinux: Failed to register fTimerEventSource event source!");
+        return false;
+    }
+    
+//    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     _pdev = this->pdev;
     this->pdev->dev.dev = this;
+    this->pdev->dev.dev->fPciDevice = fPciDevice;
     memcpy(this->pdev->dev.name, "AirPortLinux", sizeof(this->pdev->dev.name));
     int err = iwl_pci_probe(this->pdev, this->pdev->dev.ent);
     if (err)
@@ -130,18 +150,11 @@ bool AirPortLinux::start(IOService* provider) {
     
     cfg80211_init();
     
-    fWatchdogTimer = IOTimerEventSource::timerEventSource(this, OSMemberFunctionCast(IOTimerEventSource::Action, this, &AirPortLinux::if_watchdog));
-    
-    if (!fWatchdogTimer) {
-        IOLog("AirPortLinux: Failed to create IOTimerEventSource.\n");
-        return false;
-    }
-    fWorkloop->addEventSource(fWatchdogTimer);
-    
     if (!attachInterface((IONetworkInterface**) &this->iface, true)) {
         panic("AirPortLinux: Failed to attach interface!");
     }
     
+    this->scanResults = OSArray::withCapacity(512); // by default, but it autoexpands
     
     this->mediumDict = OSDictionary::withCapacity(1);
     this->addMediumType(kIOMediumIEEE80211Auto, 128000,  MEDIUM_TYPE_AUTO);
@@ -196,7 +209,7 @@ IOReturn AirPortLinux::getHardwareAddress(IOEthernetAddress* addr)
     struct _ifreq ifr = {};
     int ret;
     
-    strncpy(ifr.ifr_name, "wlan0", sizeof(ifr.ifr_name));
+    strncpy(ifr.ifr_name, this->ifname, sizeof(ifr.ifr_name));
     ret = ioctl(1, SIOCGIFHWADDR, &ifr);
     if (ret) {
         return kIOReturnError;
@@ -358,7 +371,9 @@ const OSString* AirPortLinux::newModelString() const {
     #define kNameLenght 64
     char modelName[kNameLenght];
 //    snprintf(modelName, kNameLenght, "Intel %s PCI Express Wifi", if_softc.sc_fwname);
-    return OSString::withCString(modelName);
+    struct iwl_trans *iwl_trans = (struct iwl_trans *)pci_get_drvdata(this->pdev);
+    return OSString::withCString(iwl_trans->name);
+//    return OSString::withCString(modelName);
 }
 
 //const OSString* AirPortLinux::newRevisionString() const {
@@ -395,7 +410,7 @@ IOReturn AirPortLinux::changePowerState(IOInterface *interface, int powerStateOr
         case APPLE_POWER_ON:
 //            DPRINTF(("Setting power on\n"));
             
-            ifup("wlan0");
+            ifup(this->ifname);
             if (firstUp) {
                 firstUp = false;
             }else {
@@ -405,7 +420,7 @@ IOReturn AirPortLinux::changePowerState(IOInterface *interface, int powerStateOr
             this->fWatchdogTimer->setTimeoutMS(kTimeoutMS);
 
 #ifdef Ethernet
-            this->fTimerEventSource->setAction(&AirPortOpenBSD::autoASSOC);
+            this->fTimerEventSource->setAction(&AirPortLinux::autoASSOC);
             this->fTimerEventSource->setTimeoutUS(1);
 #endif
             
@@ -415,7 +430,7 @@ IOReturn AirPortLinux::changePowerState(IOInterface *interface, int powerStateOr
 //            DPRINTF(("Setting power off\n"));
             this->fWatchdogTimer->cancelTimeout();
             
-            ifdown("wlan0");
+            ifdown(this->ifname);
 //            this->ca->ca_activate((struct device *)if_softc, DVACT_QUIESCE);
             ret = kIOReturnSuccess;
             break;

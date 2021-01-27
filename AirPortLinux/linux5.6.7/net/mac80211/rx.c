@@ -3826,7 +3826,6 @@ EXPORT_SYMBOL(ieee80211_mark_rx_ba_filtered_frames);
 
 static bool ieee80211_accept_frame(struct ieee80211_rx_data *rx)
 {
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     struct ieee80211_sub_if_data *sdata = rx->sdata;
     struct sk_buff *skb = rx->skb;
     struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
@@ -4349,7 +4348,6 @@ static bool ieee80211_invoke_fast_rx(struct ieee80211_rx_data *rx,
 static bool ieee80211_prepare_and_rx_handle(struct ieee80211_rx_data *rx,
                         struct sk_buff *skb, bool consume)
 {
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = rx->local;
     struct ieee80211_sub_if_data *sdata = rx->sdata;
 
@@ -4370,11 +4368,9 @@ static bool ieee80211_prepare_and_rx_handle(struct ieee80211_rx_data *rx,
             return true;
     }
 
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     if (!ieee80211_accept_frame(rx))
         return false;
 
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     if (!consume) {
         skb = skb_copy(skb, GFP_ATOMIC);
         if (!skb) {
@@ -4388,9 +4384,7 @@ static bool ieee80211_prepare_and_rx_handle(struct ieee80211_rx_data *rx,
         rx->skb = skb;
     }
 
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     ieee80211_invoke_rx_handlers(rx);
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     return true;
 }
 
@@ -4403,7 +4397,6 @@ static void __ieee80211_rx_handle_packet(struct ieee80211_hw *hw,
                      struct sk_buff *skb,
                      struct napi_struct *napi)
 {
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = hw_to_local(hw);
     struct ieee80211_sub_if_data *sdata;
     struct ieee80211_hdr *hdr;
@@ -4413,26 +4406,22 @@ static void __ieee80211_rx_handle_packet(struct ieee80211_hw *hw,
     struct rhlist_head *tmp;
     int err = 0;
 
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     fc = ((struct ieee80211_hdr *)skb->data)->frame_control;
     memset(&rx, 0, sizeof(rx));
     rx.skb = skb;
     rx.local = local;
     rx.napi = napi;
 
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     if (ieee80211_is_data(fc) || ieee80211_is_mgmt(fc))
         I802_DEBUG_INC(local->dot11ReceivedFragmentCount);
 
     if (ieee80211_is_mgmt(fc)) {
-        DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
         /* drop frame if too short for header */
         if (skb->len < ieee80211_hdrlen(fc))
             err = -ENOBUFS;
         else
             err = skb_linearize(skb);
         
-        DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     } else {
         err = !pskb_may_pull(skb, ieee80211_hdrlen(fc));
     }
@@ -4443,17 +4432,14 @@ static void __ieee80211_rx_handle_packet(struct ieee80211_hw *hw,
     }
 
     hdr = (struct ieee80211_hdr *)skb->data;
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     ieee80211_parse_qos(&rx);
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     ieee80211_verify_alignment(&rx);
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 
     if (unlikely(ieee80211_is_probe_resp(hdr->frame_control) ||
              ieee80211_is_beacon(hdr->frame_control)))
         ieee80211_scan_rx(local, skb);
 
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
     if (ieee80211_is_data(fc)) {
         struct sta_info *sta, *prev_sta;
 
@@ -4513,7 +4499,6 @@ static void __ieee80211_rx_handle_packet(struct ieee80211_hw *hw,
 
         rx.sta = sta_info_get_bss(prev, hdr->addr2);
         rx.sdata = prev;
-        DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
         ieee80211_prepare_and_rx_handle(&rx, skb, false);
 
         prev = sdata;
@@ -4538,7 +4523,6 @@ static void __ieee80211_rx_handle_packet(struct ieee80211_hw *hw,
 void ieee80211_rx_napi(struct ieee80211_hw *hw, struct ieee80211_sta *pubsta,
                struct sk_buff *skb, struct napi_struct *napi)
 {
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = hw_to_local(hw);
     struct ieee80211_rate *rate = NULL;
     struct ieee80211_supported_band *sband;

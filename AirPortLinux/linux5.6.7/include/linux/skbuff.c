@@ -588,22 +588,22 @@ static void skb_free_head(struct sk_buff *skb)
 
 static void skb_release_data(struct sk_buff *skb)
 {
-//    struct skb_shared_info *shinfo = skb_shinfo(skb);
-//    int i;
-//
-//    if (skb->cloned &&
-//        atomic_sub_return(skb->nohdr ? (1 << SKB_DATAREF_SHIFT) + 1 : 1,
-//                  &shinfo->dataref))
-//        return;
-//
-//    for (i = 0; i < shinfo->nr_frags; i++)
-//        __skb_frag_unref(&shinfo->frags[i]);
-//
-//    if (shinfo->frag_list)
-//        kfree_skb_list(shinfo->frag_list);
-//
-//    skb_zcopy_clear(skb, true);
-//    skb_free_head(skb);
+    struct skb_shared_info *shinfo = skb_shinfo(skb);
+    int i;
+
+    if (skb->cloned &&
+        atomic_sub_return(skb->nohdr ? (1 << SKB_DATAREF_SHIFT) + 1 : 1,
+                  &shinfo->dataref))
+        return;
+
+    for (i = 0; i < shinfo->nr_frags; i++)
+        __skb_frag_unref(&shinfo->frags[i]);
+
+    if (shinfo->frag_list)
+        kfree_skb_list(shinfo->frag_list);
+
+    skb_zcopy_clear(skb, true);
+    skb_free_head(skb);
 }
 
 /*
@@ -1627,7 +1627,9 @@ int pskb_expand_head(struct sk_buff *skb, int nhead, int ntail,
                    gfp_mask, NUMA_NO_NODE, NULL);
     if (!data)
         goto nodata;
-    size = SKB_WITH_OVERHEAD(ksize(data));
+    
+    size = size + SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+    size = SKB_WITH_OVERHEAD(size);
 
     /* Copy only real data... and, alas, header. This should be
      * optimized for the cases when header is void.
@@ -2225,13 +2227,13 @@ int skb_copy_bits(const struct sk_buff *skb, int offset, void *to, int len)
             if (copy > len)
                 copy = len;
 
-//            skb_frag_foreach_page(f,
-//                          skb_frag_off(f) + offset - start,
-//                          copy, p, p_off, p_len, copied) {
-//                vaddr = kmap_atomic(p);
-//                memcpy(to + copied, vaddr + p_off, p_len);
-//                kunmap_atomic(vaddr);
-//            }
+            skb_frag_foreach_page(f,
+                          skb_frag_off(f) + offset - start,
+                          copy, p, p_off, p_len, copied) {
+                vaddr = (u8 *)kmap_atomic(p);
+                memcpy((u8 *)to + copied, vaddr + p_off, p_len);
+                kunmap_atomic(vaddr);
+            }
 
             if ((len -= copy) == 0)
                 return 0;
@@ -5835,7 +5837,8 @@ static int pskb_carve_inside_header(struct sk_buff *skb, const u32 off,
     if (!data)
         return -ENOMEM;
 
-    size = SKB_WITH_OVERHEAD(ksize(data));
+    size = size + SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+    size = SKB_WITH_OVERHEAD(size);
 
     /* Copy real data, and all frags */
     skb_copy_from_linear_data_offset(skb, off, data, new_hlen);
@@ -5959,7 +5962,8 @@ static int pskb_carve_inside_nonlinear(struct sk_buff *skb, const u32 off,
     if (!data)
         return -ENOMEM;
 
-    size = SKB_WITH_OVERHEAD(ksize(data));
+    size = size + SKB_DATA_ALIGN(sizeof(struct skb_shared_info));
+    size = SKB_WITH_OVERHEAD(size);
 
     memcpy((struct skb_shared_info *)(data + size),
            skb_shinfo(skb), offsetof(struct skb_shared_info,

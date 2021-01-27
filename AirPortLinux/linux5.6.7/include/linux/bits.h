@@ -48,9 +48,5 @@ extern int logType;
 #define set_bit    __set_bit
 #define clear_bit    __clear_bit
 #define test_bit    __test_bit
-#define __test_and_set_bit(nr, vaddr)    test_bit(nr, vaddr) & set_bit(nr, vaddr)
-#define test_and_clear_bit(nr, vaddr)    test_bit(nr, vaddr) & clear_bit(nr, vaddr)
-#define test_and_set_bit(nr, vaddr)   __test_and_set_bit(nr, vaddr)
-
 
 #endif    /* __LINUX_BITS_H */

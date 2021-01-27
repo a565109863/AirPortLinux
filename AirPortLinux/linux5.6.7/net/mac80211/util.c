@@ -882,11 +882,13 @@ void ieee80211_queue_delayed_work(struct ieee80211_hw *hw,
                   struct delayed_work *dwork,
                   unsigned long delay)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = hw_to_local(hw);
 
     if (!ieee80211_can_queue_work(local))
         return;
 
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     queue_delayed_work(local->workqueue, dwork, delay);
 }
 EXPORT_SYMBOL(ieee80211_queue_delayed_work);
@@ -988,6 +990,13 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
         case WLAN_EID_SSID:
             elems->ssid = pos;
             elems->ssid_len = elen;
+            
+            u_int8_t        ni_essid[32];
+            memset(ni_essid, 0, 32 * sizeof(u_int8_t));
+            memcpy(ni_essid, elems->ssid, elems->ssid_len);
+            ni_essid[elems->ssid_len] = '\0';
+            kprintf("--%s: line = %d irq  len = %d, ssid = %s", __FUNCTION__, __LINE__, elems->ssid_len, ni_essid);
+            
             break;
         case WLAN_EID_SUPP_RATES:
             elems->supp_rates = pos;
@@ -1327,6 +1336,8 @@ static size_t ieee802_11_find_bssid_profile(const u8 *start, size_t len,
                            elem->data[0],
                            index[2],
                            new_bssid);
+            
+            kprintf("---%s bssid=%s\n", __FUNCTION__, ether_sprintf((u_char *)&new_bssid));
             if (ether_addr_equal(new_bssid, bss_bssid)) {
                 found = true;
                 elems->bssid_index_len = index[1];
@@ -1441,7 +1452,7 @@ void ieee80211_regulatory_limit_wmm_params(struct ieee80211_sub_if_data *sdata,
 void ieee80211_set_wmm_default(struct ieee80211_sub_if_data *sdata,
                    bool bss_notify, bool enable_qos)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = sdata->local;
     struct ieee80211_tx_queue_params qparam;
     struct ieee80211_chanctx_conf *chanctx_conf;
@@ -2007,6 +2018,7 @@ static void ieee80211_flush_completed_scan(struct ieee80211_local *local,
         if (aborted)
             set_bit(SCAN_ABORTED, &local->scanning);
         ieee80211_queue_delayed_work(&local->hw, &local->scan_work, 0);
+        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
         flush_delayed_work(&local->scan_work);
     }
 }

@@ -1490,6 +1490,9 @@ int netlink_broadcast_filtered(struct sock *ssk, struct sk_buff *skb, u32 portid
                                int (*filter)(struct sock *dsk, struct sk_buff *skb, void *data),
                                void *filter_data)
 {
+    if (ssk == NULL) {
+        return -ENOBUFS;
+    }
     struct net *net = sock_net(ssk);
     struct netlink_broadcast_data info;
     struct sock *sk;

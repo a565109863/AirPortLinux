@@ -34,7 +34,7 @@ pthread_mutex_init(pthread_mutex_t *mutex,
                    void *attr)
 {
 //    mutex->lock = IORecursiveLockAlloc();
-    mutex_init(mutex);
+    _mutex_init(mutex);
     return (0);
 }
 
@@ -42,7 +42,7 @@ int
 pthread_mutex_lock(pthread_mutex_t *mutex)
 {
 //    IORecursiveLockLock(mutex->lock);
-    mutex_lock(mutex);
+    _mutex_lock(mutex);
     return (0);
 }
 
@@ -50,7 +50,7 @@ int
 pthread_mutex_unlock(pthread_mutex_t *mutex)
 {
 //    IORecursiveLockUnlock(mutex->lock);
-    mutex_unlock(mutex);
+    _mutex_unlock(mutex);
     return (0);
 }
 
@@ -106,9 +106,9 @@ tasklet_action_common(void* tqarg, wait_result_t waitResult)
         
         pthread_mutex_unlock(&tq->mtx);
         
-        DebugLog("-----%s: line = %d, t->func_name = %s", __FUNCTION__, __LINE__, t->func_name);
-        t->func(t->data);
         kprintf("-----%s: line = %d, t->func_name = %s", __FUNCTION__, __LINE__, t->func_name);
+        t->func(t->data);
+        DebugLog("-----%s: line = %d, t->func_name = %s", __FUNCTION__, __LINE__, t->func_name);
     }
     
 }
@@ -119,7 +119,7 @@ struct taskletq *
 taskletq_create(const char *name, unsigned int nthreads, int ipl,
              unsigned int flags)
 {
-    DebugLog("-----%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("-----%s: line = %d", __FUNCTION__, __LINE__);
     struct taskletq *tq;
     int error;
     
@@ -142,7 +142,7 @@ taskletq_create(const char *name, unsigned int nthreads, int ipl,
 
 void __tasklet_schedule(struct taskletq *tq, struct tasklet_struct *t)
 {
-    DebugLog("-----%s: line = %d, t->func_name = %s", __FUNCTION__, __LINE__, t->func_name);
+    kprintf("-----%s: line = %d, t->func_name = %s", __FUNCTION__, __LINE__, t->func_name);
     pthread_mutex_lock(&tq->mtx);
     TAILQ_INSERT_TAIL(&tq->list, t, t_entry);
     tq->cv->mtx = tq->mtx;

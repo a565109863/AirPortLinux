@@ -1032,6 +1032,7 @@ static void iwl_mvm_rx_common(struct iwl_mvm *mvm,
 	 * access to it in the notification wait entry.
 	 */
 	iwl_notification_wait_notify(&mvm->notif_wait, pkt);
+    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
 
 	for (i = 0; i < ARRAY_SIZE(iwl_mvm_rx_handlers); i++) {
 		const struct iwl_rx_handlers *rx_h = &iwl_mvm_rx_handlers[i];
@@ -1041,6 +1042,7 @@ static void iwl_mvm_rx_common(struct iwl_mvm *mvm,
 			continue;
 
 		if (rx_h->context == RX_HANDLER_SYNC) {
+            kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
 			rx_h->fn(mvm, rxb);
 			return;
 		}
@@ -1050,6 +1052,7 @@ static void iwl_mvm_rx_common(struct iwl_mvm *mvm,
 		if (!entry)
 			return;
 
+        kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
 		entry->rxb._page = rxb_steal_page(rxb);
 		entry->rxb._offset = rxb->_offset;
 		entry->rxb._rx_page_order = rxb->_rx_page_order;

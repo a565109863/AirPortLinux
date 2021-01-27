@@ -7,6 +7,10 @@
 //
 
 #include "AirPortLinux.hpp"
+#include <linux/types.h>
+#include <linux/device.h>
+#include <linux/pci.h>
+#include <linux/netdevice.h>
 //
 //void AirPortLinux::loadfirmware( OSKextRequestTag requestTag, OSReturn result, const void *resourceData, uint32_t resourceDataLength, void *context) {
 //    AirPortLinux *dev = (AirPortLinux *)context;
@@ -231,14 +235,85 @@ void AirPortLinux::scanFreeResults()
 
 void AirPortLinux::scanDone(OSObject *owner, ...)
 {
-//    struct device *dev = (struct device *)_ifp->if_softc;
+//    return ;
+//    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+//    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+//    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    struct device *dev = (struct device *)&_pdev->dev;
+//    const char *ifname = dev->dev->ifname;
+//    int skfd = 0, ret;
+//    struct iw_range    range;
+//    int            has_range;
 //
-//    //    dev->dev->scanFreeResults();
-//    dev->dev->scanComplete();
-//#ifndef Ethernet
-//    _ifp->iface->postMessage(APPLE80211_M_SCAN_DONE);
-//    _ifp->iface->postMessage(APPLE80211_M_COUNTRY_CODE_CHANGED);
+//    struct iwreq        wrq;
+//    wrq.u.data.pointer = NULL;
+//    wrq.u.data.flags = 0;
+//    wrq.u.data.length = 0;
+//
+//
+//    /* Get range stuff */
+//    has_range = (iw_get_range_info(skfd, ifname, &range) >= 0);
+//
+//
+//
+//    unsigned char *    buffer;
+//    int            buflen = IW_SCAN_MAX_DATA; /* Min for compat WE<17 */
+//
+//    /* (Re)allocate the buffer - realloc(NULL, len) == malloc(len) */
+//    buffer = (unsigned char *)realloc(buffer, buflen);
+//
+//    /* Try to read the results */
+//    wrq.u.data.pointer = buffer;
+//    wrq.u.data.flags = 0;
+//    wrq.u.data.length = buflen;
+//    if(iw_get_ext(skfd, ifname, SIOCGIWSCAN, &wrq) < 0)
+//    {
+//        DebugLog("--%s: line = %d error", __FUNCTION__, __LINE__);
+//    }
+    
+    
+    DebugLog("--%s: line = %d end", __FUNCTION__, __LINE__);
+    
+//    if(wrq.u.data.length)
+//    {
+//        struct iw_event        iwe;
+//        struct stream_descr    stream;
+//        struct iwscan_state    state = { .ap_num = 1, .val_index = 0 };
+//        int            ret;
+//
+//#ifdef DEBUG
+//        /* Debugging code. In theory useless, because it's debugged ;-) */
+//        int    i;
+//        printf("Scan result %d [%02X", wrq.u.data.length, buffer[0]);
+//        for(i = 1; i < wrq.u.data.length; i++)
+//            printf(":%02X", buffer[i]);
+//        printf("]\n");
 //#endif
+//        printf("%-8.16s  Scan completed :\n", ifname);
+//        iw_init_event_stream(&stream, (char *) buffer, wrq.u.data.length);
+//        do
+//        {
+//            /* Extract an event and print it */
+//            ret = iw_extract_event_stream(&stream, &iwe,
+//                                          range.we_version_compiled);
+//            if(ret > 0)
+//                print_scanning_token(&stream, &iwe, &state,
+//                                     &range, has_range);
+//        }
+//        while(ret > 0);
+//        printf("\n");
+//    }
+//    else
+//        printf("%-8.16s  No scan results\n\n", ifname);
+
+    
+
+    //    dev->dev->scanFreeResults();
+//    dev->dev->scanComplete();
+#ifndef Ethernet
+    dev->dev->iface->postMessage(APPLE80211_M_SCAN_DONE);
+    dev->dev->iface->postMessage(APPLE80211_M_COUNTRY_CODE_CHANGED);
+#endif
 }
 
 //OSString *AirPortLinux::getNVRAMProperty(char *name)

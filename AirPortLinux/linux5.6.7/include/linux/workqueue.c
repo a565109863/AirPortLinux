@@ -8,11 +8,52 @@
 
 #include "workqueue.h"
 
+typedef struct mutex    workqueue_mutex_t;
 
-struct workqueue_struct *system_wq = alloc_workqueue("system_wq", 1, 1);
+struct workqueue_struct *system_wq = alloc_workqueue("events", 1, 1);
 
 struct workqueue_struct *system_freezable_wq = alloc_workqueue("events_freezable",
                                       WQ_FREEZABLE, 0);
+struct workqueue_struct *system_power_efficient_wq = alloc_workqueue("events_power_efficient",
+                                                                     WQ_POWER_EFFICIENT, 0);
+
+
+int
+workqueue_mutex_init(workqueue_mutex_t *mutex,
+                   void *attr)
+{
+    //    mutex->lock = IORecursiveLockAlloc();
+    _mutex_init(mutex);
+    return (0);
+}
+
+int
+workqueue_mutex_lock(workqueue_mutex_t *mutex)
+{
+    //    IORecursiveLockLock(mutex->lock);
+    _mutex_lock(mutex);
+    return (0);
+}
+
+int
+workqueue_mutex_unlock(workqueue_mutex_t *mutex)
+{
+    //    IORecursiveLockUnlock(mutex->lock);
+    _mutex_unlock(mutex);
+    return (0);
+}
+
+int
+workqueue_cond_wait(struct workqueue_struct *wq)
+{
+    int ret;
+    
+    workqueue_mutex_lock(&wq->mutex);
+    IORecursiveLockSleep(wq->mutex.lock, &wq->work_color, THREAD_INTERRUPTIBLE);
+    workqueue_mutex_unlock(&wq->mutex);
+    
+    return 0;
+}
 
 void queue_work_run(void* tqarg, wait_result_t waitResult)
 {
@@ -21,32 +62,47 @@ void queue_work_run(void* tqarg, wait_result_t waitResult)
     struct work_struct *res, *tmp;
     
     for (;;) {
-        mutex_lock(&wq->mutex);
-        
         list_for_each_entry_safe(res, tmp, &wq->list, entry) {
+//            mutex_lock(&wq->mutex);
+            workqueue_mutex_lock(&wq->mutex);
+            
             list_del(&res->entry);
             
-            mutex_unlock(&wq->mutex);
+            kprintf("-----%s: line = %d, res->func_name = %s, wq->name = %s", __FUNCTION__, __LINE__, res->func_name, wq->name);
             
-            kprintf("-----%s: line = %d, res->func_name = %s", __FUNCTION__, __LINE__, res->func_name);
+            clear_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(res));
+            
+//            mutex_unlock(&wq->mutex);
+            workqueue_mutex_unlock(&wq->mutex);
+            
             (*res->func)(res);
-            kprintf("-----%s: line = %d, res->func_name = %s end", __FUNCTION__, __LINE__, res->func_name);
+            kprintf("-----%s: line = %d, res->func_name = %s, wq->name = %s end", __FUNCTION__, __LINE__, res->func_name, wq->name);
 //            kfree(res);
         }
         
-        int ret = IORecursiveLockSleep(wq->mutex.lock, &wq->work_color, THREAD_INTERRUPTIBLE);
-        
+        workqueue_cond_wait(wq);
     }
     
 }
 
-struct workqueue_struct * alloc_workqueue(char *wq_name, int how, int type)
+
+struct workqueue_struct *alloc_workqueue(const char *fmt,
+                                         unsigned int flags,
+                                         int max_active, ...)
 {
-    struct workqueue_struct *wq = (struct workqueue_struct *)malloc(sizeof(struct workqueue_struct));
-    if (wq == NULL)
-        return (NULL);
+    size_t tbl_size = 0;
+    va_list args;
+    struct workqueue_struct *wq;
     
-    memcpy(wq->name, wq_name, sizeof(wq->name));
+    wq = (struct workqueue_struct *)kzalloc(sizeof(*wq) + tbl_size, GFP_KERNEL);
+    if (!wq)
+        return NULL;
+    
+    va_start(args, max_active);
+    vsnprintf(wq->name, sizeof(wq->name), fmt, args);
+    va_end(args);
+    
+    kprintf("-----%s: line = %d, fmt = %s, wq->name = %s end", __FUNCTION__, __LINE__, fmt, wq->name);
     
     INIT_LIST_HEAD(&wq->list);
 
@@ -62,10 +118,12 @@ void __queue_work(int cpu, struct workqueue_struct *wq,
                          struct work_struct *work)
 {
     kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
-    mutex_lock(&wq->mutex);
+//    mutex_lock(&wq->mutex);
+    workqueue_mutex_lock(&wq->mutex);
     list_add_tail(&work->entry, &wq->list);
     IORecursiveLockWakeup(wq->mutex.lock, &wq->work_color, true);
-    mutex_unlock(&wq->mutex);
+//    mutex_unlock(&wq->mutex);
+    workqueue_mutex_unlock(&wq->mutex);
     
 }
 
@@ -88,6 +146,7 @@ bool queue_work_on(int cpu, struct workqueue_struct *wq,
     
 //    local_irq_save(flags);
     
+    kprintf("--%s: line = %d irq wq->name = %s", __FUNCTION__, __LINE__, wq->name);
     if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
         __queue_work(cpu, wq, work);
         ret = true;
@@ -105,8 +164,10 @@ EXPORT_SYMBOL(queue_work_on);
 
 void delayed_work_timer_fn(struct timer_list *t)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct delayed_work *dwork = from_timer(dwork, t, timer);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     /* should have been called from irqsafe timer with irq already off */
     __queue_work(dwork->cpu, dwork->wq, &dwork->work);
 }
@@ -115,19 +176,16 @@ EXPORT_SYMBOL(delayed_work_timer_fn);
 static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
                 struct delayed_work *dwork, unsigned long delay)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
-    
     struct timer_list *timer = &dwork->timer;
     struct work_struct *work = &dwork->work;
 
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     WARN_ON_ONCE(!wq);
     WARN_ON_ONCE(timer->function != delayed_work_timer_fn);
     WARN_ON_ONCE(timer_pending(timer));
     WARN_ON_ONCE(!list_empty(&work->entry));
 
     kprintf("--%s: line = %d, fun = %s", __FUNCTION__, __LINE__, timer->name);
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d func = %s", __FUNCTION__, __LINE__, work->func_name);
     /*
      * If @delay is 0, queue @dwork->work immediately.  This is for
      * both optimization and correctness.  The earliest @timer can
@@ -135,23 +193,20 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
      * on that there's no such delay when @delay is 0.
      */
     if (!delay) {
-        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
         __queue_work(cpu, wq, &dwork->work);
         return;
     }
 
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     dwork->wq = wq;
     dwork->cpu = cpu;
     timer->expires = jiffies + delay;
+    kprintf("--%s: line = %d, timer->name = %s, timer->expires = %lu", __FUNCTION__, __LINE__, timer->name, timer->expires);
 
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     if (unlikely(cpu != WORK_CPU_UNBOUND))
         add_timer_on(timer, cpu);
     else
         add_timer(timer);
     
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 }
 
 /**
@@ -176,6 +231,7 @@ bool queue_delayed_work_on(int cpu, struct workqueue_struct *wq,
 //    local_irq_save(flags);
 
     if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
+        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
         __queue_delayed_work(cpu, wq, dwork, delay);
         ret = true;
     }
@@ -489,6 +545,7 @@ EXPORT_SYMBOL_GPL(cancel_work_sync);
  */
 bool flush_delayed_work(struct delayed_work *dwork)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 //    local_irq_disable();
     if (del_timer_sync(&dwork->timer))
         __queue_work(dwork->cpu, dwork->wq, &dwork->work);
@@ -505,14 +562,14 @@ static bool __flush_work(struct work_struct *work, bool from_cancel)
 //    if (WARN_ON(!wq_online))
 //        return false;
 //
-//    if (WARN_ON(!work->func))
-//        return false;
-//
-//    if (!from_cancel) {
-//        lock_map_acquire(&work->lockdep_map);
-//        lock_map_release(&work->lockdep_map);
-//    }
-//
+    if (WARN_ON(!work->func))
+        return false;
+
+    if (!from_cancel) {
+        lock_map_acquire(&work->lockdep_map);
+        lock_map_release(&work->lockdep_map);
+    }
+
 //    if (start_flush_work(work, &barr, from_cancel)) {
 //        wait_for_completion(&barr.done);
 //        destroy_work_on_stack(&barr.work);

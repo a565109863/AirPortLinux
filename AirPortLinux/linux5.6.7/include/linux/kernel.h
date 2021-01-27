@@ -154,6 +154,49 @@ static void *vzalloc(unsigned long size)
     return ret;
 }
 
+static void *__kmalloc(size_t size, gfp_t flags)
+{
+    return kmalloc(size, flags);
+}
+
+static __always_inline void *__kmalloc_node(size_t size, gfp_t flags, int node)
+{
+    return __kmalloc(size, flags);
+}
+
+static __always_inline void *kmalloc_node(size_t size, gfp_t flags, int node)
+{
+//#ifndef CONFIG_SLOB
+//    if (__builtin_constant_p(size) &&
+//        size <= KMALLOC_MAX_CACHE_SIZE) {
+//        unsigned int i = kmalloc_index(size);
+//
+//        if (!i)
+//            return ZERO_SIZE_PTR;
+//
+//        return kmem_cache_alloc_node_trace(
+//                kmalloc_caches[kmalloc_type(flags)][i],
+//                        flags, node, size);
+//    }
+//#endif
+    return __kmalloc_node(size, flags, node);
+}
+
+/**
+ * kzalloc_node - allocate zeroed memory from a particular memory node.
+ * @size: how many bytes of memory are required.
+ * @flags: the type of memory to allocate (see kmalloc).
+ * @node: memory node from which to allocate
+ */
+static inline void *kzalloc_node(size_t size, gfp_t flags, int node)
+{
+    return kmalloc_node(size, flags | __GFP_ZERO, node);
+}
+
+
+
+
+
 static bool is_vmalloc_addr(const void *x)
 {
     return true;
@@ -583,6 +626,29 @@ static inline __sum16 csum_fold(__wsum csum)
     sum = (sum & 0xffff) + (sum >> 16);
     sum = (sum & 0xffff) + (sum >> 16);
     return (__force __sum16)~sum;
+}
+
+
+static float dcn_bw_pow(float a, float exp)
+{
+    float temp;
+    /*ASSERT(exp == (int)exp);*/
+    if ((int)exp == 0)
+        return 1;
+    temp = dcn_bw_pow(a, (int)(exp / 2));
+    if (((int)exp % 2) == 0) {
+        return temp * temp;
+    } else {
+        if ((int)exp > 0)
+            return a * temp * temp;
+        else
+            return (temp * temp) / a;
+    }
+}
+
+static inline double pow(double a, int exp)
+{
+    return (double) dcn_bw_pow(a, exp);
 }
 
 #endif /* kernel_h */

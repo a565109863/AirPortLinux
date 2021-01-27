@@ -24,16 +24,16 @@ struct page {
     int32_t    file;
     
     void        *ptr;
-    uint32_t    size;
+//    uint32_t    size;
+    size_t         order;
     uint32_t                    dm_mapsize;    /* size of the mapping */
     int                         dm_nsegs;    /* # valid segments in mapping */
     IOPhysicalSegment           *dm_segs;    /* segments; variable length */
     
 //    uint32_t alignment;
     IOBufferMemoryDescriptor    *bufDes;
-    IODMACommand *dmaCmd;
-    UInt64                      offset;
-    dma_addr_t                  paddr;
+    IODMACommand                *dmaCmd;
+//    dma_addr_t                  paddr;
     caddr_t                     vaddr;
 };
 
@@ -82,6 +82,18 @@ static inline int get_order(unsigned long size)
 }
 
 
+static inline void *kmap_atomic(struct page *page)
+{
+//    preempt_disable();
+//    pagefault_disable();
+    return page_address(page);
+}
+
+static inline void kunmap_atomic(void *addr)
+{
+//    pagefault_enable();
+//    preempt_enable();
+}
 
 
 //#define kmalloc(size, flags) malloc(size, flags)

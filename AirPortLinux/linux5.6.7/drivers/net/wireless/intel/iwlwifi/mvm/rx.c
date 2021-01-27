@@ -102,7 +102,6 @@ static void iwl_mvm_pass_packet_to_mac80211(struct iwl_mvm *mvm,
 					    u8 crypt_len,
 					    struct iwl_rx_cmd_buffer *rxb)
 {
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	unsigned int hdrlen = ieee80211_hdrlen(hdr->frame_control);
 	unsigned int fraglen;
 
@@ -343,7 +342,7 @@ static void iwl_mvm_rx_csum(struct ieee80211_sta *sta,
 void iwl_mvm_rx_rx_mpdu(struct iwl_mvm *mvm, struct napi_struct *napi,
 			struct iwl_rx_cmd_buffer *rxb)
 {
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct ieee80211_hdr *hdr;
 	struct ieee80211_rx_status *rx_status;
 	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
@@ -461,7 +460,6 @@ void iwl_mvm_rx_rx_mpdu(struct iwl_mvm *mvm, struct napi_struct *napi,
 					     FW_DBG_TRIGGER_RSSI);
 
 		if (trig && ieee80211_is_beacon(hdr->frame_control)) {
-            DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 			struct iwl_fw_dbg_trigger_low_rssi *rssi_trig;
 			s32 rssi;
 

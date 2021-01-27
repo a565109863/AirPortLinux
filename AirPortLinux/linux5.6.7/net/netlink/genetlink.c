@@ -669,13 +669,13 @@ static int genl_family_rcv_msg_doit(const struct genl_family *family,
     memset(&info.user_ptr, 0, sizeof(info.user_ptr));
 
     DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-//    if (family->pre_doit) {
-//        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-//        err = family->pre_doit(ops, skb, &info);
-//        DebugLog("--%s: line = %d, err = %d", __FUNCTION__, __LINE__, err);
-//        if (err)
-//            goto out;
-//    }
+    if (family->pre_doit) {
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+        err = family->pre_doit(ops, skb, &info);
+        DebugLog("--%s: line = %d, err = %d", __FUNCTION__, __LINE__, err);
+        if (err)
+            goto out;
+    }
 
     DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     err = ops->doit(skb, &info);

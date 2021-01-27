@@ -2067,9 +2067,7 @@ static int iwl_mvm_check_running_scans(struct iwl_mvm *mvm, int type)
 
 void iwl_mvm_scan_timeout_wk(struct work_struct *work)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     
 	struct delayed_work *delayed_work = to_delayed_work(work);
 	struct iwl_mvm *mvm = container_of(delayed_work, struct iwl_mvm,
@@ -2337,6 +2335,8 @@ void iwl_mvm_rx_umac_scan_complete_notif(struct iwl_mvm *mvm,
 	struct iwl_umac_scan_complete *notif = (struct iwl_umac_scan_complete *)pkt->data;
 	u32 uid = __le32_to_cpu(notif->uid);
 	bool aborted = (notif->status == IWL_SCAN_OFFLOAD_ABORTED);
+    
+    kprintf("--%s: line = %d, uid = %d", __FUNCTION__, __LINE__, uid);
 
 	if (WARN_ON(!(mvm->scan_uid_status[uid] & mvm->scan_status)))
 		return;
@@ -2349,11 +2349,13 @@ void iwl_mvm_rx_umac_scan_complete_notif(struct iwl_mvm *mvm,
 		};
 
 		memcpy(info.tsf_bssid, mvm->scan_vif->bssid, ETH_ALEN);
+        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 		ieee80211_scan_completed(mvm->hw, &info);
 		mvm->scan_vif = NULL;
 		cancel_delayed_work(&mvm->scan_timeout_dwork);
 		iwl_mvm_resume_tcm(mvm);
 	} else if (mvm->scan_uid_status[uid] == IWL_MVM_SCAN_SCHED) {
+        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 		ieee80211_sched_scan_stopped(mvm->hw);
 		mvm->sched_scan_pass_all = SCHED_SCAN_PASS_ALL_DISABLED;
 	}

@@ -425,7 +425,7 @@ static struct page *iwl_pcie_rx_alloc_page(struct iwl_trans *trans,
 		gfp_mask |= __GFP_COMP;
 
 	if (trans_pcie->alloc_page) {
-        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+//        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 		spin_lock_bh(&trans_pcie->alloc_page_lock);
 		/* recheck */
 		if (trans_pcie->alloc_page) {
@@ -442,7 +442,7 @@ static struct page *iwl_pcie_rx_alloc_page(struct iwl_trans *trans,
 		spin_unlock_bh(&trans_pcie->alloc_page_lock);
 	}
 
-    kprintf("--%s: line = %d rbsize = %d, allocsize = %d, rx_page_order = %d", __FUNCTION__, __LINE__, rbsize, allocsize, trans_pcie->rx_page_order);
+//    kprintf("--%s: line = %d rbsize = %d, allocsize = %d, rx_page_order = %d", __FUNCTION__, __LINE__, rbsize, allocsize, trans_pcie->rx_page_order);
 	/* Alloc a new receive buffer page*/
 	page = alloc_pages(gfp_mask, trans_pcie->rx_page_order);
 	if (!page) {
@@ -486,7 +486,7 @@ static struct page *iwl_pcie_rx_alloc_page(struct iwl_trans *trans,
 void iwl_pcie_rxq_alloc_rbs(struct iwl_trans *trans, gfp_t priority,
 			    struct iwl_rxq *rxq)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+//    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct iwl_rx_mem_buffer *rxb;
 	struct page *page;
@@ -505,7 +505,7 @@ void iwl_pcie_rxq_alloc_rbs(struct iwl_trans *trans, gfp_t priority,
 		if (!page)
 			return;
         
-        kprintf("--%s: line = %d, offset = %d", __FUNCTION__, __LINE__, offset);
+//        kprintf("--%s: line = %d, offset = %d", __FUNCTION__, __LINE__, offset);
 
 		spin_lock(&rxq->lock);
 

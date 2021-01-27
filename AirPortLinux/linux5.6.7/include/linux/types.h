@@ -11,11 +11,6 @@
 
 #include <asm/types.h>
 
-
-#define DECLARE_BITMAP(name,bits) \
-    unsigned long name[BITS_TO_LONGS(bits)]
-
-#define bitmap_zero bzero
 #define memzero_explicit bzero
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))

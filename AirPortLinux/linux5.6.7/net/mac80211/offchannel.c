@@ -481,17 +481,22 @@ static void ieee80211_roc_work(struct work_struct *work)
 
 static void ieee80211_hw_roc_done(struct work_struct *work)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local =
         container_of(work, struct ieee80211_local, hw_roc_done);
 
     mutex_lock(&local->mtx);
 
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     ieee80211_end_finished_rocs(local, jiffies);
 
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     /* if there's another roc, start it now */
     ieee80211_start_next_roc(local);
 
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     mutex_unlock(&local->mtx);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 }
 
 void ieee80211_remain_on_channel_expired(struct ieee80211_hw *hw)

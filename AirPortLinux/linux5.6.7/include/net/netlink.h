@@ -1021,7 +1021,7 @@ static inline int nlmsg_multicast(struct sock *sk, struct sk_buff *skb,
 {
     int err;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+//    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     NETLINK_CB(skb).dst_group = group;
 
 //    err = netlink_broadcast(sk, skb, portid, group, flags);

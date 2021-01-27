@@ -274,7 +274,7 @@ static void iwl_mvm_pass_packet_to_mac80211(struct iwl_mvm *mvm,
 					    struct ieee80211_sta *sta,
 					    bool csi)
 {
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	if (iwl_mvm_check_pn(mvm, skb, queue, sta))
 		kfree_skb(skb);
 	else

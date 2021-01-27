@@ -199,6 +199,9 @@ ieee80211_bss_info_update(struct ieee80211_local *local,
 
     ieee802_11_parse_elems(elements, len - baselen, false, &elems,
                    mgmt->bssid, cbss->bssid);
+    
+    kprintf("--%s: line = %d irq  bssid=%s\n", __FUNCTION__, __LINE__, ether_sprintf(cbss->bssid));
+    kprintf("--%s: line = %d irq  bssid=%s\n", __FUNCTION__, __LINE__, ether_sprintf(mgmt->bssid));
 
     /* In case the signal is invalid update the status */
     signal_valid = abs(channel->center_freq - cbss->channel->center_freq)
@@ -235,7 +238,6 @@ static bool ieee80211_scan_accept_presp(struct ieee80211_sub_if_data *sdata,
 
 void ieee80211_scan_rx(struct ieee80211_local *local, struct sk_buff *skb)
 {
-    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     struct ieee80211_rx_status *rx_status = IEEE80211_SKB_RXCB(skb);
     struct ieee80211_sub_if_data *sdata1, *sdata2;
     struct ieee80211_mgmt *mgmt = (struct ieee80211_mgmt *)skb->data;
@@ -278,6 +280,7 @@ void ieee80211_scan_rx(struct ieee80211_local *local, struct sk_buff *skb)
     }
 
     channel = ieee80211_get_channel(local->hw.wiphy, rx_status->freq);
+    kprintf("--%s: line = %d irq channel->band = %d, channel->hw_value = %d", __FUNCTION__, __LINE__, channel->band, channel->hw_value);
 
     if (!channel || channel->flags & IEEE80211_CHAN_DISABLED)
         return;
@@ -376,6 +379,7 @@ static bool ieee80211_prep_hw_scan(struct ieee80211_local *local)
 
 static void __ieee80211_scan_completed(struct ieee80211_hw *hw, bool aborted)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = hw_to_local(hw);
     bool hw_scan = test_bit(SCAN_HW_SCANNING, &local->scanning);
     bool was_scanning = local->scanning;
@@ -466,6 +470,7 @@ static void __ieee80211_scan_completed(struct ieee80211_hw *hw, bool aborted)
 void ieee80211_scan_completed(struct ieee80211_hw *hw,
                   struct cfg80211_scan_info *info)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = hw_to_local(hw);
 
     trace_api_scan_completed(local, info->aborted);
@@ -483,7 +488,6 @@ EXPORT_SYMBOL(ieee80211_scan_completed);
 static int ieee80211_start_sw_scan(struct ieee80211_local *local,
                    struct ieee80211_sub_if_data *sdata)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     /* Software scan is not supported in multi-channel cases */
     if (local->use_chanctx)
         return -EOPNOTSUPP;
@@ -525,7 +529,6 @@ static int ieee80211_start_sw_scan(struct ieee80211_local *local,
 
 static bool __ieee80211_can_leave_ch(struct ieee80211_sub_if_data *sdata)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = sdata->local;
     struct ieee80211_sub_if_data *sdata_iter;
 
@@ -550,7 +553,6 @@ static bool __ieee80211_can_leave_ch(struct ieee80211_sub_if_data *sdata)
 static bool ieee80211_can_scan(struct ieee80211_local *local,
                    struct ieee80211_sub_if_data *sdata)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!__ieee80211_can_leave_ch(sdata))
         return false;
 
@@ -652,7 +654,6 @@ static void ieee80211_scan_state_send_probe(struct ieee80211_local *local,
 static int __ieee80211_start_scan(struct ieee80211_sub_if_data *sdata,
                   struct cfg80211_scan_request *req)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = sdata->local;
     bool hw_scan = local->ops->hw_scan;
     int rc;
@@ -665,7 +666,6 @@ static int __ieee80211_start_scan(struct ieee80211_sub_if_data *sdata,
     if (!__ieee80211_can_leave_ch(sdata))
         return -EBUSY;
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!ieee80211_can_scan(local, sdata)) {
         /* wait for the work to finish/time out */
         rcu_assign_pointer(local->scan_req, req);
@@ -673,7 +673,6 @@ static int __ieee80211_start_scan(struct ieee80211_sub_if_data *sdata,
         return 0;
     }
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
  again:
     if (hw_scan) {
         u8 *ies;
@@ -775,15 +774,12 @@ static int __ieee80211_start_scan(struct ieee80211_sub_if_data *sdata,
         __set_bit(SCAN_SW_SCANNING, &local->scanning);
     }
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     ieee80211_recalc_idle(local);
 
     if (hw_scan) {
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         WARN_ON(!ieee80211_prep_hw_scan(local));
         rc = drv_hw_scan(local, sdata, local->hw_scan_req);
     } else {
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         rc = ieee80211_start_sw_scan(local, sdata);
     }
 
@@ -810,7 +806,6 @@ static int __ieee80211_start_scan(struct ieee80211_sub_if_data *sdata,
         goto again;
     }
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     return rc;
 }
 
@@ -1050,6 +1045,7 @@ void ieee80211_scan_work(struct work_struct *work)
             goto out;
     }
 
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     /*
      * as long as no delay is required advance immediately
      * without scheduling a new work
@@ -1087,10 +1083,12 @@ void ieee80211_scan_work(struct work_struct *work)
         }
     } while (next_delay == 0);
 
+    kprintf("--%s: line = %d, next_delay = %lu", __FUNCTION__, __LINE__, next_delay);
     ieee80211_queue_delayed_work(&local->hw, &local->scan_work, next_delay);
     goto out;
 
 out_complete:
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     __ieee80211_scan_completed(&local->hw, aborted);
 out:
     mutex_unlock(&local->mtx);
@@ -1101,7 +1099,6 @@ int ieee80211_request_scan(struct ieee80211_sub_if_data *sdata,
 {
     int res;
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     mutex_lock(&sdata->local->mtx);
     res = __ieee80211_start_scan(sdata, req);
     mutex_unlock(&sdata->local->mtx);

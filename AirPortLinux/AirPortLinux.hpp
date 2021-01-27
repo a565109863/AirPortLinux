@@ -25,6 +25,7 @@ if(1) { \
 }
 
 
+extern struct pci_dev *_pdev;
 
 enum {
     kIOMessageNetworkChanged,
@@ -316,6 +317,8 @@ public:
 //    struct _ifreq ifr;
 
     int if_power_state;
+    
+    const char *ifname = "wlan0";
 };
 
 

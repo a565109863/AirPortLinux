@@ -120,7 +120,7 @@ static inline void dma_free_coherent(struct device *dev, size_t size,
 void dma_unmap_page_attrs(struct device *dev, dma_addr_t addr,
                           size_t size, enum dma_data_direction dir, unsigned long attrs);
 
-struct page *alloc_pages(gfp_t gtp, size_t size);
+struct page *alloc_pages(gfp_t gtp, size_t order);
 #define alloc_page(gfp_mask) alloc_pages(gfp_mask, 1)
 
 
@@ -155,7 +155,7 @@ static inline struct page *virt_to_head_page(const void *ptr, size_t size)
 {
     kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct page *page = virt_to_page(ptr);
-    page->size = size;
+    page->dm_mapsize = size;
     return page;
 }
 

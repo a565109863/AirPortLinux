@@ -21,10 +21,46 @@
 #define BITS_TO_U32(nr)        DIV_ROUND_UP(nr, BITS_PER_TYPE(u32))
 #define BITS_TO_BYTES(nr)    DIV_ROUND_UP(nr, BITS_PER_TYPE(char))
 
+
+#define DECLARE_BITMAP(name,bits) \
+unsigned long name[BITS_TO_LONGS(bits)]
+
+static inline void bitmap_zero(unsigned long *dst, int nbits)
+{
+    int len = BITS_TO_LONGS(nbits) * sizeof(unsigned long);
+    memset(dst, 0, len);
+}
+
 extern unsigned int __sw_hweight8(unsigned int w);
 extern unsigned int __sw_hweight16(unsigned int w);
 extern unsigned int __sw_hweight32(unsigned int w);
 extern unsigned long __sw_hweight64(__u64 w);
+
+
+static inline int
+__test_and_set_bit(u_int b, volatile void *p)
+{
+    unsigned int m = 1 << (b & 0x1f);
+    volatile u_int *ptr = (volatile u_int *)p;
+    unsigned int prev = ptr[b >> 5];
+    ptr[b >> 5] |= m;
+    
+    return (prev & m) != 0;
+}
+
+static __inline__ int
+__test_and_clear_bit(int nr, volatile void * addr)
+{
+    __u32 *p = (__u32 *) addr + (nr >> 5);
+    __u32 m = 1 << (nr & 31);
+    int oldbitset = (*p & m) != 0;
+    
+    *p &= ~m;
+    return oldbitset;
+}
+
+#define test_and_clear_bit(nr, vaddr)     __test_and_clear_bit(nr, vaddr)
+#define test_and_set_bit(nr, vaddr)   __test_and_set_bit(nr, vaddr)
 
 
 static inline int
@@ -114,18 +150,6 @@ static unsigned long find_last_bit(const unsigned long *addr, unsigned long size
     }
     return size;
 }
-
-static __inline__ int
-__test_and_clear_bit(int nr, volatile void * addr)
-{
-    __u32 *p = (__u32 *) addr + (nr >> 5);
-    __u32 m = 1 << (nr & 31);
-    int oldbitset = (*p & m) != 0;
-    
-    *p &= ~m;
-    return oldbitset;
-}
-
 
 /*
  * Include this here because some architectures need generic_ffs/fls in

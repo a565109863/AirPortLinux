@@ -7,6 +7,9 @@
 //
 
 #include "AirPortLinux.hpp"
+#include <linux/device.h>
+#include <linux/pci.h>
+#include "iwl-trans.h"
 
 //
 // MARK: 1 - SSID
@@ -230,7 +233,10 @@ IOReturn AirPortLinux::setSCAN_REQ(IOInterface *interface, struct apple80211_sca
     
     bcopy(sd, &this->scanRequest, sizeof(struct apple80211_scan_data));
     
+    ifscan(this->ifname);
+    
     if (this->fTimerEventSource) {
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         this->fTimerEventSource->setAction(&AirPortLinux::scanDone);
         this->fTimerEventSource->setTimeoutMS(200);
     }
@@ -250,6 +256,8 @@ IOReturn AirPortLinux::setSCAN_REQ_MULTIPLE(IOInterface *interface, struct apple
     this->scanFlag = true;
     
     bcopy(smd, &this->scanMultiRequest, sizeof(struct apple80211_scan_multiple_data));
+    
+    ifscan(this->ifname);
     
     if (this->fTimerEventSource) {
         this->fTimerEventSource->setAction(&AirPortLinux::scanDone);
@@ -751,7 +759,7 @@ IOReturn AirPortLinux::getSUPPORTED_CHANNELS(IOInterface *interface,
     wrq.u.data.length = sizeof(buffer);
     wrq.u.data.flags = 0;
     
-    strncpy(wrq.ifr_name, "wlan0", IFNAMSIZ);
+    strncpy(wrq.ifr_name, this->ifname, IFNAMSIZ);
     int ret = ioctl(1, SIOCGIWRANGE, &wrq);
     if (ret < 0)
     {
@@ -766,6 +774,8 @@ IOReturn AirPortLinux::getSUPPORTED_CHANNELS(IOInterface *interface,
         ad->supported_channels[i].channel = range->freq[i].i;
         ad->supported_channels[i].flags   = range->freq[i].m;
         ad->supported_channels[i].version = APPLE80211_VERSION;
+        
+//        kprintf("--%s: line = %d channel = %d", __FUNCTION__, __LINE__, ad->supported_channels[i].channel);
     }
     return kIOReturnSuccess;
 }
@@ -853,9 +863,11 @@ IOReturn AirPortLinux::getANTENNA_DIVERSITY(IOInterface *interface,
 
 IOReturn AirPortLinux::getDRIVER_VERSION(IOInterface *interface, struct apple80211_version_data *hv)
 {
-//    hv->version = APPLE80211_VERSION;
-//    strncpy(hv->string, _ifp->fwver, sizeof(hv->string));
-//    hv->string_len = strlen(_ifp->fwver);
+    hv->version = APPLE80211_VERSION;
+    struct iwl_trans *iwl_trans = (struct iwl_trans *)pci_get_drvdata(this->pdev);
+    strncpy(hv->string, iwl_trans->name, sizeof(hv->string));
+    hv->string_len = strlen(iwl_trans->name);
+    
     return kIOReturnSuccess;
 }
 
@@ -866,8 +878,10 @@ IOReturn AirPortLinux::getDRIVER_VERSION(IOInterface *interface, struct apple802
 IOReturn AirPortLinux::getHARDWARE_VERSION(IOInterface *interface, struct apple80211_version_data *hv)
 {
     hv->version = APPLE80211_VERSION;
-    strncpy(hv->string, "Hardware 1.0", sizeof(hv->string));
-    hv->string_len = strlen("Hardware 1.0");
+    struct iwl_trans *iwl_trans = (struct iwl_trans *)pci_get_drvdata(this->pdev);
+    strncpy(hv->string, iwl_trans->name, sizeof(hv->string));
+    hv->string_len = strlen(iwl_trans->name);
+    
     return kIOReturnSuccess;
 }
 

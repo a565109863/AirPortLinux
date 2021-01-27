@@ -274,8 +274,22 @@ struct workqueue_struct {
     struct pool_workqueue __rcu *numa_pwq_tbl[]; /* PWR: unbound pwqs indexed by node */
 };
 
+
+extern struct workqueue_struct *system_wq;
+//extern struct workqueue_struct *system_highpri_wq;
+//extern struct workqueue_struct *system_long_wq;
+//extern struct workqueue_struct *system_unbound_wq;
+extern struct workqueue_struct *system_freezable_wq;
+extern struct workqueue_struct *system_power_efficient_wq;
+//extern struct workqueue_struct *system_freezable_power_efficient_wq;
+
+
 static void queue_work_run(void* tqarg, wait_result_t waitResult);
-struct workqueue_struct * alloc_workqueue(char *wq_name, int how, int type);
+//struct workqueue_struct * alloc_workqueue(char *wq_name, int how, int type);
+
+struct workqueue_struct *alloc_workqueue(const char *fmt,
+                                         unsigned int flags,
+                                         int max_active, ...);
 
 /*
  * Test whether @work is being queued from another work executing on the
@@ -293,6 +307,7 @@ bool queue_work_on(int cpu, struct workqueue_struct *wq,
 static inline bool queue_work(struct workqueue_struct *wq,
                   struct work_struct *work)
 {
+    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
     return queue_work_on(WORK_CPU_UNBOUND, wq, work);
 }
 
@@ -382,19 +397,11 @@ static inline bool queue_delayed_work(struct workqueue_struct *wq,
     return queue_delayed_work_on(WORK_CPU_UNBOUND, wq, dwork, delay);
 }
 
-static bool schedule_delayed_work(struct delayed_work *dwork,
+static inline bool schedule_delayed_work(struct delayed_work *dwork,
                                          unsigned long delay)
 {
-    return queue_delayed_work(NULL, dwork, delay);
+    return queue_delayed_work(system_wq, dwork, delay);
 }
-
-extern struct workqueue_struct *system_wq;
-//extern struct workqueue_struct *system_highpri_wq;
-//extern struct workqueue_struct *system_long_wq;
-//extern struct workqueue_struct *system_unbound_wq;
-extern struct workqueue_struct *system_freezable_wq;
-//extern struct workqueue_struct *system_power_efficient_wq;
-//extern struct workqueue_struct *system_freezable_power_efficient_wq;
 
 bool mod_delayed_work_on(int cpu, struct workqueue_struct *wq,
             struct delayed_work *dwork, unsigned long delay);
@@ -440,14 +447,13 @@ static inline bool schedule_work_on(int cpu, struct work_struct *work)
  */
 static inline bool schedule_work(struct work_struct *work)
 {
+    kprintf("--%s: line = %d irq work->func_name = %s", __FUNCTION__, __LINE__, work->func_name);
     return queue_work(system_wq, work);
 }
 
-
 #define alloc_ordered_workqueue(fmt, flags, args...)            \
     alloc_workqueue(fmt, WQ_UNBOUND | __WQ_ORDERED |        \
-            __WQ_ORDERED_EXPLICIT | (flags), 1)
-
+            __WQ_ORDERED_EXPLICIT | (flags), 1, ##args)
 
 #define __WORK_INITIALIZER(n, f) { \
 .data = 0, \

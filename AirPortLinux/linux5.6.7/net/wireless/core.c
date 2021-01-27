@@ -1469,9 +1469,9 @@ int __init cfg80211_init(void)
 
 //    ieee80211_debugfs_dir = debugfs_create_dir("ieee80211", NULL);
 //
-//    err = regulatory_init();
-//    if (err)
-//        goto out_fail_reg;
+    err = regulatory_init();
+    if (err)
+        goto out_fail_reg;
 
     cfg80211_wq = alloc_ordered_workqueue("cfg80211", WQ_MEM_RECLAIM);
     if (!cfg80211_wq) {
@@ -1483,9 +1483,9 @@ int __init cfg80211_init(void)
 
 out_fail_wq:
 //    regulatory_exit();
-//out_fail_reg:
+out_fail_reg:
 //    debugfs_remove(ieee80211_debugfs_dir);
-//    nl80211_exit();
+    nl80211_exit();
 out_fail_nl80211:
 //    unregister_netdevice_notifier(&cfg80211_netdev_notifier);
 out_fail_notifier:

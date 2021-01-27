@@ -28,6 +28,8 @@ static inline int atomic_add_return(int i, atomic_t *v)
 
 #define atomic_add(i,v)            (void)atomic_add_return((i), (v))
 
+//#define atomic_sub(i, v) atomic_add(-(i), (v))
+#define atomic_sub_return(i, v) atomic_add_return(-(i), (v))
 
 #define ATOMIC_LONG_INIT(i)        ATOMIC64_INIT(i)
 

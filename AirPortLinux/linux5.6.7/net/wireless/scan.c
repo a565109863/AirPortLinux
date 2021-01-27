@@ -451,6 +451,7 @@ static bool cfg80211_bss_expire_oldest(struct cfg80211_registered_device *rdev)
 void ___cfg80211_scan_done(struct cfg80211_registered_device *rdev,
                bool send_message)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct cfg80211_scan_request *request;
     struct wireless_dev *wdev;
     struct sk_buff *msg;
@@ -525,6 +526,7 @@ void __cfg80211_scan_done(struct work_struct *wk)
 void cfg80211_scan_done(struct cfg80211_scan_request *request,
             struct cfg80211_scan_info *info)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     trace_cfg80211_scan_done(request, info);
     WARN_ON(request != wiphy_to_rdev(request->wiphy)->scan_req);
 
@@ -1612,10 +1614,10 @@ static void cfg80211_parse_mbssid_data(struct wiphy *wiphy,
                 continue;
             }
 
-//            if (seen_indices & BIT_ULL(mbssid_index_ie[2]))
-//                /* We don't support legacy split of a profile */
-//                net_dbg_ratelimited("Partial info for BSSID index %d\n",
-//                            mbssid_index_ie[2]);
+            if (seen_indices & BIT_ULL(mbssid_index_ie[2]))
+                /* We don't support legacy split of a profile */
+                net_dbg_ratelimited("Partial info for BSSID index %d\n",
+                            mbssid_index_ie[2]);
 
             seen_indices |= BIT_ULL(mbssid_index_ie[2]);
 
@@ -1705,6 +1707,7 @@ cfg80211_update_notlisted_nontrans(struct wiphy *wiphy,
                    struct cfg80211_bss *nontrans_bss,
                    struct ieee80211_mgmt *mgmt, size_t len)
 {
+    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
     u8 *ie, *new_ie, *pos;
     const u8 *nontrans_ssid, *trans_ssid, *mbssid;
     size_t ielen = len - offsetof(struct ieee80211_mgmt,
@@ -2300,6 +2303,7 @@ ieee80211_bss(struct wiphy *wiphy, struct iw_request_info *info,
           struct cfg80211_internal_bss *bss, char *current_ev,
           char *end_buf)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     const struct cfg80211_bss_ies *ies;
     struct iw_event iwe;
     const u8 *ie;
@@ -2397,6 +2401,14 @@ ieee80211_bss(struct wiphy *wiphy, struct iw_request_info *info,
             iwe.cmd = SIOCGIWESSID;
             iwe.u.data.length = ie[1];
             iwe.u.data.flags = 1;
+                
+                u_int8_t        ni_essid[32];
+                memset(ni_essid, 0, 32 * sizeof(u_int8_t));
+                memcpy(ni_essid, ((u8 *)ie + 2), iwe.u.data.length);
+                ni_essid[iwe.u.data.length] = '\0';
+                kprintf("--%s: line = %d irq  len = %d, ssid = %s", __FUNCTION__, __LINE__, iwe.u.data.length, ni_essid);
+                
+                
             current_ev = iwe_stream_add_point_check(info,
                                 current_ev,
                                 end_buf, &iwe,
@@ -2559,6 +2571,7 @@ static int ieee80211_scan_results(struct cfg80211_registered_device *rdev,
                   struct iw_request_info *info,
                   char *buf, size_t len)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     char *current_ev = buf;
     char *end_buf = buf + len;
     struct cfg80211_internal_bss *bss;
@@ -2566,12 +2579,14 @@ static int ieee80211_scan_results(struct cfg80211_registered_device *rdev,
 
     spin_lock_bh(&rdev->bss_lock);
     cfg80211_bss_expire(rdev);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 
     list_for_each_entry(bss, &rdev->bss_list, list) {
         if (buf + len - current_ev <= IW_EV_ADDR_LEN) {
             err = -E2BIG;
             break;
         }
+        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
         current_ev = ieee80211_bss(&rdev->wiphy, info, bss,
                        current_ev, end_buf);
         if (IS_ERR(current_ev)) {
@@ -2591,20 +2606,29 @@ int cfg80211_wext_giwscan(struct net_device *dev,
               struct iw_request_info *info,
               struct iw_point *data, char *extra)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct cfg80211_registered_device *rdev;
     int res;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!netif_running(dev))
         return -ENETDOWN;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     rdev = cfg80211_get_dev_from_ifindex(dev_net(dev), dev->ifindex);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (IS_ERR(rdev))
         return PTR_ERR(rdev);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (rdev->scan_req || rdev->scan_msg)
         return -EAGAIN;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     res = ieee80211_scan_results(rdev, info, extra, data->length);
     data->length = 0;
     if (res >= 0) {
@@ -2612,6 +2636,7 @@ int cfg80211_wext_giwscan(struct net_device *dev,
         res = 0;
     }
 
+    DebugLog("--%s: line = %d res = %d", __FUNCTION__, __LINE__, res);
     return res;
 }
 EXPORT_WEXT_HANDLER(cfg80211_wext_giwscan);

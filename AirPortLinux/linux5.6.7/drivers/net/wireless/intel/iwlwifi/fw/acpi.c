@@ -154,7 +154,7 @@ IWL_EXPORT_SYMBOL(iwl_acpi_get_wifi_pkg);
 
 int iwl_acpi_get_mcc(struct device *dev, char *mcc)
 {
-    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
+//    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
     return -EINVAL;
     union acpi_object *wifi_pkg, *data;
     u32 mcc_val;
