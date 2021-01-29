@@ -24,12 +24,12 @@ static void __mutex_lock(struct mutex *m, const char *name, const char *fn) {
         __mutex_init(m);
     }
     
-    kprintf("-----%s: line = %d, name = %s, fn = %s start", __FUNCTION__, __LINE__, name, fn);
+//    kprintf("-----%s: line = %d, name = %s, fn = %s start", __FUNCTION__, __LINE__, name, fn);
     IORecursiveLockLock(m->lock);
 }
 
 static void __mutex_unlock(struct mutex *m, const char *name, const char *fn) {
-    kprintf("-----%s: line = %d, name = %s, fn = %s start", __FUNCTION__, __LINE__, name, fn);
+//    kprintf("-----%s: line = %d, name = %s, fn = %s start", __FUNCTION__, __LINE__, name, fn);
     IORecursiveLockUnlock(m->lock);
 }
 

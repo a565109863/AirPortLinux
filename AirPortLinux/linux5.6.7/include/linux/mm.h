@@ -23,6 +23,9 @@ struct page {
     int32_t    desc;
     int32_t    file;
     
+    /* Usage count. *DO NOT USE DIRECTLY*. See page_ref.h */
+    atomic_t _refcount;
+    
     void        *ptr;
 //    uint32_t    size;
     size_t         order;
@@ -42,21 +45,79 @@ struct page {
 static
 void get_page(struct page * page)
 {
-//    if (page->mult_page_index >= page->mult_page_num) {
-//        page = NULL;
-//    } else {
-//        page->mult_page_index++;
-//    }
+    atomic_inc(&page->_refcount);
 }
 
 
 void __free_page(struct page * page);
 
-static void __free_pages(struct page * page, u32 _rx_page_order)
+//static void __free_pages(struct page * page, u32 _rx_page_order)
+//{
+////    page++;
+//    __free_page(page);
+//}
+
+
+static inline int page_ref_dec_and_test(struct page *page)
 {
-//    page++;
+    int ret = atomic_dec_and_test(&page->_refcount);
+
+//    if (page_ref_tracepoint_active(__tracepoint_page_ref_mod_and_test))
+//        __page_ref_mod_and_test(page, -1, ret);
+    return ret;
+}
+
+/*
+ * Drop a ref, return true if the refcount fell to zero (the page has no users)
+ */
+static inline int put_page_testzero(struct page *page)
+{
+//    VM_BUG_ON_PAGE(page_ref_count(page) == 0, page);
+    return page_ref_dec_and_test(page);
+}
+
+
+/*
+ * Free a 0-order page
+ */
+static void free_unref_page(struct page *page)
+{
     __free_page(page);
 }
+
+static void __free_pages_ok(struct page *page, unsigned int order)
+{
+    __free_page(page);
+//    unsigned long flags;
+//    int migratetype;
+//    unsigned long pfn = page_to_pfn(page);
+//
+//    if (!free_pages_prepare(page, order, true))
+//        return;
+//
+//    migratetype = get_pfnblock_migratetype(page, pfn);
+//    local_irq_save(flags);
+//    __count_vm_events(PGFREE, 1 << order);
+//    free_one_page(page_zone(page), page, pfn, order, migratetype);
+//    local_irq_restore(flags);
+}
+
+static inline void free_the_page(struct page *page, unsigned int order)
+{
+    kprintf("--%s: line = %d order = %d", __FUNCTION__, __LINE__, order);
+    if (order == 0)        /* Via pcp? */
+        free_unref_page(page);
+    else
+        __free_pages_ok(page, order);
+}
+
+static void __free_pages(struct page *page, unsigned int order)
+{
+    kprintf("--%s: line = %d order = %d", __FUNCTION__, __LINE__, order);
+    if (put_page_testzero(page))
+        free_the_page(page, order);
+}
+EXPORT_SYMBOL(__free_pages);
 
 
 void *page_address(struct page *page);
@@ -69,7 +130,6 @@ void *page_address(struct page *page);
 
 static inline int get_order(unsigned long size)
 {
-//    return (int)size;//hack
     int order;
     
     size = (size - 1) >> (PAGE_SHIFT - 1);

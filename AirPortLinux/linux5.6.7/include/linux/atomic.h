@@ -78,6 +78,8 @@ static inline int atomic_dec_if_positive(atomic_t *v)
     return res;
 }
 
+#define atomic_dec_and_test(v)    (atomic_dec_return(v) == 0)
+
 
 //
 ///*

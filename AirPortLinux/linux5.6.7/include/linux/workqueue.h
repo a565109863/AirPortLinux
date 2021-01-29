@@ -285,7 +285,6 @@ extern struct workqueue_struct *system_power_efficient_wq;
 
 
 static void queue_work_run(void* tqarg, wait_result_t waitResult);
-//struct workqueue_struct * alloc_workqueue(char *wq_name, int how, int type);
 
 struct workqueue_struct *alloc_workqueue(const char *fmt,
                                          unsigned int flags,
@@ -307,7 +306,7 @@ bool queue_work_on(int cpu, struct workqueue_struct *wq,
 static inline bool queue_work(struct workqueue_struct *wq,
                   struct work_struct *work)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
     return queue_work_on(WORK_CPU_UNBOUND, wq, work);
 }
 
@@ -458,7 +457,8 @@ static inline bool schedule_work(struct work_struct *work)
 #define __WORK_INITIALIZER(n, f) { \
 .data = 0, \
 .entry = { &(n).entry, &(n).entry }, \
-.func = f \
+.func = f, \
+.func_name = #f                \
 }
 
 #define DECLARE_WORK(n, f) \

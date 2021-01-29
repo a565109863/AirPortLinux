@@ -9,6 +9,9 @@
 #include "help_ifconfig.h"
 #include <linux/netdevice.h>
 #include <net/core/dev_ioctl.h>
+#include <net/sock.h>
+
+#include <net/wireless/nl80211.h>
 
 
 int ioctl(int sk, unsigned int cmd, void *ifr)
@@ -46,8 +49,8 @@ int ifup(const char *ifname)
         return -1;
     }
     
-//    scan();
-    ifscan(ifname);
+    scan(ifname);
+//    ifscan(ifname);
     
     DebugLog("--%s: line = %d end", __FUNCTION__, __LINE__);
 //
@@ -88,200 +91,205 @@ int ifdown(const char *ifname)
 #include <net/genetlink.h>
 #include <linux/nl80211.h>
 
-void scan()
+void scan(const char *ifname)
 {
     struct sk_buff *msg;
     
     DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d end", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d end", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d end", __FUNCTION__, __LINE__);
+    
     msg = nlmsg_new(sizeof(struct nlmsghdr), 123);
     if (!msg)
         return;
+
+    int sk = 0;
+    struct net *net = sock_net(sk);
+    struct net_device *dev;
+
+    dev = dev_get_by_name(net, ifname);
     
+    void *hdr;
     
-    const struct genl_family *res = NULL;
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    
-    res = genl_family_find_byname(NL80211_GENL_NAME);
-    if (res == NULL) {
-        DebugLog("--%s: line = %d, genl_family = NULL", __FUNCTION__, __LINE__);
+    hdr = nl80211hdr_put(msg, 0, 0, NLM_F_REQUEST, NL80211_CMD_TRIGGER_SCAN);
+    if (!hdr)
         return;
-    }
-    DebugLog("--%s: line = %d, family->id = %d", __FUNCTION__, __LINE__, res->id);
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    if (dev &&
+        (nla_put_u32(msg, NL80211_ATTR_IFINDEX, dev->ifindex) ||
+         nla_put_string(msg, NL80211_ATTR_IFNAME, dev->name)))
+        goto nla_put_failure;
     
-    genlmsg_put(msg, 0, 0, res,
-                NLM_F_REQUEST, NL80211_CMD_TRIGGER_SCAN);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    /* ignore errors and send incomplete event anyway */
+//    nl80211_add_scan_req(msg, rdev);
     
-    
-//    if (bss->wdev_id_set)
-////        return nla_put_u64(msg, NL80211_ATTR_WDEV, bss->wdev_id);
-//    return nla_put_u32(msg, NL80211_ATTR_IFINDEX, bss->ifindex);
-//
-//
-//    if (dev &&
-//        (nla_put_u32(msg, NL80211_ATTR_IFINDEX, dev->ifindex) ||
-//         nla_put_string(msg, NL80211_ATTR_IFNAME, dev->name)))
-//        goto nla_put_failure;
+    genlmsg_end(msg, hdr);
     
     genl_rcv(msg);
+    
     DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    
+nla_put_failure:
+    DebugLog("--%s: line = %d nla_put_failure", __FUNCTION__, __LINE__);
+    return ;
 }
 
 
-int ifscan(const char *ifname)
-{
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
-    struct _ifreq ifr = {};
-    int skfd = 0, ret;
-
-    strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
-
-//    sk = socket(PF_INET, SOCK_DGRAM, 0);
-//    if (sk < 0)
-//        return -1;
+//int ifscan(const char *ifname)
+//{
+//    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+//    struct _ifreq ifr = {};
+//    int skfd = 0, ret;
 //
-    
-    struct iwreq        wrq;
-    wrq.u.data.pointer = NULL;
-    wrq.u.data.flags = 0;
-    wrq.u.data.length = 0;
-
-    unsigned char *    buffer = NULL;        /* Results */
-    int            buflen = IW_SCAN_MAX_DATA; /* Min for compat WE<17 */
-
-    if(iw_set_ext(skfd, ifname, SIOCSIWSCAN, &wrq) < 0)
-    {
-        return -1;
-    }
+//    strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
 //
-//    unsigned char *    newbuf;
+////    sk = socket(PF_INET, SOCK_DGRAM, 0);
+////    if (sk < 0)
+////        return -1;
+////
+//    
+//    struct iwreq        wrq;
+//    wrq.u.data.pointer = NULL;
+//    wrq.u.data.flags = 0;
+//    wrq.u.data.length = 0;
 //
-//    /* (Re)allocate the buffer - realloc(NULL, len) == malloc(len) */
-//    newbuf = (unsigned char *)realloc(buffer, buflen);
-//    if(newbuf == NULL)
+//    unsigned char *    buffer = NULL;        /* Results */
+//    int            buflen = IW_SCAN_MAX_DATA; /* Min for compat WE<17 */
+//
+//    if(iw_set_ext(skfd, ifname, SIOCSIWSCAN, &wrq) < 0)
 //    {
-//        if(buffer)
-//            free(buffer, __GFP_ZERO, buflen);
-////        fprintf(stderr, "%s: Allocation failed\n", __FUNCTION__);
-//        return(-1);
+//        return -1;
 //    }
-//    buffer = newbuf;
-//
+////
+////    unsigned char *    newbuf;
+////
+////    /* (Re)allocate the buffer - realloc(NULL, len) == malloc(len) */
+////    newbuf = (unsigned char *)realloc(buffer, buflen);
+////    if(newbuf == NULL)
+////    {
+////        if(buffer)
+////            free(buffer, __GFP_ZERO, buflen);
+//////        fprintf(stderr, "%s: Allocation failed\n", __FUNCTION__);
+////        return(-1);
+////    }
+////    buffer = newbuf;
+////
+////    /* Try to read the results */
+////    wrq.u.data.pointer = buffer;
+////    wrq.u.data.flags = 0;
+////    wrq.u.data.length = buflen;
+////    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+////    if(iw_get_ext(skfd, ifname, SIOCGIWSCAN, &wrq) < 0)
+////    {
+////        return -1;
+////    }
+////
+////    close(sk);
+//    
+//    
+//    kprintf("--%s: line = %d end", __FUNCTION__, __LINE__);
+//    return 0;
+//    IOSleep(10000);
+//    
+//    
+//    int            we_version = 1;
+//    
 //    /* Try to read the results */
 //    wrq.u.data.pointer = buffer;
 //    wrq.u.data.flags = 0;
 //    wrq.u.data.length = buflen;
-//    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 //    if(iw_get_ext(skfd, ifname, SIOCGIWSCAN, &wrq) < 0)
 //    {
-//        return -1;
+////        /* Check if buffer was too small (WE-17 only) */
+////        if((errno == E2BIG) && (we_version > 16))
+////        {
+////            /* Some driver may return very large scan results, either
+////             * because there are many cells, or because they have many
+////             * large elements in cells (like IWEVCUSTOM). Most will
+////             * only need the regular sized buffer. We now use a dynamic
+////             * allocation of the buffer to satisfy everybody. Of course,
+////             * as we don't know in advance the size of the array, we try
+////             * various increasing sizes. Jean II */
+////
+////            /* Check if the driver gave us any hints. */
+////            if(wrq.u.data.length > buflen)
+////                buflen = wrq.u.data.length;
+////            else
+////                buflen *= 2;
+////
+////            /* Try again */
+////            goto realloc;
+////        }
+////
+////        /* Check if results not available yet */
+////        if(errno == EAGAIN)
+////        {
+////            free(buffer);
+////            /* Wait for only 100ms from now on */
+////            return(100);    /* Wait 100 ms */
+////        }
+////
+////        free(buffer);
+////        /* Bad error, please don't come back... */
+////        return(-1);
 //    }
-//
-//    close(sk);
-    
-    
-    kprintf("--%s: line = %d end", __FUNCTION__, __LINE__);
-    return 0;
-    IOSleep(10000);
-    
-    
-    int            we_version = 1;
-    
-    /* Try to read the results */
-    wrq.u.data.pointer = buffer;
-    wrq.u.data.flags = 0;
-    wrq.u.data.length = buflen;
-    if(iw_get_ext(skfd, ifname, SIOCGIWSCAN, &wrq) < 0)
-    {
-//        /* Check if buffer was too small (WE-17 only) */
-//        if((errno == E2BIG) && (we_version > 16))
+//    
+//    /* We have the results, process them */
+//    if(wrq.u.data.length)
+//    {
+//        struct iw_event        iwe;
+//        struct stream_descr    stream;
+//        struct wireless_scan *    wscan = NULL;
+//        int            ret;
+//#ifdef DEBUG
+//        /* Debugging code. In theory useless, because it's debugged ;-) */
+//        int    i;
+//        printf("Scan result [%02X", buffer[0]);
+//        for(i = 1; i < wrq.u.data.length; i++)
+//            printf(":%02X", buffer[i]);
+//        printf("]\n");
+//#endif
+//        
+//        /* Init */
+//        iw_init_event_stream(&stream, (char *) buffer, wrq.u.data.length);
+//        /* This is dangerous, we may leak user data... */
+////        context->result = NULL;
+//        
+//        /* Look every token */
+//        do
 //        {
-//            /* Some driver may return very large scan results, either
-//             * because there are many cells, or because they have many
-//             * large elements in cells (like IWEVCUSTOM). Most will
-//             * only need the regular sized buffer. We now use a dynamic
-//             * allocation of the buffer to satisfy everybody. Of course,
-//             * as we don't know in advance the size of the array, we try
-//             * various increasing sizes. Jean II */
-//
-//            /* Check if the driver gave us any hints. */
-//            if(wrq.u.data.length > buflen)
-//                buflen = wrq.u.data.length;
-//            else
-//                buflen *= 2;
-//
-//            /* Try again */
-//            goto realloc;
+//            /* Extract an event and print it */
+//            ret = iw_extract_event_stream(&stream, &iwe, we_version);
+//            if(ret > 0)
+//            {
+//                /* Convert to wireless_scan struct */
+////                wscan = iw_process_scanning_token(&iwe, wscan);
+////                /* Check problems */
+////                if(wscan == NULL)
+////                {
+////                    free(buffer);
+////                    errno = ENOMEM;
+////                    return(-1);
+////                }
+////                /* Save head of list */
+////                if(context->result == NULL)
+////                    context->result = wscan;
+//            }
 //        }
-//
-//        /* Check if results not available yet */
-//        if(errno == EAGAIN)
-//        {
-//            free(buffer);
-//            /* Wait for only 100ms from now on */
-//            return(100);    /* Wait 100 ms */
-//        }
-//
-//        free(buffer);
-//        /* Bad error, please don't come back... */
-//        return(-1);
-    }
-    
-    /* We have the results, process them */
-    if(wrq.u.data.length)
-    {
-        struct iw_event        iwe;
-        struct stream_descr    stream;
-        struct wireless_scan *    wscan = NULL;
-        int            ret;
-#ifdef DEBUG
-        /* Debugging code. In theory useless, because it's debugged ;-) */
-        int    i;
-        printf("Scan result [%02X", buffer[0]);
-        for(i = 1; i < wrq.u.data.length; i++)
-            printf(":%02X", buffer[i]);
-        printf("]\n");
-#endif
-        
-        /* Init */
-        iw_init_event_stream(&stream, (char *) buffer, wrq.u.data.length);
-        /* This is dangerous, we may leak user data... */
-//        context->result = NULL;
-        
-        /* Look every token */
-        do
-        {
-            /* Extract an event and print it */
-            ret = iw_extract_event_stream(&stream, &iwe, we_version);
-            if(ret > 0)
-            {
-                /* Convert to wireless_scan struct */
-//                wscan = iw_process_scanning_token(&iwe, wscan);
-//                /* Check problems */
-//                if(wscan == NULL)
-//                {
-//                    free(buffer);
-//                    errno = ENOMEM;
-//                    return(-1);
-//                }
-//                /* Save head of list */
-//                if(context->result == NULL)
-//                    context->result = wscan;
-            }
-        }
-        while(ret > 0);
-    }
-    
-    
-    
-    return 0;
-}
+//        while(ret > 0);
+//    }
+//    
+//    
+//    
+//    return 0;
+//}
 
 
 

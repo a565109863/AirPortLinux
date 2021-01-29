@@ -233,7 +233,8 @@ IOReturn AirPortLinux::setSCAN_REQ(IOInterface *interface, struct apple80211_sca
     
     bcopy(sd, &this->scanRequest, sizeof(struct apple80211_scan_data));
     
-    ifscan(this->ifname);
+    scan(this->ifname);
+//    ifscan(this->ifname);
     
     if (this->fTimerEventSource) {
         DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
@@ -257,7 +258,8 @@ IOReturn AirPortLinux::setSCAN_REQ_MULTIPLE(IOInterface *interface, struct apple
     
     bcopy(smd, &this->scanMultiRequest, sizeof(struct apple80211_scan_multiple_data));
     
-    ifscan(this->ifname);
+    scan(this->ifname);
+//    ifscan(this->ifname);
     
     if (this->fTimerEventSource) {
         this->fTimerEventSource->setAction(&AirPortLinux::scanDone);

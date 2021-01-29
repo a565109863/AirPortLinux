@@ -54,10 +54,9 @@ struct device {
     void (*cont)(const struct firmware *, void *);
 };
 
-static
-const char *dev_name(struct device *dev)
+static inline const char *dev_name(const struct device *dev)
 {
-    return dev->name;
+    return dev->parent->name;
 }
 
 static inline void *dev_get_drvdata(const struct device *dev)

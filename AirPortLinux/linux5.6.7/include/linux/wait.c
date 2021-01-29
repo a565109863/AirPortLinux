@@ -58,3 +58,14 @@ int default_wake_function(wait_queue_entry_t *curr, unsigned mode, int wake_flag
     return try_to_wake_up((struct task_struct *)curr->_private, mode, wake_flags);
 }
 EXPORT_SYMBOL(default_wake_function);
+
+void add_wait_queue_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
+{
+    unsigned long flags;
+
+    wq_entry->flags |= WQ_FLAG_EXCLUSIVE;
+    spin_lock_irqsave(&wq_head->lock, flags);
+    __add_wait_queue_entry_tail(wq_head, wq_entry);
+    spin_unlock_irqrestore(&wq_head->lock, flags);
+}
+EXPORT_SYMBOL(add_wait_queue_exclusive);

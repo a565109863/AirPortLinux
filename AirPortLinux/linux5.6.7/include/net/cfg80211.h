@@ -4761,8 +4761,7 @@ static inline struct device *wiphy_dev(struct wiphy *wiphy)
  */
 static inline const char *wiphy_name(const struct wiphy *wiphy)
 {
-    return "";
-//    return dev_name(&wiphy->dev);
+    return dev_name(&wiphy->dev);
 }
 
 /**

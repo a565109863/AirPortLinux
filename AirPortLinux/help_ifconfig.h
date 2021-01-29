@@ -20,8 +20,8 @@ long sock_ioctl(int sk, unsigned cmd, unsigned long arg);
 int ifup(const char *ifname);
 int ifdown(const char *ifname);
 
-void scan();
-int ifscan(const char *ifname);
+void scan(const char *ifname);
+//int ifscan(const char *ifname);
 
 
 

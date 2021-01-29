@@ -7525,21 +7525,17 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
 
     wiphy = &rdev->wiphy;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (wdev->iftype == NL80211_IFTYPE_NAN)
         return -EOPNOTSUPP;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!rdev->ops->scan)
         return -EOPNOTSUPP;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (rdev->scan_req || rdev->scan_msg) {
         err = -EBUSY;
         goto unlock;
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (info->attrs[NL80211_ATTR_SCAN_FREQUENCIES]) {
         n_channels = validate_scan_freqs(
                 info->attrs[NL80211_ATTR_SCAN_FREQUENCIES]);
@@ -7551,30 +7547,25 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
         n_channels = ieee80211_get_num_supported_channels(wiphy);
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (info->attrs[NL80211_ATTR_SCAN_SSIDS])
         nla_for_each_nested(attr, info->attrs[NL80211_ATTR_SCAN_SSIDS], tmp)
             n_ssids++;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (n_ssids > wiphy->max_scan_ssids) {
         err = -EINVAL;
         goto unlock;
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (info->attrs[NL80211_ATTR_IE])
         ie_len = nla_len(info->attrs[NL80211_ATTR_IE]);
     else
         ie_len = 0;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (ie_len > wiphy->max_scan_ie_len) {
         err = -EINVAL;
         goto unlock;
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     request = (struct cfg80211_scan_request *)kzalloc(sizeof(*request)
             + sizeof(*request->ssids) * n_ssids
             + sizeof(*request->channels) * n_channels
@@ -7584,7 +7575,6 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
         goto unlock;
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (n_ssids)
         request->ssids = (struct cfg80211_ssid *)&request->channels[n_channels];
     request->n_ssids = n_ssids;
@@ -7595,7 +7585,6 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
             request->ie = (const u8 *)(request->channels + n_channels);
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     i = 0;
     if (info->attrs[NL80211_ATTR_SCAN_FREQUENCIES]) {
         /* user specified, bail out if channel not found */
@@ -7639,7 +7628,6 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
         }
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!i) {
         err = -EINVAL;
         goto out_free;
@@ -7647,7 +7635,6 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
 
     request->n_channels = i;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     wdev_lock(wdev);
     if (!cfg80211_off_channel_oper_allowed(wdev)) {
         struct ieee80211_channel *chan;
@@ -7667,7 +7654,6 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
     }
     wdev_unlock(wdev);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     i = 0;
     if (n_ssids) {
         nla_for_each_nested(attr, info->attrs[NL80211_ATTR_SCAN_SSIDS], tmp) {
@@ -7681,7 +7667,6 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
         }
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (info->attrs[NL80211_ATTR_IE]) {
         request->ie_len = nla_len(info->attrs[NL80211_ATTR_IE]);
         memcpy((void *)request->ie,
@@ -7689,13 +7674,11 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
                request->ie_len);
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     for (i = 0; i < NUM_NL80211_BANDS; i++)
         if (wiphy->bands[i])
             request->rates[i] =
                 (1 << wiphy->bands[i]->n_bitrates) - 1;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (info->attrs[NL80211_ATTR_SCAN_SUPP_RATES]) {
         nla_for_each_nested(attr,
                     info->attrs[NL80211_ATTR_SCAN_SUPP_RATES],
@@ -7719,7 +7702,6 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
         }
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (info->attrs[NL80211_ATTR_MEASUREMENT_DURATION]) {
         if (!wiphy_ext_feature_isset(wiphy,
                     NL80211_EXT_FEATURE_SET_SCAN_DWELL)) {
@@ -7733,13 +7715,11 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
             nla_get_flag(info->attrs[NL80211_ATTR_MEASUREMENT_DURATION_MANDATORY]);
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     err = nl80211_check_scan_flags(wiphy, wdev, request, info->attrs,
                        false);
     if (err)
         goto out_free;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     request->no_cck =
         nla_get_flag(info->attrs[NL80211_ATTR_TX_NO_CCK_RATE]);
 
@@ -7762,16 +7742,13 @@ static int nl80211_trigger_scan(struct sk_buff *skb, struct genl_info *info)
     else
         eth_broadcast_addr(request->bssid);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     request->wdev = wdev;
     request->wiphy = &rdev->wiphy;
     request->scan_start = jiffies;
 
     rdev->scan_req = request;
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     err = rdev_scan(rdev, request);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!err) {
         nl80211_send_scan_start(rdev, wdev);
         if (wdev->netdev)
@@ -13858,9 +13835,7 @@ static int nl80211_pre_doit(const struct genl_ops *ops, struct sk_buff *skb,
         rtnl_lock();
 
     if (ops->internal_flags & NL80211_FLAG_NEED_WIPHY) {
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         rdev = cfg80211_get_dev_from_info(genl_info_net(info), info);
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         if (IS_ERR(rdev)) {
             if (rtnl)
                 rtnl_unlock();
@@ -13870,51 +13845,40 @@ static int nl80211_pre_doit(const struct genl_ops *ops, struct sk_buff *skb,
     } else if (ops->internal_flags & NL80211_FLAG_NEED_NETDEV ||
            ops->internal_flags & NL80211_FLAG_NEED_WDEV) {
         ASSERT_RTNL();
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 
         wdev = __cfg80211_wdev_from_attrs(genl_info_net(info),
                           info->attrs);
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         if (IS_ERR(wdev)) {
             if (rtnl)
                 rtnl_unlock();
             return PTR_ERR(wdev);
         }
         
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         dev = wdev->netdev;
         rdev = wiphy_to_rdev(wdev->wiphy);
         
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         if (ops->internal_flags & NL80211_FLAG_NEED_NETDEV) {
-            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
             if (!dev) {
                 if (rtnl)
                     rtnl_unlock();
                 return -EINVAL;
             }
             
-            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
             info->user_ptr[1] = dev;
         } else {
-            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
             info->user_ptr[1] = wdev;
         }
         
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         if (ops->internal_flags & NL80211_FLAG_CHECK_NETDEV_UP &&
             !wdev_running(wdev)) {
-            DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
             if (rtnl)
                 rtnl_unlock();
             return -ENETDOWN;
         }
         
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         if (dev)
             dev_hold(dev);
         
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         info->user_ptr[0] = rdev;
     }
 

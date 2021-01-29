@@ -104,7 +104,7 @@ EXPORT_SYMBOL(dma_alloc_attrs);
 
 struct page *alloc_pages(gfp_t gtp, size_t order)
 {
-//    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct page *page = (struct page *)kmalloc(sizeof(struct page), GFP_KERNEL);
     page->order = order;
     page->dm_mapsize = PAGE_SIZE << order;
@@ -112,33 +112,34 @@ struct page *alloc_pages(gfp_t gtp, size_t order)
     
     list_add(&page->list, &page_list);
     
+    atomic_inc(&page->_refcount);
+    
     return page;
 }
 
 void __free_page(struct page *page)
 {
-//    page++;
-//    struct page *tmp;
-//    list_for_each_entry(tmp, &page_list, list) {
-//        if (tmp == page) {
-//            kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
-////            if (tmp->dmaCmd) {
-////                tmp->dmaCmd->clearMemoryDescriptor();
-////                tmp->dmaCmd->release();
-////                tmp->dmaCmd = NULL;
-////            }
-////            if (tmp->bufDes) {
-////                tmp->bufDes->complete();
-////                tmp->bufDes->release();
-////                tmp->bufDes = NULL;
-////            }
-//
-////            list_del(&tmp->list);
-//            break;
-//        }
-//    }
-//    
-//    free(page, 1, sizeof(*page));
+    struct page *tmp;
+    list_for_each_entry(tmp, &page_list, list) {
+        if (tmp == page) {
+            kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+            if (tmp->dmaCmd) {
+                tmp->dmaCmd->clearMemoryDescriptor();
+                tmp->dmaCmd->release();
+                tmp->dmaCmd = NULL;
+            }
+            if (tmp->bufDes) {
+                tmp->bufDes->complete();
+                tmp->bufDes->release();
+                tmp->bufDes = NULL;
+            }
+
+            list_del(&tmp->list);
+            break;
+        }
+    }
+    
+    free(page, 1, sizeof(*page));
 }
 
 dma_addr_t dma_map_page_attrs(struct device *dev,

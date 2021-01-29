@@ -10,6 +10,7 @@
 #define linux_wait_h
 
 #include <linux/types.h>
+#include <linux/list.h>
 
 
 typedef struct wait_queue_entry wait_queue_entry_t;
@@ -47,7 +48,7 @@ int default_wake_function(struct wait_queue_entry *wq_entry, unsigned mode, int 
  */
 
 #define __WAITQUEUE_INITIALIZER(name, tsk) {                    \
-.private    = tsk,                            \
+._private    = tsk,                            \
 .func        = default_wake_function,                \
 .entry        = { NULL, NULL } }
 
@@ -60,6 +61,19 @@ struct wait_queue_entry name = __WAITQUEUE_INITIALIZER(name, tsk)
 
 #define DECLARE_WAIT_QUEUE_HEAD(name) \
 struct wait_queue_head name = __WAIT_QUEUE_HEAD_INITIALIZER(name)
+
+
+/* wait_queue_entry::flags */
+#define WQ_FLAG_EXCLUSIVE    0x01
+#define WQ_FLAG_WOKEN        0x02
+#define WQ_FLAG_BOOKMARK    0x04
+
+void add_wait_queue_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
+
+static inline void __add_wait_queue_entry_tail(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
+{
+    list_add_tail(&wq_entry->entry, &wq_head->head);
+}
 
 
 #endif /* linux_wait_h */

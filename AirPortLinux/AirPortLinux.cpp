@@ -72,7 +72,7 @@ fail:
 
 bool AirPortLinux::start(IOService* provider) {
     IOLog("AirPortLinux: Start");
-    DebugLog("---%s: line = %d RTX TX: ", __FUNCTION__, __LINE__);
+//    DebugLog("---%s: line = %d RTX TX: ", __FUNCTION__, __LINE__);
     
     if (!super::start(provider)) {
         IOLog("AirPortLinux: Failed to call super::start!");
@@ -85,18 +85,18 @@ bool AirPortLinux::start(IOService* provider) {
         return false;
     }
     
-    //
-    //    if (!fPciDevice->open(this)) {
-    //        IOLog("AirPortLinux: Failed to open provider.\n");
-    //        return false;
-    //    }
-    
-    //    if (fPciDevice->requestPowerDomainState(kIOPMPowerOn,
-    //                                            (IOPowerConnection *) getParentEntry(gIOPowerPlane),
-    //                                            IOPMLowestState ) != IOPMNoErr) {
-    //        IOLog("%s Power thingi failed\n", getName());
-    //        return  false;
-    //    }
+//
+//    if (!fPciDevice->open(this)) {
+//        IOLog("AirPortLinux: Failed to open provider.\n");
+//        return false;
+//    }
+
+//    if (fPciDevice->requestPowerDomainState(kIOPMPowerOn,
+//                                            (IOPowerConnection *) getParentEntry(gIOPowerPlane),
+//                                            IOPMLowestState ) != IOPMNoErr) {
+//        IOLog("%s Power thingi failed\n", getName());
+//        return  false;
+//    }
     
     fWorkloop = OSDynamicCast(WorkLoop, getWorkLoop());
     if (!fWorkloop) {
@@ -491,7 +491,7 @@ IOReturn AirPortLinux::tsleepHandler(OSObject* owner, void* arg0 = 0, void* arg1
             return kIOReturnTimeout;
     } else {
         AbsoluteTime deadline;
-        clock_interval_to_deadline((*(int*)arg1), kNanosecondScale, reinterpret_cast<uint64_t*> (&deadline));
+        clock_interval_to_deadline((*(int*)arg1), kMillisecondScale, reinterpret_cast<uint64_t*> (&deadline));
         if (dev->fCommandGate->commandSleep(arg0, deadline, THREAD_INTERRUPTIBLE) == THREAD_AWAKENED)
             return kIOReturnSuccess;
         else

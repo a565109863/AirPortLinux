@@ -204,10 +204,12 @@ int __x = (x);          \
 
 #define ASSERT_RTNL()
 
-#define pr_warn kprintf
-#define pr_warn_ratelimited kprintf
-#define net_dbg_ratelimited kprintf
-#define seq_printf(m, arg...) kprintf(arg)
+
+#define pr_emerg                kprintf
+#define pr_warn                 kprintf
+#define pr_warn_ratelimited     kprintf
+#define net_dbg_ratelimited     kprintf
+#define seq_printf(m, arg...)   kprintf(arg)
 
 
 #define might_sleep()

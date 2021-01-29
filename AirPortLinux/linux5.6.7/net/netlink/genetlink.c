@@ -443,7 +443,10 @@ void *genlmsg_put(struct sk_buff *skb, u32 portid, u32 seq,
 {
     struct nlmsghdr *nlh;
     struct genlmsghdr *hdr;
-
+    
+    DebugLog("--%s: line = %d, GENL_HDRLEN + family->hdrsize = %lu", __FUNCTION__, __LINE__, GENL_HDRLEN +
+             family->hdrsize);
+    
     nlh = nlmsg_put(skb, portid, seq, family->id, GENL_HDRLEN +
             family->hdrsize, flags);
     if (nlh == NULL)
@@ -485,7 +488,7 @@ genl_family_rcv_msg_attrs_parse(const struct genl_family *family,
 
     if (!family->maxattr)
         return NULL;
-
+    
     if (parallel) {
         attrbuf = (struct nlattr **)kmalloc_array(family->maxattr + 1,
                     sizeof(struct nlattr *), GFP_KERNEL);
@@ -494,7 +497,7 @@ genl_family_rcv_msg_attrs_parse(const struct genl_family *family,
     } else {
         attrbuf = family->attrbuf;
     }
-
+    
     err = __nlmsg_parse(nlh, hdrlen, attrbuf, family->maxattr,
                 family->policy, validate, extack);
     if (err) {
@@ -641,7 +644,6 @@ static int genl_family_rcv_msg_doit(const struct genl_family *family,
                     const struct genl_ops *ops,
                     int hdrlen, struct net *net)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct nlattr **attrbuf;
     struct genl_info info;
     int err;
@@ -649,7 +651,6 @@ static int genl_family_rcv_msg_doit(const struct genl_family *family,
     if (!ops->doit)
         return -EOPNOTSUPP;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     attrbuf = genl_family_rcv_msg_attrs_parse(family, nlh, extack,
                           ops, hdrlen,
                           GENL_DONT_VALIDATE_STRICT,
@@ -657,7 +658,6 @@ static int genl_family_rcv_msg_doit(const struct genl_family *family,
     if (IS_ERR(attrbuf))
         return PTR_ERR(attrbuf);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     info.snd_seq = nlh->nlmsg_seq;
     info.snd_portid = NETLINK_CB(skb).portid;
     info.nlhdr = nlh;
@@ -668,29 +668,20 @@ static int genl_family_rcv_msg_doit(const struct genl_family *family,
     genl_info_net_set(&info, net);
     memset(&info.user_ptr, 0, sizeof(info.user_ptr));
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (family->pre_doit) {
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         err = family->pre_doit(ops, skb, &info);
-        DebugLog("--%s: line = %d, err = %d", __FUNCTION__, __LINE__, err);
         if (err)
             goto out;
     }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     err = ops->doit(skb, &info);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (family->post_doit)
         family->post_doit(ops, skb, &info);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 out:
     genl_family_rcv_msg_attrs_free(family, attrbuf, family->parallel_ops);
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     return err;
 }
 
@@ -700,7 +691,6 @@ static int genl_family_rcv_msg(const struct genl_family *family,
                    struct nlmsghdr *nlh,
                    struct netlink_ext_ack *extack)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     const struct genl_ops *ops;
     struct net *net = sock_net(skb->sk);
     struct genlmsghdr *hdr = (struct genlmsghdr *)nlmsg_data(nlh);
@@ -710,27 +700,23 @@ static int genl_family_rcv_msg(const struct genl_family *family,
     if (!family->netnsok && !net_eq(net, &init_net))
         return -ENOENT;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     hdrlen = GENL_HDRLEN + family->hdrsize;
     if (nlh->nlmsg_len < nlmsg_msg_size(hdrlen))
         return -EINVAL;
 
-    DebugLog("--%s: line = %d, hdr->cmd = %d, NL80211_CMD_TRIGGER_SCAN = %d", __FUNCTION__, __LINE__, hdr->cmd, NL80211_CMD_TRIGGER_SCAN);
+    kprintf("--%s: line = %d, hdr->cmd = %d, NL80211_CMD_TRIGGER_SCAN = %d", __FUNCTION__, __LINE__, hdr->cmd, NL80211_CMD_TRIGGER_SCAN);
     ops = genl_get_cmd(hdr->cmd, family);
     if (ops == NULL)
         return -EOPNOTSUPP;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if ((ops->flags & GENL_ADMIN_PERM) &&
         !netlink_capable(skb, CAP_NET_ADMIN))
         return -EPERM;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if ((ops->flags & GENL_UNS_ADMIN_PERM) &&
         !netlink_ns_capable(skb, net->user_ns, CAP_NET_ADMIN))
         return -EPERM;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if ((nlh->nlmsg_flags & NLM_F_DUMP) == NLM_F_DUMP)
         return genl_family_rcv_msg_dumpit(family, skb, nlh, extack,
                           ops, hdrlen, net);
@@ -742,7 +728,6 @@ static int genl_family_rcv_msg(const struct genl_family *family,
 int genl_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh,
             struct netlink_ext_ack *extack)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     const struct genl_family *family;
     int err;
 
@@ -753,13 +738,11 @@ int genl_rcv_msg(struct sk_buff *skb, struct nlmsghdr *nlh,
     if (!family->parallel_ops)
         genl_lock();
 
-    DebugLog("--%s: line = %d family = %s", __FUNCTION__, __LINE__, family->name);
     err = genl_family_rcv_msg(family, skb, nlh, extack);
 
     if (!family->parallel_ops)
         genl_unlock();
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     return err;
 }
 
@@ -1209,6 +1192,7 @@ static int genlmsg_mcast(struct sk_buff *skb, u32 portid, unsigned long group,
                 err = -ENOMEM;
                 goto error;
             }
+            genl_rcv(tmp);
             err = nlmsg_multicast(prev->genl_sock, tmp,
                           portid, group, flags);
             if (!err)
@@ -1220,6 +1204,7 @@ static int genlmsg_mcast(struct sk_buff *skb, u32 portid, unsigned long group,
         prev = net;
     }
 
+    genl_rcv(skb);
     err = nlmsg_multicast(prev->genl_sock, skb, portid, group, flags);
     if (!err)
         delivered = true;
