@@ -2805,7 +2805,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		187077DA25C3A6B00066BC98 /* linux5.6.7 */ = {
+		187077DA25C3A6B00066BC98 /* linux5.10.11 */ = {
 			isa = PBXGroup;
 			children = (
 				187077DB25C3A6B00066BC98 /* crypto */,
@@ -2814,7 +2814,7 @@
 				187079F825C3A6B20066BC98 /* lib */,
 				187077DD25C3A6B00066BC98 /* net */,
 			);
-			path = linux5.6.7;
+			path = linux5.10.11;
 			sourceTree = "<group>";
 		};
 		187077DB25C3A6B00066BC98 /* crypto */ = {
@@ -3629,7 +3629,7 @@
 				37CFF2C52573ECC00047098B /* compat.h */,
 				37CFF2922573CFF00047098B /* Info.plist */,
 				37CFF2C42573ECC00047098B /* iwlwifi.h */,
-				187077DA25C3A6B00066BC98 /* linux5.6.7 */,
+				187077DA25C3A6B00066BC98 /* linux5.10.11 */,
 			);
 			path = AirPortLinux;
 			sourceTree = "<group>";
@@ -6141,11 +6141,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(PRODUCT_NAME)/linux5.6.7/net",
-					"$(PRODUCT_NAME)/linux5.6.7/include",
-					"$(PRODUCT_NAME)/linux5.6.7/drivers/net/wireless/intel/iwlwifi",
-					"$(PRODUCT_NAME)/linux5.6.7/include/uapi",
-					"$(PRODUCT_NAME)/linux5.6.7",
+					"$(PRODUCT_NAME)/linux5.10.11/net",
+					"$(PRODUCT_NAME)/linux5.10.11/include",
+					"$(PRODUCT_NAME)/linux5.10.11/drivers/net/wireless/intel/iwlwifi",
+					"$(PRODUCT_NAME)/linux5.10.11/include/uapi",
+					"$(PRODUCT_NAME)/linux5.10.11",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -6202,11 +6202,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(PRODUCT_NAME)/linux5.6.7/net",
-					"$(PRODUCT_NAME)/linux5.6.7/include",
-					"$(PRODUCT_NAME)/linux5.6.7/drivers/net/wireless/intel/iwlwifi",
-					"$(PRODUCT_NAME)/linux5.6.7/include/uapi",
-					"$(PRODUCT_NAME)/linux5.6.7",
+					"$(PRODUCT_NAME)/linux5.10.11/net",
+					"$(PRODUCT_NAME)/linux5.10.11/include",
+					"$(PRODUCT_NAME)/linux5.10.11/drivers/net/wireless/intel/iwlwifi",
+					"$(PRODUCT_NAME)/linux5.10.11/include/uapi",
+					"$(PRODUCT_NAME)/linux5.10.11",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				MTL_ENABLE_DEBUG_INFO = NO;
