@@ -27,6 +27,12 @@ struct device *device)
     return 0;
 }
 
+static int firmware_request_nowarn(const struct firmware **fw, const char *name,
+struct device *device)
+{
+    return 0;
+}
+
 int request_firmware_nowait(
 void *, bool uevent,
 const char *name, struct device *device, gfp_t gfp, void *context,

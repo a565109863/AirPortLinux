@@ -12,6 +12,7 @@
 
 /**
  * mps_qos_null_get - create pre-addressed QoS Null frame for mesh powersave
+ * @sta: the station to get the frame for
  */
 static struct sk_buff *mps_qos_null_get(struct sta_info *sta)
 {
@@ -27,7 +28,7 @@ static struct sk_buff *mps_qos_null_get(struct sta_info *sta)
         return NULL;
     skb_reserve(skb, local->hw.extra_tx_headroom);
 
-    nullfunc = (struct ieee80211_hdr *)skb_put(skb, size);
+    nullfunc = (typeof(nullfunc))skb_put(skb, size);
     fc = cpu_to_le16(IEEE80211_FTYPE_DATA | IEEE80211_STYPE_QOS_NULLFUNC);
     ieee80211_fill_mesh_addresses(nullfunc, &fc, sta->sta.addr,
                       sdata->vif.addr);
@@ -44,6 +45,7 @@ static struct sk_buff *mps_qos_null_get(struct sta_info *sta)
 
 /**
  * mps_qos_null_tx - send a QoS Null to indicate link-specific power mode
+ * @sta: the station to send to
  */
 static void mps_qos_null_tx(struct sta_info *sta)
 {
@@ -400,6 +402,8 @@ static void mpsp_trigger_send(struct sta_info *sta, bool rspi, bool eosp)
 
 /**
  * mpsp_qos_null_append - append QoS Null frame to MPSP skb queue if needed
+ * @sta: the station to handle
+ * @frames: the frame list to append to
  *
  * To properly end a mesh MPSP the last transmitted frame has to set the EOSP
  * flag in the QoS Control field. In case the current tailing frame is not a
@@ -432,7 +436,7 @@ static void mpsp_qos_null_append(struct sta_info *sta,
 
     info = IEEE80211_SKB_CB(new_skb);
     info->control.vif = &sdata->vif;
-    info->flags |= IEEE80211_TX_INTFL_NEED_TXPROCESSING;
+    info->control.flags |= IEEE80211_TX_INTCFL_NEED_TXPROCESSING;
 
     __skb_queue_tail(frames, new_skb);
 }
@@ -490,7 +494,7 @@ static void mps_frame_deliver(struct sta_info *sta, int n_frames)
     /* prepare collected frames for transmission */
     skb_queue_walk(&frames, skb) {
         struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-        struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
+        struct ieee80211_hdr *hdr = (typeof(hdr))skb->data;
 
         /*
          * Tell TX path to send this frame even though the

@@ -98,17 +98,6 @@ struct iwl_fw_dbg_params {
 
 extern const struct iwl_fw_dump_desc iwl_dump_desc_assert;
 
-static inline void iwl_fw_free_dump_desc(struct iwl_fw_runtime *fwrt)
-{
-	if (fwrt->dump.desc != &iwl_dump_desc_assert)
-		kfree(fwrt->dump.desc);
-	fwrt->dump.desc = NULL;
-	fwrt->dump.lmac_err_id[0] = 0;
-	if (fwrt->smem_cfg.num_lmacs > 1)
-		fwrt->dump.lmac_err_id[1] = 0;
-	fwrt->dump.umac_err_id = 0;
-}
-
 int iwl_fw_dbg_collect_desc(struct iwl_fw_runtime *fwrt,
 			    const struct iwl_fw_dump_desc *desc,
 			    bool monitor_only, unsigned int delay);
@@ -291,8 +280,8 @@ static inline void iwl_fw_flush_dumps(struct iwl_fw_runtime *fwrt)
 	int i;
 
 	iwl_dbg_tlv_del_timers(fwrt->trans);
-//	for (i = 0; i < IWL_FW_RUNTIME_DUMP_WK_NUM; i++)
-//		flush_delayed_work(&fwrt->dump.wks[i].wk);
+	for (i = 0; i < IWL_FW_RUNTIME_DUMP_WK_NUM; i++)
+		flush_delayed_work(&fwrt->dump.wks[i].wk);
 }
 
 #ifdef CONFIG_IWLWIFI_DEBUGFS

@@ -42,7 +42,7 @@
 #include <linux/rtnetlink.h>
 //#include <linux/proc_fs.h>
 #include <linux/seq_file.h>
-//#include <linux/notifier.h>
+#include <linux/notifier.h>
 //#include <linux/security.h>
 #include <linux/jhash.h>
 #include <linux/jiffies.h>
@@ -1350,10 +1350,10 @@ retry:
     return netlink_sendskb(sk, skb);
 }
 EXPORT_SYMBOL(netlink_unicast);
-//
-//int netlink_has_listeners(struct sock *sk, unsigned int group)
-//{
-//    int res = 0;
+
+int netlink_has_listeners(struct sock *sk, unsigned int group)
+{
+    int res = 0;
 //    struct listeners *listeners;
 //
 //    BUG_ON(!netlink_is_kernel(sk));
@@ -1365,10 +1365,10 @@ EXPORT_SYMBOL(netlink_unicast);
 //        res = test_bit(group - 1, listeners->masks);
 //
 //    rcu_read_unlock();
-//
-//    return res;
-//}
-//EXPORT_SYMBOL_GPL(netlink_has_listeners);
+
+    return res;
+}
+EXPORT_SYMBOL_GPL(netlink_has_listeners);
 //
 //bool netlink_strict_get_check(struct sk_buff *skb)
 //{
@@ -1578,23 +1578,23 @@ EXPORT_SYMBOL(netlink_broadcast);
 //out:
 //    return ret;
 //}
-//
-///**
-// * netlink_set_err - report error to broadcast listeners
-// * @ssk: the kernel netlink socket, as returned by netlink_kernel_create()
-// * @portid: the PORTID of a process that we want to skip (if any)
-// * @group: the broadcast group that will notice the error
-// * @code: error code, must be negative (as usual in kernelspace)
-// *
-// * This function returns the number of broadcast listeners that have set the
-// * NETLINK_NO_ENOBUFS socket option.
-// */
-//int netlink_set_err(struct sock *ssk, u32 portid, u32 group, int code)
-//{
+
+/**
+ * netlink_set_err - report error to broadcast listeners
+ * @ssk: the kernel netlink socket, as returned by netlink_kernel_create()
+ * @portid: the PORTID of a process that we want to skip (if any)
+ * @group: the broadcast group that will notice the error
+ * @code: error code, must be negative (as usual in kernelspace)
+ *
+ * This function returns the number of broadcast listeners that have set the
+ * NETLINK_NO_ENOBUFS socket option.
+ */
+int netlink_set_err(struct sock *ssk, u32 portid, u32 group, int code)
+{
 //    struct netlink_set_err_data info;
 //    struct sock *sk;
-//    int ret = 0;
-//
+    int ret = 0;
+
 //    info.exclude_sk = ssk;
 //    info.portid = portid;
 //    info.group = group;
@@ -1607,9 +1607,9 @@ EXPORT_SYMBOL(netlink_broadcast);
 //    ret += do_one_set_err(sk, &info);
 //
 //    read_unlock(&nl_table_lock);
-//    return ret;
-//}
-//EXPORT_SYMBOL(netlink_set_err);
+    return ret;
+}
+EXPORT_SYMBOL(netlink_set_err);
 
 /* must be called with netlink table grabbed */
 static void netlink_update_socket_mc(struct netlink_sock *nlk,

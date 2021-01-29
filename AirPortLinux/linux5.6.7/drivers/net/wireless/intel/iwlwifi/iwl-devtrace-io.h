@@ -19,10 +19,6 @@
 #undef TRACE_SYSTEM
 #define TRACE_SYSTEM iwlwifi_io
 
-
-//#define TRACE_EVENT(name, proto, ...) \
-//static inline void trace_iwlwifi_dev_ioread32(proto) {}
-
 TRACE_EVENT(iwlwifi_dev_ioread32,
 	TP_PROTO(const struct device *dev, u32 offs, u32 val),
 	TP_ARGS(dev, offs, val),

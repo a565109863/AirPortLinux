@@ -592,7 +592,6 @@ int iwl_mvm_init_mcc(struct iwl_mvm *mvm)
 	regd = iwl_mvm_get_current_regdomain(mvm, NULL);
 	if (IS_ERR_OR_NULL(regd))
 		return -EIO;
-    return 0;
 
 	if (iwl_mvm_is_wifi_mcc_supported(mvm) &&
 	    !iwl_acpi_get_mcc(mvm->dev, mcc)) {

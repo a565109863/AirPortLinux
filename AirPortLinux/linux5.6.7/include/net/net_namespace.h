@@ -37,7 +37,7 @@
 //#include <linux/ns_common.h>
 #include <linux/idr.h>
 #include <linux/skbuff.h>
-//#include <linux/notifier.h>
+#include <linux/notifier.h>
 
 
 /* Attributes of RTM_NEWNSID/RTM_GETNSID messages */

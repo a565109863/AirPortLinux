@@ -139,7 +139,7 @@ int netlink_change_ngroups(struct sock *sk, unsigned int groups);
 void __netlink_clear_multicast_users(struct sock *sk, unsigned int group);
 //void netlink_ack(struct sk_buff *in_skb, struct nlmsghdr *nlh, int err,
 //         const struct netlink_ext_ack *extack);
-//int netlink_has_listeners(struct sock *sk, unsigned int group);
+int netlink_has_listeners(struct sock *sk, unsigned int group);
 //bool netlink_strict_get_check(struct sk_buff *skb);
 //
 int netlink_unicast(struct sock *ssk, struct sk_buff *skb, __u32 portid, int nonblock);
@@ -149,7 +149,7 @@ int netlink_broadcast(struct sock *ssk, struct sk_buff *skb, __u32 portid,
 //                   __u32 portid, __u32 group, gfp_t allocation,
 //                   int (*filter)(struct sock *dsk, struct sk_buff *skb, void *data),
 //                   void *filter_data);
-//int netlink_set_err(struct sock *ssk, __u32 portid, __u32 group, int code);
+int netlink_set_err(struct sock *ssk, __u32 portid, __u32 group, int code);
 //int netlink_register_notifier(struct notifier_block *nb);
 //int netlink_unregister_notifier(struct notifier_block *nb);
 //

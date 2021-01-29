@@ -54,6 +54,24 @@ struct device {
     void (*cont)(const struct firmware *, void *);
 };
 
+/**
+ * dev_set_name - set a device name
+ * @dev: device
+ * @fmt: format string for the device's name
+ */
+static int dev_set_name(struct device *dev, const char *fmt, ...)
+{
+    va_list vargs;
+    int err;
+
+    va_start(vargs, fmt);
+    vsnprintf(dev->name, sizeof(dev->name), fmt, vargs);
+    va_end(vargs);
+    return err;
+}
+EXPORT_SYMBOL_GPL(dev_set_name);
+
+
 static inline const char *dev_name(const struct device *dev)
 {
     return dev->parent->name;

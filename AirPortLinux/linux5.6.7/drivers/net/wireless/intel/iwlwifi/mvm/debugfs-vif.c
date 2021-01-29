@@ -815,10 +815,10 @@ void iwl_mvm_vif_dbgfs_register(struct iwl_mvm *mvm, struct ieee80211_vif *vif)
 void iwl_mvm_vif_dbgfs_clean(struct iwl_mvm *mvm, struct ieee80211_vif *vif)
 {
 	struct iwl_mvm_vif *mvmvif = iwl_mvm_vif_from_mac80211(vif);
-//
+
 //	debugfs_remove(mvmvif->dbgfs_slink);
-//	mvmvif->dbgfs_slink = NULL;
-//
+	mvmvif->dbgfs_slink = NULL;
+
 //	debugfs_remove_recursive(mvmvif->dbgfs_dir);
 	mvmvif->dbgfs_dir = NULL;
 }

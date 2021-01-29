@@ -21,9 +21,15 @@
 
 #include <asm/swab.h>
 
+#define fallthrough
 
 #define KERN_DEBUG 0
 #define __KERNEL__ 1
+
+
+#define __ro_after_init
+#define __net_exit
+
 
 
 #define NOTIFY_DONE        0x0000        /* Don't care */
@@ -231,6 +237,17 @@ static inline void kfree(const void *p)
 //    p = NULL;
 }
 
+static void kfree_sensitive(const void *p)
+{
+//   size_t ks;
+   void *mem = (void *)p;
+
+//   ks = ksize(mem);
+//   if (ks)
+//       memzero_explicit(mem, ks);
+   kfree(mem);
+}
+EXPORT_SYMBOL(kfree_sensitive);
 
 static inline void kfree(void *p, size_t n, size_t size)
 {
@@ -304,6 +321,8 @@ static void *kmalloc_track_caller(size_t size, gfp_t gfp)
 #define __builtin_expect(x, expected_value) (x)
 #define unlikely(x) __builtin_expect(!!(x), 0)
 #define likely(x) __builtin_expect(!!(x), 1)
+
+#define __cond_lock(x, y) (y)
 
 #define __WARN()
 #define __WARN_printf(arg...)   do { IOLog(arg); __WARN(); } while (0)

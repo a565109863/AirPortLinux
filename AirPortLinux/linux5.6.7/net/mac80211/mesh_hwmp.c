@@ -118,7 +118,7 @@ static int mesh_path_sel_frame_tx(enum mpath_frame_type action, u8 flags,
     if (!skb)
         return -1;
     skb_reserve(skb, local->tx_headroom);
-    mgmt = (struct ieee80211_mgmt *)skb_put_zero(skb, hdr_len);
+    mgmt = (typeof(mgmt))skb_put_zero(skb, hdr_len);
     mgmt->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT |
                       IEEE80211_STYPE_ACTION);
 
@@ -134,19 +134,19 @@ static int mesh_path_sel_frame_tx(enum mpath_frame_type action, u8 flags,
     case MPATH_PREQ:
         mhwmp_dbg(sdata, "sending PREQ to %pM\n", target);
         ie_len = 37;
-        pos = (u8 *)skb_put(skb, 2 + ie_len);
+        pos = (typeof(pos))skb_put(skb, 2 + ie_len);
         *pos++ = WLAN_EID_PREQ;
         break;
     case MPATH_PREP:
         mhwmp_dbg(sdata, "sending PREP to %pM\n", orig_addr);
         ie_len = 31;
-        pos = (u8 *)skb_put(skb, 2 + ie_len);
+        pos = (typeof(pos))skb_put(skb, 2 + ie_len);
         *pos++ = WLAN_EID_PREP;
         break;
     case MPATH_RANN:
         mhwmp_dbg(sdata, "sending RANN from %pM\n", orig_addr);
         ie_len = sizeof(struct ieee80211_rann_ie);
-        pos = (u8 *)skb_put(skb, 2 + ie_len);
+        pos = (typeof(pos))skb_put(skb, 2 + ie_len);
         *pos++ = WLAN_EID_RANN;
         break;
     default:
@@ -212,7 +212,7 @@ static void prepare_frame_for_deferred_tx(struct ieee80211_sub_if_data *sdata,
     skb->priority = 7;
 
     info->control.vif = &sdata->vif;
-    info->flags |= IEEE80211_TX_INTFL_NEED_TXPROCESSING;
+    info->control.flags |= IEEE80211_TX_INTCFL_NEED_TXPROCESSING;
     ieee80211_set_qos_hdr(sdata, skb);
     ieee80211_mps_set_frame_flags(sdata, NULL, hdr);
 }
@@ -254,7 +254,7 @@ int mesh_path_error_tx(struct ieee80211_sub_if_data *sdata,
     if (!skb)
         return -1;
     skb_reserve(skb, local->tx_headroom + sdata->encrypt_headroom);
-    mgmt = (struct ieee80211_mgmt *)skb_put_zero(skb, hdr_len);
+    mgmt = (typeof(mgmt))skb_put_zero(skb, hdr_len);
     mgmt->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT |
                       IEEE80211_STYPE_ACTION);
 
@@ -266,7 +266,7 @@ int mesh_path_error_tx(struct ieee80211_sub_if_data *sdata,
     mgmt->u.action.u.mesh_action.action_code =
                     WLAN_MESH_ACTION_HWMP_PATH_SELECTION;
     ie_len = 15;
-    pos = (u8 *)skb_put(skb, 2 + ie_len);
+    pos = (typeof(pos))skb_put(skb, 2 + ie_len);
     *pos++ = WLAN_EID_PERR;
     *pos++ = ie_len;
     /* ttl */
@@ -974,7 +974,7 @@ static void mesh_queue_preq(struct mesh_path *mpath, u8 flags)
     struct ieee80211_if_mesh *ifmsh = &sdata->u.mesh;
     struct mesh_preq_queue *preq_node;
 
-    preq_node = (struct mesh_preq_queue *)kmalloc(sizeof(struct mesh_preq_queue), GFP_ATOMIC);
+    preq_node = (typeof(preq_node))kmalloc(sizeof(struct mesh_preq_queue), GFP_ATOMIC);
     if (!preq_node) {
         mhwmp_dbg(sdata, "could not allocate PREQ node\n");
         return;
@@ -1103,7 +1103,11 @@ void mesh_path_start_discovery(struct ieee80211_sub_if_data *sdata)
     mesh_path_sel_frame_tx(MPATH_PREQ, 0, sdata->vif.addr, ifmsh->sn,
                    target_flags, mpath->dst, mpath->sn, da, 0,
                    ttl, lifetime, 0, ifmsh->preq_id++, sdata);
-    mod_timer(&mpath->timer, jiffies + mpath->discovery_timeout);
+
+    spin_lock_bh(&mpath->state_lock);
+    if (!(mpath->flags & MESH_PATH_DELETED))
+        mod_timer(&mpath->timer, jiffies + mpath->discovery_timeout);
+    spin_unlock_bh(&mpath->state_lock);
 
 enddiscovery:
     rcu_read_unlock();
@@ -1159,13 +1163,47 @@ int mesh_nexthop_resolve(struct ieee80211_sub_if_data *sdata,
     if (skb_queue_len(&mpath->frame_queue) >= MESH_FRAME_QUEUE_LEN)
         skb_to_free = skb_dequeue(&mpath->frame_queue);
 
-    info->flags |= IEEE80211_TX_INTFL_NEED_TXPROCESSING;
+    info->control.flags |= IEEE80211_TX_INTCFL_NEED_TXPROCESSING;
     ieee80211_set_qos_hdr(sdata, skb);
     skb_queue_tail(&mpath->frame_queue, skb);
     if (skb_to_free)
         mesh_path_discard_frame(sdata, skb_to_free);
 
     return -ENOENT;
+}
+
+/**
+ * mesh_nexthop_lookup_nolearn - try to set next hop without path discovery
+ * @skb: 802.11 frame to be sent
+ * @sdata: network subif the frame will be sent through
+ *
+ * Check if the meshDA (addr3) of a unicast frame is a direct neighbor.
+ * And if so, set the RA (addr1) to it to transmit to this node directly,
+ * avoiding PREQ/PREP path discovery.
+ *
+ * Returns: 0 if the next hop was found and -ENOENT otherwise.
+ */
+static int mesh_nexthop_lookup_nolearn(struct ieee80211_sub_if_data *sdata,
+                       struct sk_buff *skb)
+{
+    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+    struct sta_info *sta;
+
+    if (is_multicast_ether_addr(hdr->addr1))
+        return -ENOENT;
+
+    rcu_read_lock();
+    sta = sta_info_get(sdata, hdr->addr3);
+
+//    if (!sta || sta->mesh->plink_state != NL80211_PLINK_ESTAB) {
+//        rcu_read_unlock();
+//        return -ENOENT;
+//    }
+    rcu_read_unlock();
+
+    memcpy(hdr->addr1, hdr->addr3, ETH_ALEN);
+    memcpy(hdr->addr2, sdata->vif.addr, ETH_ALEN);
+    return 0;
 }
 
 /**
@@ -1181,10 +1219,15 @@ int mesh_nexthop_resolve(struct ieee80211_sub_if_data *sdata,
 int mesh_nexthop_lookup(struct ieee80211_sub_if_data *sdata,
             struct sk_buff *skb)
 {
+    struct ieee80211_if_mesh *ifmsh = &sdata->u.mesh;
     struct mesh_path *mpath;
     struct sta_info *next_hop;
     struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
     u8 *target_addr = hdr->addr3;
+
+    if (ifmsh->mshcfg.dot11MeshNolearn &&
+        !mesh_nexthop_lookup_nolearn(sdata, skb))
+        return 0;
 
     mpath = mesh_path_lookup(sdata, target_addr);
     if (!mpath || !(mpath->flags & MESH_PATH_ACTIVE))
@@ -1262,7 +1305,7 @@ void mesh_path_tx_root_frame(struct ieee80211_sub_if_data *sdata)
         break;
     case IEEE80211_PROACTIVE_PREQ_WITH_PREP:
         flags |= IEEE80211_PREQ_PROACTIVE_PREP_FLAG;
-        /* fall through */
+        fallthrough;
     case IEEE80211_PROACTIVE_PREQ_NO_PREP:
         interval = ifmsh->mshcfg.dot11MeshHWMPactivePathToRootTimeout;
         target_flags |= IEEE80211_PREQ_TO_FLAG |

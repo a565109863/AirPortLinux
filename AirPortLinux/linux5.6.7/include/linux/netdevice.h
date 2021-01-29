@@ -2606,7 +2606,7 @@ struct netdev_lag_lower_state_info {
        tx_enabled : 1;
 };
 
-//#include <linux/notifier.h>
+#include <linux/notifier.h>
 
 /* netdevice notifier chain. Please remember to update netdev_cmd_to_name()
  * and the rtnetlink notification exclusion list in rtnetlink_event() when

@@ -2,7 +2,7 @@
 /******************************************************************************
  *
  * Copyright(c) 2003 - 2014 Intel Corporation. All rights reserved.
- * Copyright (C) 2018 Intel Corporation
+ * Copyright(c) 2018 - 2020 Intel Corporation
  *
  * Portions of this file are derived from the ipw3945 project.
  *
@@ -23,66 +23,55 @@ static inline bool iwl_have_debug_level(u32 level)
 #ifdef CONFIG_IWLWIFI_DEBUG
 	return iwlwifi_mod_params.debug_level & level;
 #else
-	return true;
+	return false;
 #endif
 }
 
 struct device;
-//void __iwl_err(struct device *dev, bool rfkill_prefix, bool only_trace,
-//        const char *fmt, ...) __printf(4, 5);
-//void __iwl_warn(struct device *dev, const char *fmt, ...) __printf(2, 3);
-//void __iwl_info(struct device *dev, const char *fmt, ...) __printf(2, 3);
-//void __iwl_crit(struct device *dev, const char *fmt, ...) __printf(2, 3);
+void __iwl_err(struct device *dev, bool rfkill_prefix, bool only_trace,
+		const char *fmt, ...) __printf(4, 5);
+void __iwl_warn(struct device *dev, const char *fmt, ...) __printf(2, 3);
+void __iwl_info(struct device *dev, const char *fmt, ...) __printf(2, 3);
+void __iwl_crit(struct device *dev, const char *fmt, ...) __printf(2, 3);
 
 /* not all compilers can evaluate strlen() at compile time, so use sizeof() */
 #define CHECK_FOR_NEWLINE(f) BUILD_BUG_ON(f[sizeof(f) - 2] != '\n')
 
 /* No matter what is m (priv, bus, trans), this will work */
-#define __iwl_err(d, b1, b2, f, a...);    kprintf(f, ## a)
-#define __iwl_warn(d, f, a...)    kprintf(f, ## a)
-#define __iwl_info(d, f, a...)    kprintf(f, ## a)
-#define __iwl_crit(d, f, a...)    kprintf(f, ## a)
-
-#define IWL_ERR_DEV(d, f, a...)    kprintf(f, ## a)
-#define IWL_WARN(d, f, a...)    kprintf(f, ## a)
-#define IWL_INFO(d, f, a...)    kprintf(f, ## a)
-#define IWL_CRIT(d, f, a...)    kprintf(f, ## a)
-
-//#define IWL_ERR_DEV(d, f, a...)                        \
-//    do {                                \
-//        CHECK_FOR_NEWLINE(f);                    \
-//        __iwl_err((d), false, false, f, ## a);            \
-//    } while (0)
+#define IWL_ERR_DEV(d, f, a...)						\
+	do {								\
+		CHECK_FOR_NEWLINE(f);					\
+		__iwl_err((d), false, false, f, ## a);			\
+	} while (0)
 #define IWL_ERR(m, f, a...)						\
 	IWL_ERR_DEV((m)->dev, f, ## a)
-//#define IWL_WARN(m, f, a...)                        \
-//    do {                                \
-//        CHECK_FOR_NEWLINE(f);                    \
-//        __iwl_warn((m)->dev, f, ## a);                \
-//    } while (0)
-//#define IWL_INFO(m, f, a...)                        \
-//    do {                                \
-//        CHECK_FOR_NEWLINE(f);                    \
-//        __iwl_info((m)->dev, f, ## a);                \
-//    } while (0)
-//#define IWL_CRIT(m, f, a...)                        \
-//    do {                                \
-//        CHECK_FOR_NEWLINE(f);                    \
-//        __iwl_crit((m)->dev, f, ## a);                \
-//    } while (0)
+#define IWL_WARN(m, f, a...)						\
+	do {								\
+		CHECK_FOR_NEWLINE(f);					\
+		__iwl_warn((m)->dev, f, ## a);				\
+	} while (0)
+#define IWL_INFO(m, f, a...)						\
+	do {								\
+		CHECK_FOR_NEWLINE(f);					\
+		__iwl_info((m)->dev, f, ## a);				\
+	} while (0)
+#define IWL_CRIT(m, f, a...)						\
+	do {								\
+		CHECK_FOR_NEWLINE(f);					\
+		__iwl_crit((m)->dev, f, ## a);				\
+	} while (0)
 
-#define __iwl_dbg(d, level, limit, f, fmt, args...)    kprintf(fmt, ## args)
-//#if defined(CONFIG_IWLWIFI_DEBUG) || defined(CONFIG_IWLWIFI_DEVICE_TRACING)
-//void __iwl_dbg(struct device *dev,
-//           u32 level, bool limit, const char *function,
-//           const char *fmt, ...) __printf(5, 6);
-//#else
-//__printf(5, 6) static inline void
-//__iwl_dbg(struct device *dev,
-//      u32 level, bool limit, const char *function,
-//      const char *fmt, ...)
-//{}
-//#endif
+#if defined(CONFIG_IWLWIFI_DEBUG) || defined(CONFIG_IWLWIFI_DEVICE_TRACING)
+void __iwl_dbg(struct device *dev,
+	       u32 level, bool limit, const char *function,
+	       const char *fmt, ...) __printf(5, 6);
+#else
+__printf(5, 6) static inline void
+__iwl_dbg(struct device *dev,
+	  u32 level, bool limit, const char *function,
+	  const char *fmt, ...)
+{}
+#endif
 
 #define iwl_print_hex_error(m, p, len)					\
 do {									\
@@ -90,11 +79,11 @@ do {									\
 		       DUMP_PREFIX_OFFSET, 16, 1, p, len, 1);		\
 } while (0)
 
-#define __IWL_DEBUG_DEV(dev, level, limit, fmt, args...)        \
-    do {                                \
-        CHECK_FOR_NEWLINE(fmt);                    \
-        __iwl_dbg(dev, level, limit, __func__, fmt, ##args);    \
-    } while (0)
+#define __IWL_DEBUG_DEV(dev, level, limit, fmt, args...)		\
+	do {								\
+		CHECK_FOR_NEWLINE(fmt);					\
+		__iwl_dbg(dev, level, limit, __func__, fmt, ##args);	\
+	} while (0)
 #define IWL_DEBUG(m, level, fmt, args...)				\
 	__IWL_DEBUG_DEV((m)->dev, level, false, fmt, ##args)
 #define IWL_DEBUG_DEV(dev, level, fmt, args...)				\
@@ -150,7 +139,7 @@ do {                                            			\
 /* 0x00000F00 - 0x00000100 */
 #define IWL_DL_POWER		0x00000100
 #define IWL_DL_TEMP		0x00000200
-#define IWL_DL_RPM		0x00000400
+#define IWL_DL_WOWLAN		0x00000400
 #define IWL_DL_SCAN		0x00000800
 /* 0x0000F000 - 0x00001000 */
 #define IWL_DL_ASSOC		0x00001000
@@ -216,7 +205,7 @@ do {                                            			\
 #define IWL_DEBUG_POWER(p, f, a...)	IWL_DEBUG(p, IWL_DL_POWER, f, ## a)
 #define IWL_DEBUG_11H(p, f, a...)	IWL_DEBUG(p, IWL_DL_11H, f, ## a)
 #define IWL_DEBUG_TPT(p, f, a...)	IWL_DEBUG(p, IWL_DL_TPT, f, ## a)
-#define IWL_DEBUG_RPM(p, f, a...)	IWL_DEBUG(p, IWL_DL_RPM, f, ## a)
+#define IWL_DEBUG_WOWLAN(p, f, a...)	IWL_DEBUG(p, IWL_DL_WOWLAN, f, ## a)
 #define IWL_DEBUG_LAR(p, f, a...)	IWL_DEBUG(p, IWL_DL_LAR, f, ## a)
 #define IWL_DEBUG_FW_INFO(p, f, a...)		\
 		IWL_DEBUG(p, IWL_DL_INFO | IWL_DL_FW, f, ## a)

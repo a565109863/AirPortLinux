@@ -257,6 +257,8 @@ static int msleep_interruptible(int x)
 #define __user
 #define __read_mostly
 
+#define rcu_barrier()
+
 
 typedef __u16 __bitwise __le16;
 typedef __u16 __bitwise __be16;

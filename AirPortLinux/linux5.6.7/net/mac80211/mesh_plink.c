@@ -144,6 +144,7 @@ out:
 
 /**
  * mesh_set_ht_prot_mode - set correct HT protection mode
+ * @sdata: the (mesh) interface to handle
  *
  * Section 9.23.3.5 of IEEE 80211-2012 describes the protection rules for HT
  * mesh STA in a MBSS. Three HT protection modes are supported for now, non-HT
@@ -238,13 +239,15 @@ static int mesh_plink_frame_tx(struct ieee80211_sub_if_data *sdata,
                 2 + sizeof(struct ieee80211_vht_operation) +
                 ie_len_he_cap +
                 2 + 1 + sizeof(struct ieee80211_he_operation) +
+                    sizeof(struct ieee80211_he_6ghz_oper) +
+                2 + 1 + sizeof(struct ieee80211_he_6ghz_capa) +
                 2 + 8 + /* peering IE */
                 sdata->u.mesh.ie_len);
     if (!skb)
         return err;
     info = IEEE80211_SKB_CB(skb);
     skb_reserve(skb, local->tx_headroom);
-    mgmt = (struct ieee80211_mgmt *)skb_put_zero(skb, hdr_len);
+    mgmt = (typeof(mgmt))skb_put_zero(skb, hdr_len);
     mgmt->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT |
                       IEEE80211_STYPE_ACTION);
     memcpy(mgmt->da, da, ETH_ALEN);
@@ -265,10 +268,10 @@ static int mesh_plink_frame_tx(struct ieee80211_sub_if_data *sdata,
         band = sband->band;
 
         /* capability info */
-        pos = (u8 *)skb_put_zero(skb, 2);
+        pos = (typeof(pos))skb_put_zero(skb, 2);
         if (action == WLAN_SP_MESH_PEERING_CONFIRM) {
             /* AID */
-            pos = (u8 *)skb_put(skb, 2);
+            pos = (typeof(pos))skb_put(skb, 2);
             put_unaligned_le16(sta->sta.aid, pos);
         }
         if (ieee80211_add_srates_ie(sdata, skb, true, band) ||
@@ -306,7 +309,7 @@ static int mesh_plink_frame_tx(struct ieee80211_sub_if_data *sdata,
     if (WARN_ON(skb_tailroom(skb) < 2 + ie_len))
         goto free;
 
-    pos = (u8 *)skb_put(skb, 2 + ie_len);
+    pos = (typeof(pos))skb_put(skb, 2 + ie_len);
     *pos++ = WLAN_EID_PEER_MGMT;
     *pos++ = ie_len;
     memcpy(pos, &peering_proto, 2);
@@ -328,7 +331,8 @@ static int mesh_plink_frame_tx(struct ieee80211_sub_if_data *sdata,
             mesh_add_vht_cap_ie(sdata, skb) ||
             mesh_add_vht_oper_ie(sdata, skb) ||
             mesh_add_he_cap_ie(sdata, skb, ie_len_he_cap) ||
-            mesh_add_he_oper_ie(sdata, skb))
+            mesh_add_he_oper_ie(sdata, skb) ||
+            mesh_add_he_6ghz_cap_ie(sdata, skb))
             goto free;
     }
 
@@ -441,7 +445,9 @@ static void mesh_sta_info_init(struct ieee80211_sub_if_data *sdata,
                         elems->vht_cap_elem, sta);
 
     ieee80211_he_cap_ie_to_sta_he_cap(sdata, sband, elems->he_cap,
-                      elems->he_cap_len, sta);
+                      elems->he_cap_len,
+                      elems->he_6ghz_capa,
+                      sta);
 
     if (bw != sta->sta.bandwidth)
         changed |= IEEE80211_RC_BW_CHANGED;
@@ -469,7 +475,7 @@ static int mesh_allocate_aid(struct ieee80211_sub_if_data *sdata)
     unsigned long *aid_map;
     int aid;
 
-    aid_map = (unsigned long *)kcalloc(BITS_TO_LONGS(IEEE80211_MAX_AID + 1),
+    aid_map = (typeof(aid_map))kcalloc(BITS_TO_LONGS(IEEE80211_MAX_AID + 1),
               sizeof(*aid_map), GFP_KERNEL);
     if (!aid_map)
         return -ENOMEM;
@@ -632,7 +638,7 @@ void mesh_plink_timer(struct timer_list *t)
     u16 reason = 0;
     struct ieee80211_sub_if_data *sdata;
     struct mesh_config *mshcfg;
-    enum ieee80211_self_protected_actioncode action = (enum ieee80211_self_protected_actioncode)0;
+    enum ieee80211_self_protected_actioncode action = (typeof(action))0;
 
     /*
      * This STA is valid because sta_info_destroy() will
@@ -694,7 +700,7 @@ void mesh_plink_timer(struct timer_list *t)
 //            break;
 //        }
 //        reason = WLAN_REASON_MESH_MAX_RETRIES;
-//        /* fall through */
+//        fallthrough;
 //    case NL80211_PLINK_CNF_RCVD:
 //        /* confirm timer */
 //        if (!reason)
@@ -842,7 +848,7 @@ static u32 mesh_plink_fsm(struct ieee80211_sub_if_data *sdata,
               struct sta_info *sta, enum plink_event event)
 {
     struct mesh_config *mshcfg = &sdata->u.mesh.mshcfg;
-    enum ieee80211_self_protected_actioncode action = (enum ieee80211_self_protected_actioncode)0;
+    enum ieee80211_self_protected_actioncode action = (typeof(action))0;
     u32 changed = 0;
     bool flush = false;
 
@@ -1115,7 +1121,7 @@ mesh_process_plink_frame(struct ieee80211_sub_if_data *sdata,
 //        return;
 //    }
 
-    ftype = (enum ieee80211_self_protected_actioncode)mgmt->u.action.u.self_prot.action_code;
+    ftype = (typeof(ftype))mgmt->u.action.u.self_prot.action_code;
     if ((ftype == WLAN_SP_MESH_PEERING_OPEN && ie_len != 4) ||
         (ftype == WLAN_SP_MESH_PEERING_CONFIRM && ie_len != 6) ||
         (ftype == WLAN_SP_MESH_PEERING_CLOSE && ie_len != 6

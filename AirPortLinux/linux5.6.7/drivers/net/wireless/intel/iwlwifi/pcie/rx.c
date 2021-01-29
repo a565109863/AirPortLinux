@@ -425,7 +425,6 @@ static struct page *iwl_pcie_rx_alloc_page(struct iwl_trans *trans,
 		gfp_mask |= __GFP_COMP;
 
 	if (trans_pcie->alloc_page) {
-//        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 		spin_lock_bh(&trans_pcie->alloc_page_lock);
 		/* recheck */
 		if (trans_pcie->alloc_page) {
@@ -442,8 +441,7 @@ static struct page *iwl_pcie_rx_alloc_page(struct iwl_trans *trans,
 		spin_unlock_bh(&trans_pcie->alloc_page_lock);
 	}
 
-//    kprintf("--%s: line = %d rbsize = %d, allocsize = %d, rx_page_order = %d", __FUNCTION__, __LINE__, rbsize, allocsize, trans_pcie->rx_page_order);
-	/* Alloc a new receive buffer page*/
+	/* Alloc a new receive buffer */
 	page = alloc_pages(gfp_mask, trans_pcie->rx_page_order);
 	if (!page) {
 		if (net_ratelimit())
@@ -460,7 +458,6 @@ static struct page *iwl_pcie_rx_alloc_page(struct iwl_trans *trans,
 	}
 
 	if (2 * rbsize <= allocsize) {
-        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 		spin_lock_bh(&trans_pcie->alloc_page_lock);
 		if (!trans_pcie->alloc_page) {
 			get_page(page);
@@ -486,7 +483,6 @@ static struct page *iwl_pcie_rx_alloc_page(struct iwl_trans *trans,
 void iwl_pcie_rxq_alloc_rbs(struct iwl_trans *trans, gfp_t priority,
 			    struct iwl_rxq *rxq)
 {
-//    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct iwl_rx_mem_buffer *rxb;
 	struct page *page;
@@ -504,8 +500,6 @@ void iwl_pcie_rxq_alloc_rbs(struct iwl_trans *trans, gfp_t priority,
 		page = iwl_pcie_rx_alloc_page(trans, &offset, priority);
 		if (!page)
 			return;
-        
-//        kprintf("--%s: line = %d, offset = %d", __FUNCTION__, __LINE__, offset);
 
 		spin_lock(&rxq->lock);
 
@@ -899,12 +893,6 @@ err:
 	kfree(trans_pcie->rx_pool);
 	kfree(trans_pcie->global_table);
 	kfree(trans_pcie->rxq);
-    
-    kfree(trans_pcie->rx_pool, RX_POOL_SIZE(trans_pcie->num_rx_bufs),
-          sizeof(trans_pcie->rx_pool[0]));
-    kfree(trans_pcie->global_table, RX_POOL_SIZE(trans_pcie->num_rx_bufs),
-          sizeof(trans_pcie->global_table[0]));
-    kfree(trans_pcie->rxq, trans->num_rx_queues, sizeof(struct iwl_rxq));
 
 	return ret;
 }
@@ -1055,7 +1043,7 @@ static void iwl_pcie_rx_mq_hw_init(struct iwl_trans *trans)
 			       RFH_GEN_CFG_VAL(DEFAULT_RXQ_NUM, 0) |
 			       RFH_GEN_CFG_SERVICE_DMA_SNOOP |
 			       RFH_GEN_CFG_VAL(RB_CHUNK_SIZE,
-					       trans->cfg->integrated ?
+					       trans->trans_cfg->integrated ?
 					       RFH_GEN_CFG_RB_CHUNK_SIZE_64 :
 					       RFH_GEN_CFG_RB_CHUNK_SIZE_128));
 	/* Enable the relevant rx queues */
@@ -1238,12 +1226,6 @@ void iwl_pcie_rx_free(struct iwl_trans *trans)
 	kfree(trans_pcie->rx_pool);
 	kfree(trans_pcie->global_table);
 	kfree(trans_pcie->rxq);
-    
-    kfree(trans_pcie->rx_pool, RX_POOL_SIZE(trans_pcie->num_rx_bufs),
-          sizeof(trans_pcie->rx_pool[0]));
-    kfree(trans_pcie->global_table, RX_POOL_SIZE(trans_pcie->num_rx_bufs),
-          sizeof(trans_pcie->global_table[0]));
-    kfree(trans_pcie->rxq, trans->num_rx_queues, sizeof(struct iwl_rxq));
 
 	if (trans_pcie->alloc_page)
 		__free_pages(trans_pcie->alloc_page, trans_pcie->rx_page_order);
@@ -1302,7 +1284,7 @@ static void iwl_pcie_rx_handle_rb(struct iwl_trans *trans,
 				int i)
 {
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
-	struct iwl_txq *txq = trans_pcie->txq[trans_pcie->cmd_queue];
+	struct iwl_txq *txq = trans->txqs.txq[trans->txqs.cmd.q_id];
 	bool page_stolen = false;
 	int max_len = trans_pcie->rx_buf_bytes;
 	u32 offset = 0;
@@ -1380,7 +1362,7 @@ static void iwl_pcie_rx_handle_rb(struct iwl_trans *trans,
 
 		sequence = le16_to_cpu(pkt->hdr.sequence);
 		index = SEQ_TO_INDEX(sequence);
-		cmd_index = iwl_pcie_get_cmd_index(txq, index);
+		cmd_index = iwl_txq_get_cmd_index(txq, index);
 
 		if (rxq->id == trans_pcie->def_rx_queue)
 			iwl_op_mode_rx(trans->op_mode, &rxq->napi,
@@ -1390,7 +1372,7 @@ static void iwl_pcie_rx_handle_rb(struct iwl_trans *trans,
 					   &rxcb, rxq->id);
 
 		if (reclaim) {
-			kzfree(txq->entries[cmd_index].free_buf);
+			kfree_sensitive(txq->entries[cmd_index].free_buf);
 			txq->entries[cmd_index].free_buf = NULL;
 		}
 
@@ -1448,7 +1430,8 @@ static void iwl_pcie_rx_handle_rb(struct iwl_trans *trans,
 }
 
 static struct iwl_rx_mem_buffer *iwl_pcie_get_rxb(struct iwl_trans *trans,
-						  struct iwl_rxq *rxq, int i)
+						  struct iwl_rxq *rxq, int i,
+						  bool *join)
 {
 	struct iwl_trans_pcie *trans_pcie = IWL_TRANS_GET_PCIE_TRANS(trans);
 	struct iwl_rx_mem_buffer *rxb;
@@ -1462,10 +1445,12 @@ static struct iwl_rx_mem_buffer *iwl_pcie_get_rxb(struct iwl_trans *trans,
 		return rxb;
 	}
 
-	if (trans->trans_cfg->device_family >= IWL_DEVICE_FAMILY_AX210)
+	if (trans->trans_cfg->device_family >= IWL_DEVICE_FAMILY_AX210) {
 		vid = le16_to_cpu(rxq->cd[i].rbid);
-	else
+		*join = rxq->cd[i].flags & IWL_RX_CD_FLAGS_FRAGMENTED;
+	} else {
 		vid = le32_to_cpu(rxq->bd_32[i]) & 0x0FFF; /* 12-bit VID */
+	}
 
 	if (!vid || vid > RX_POOL_SIZE(trans_pcie->num_rx_bufs))
 		goto out_err;
@@ -1523,6 +1508,7 @@ restart:
 		u32 rb_pending_alloc =
 			atomic_read(&trans_pcie->rba.req_pending) *
 			RX_CLAIM_REQ_ALLOC;
+		bool join = false;
 
 		if (unlikely(rb_pending_alloc >= rxq->queue_size / 2 &&
 			     !emergency)) {
@@ -1535,11 +1521,29 @@ restart:
 
 		IWL_DEBUG_RX(trans, "Q %d: HW = %d, SW = %d\n", rxq->id, r, i);
 
-		rxb = iwl_pcie_get_rxb(trans, rxq, i);
+		rxb = iwl_pcie_get_rxb(trans, rxq, i, &join);
 		if (!rxb)
 			goto out;
 
-		iwl_pcie_rx_handle_rb(trans, rxq, rxb, emergency, i);
+		if (unlikely(join || rxq->next_rb_is_fragment)) {
+			rxq->next_rb_is_fragment = join;
+			/*
+			 * We can only get a multi-RB in the following cases:
+			 *  - firmware issue, sending a too big notification
+			 *  - sniffer mode with a large A-MSDU
+			 *  - large MTU frames (>2k)
+			 * since the multi-RB functionality is limited to newer
+			 * hardware that cannot put multiple entries into a
+			 * single RB.
+			 *
+			 * Right now, the higher layers aren't set up to deal
+			 * with that, so discard all of these.
+			 */
+			list_add_tail(&rxb->list, &rxq->rx_free);
+			rxq->free_count++;
+		} else {
+			iwl_pcie_rx_handle_rb(trans, rxq, rxb, emergency, i);
+		}
 
 		i = (i + 1) & (rxq->queue_size - 1);
 
@@ -1670,9 +1674,9 @@ static void iwl_pcie_irq_handle_error(struct iwl_trans *trans)
 	}
 
 	for (i = 0; i < trans->trans_cfg->base_params->num_of_queues; i++) {
-		if (!trans_pcie->txq[i])
+		if (!trans->txqs.txq[i])
 			continue;
-		del_timer(&trans_pcie->txq[i]->stuck_timer);
+		del_timer(&trans->txqs.txq[i]->stuck_timer);
 	}
 
 	/* The STATUS_FW_ERROR bit is set in this function. This must happen
