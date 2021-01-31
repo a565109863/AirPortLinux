@@ -16,7 +16,6 @@
 
 int ioctl(int sk, unsigned int cmd, void *ifr)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     int ret = sock_ioctl(sk, cmd, (unsigned long)ifr);
     if (ret) {
         return -1;
@@ -26,7 +25,7 @@ int ioctl(int sk, unsigned int cmd, void *ifr)
 
 int ifup(const char *ifname)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct _ifreq ifr = {};
     int sk, ret;
 
@@ -61,7 +60,7 @@ int ifup(const char *ifname)
 
 int ifdown(const char *ifname)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct _ifreq ifr = {};
     int sk, ret;
     
@@ -95,11 +94,7 @@ void scan(const char *ifname)
 {
     struct sk_buff *msg;
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d end", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d end", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d end", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     
     msg = nlmsg_new(sizeof(struct nlmsghdr), 123);
     if (!msg)
@@ -129,15 +124,9 @@ void scan(const char *ifname)
     
     genl_rcv(msg);
     
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d end", __FUNCTION__, __LINE__);
     
 nla_put_failure:
-    DebugLog("--%s: line = %d nla_put_failure", __FUNCTION__, __LINE__);
     return ;
 }
 

@@ -2266,7 +2266,7 @@ void iwl_mvm_set_wakeup(struct ieee80211_hw *hw, bool enabled)
 {
 	struct iwl_mvm *mvm = IWL_MAC80211_GET_MVM(hw);
     mvm->trans->dev->power.should_wakeup = enabled;
-//	device_set_wakeup_enable(mvm->trans->dev, enabled);
+//    device_set_wakeup_enable(mvm->trans->dev, enabled);
 }
 
 #ifdef CONFIG_IWLWIFI_DEBUGFS

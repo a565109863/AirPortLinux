@@ -269,10 +269,10 @@ static bool iwl_alive_fn(struct iwl_notif_wait_data *notif_wait,
 {
 	struct iwl_priv *priv =
 		container_of(notif_wait, struct iwl_priv, notif_wait);
-	struct iwl_alive_data *alive_data = (struct iwl_alive_data *)data;
+	struct iwl_alive_data *alive_data = (typeof alive_data)data;
 	struct iwl_alive_resp *palive;
 
-	palive = (struct iwl_alive_resp *)pkt->data;
+	palive = (typeof palive)pkt->data;
 
 	IWL_DEBUG_FW(priv, "Alive ucode status 0x%08X revision "
 		       "0x%01X 0x%01X\n",
@@ -360,7 +360,7 @@ int iwl_load_ucode_wait_alive(struct iwl_priv *priv,
 static bool iwlagn_wait_calib(struct iwl_notif_wait_data *notif_wait,
 			      struct iwl_rx_packet *pkt, void *data)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)data;
+	struct iwl_priv *priv = (typeof priv)data;
 	struct iwl_calib_hdr *hdr;
 
 	if (pkt->hdr.cmd != CALIBRATION_RES_NOTIFICATION) {
@@ -368,7 +368,7 @@ static bool iwlagn_wait_calib(struct iwl_notif_wait_data *notif_wait,
 		return true;
 	}
 
-	hdr = (struct iwl_calib_hdr *)pkt->data;
+	hdr = (typeof hdr)pkt->data;
 
 	if (iwl_calib_set(priv, hdr, iwl_rx_packet_payload_len(pkt)))
 		IWL_ERR(priv, "Failed to record calibration data %d\n",

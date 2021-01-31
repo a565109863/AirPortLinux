@@ -1407,6 +1407,7 @@ static int __init genl_init(void)
 
 problem:
     panic("GENL: Cannot register controller: %d\n", err);
+    return -ENOMEM;
 }
 
 //core_initcall(genl_init);
@@ -1426,6 +1427,7 @@ static int genlmsg_mcast(struct sk_buff *skb, u32 portid, unsigned long group,
                 err = -ENOMEM;
                 goto error;
             }
+            genl_rcv(tmp);
             err = nlmsg_multicast(prev->genl_sock, tmp,
                           portid, group, flags);
             if (!err)
@@ -1437,6 +1439,7 @@ static int genlmsg_mcast(struct sk_buff *skb, u32 portid, unsigned long group,
         prev = net;
     }
 
+    genl_rcv(skb);
     err = nlmsg_multicast(prev->genl_sock, skb, portid, group, flags);
     if (!err)
         delivered = true;

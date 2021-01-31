@@ -125,7 +125,7 @@ int ieee80211_rate_control_register(const struct rate_control_ops *ops)
         }
     }
 
-    alg = (struct rate_control_alg *)kzalloc(sizeof(*alg), GFP_KERNEL);
+    alg = (typeof(alg))kzalloc(sizeof(*alg), GFP_KERNEL);
     if (alg == NULL) {
         mutex_unlock(&rate_ctrl_mutex);
         return -ENOMEM;

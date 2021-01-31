@@ -470,6 +470,7 @@ struct work_struct n = __WORK_INITIALIZER((n), (f))
 #define __TIMER_INITIALIZER(_function, _flags) {        \
 .entry = { .next = TIMER_ENTRY_STATIC },    \
 .function = (_function),            \
+.func_name = #_function,            \
 }
 
 #define __DELAYED_WORK_INITIALIZER(n, f, tflags) {            \

@@ -53,18 +53,6 @@
 #include <linux/fs.h>
 #include <linux/u64_stats_sync.h>
 
-
-struct notifier_block;
-
-typedef    int (*notifier_fn_t)(struct notifier_block *nb,
-            unsigned long action, void *data);
-
-struct notifier_block {
-    notifier_fn_t notifier_call;
-    struct notifier_block __rcu *next;
-    int priority;
-};
-
 #define CONFIG_CFG80211_WEXT    1
 #define CONFIG_WEXT_CORE        1
 
@@ -2822,8 +2810,6 @@ void free_netdev(struct net_device *dev);
 void netdev_freemem(struct net_device *dev);
 void synchronize_net(void);
 int init_dummy_netdev(struct net_device *dev);
-
-void synchronize_rcu(void);
 
 struct net_device *dev_get_by_index(struct net *net, int ifindex);
 struct net_device *__dev_get_by_index(struct net *net, int ifindex);

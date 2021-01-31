@@ -56,7 +56,7 @@ struct timer_list {
 //    struct tvec_base *base;
     IOTimeout* vt;
     
-    const char *name;
+    const char *func_name;
     void (*function)(struct timer_list *);
 //    unsigned long data;
 //

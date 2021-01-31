@@ -507,7 +507,7 @@ EXPORT_SYMBOL(ieee80211_hdrlen);
 unsigned int ieee80211_get_hdrlen_from_skb(const struct sk_buff *skb)
 {
     const struct ieee80211_hdr *hdr =
-            (const struct ieee80211_hdr *)skb->data;
+            (typeof hdr)skb->data;
     unsigned int hdrlen;
 
     if (unlikely(skb->len < 10))
@@ -544,7 +544,7 @@ int ieee80211_data_to_8023_exthdr(struct sk_buff *skb, struct ethhdr *ehdr,
                   const u8 *addr, enum nl80211_iftype iftype,
                   u8 data_offset)
 {
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
+    struct ieee80211_hdr *hdr = (typeof hdr) skb->data;
     struct {
         u8 hdr[ETH_ALEN] __aligned(2);
         __be16 proto;
@@ -643,7 +643,7 @@ int ieee80211_data_to_8023_exthdr(struct sk_buff *skb, struct ethhdr *ehdr,
     pskb_pull(skb, hdrlen);
 
     if (!ehdr)
-        ehdr = (struct ethhdr *)skb_push(skb, sizeof(struct ethhdr));
+        ehdr = (typeof ehdr)skb_push(skb, sizeof(struct ethhdr));
     memcpy(ehdr, &tmp, sizeof(tmp));
 
     return 0;
@@ -675,13 +675,13 @@ __ieee80211_amsdu_copy_frag(struct sk_buff *skb, struct sk_buff *frame,
     int cur_len;
 
     frag_page = virt_to_head_page(skb->head, skb->len);
-    frag_ptr = (char *)skb->data;
+    frag_ptr = (typeof frag_ptr)skb->data;
     frag_size = head_size;
 
     while (offset >= frag_size) {
         offset -= frag_size;
         frag_page = skb_frag_page(frag);
-        frag_ptr = (char *)skb_frag_address(frag);
+        frag_ptr = (typeof frag_ptr)skb_frag_address(frag);
         frag_size = skb_frag_size(frag);
         frag++;
     }
@@ -1861,7 +1861,7 @@ int cfg80211_iter_combinations(struct wiphy *wiphy,
         if (params->num_different_channels > c->num_different_channels)
             continue;
 
-        limits = (struct ieee80211_iface_limit *)kmemdup(c->limits, sizeof(limits[0]) * c->n_limits,
+        limits = (typeof limits)kmemdup(c->limits, sizeof(limits[0]) * c->n_limits,
                  GFP_KERNEL);
         if (!limits)
             return -ENOMEM;
@@ -1920,7 +1920,7 @@ static void
 cfg80211_iter_sum_ifcombs(const struct ieee80211_iface_combination *c,
               void *data)
 {
-    int *num = (int *)data;
+    int *num = (typeof num)data;
     (*num)++;
 }
 
@@ -2050,7 +2050,7 @@ bool cfg80211_does_bw_fit_range(const struct ieee80211_freq_range *freq_range,
 
 int cfg80211_sinfo_alloc_tid_stats(struct station_info *sinfo, gfp_t gfp)
 {
-    sinfo->pertid = (struct cfg80211_tid_stats *)kcalloc(IEEE80211_NUM_TIDS + 1,
+    sinfo->pertid = (typeof sinfo->pertid)kcalloc(IEEE80211_NUM_TIDS + 1,
                 sizeof(*(sinfo->pertid)),
                 gfp);
     if (!sinfo->pertid)
@@ -2093,7 +2093,7 @@ void cfg80211_send_layer2_update(struct net_device *dev, const u8 *addr)
     skb = dev_alloc_skb(sizeof(*msg));
     if (!skb)
         return;
-    msg = (struct iapp_layer2_update *)skb_put(skb, sizeof(*msg));
+    msg = (typeof msg)skb_put(skb, sizeof(*msg));
 
     /* 802.2 Type 1 Logical Link Control (LLC) Exchange Identifier (XID)
      * Update response frame; IEEE Std 802.2-1998, 5.4.1.2.1 */

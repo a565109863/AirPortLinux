@@ -9,11 +9,6 @@
 #ifndef module_h
 #define module_h
 
-#define down_write(x)
-#define up_write(x)
-#define down_read(x)
-#define up_read(x)
-
 #define request_module kprintf
 
 #define module_param(x, y, z)

@@ -45,7 +45,7 @@ static void ieee80211_handle_filtered_frame(struct ieee80211_local *local,
                         struct sk_buff *skb)
 {
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr))skb->data;
     int ac;
 
     if (info->flags & (IEEE80211_TX_CTL_NO_PS_BUFFER |
@@ -187,7 +187,7 @@ static void ieee80211_frame_acked(struct sta_info *sta, struct sk_buff *skb)
     struct ieee80211_sub_if_data *sdata = sta->sdata;
 
     if (ieee80211_is_data_qos(mgmt->frame_control)) {
-        struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
+        struct ieee80211_hdr *hdr = (typeof(hdr)) skb->data;
         u8 *qc = ieee80211_get_qos_ctl(hdr);
         u16 tid = qc[0] & 0xf;
 
@@ -294,7 +294,7 @@ ieee80211_add_tx_radiotap_header(struct ieee80211_local *local,
                  struct ieee80211_tx_status *status)
 {
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr)) skb->data;
     struct ieee80211_radiotap_header *rthdr;
     unsigned char *pos;
     u16 legacy_rate = 0;
@@ -618,7 +618,7 @@ static void ieee80211_report_ack_skb(struct ieee80211_local *local,
     unsigned long flags;
 
     spin_lock_irqsave(&local->ack_status_lock, flags);
-    skb = (struct sk_buff *)idr_remove(&local->ack_status_frames, info->ack_frame_id);
+    skb = (typeof(skb))idr_remove(&local->ack_status_frames, info->ack_frame_id);
     spin_unlock_irqrestore(&local->ack_status_lock, flags);
 
     if (!skb)
@@ -627,7 +627,7 @@ static void ieee80211_report_ack_skb(struct ieee80211_local *local,
     if (info->flags & IEEE80211_TX_INTFL_NL80211_FRAME_TX) {
         u64 cookie = IEEE80211_SKB_CB(skb)->ack.cookie;
         struct ieee80211_sub_if_data *sdata;
-        struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+        struct ieee80211_hdr *hdr = (typeof(hdr))skb->data;
         __be16 ethertype = 0;
 
         if (skb->len >= ETH_HLEN && skb->protocol == cpu_to_be16(ETH_P_802_3))
@@ -674,7 +674,7 @@ static void ieee80211_report_used_skb(struct ieee80211_local *local,
 {
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
     u16 tx_time_est = ieee80211_info_get_tx_time_est(info);
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr))skb->data;
     bool acked = info->flags & IEEE80211_TX_STAT_ACK;
 
     if (dropped)
@@ -883,7 +883,7 @@ static void __ieee80211_tx_status(struct ieee80211_hw *hw,
                   int rates_idx, int retry_count)
 {
     struct sk_buff *skb = status->skb;
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr)) skb->data;
     struct ieee80211_local *local = hw_to_local(hw);
     struct ieee80211_tx_info *info = status->info;
     struct sta_info *sta;
@@ -1046,7 +1046,7 @@ static void __ieee80211_tx_status(struct ieee80211_hw *hw,
 
 void ieee80211_tx_status(struct ieee80211_hw *hw, struct sk_buff *skb)
 {
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr)) skb->data;
     struct ieee80211_local *local = hw_to_local(hw);
     struct ieee80211_tx_status status = {
         .skb = skb,

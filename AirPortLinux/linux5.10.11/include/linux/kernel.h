@@ -30,6 +30,7 @@
 #define __ro_after_init
 #define __net_exit
 
+#define inline
 
 
 #define NOTIFY_DONE        0x0000        /* Don't care */
@@ -322,7 +323,7 @@ static void *kmalloc_track_caller(size_t size, gfp_t gfp)
 #define unlikely(x) __builtin_expect(!!(x), 0)
 #define likely(x) __builtin_expect(!!(x), 1)
 
-#define __cond_lock(x, y) (y)
+#define __cond_lock(nic_access, y) y
 
 #define __WARN()
 #define __WARN_printf(arg...)   do { IOLog(arg); __WARN(); } while (0)
@@ -669,5 +670,22 @@ static inline double pow(double a, int exp)
 {
     return (double) dcn_bw_pow(a, exp);
 }
+
+void synchronize_rcu(void);
+
+
+/*
+ * Values used for system_state. Ordering of the states must not be changed
+ * as code checks for <, <=, >, >= STATE.
+ */
+extern enum system_states {
+    SYSTEM_BOOTING,
+    SYSTEM_SCHEDULING,
+    SYSTEM_RUNNING,
+    SYSTEM_HALT,
+    SYSTEM_POWER_OFF,
+    SYSTEM_RESTART,
+    SYSTEM_SUSPEND,
+} system_state;
 
 #endif /* kernel_h */

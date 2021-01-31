@@ -158,7 +158,7 @@ struct net {
 
     struct hlist_head     *dev_name_head;
     struct hlist_head    *dev_index_head;
-//    struct raw_notifier_head    netdev_chain;
+    struct raw_notifier_head    netdev_chain;
 
     /* Note that @hash_mix can be read millions times per second,
      * it is critical that it is on a read_mostly cache line.
@@ -275,6 +275,12 @@ extern struct net init_net;
 
 extern struct list_head net_namespace_list;
 int net_ns_init(void);
+
+
+static int wiphy_sysfs_init(void)
+{
+    return net_ns_init();
+}
 
 //struct net *get_net_ns_by_pid(pid_t pid);
 //struct net *get_net_ns_by_fd(int fd);

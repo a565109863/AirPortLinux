@@ -25,9 +25,9 @@ void IOTimeout::timeout_run(OSObject* obj, IOTimerEventSource* timer)
     if (vt == NULL) {
         return;
     }
-    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->name);
+    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->func_name);
     vt->tl->function(vt->tl);
-    kprintf("--%s: line = %d, fn = %s end", __FUNCTION__, __LINE__, vt->tl->name);
+    kprintf("--%s: line = %d, fn = %s end", __FUNCTION__, __LINE__, vt->tl->func_name);
 }
 
 void init_timer_key(struct timer_list *timer,
@@ -35,7 +35,7 @@ void init_timer_key(struct timer_list *timer,
                     const char *name)
 {
     timer->function = func;
-    timer->name = name;
+    timer->func_name = name;
     
     if (timer->vt == NULL) {
         timer->vt = new IOTimeout();

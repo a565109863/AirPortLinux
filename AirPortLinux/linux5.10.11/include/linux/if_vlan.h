@@ -83,27 +83,25 @@ static inline bool is_vlan_dev(const struct net_device *dev)
 static inline int vlan_get_rx_ctag_filter_info(struct net_device *dev)
 {
     ASSERT_RTNL();
-//    return notifier_to_errno(call_netdevice_notifiers(NETDEV_CVLAN_FILTER_PUSH_INFO, dev));
-    return 0;
+    return notifier_to_errno(call_netdevice_notifiers(NETDEV_CVLAN_FILTER_PUSH_INFO, dev));
 }
 
 static inline void vlan_drop_rx_ctag_filter_info(struct net_device *dev)
 {
     ASSERT_RTNL();
-//    call_netdevice_notifiers(NETDEV_CVLAN_FILTER_DROP_INFO, dev);
+    call_netdevice_notifiers(NETDEV_CVLAN_FILTER_DROP_INFO, dev);
 }
 
 static inline int vlan_get_rx_stag_filter_info(struct net_device *dev)
 {
     ASSERT_RTNL();
-//    return notifier_to_errno(call_netdevice_notifiers(NETDEV_SVLAN_FILTER_PUSH_INFO, dev));
-    return 0;
+    return notifier_to_errno(call_netdevice_notifiers(NETDEV_SVLAN_FILTER_PUSH_INFO, dev));
 }
 
 static inline void vlan_drop_rx_stag_filter_info(struct net_device *dev)
 {
     ASSERT_RTNL();
-//    call_netdevice_notifiers(NETDEV_SVLAN_FILTER_DROP_INFO, dev);
+    call_netdevice_notifiers(NETDEV_SVLAN_FILTER_DROP_INFO, dev);
 }
 
 /**

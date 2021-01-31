@@ -12,11 +12,49 @@
 #include <linux/bitops.h>
 #include <linux/lockdep.h>
 
+#define PTHREAD_MUTEX_INITIALIZER NULL
+
 #define pthread_mutex_t         spinlock_t
-#define DEFINE_SPINLOCK(x)    pthread_mutex_t x = NULL
-//#define DEFINE_SPINLOCK(x)    pthread_mutex_t x = PTHREAD_MUTEX_INITIALIZER
+#define raw_spinlock_t          spinlock_t
+#define DEFINE_SPINLOCK(x)    pthread_mutex_t x = PTHREAD_MUTEX_INITIALIZER
 #define __SPIN_LOCK_UNLOCKED(x)    (pthread_mutex_t)NULL
 //#define spin_lock_init(x)    pthread_mutex_init(x, NULL)
+
+
+#define __ARCH_SPIN_LOCK_UNLOCKED PTHREAD_MUTEX_INITIALIZER
+
+
+#ifdef CONFIG_DEBUG_LOCK_ALLOC
+# define RAW_SPIN_DEP_MAP_INIT(lockname)        \
+.dep_map = {                    \
+.name = #lockname,            \
+.wait_type_inner = LD_WAIT_SPIN,    \
+}
+# define SPIN_DEP_MAP_INIT(lockname)            \
+.dep_map = {                    \
+.name = #lockname,            \
+.wait_type_inner = LD_WAIT_CONFIG,    \
+}
+#else
+# define RAW_SPIN_DEP_MAP_INIT(lockname)
+# define SPIN_DEP_MAP_INIT(lockname)
+#endif
+
+#ifdef CONFIG_DEBUG_SPINLOCK
+# define SPIN_DEBUG_INIT(lockname)        \
+.magic = SPINLOCK_MAGIC,        \
+.owner_cpu = -1,            \
+.owner = SPINLOCK_OWNER_INIT,
+#else
+# define SPIN_DEBUG_INIT(lockname)
+#endif
+
+#define __RAW_SPIN_LOCK_INITIALIZER(lockname)  NULL
+
+#define __RAW_SPIN_LOCK_UNLOCKED(lockname)    \
+(raw_spinlock_t) __RAW_SPIN_LOCK_INITIALIZER(lockname)
+
+
 
 static inline void spin_lock_init(spinlock_t *lock)
 {

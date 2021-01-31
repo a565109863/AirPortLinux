@@ -89,7 +89,7 @@ struct iwl_fw_dump_ptrs {
 static void iwl_read_radio_regs(struct iwl_fw_runtime *fwrt,
 				struct iwl_fw_error_dump_data **dump_data)
 {
-	u8 *pos = (u8 *)(*dump_data)->data;
+	u8 *pos = (typeof pos)(*dump_data)->data;
 	unsigned long flags;
 	int i;
 
@@ -125,8 +125,8 @@ static void iwl_fwrt_dump_rxf(struct iwl_fw_runtime *fwrt,
 	u32 fifo_len;
 	int i;
 
-	fifo_hdr = (struct iwl_fw_error_dump_fifo *)(*dump_data)->data;
-	fifo_data = (u32 *)fifo_hdr->data;
+	fifo_hdr = (typeof fifo_hdr)(*dump_data)->data;
+	fifo_data = (typeof fifo_data)fifo_hdr->data;
 	fifo_len = size;
 
 	/* No need to try to read the data if the length is 0 */
@@ -180,8 +180,8 @@ static void iwl_fwrt_dump_txf(struct iwl_fw_runtime *fwrt,
 	u32 fifo_len;
 	int i;
 
-	fifo_hdr = (struct iwl_fw_error_dump_fifo *)(*dump_data)->data;
-	fifo_data = (u32 *)fifo_hdr->data;
+	fifo_hdr = (typeof fifo_hdr)(*dump_data)->data;
+	fifo_data = (typeof fifo_data)fifo_hdr->data;
 	fifo_len = size;
 
 	/* No need to try to read the data if the length is 0 */
@@ -301,8 +301,8 @@ static void iwl_fw_dump_txf(struct iwl_fw_runtime *fwrt,
 		for (i = 0;
 		     i < ARRAY_SIZE(fwrt->smem_cfg.internal_txfifo_size);
 		     i++) {
-			fifo_hdr = (struct iwl_fw_error_dump_fifo *)(*dump_data)->data;
-			fifo_data = (u32 *)fifo_hdr->data;
+			fifo_hdr = (typeof fifo_hdr)(*dump_data)->data;
+			fifo_data = (typeof fifo_data)fifo_hdr->data;
 			fifo_len = fwrt->smem_cfg.internal_txfifo_size[i];
 
 			/* No need to try to read the data if the length is 0 */
@@ -583,7 +583,7 @@ static void iwl_dump_prph(struct iwl_fw_runtime *fwrt,
 	struct iwl_fw_error_dump_prph *prph;
 	struct iwl_trans *trans = fwrt->trans;
 	struct iwl_fw_error_dump_data **data =
-		(struct iwl_fw_error_dump_data **)ptr;
+		(typeof data)ptr;
 	unsigned long flags;
 	u32 i;
 
@@ -603,7 +603,7 @@ static void iwl_dump_prph(struct iwl_fw_runtime *fwrt,
 		(*data)->type = cpu_to_le32(IWL_FW_ERROR_DUMP_PRPH);
 		(*data)->len = cpu_to_le32(sizeof(*prph) +
 					num_bytes_in_chunk);
-		prph = (struct iwl_fw_error_dump_prph *)(*data)->data;
+		prph = (typeof prph)(*data)->data;
 		prph->prph_start = cpu_to_le32(iwl_prph_dump_addr[i].start);
 
 		iwl_read_prph_block(trans, iwl_prph_dump_addr[i].start,
@@ -661,7 +661,7 @@ static void iwl_fw_get_prph_len(struct iwl_fw_runtime *fwrt,
 				const struct iwl_prph_range *iwl_prph_dump_addr,
 				u32 range_len, void *ptr)
 {
-	u32 *prph_len = (u32 *)ptr;
+	u32 *prph_len = (typeof prph_len)ptr;
 	int i, num_bytes_in_chunk;
 
 	if (!prph_len)
@@ -715,7 +715,7 @@ static void iwl_fw_dump_mem(struct iwl_fw_runtime *fwrt,
 
 	(*dump_data)->type = cpu_to_le32(IWL_FW_ERROR_DUMP_MEM);
 	(*dump_data)->len = cpu_to_le32(len + sizeof(*dump_mem));
-	dump_mem = (struct iwl_fw_error_dump_mem *)(*dump_data)->data;
+	dump_mem = (typeof dump_mem)(*dump_data)->data;
 	dump_mem->type = cpu_to_le32(type);
 	dump_mem->offset = cpu_to_le32(ofs);
 	iwl_trans_read_mem_bytes(fwrt->trans, ofs, dump_mem->data, len);
@@ -803,7 +803,7 @@ static void iwl_dump_paging(struct iwl_fw_runtime *fwrt,
 		(*data)->type = cpu_to_le32(IWL_FW_ERROR_DUMP_PAGING);
 		(*data)->len = cpu_to_le32(sizeof(*paging) +
 					     PAGING_BLOCK_SIZE);
-		paging =  (struct iwl_fw_error_dump_paging *)(*data)->data;
+		paging = (typeof paging)(*data)->data;
 		paging->index = cpu_to_le32(i);
 		dma_sync_single_for_cpu(fwrt->trans->dev, addr,
 					PAGING_BLOCK_SIZE,
@@ -912,19 +912,19 @@ iwl_fw_error_dump_file(struct iwl_fw_runtime *fwrt,
 		file_len += sizeof(*dump_data) + sizeof(*dump_trig) +
 			data->desc->len;
 
-	dump_file = (struct iwl_fw_error_dump_file *)vzalloc(file_len);
+	dump_file = (typeof dump_file)vzalloc(file_len);
 	if (!dump_file)
 		return NULL;
 
 	fw_error_dump->fwrt_ptr = dump_file;
 
 	dump_file->barker = cpu_to_le32(IWL_FW_ERROR_DUMP_BARKER);
-	dump_data = (struct iwl_fw_error_dump_data *)dump_file->data;
+	dump_data = (typeof dump_data)dump_file->data;
 
 	if (iwl_fw_dbg_type_on(fwrt, IWL_FW_ERROR_DUMP_DEV_FW_INFO)) {
 		dump_data->type = cpu_to_le32(IWL_FW_ERROR_DUMP_DEV_FW_INFO);
 		dump_data->len = cpu_to_le32(sizeof(*dump_info));
-		dump_info = (struct iwl_fw_error_dump_info *)dump_data->data;
+		dump_info = (typeof dump_info)dump_data->data;
 		dump_info->hw_type =
 			cpu_to_le32(CSR_HW_REV_TYPE(fwrt->trans->hw_rev));
 		dump_info->hw_step =
@@ -950,7 +950,7 @@ iwl_fw_error_dump_file(struct iwl_fw_runtime *fwrt,
 		/* Dump shared memory configuration */
 		dump_data->type = cpu_to_le32(IWL_FW_ERROR_DUMP_MEM_CFG);
 		dump_data->len = cpu_to_le32(sizeof(*dump_smem_cfg));
-		dump_smem_cfg = (struct iwl_fw_error_dump_smem_cfg *)dump_data->data;
+		dump_smem_cfg = (typeof dump_smem_cfg)dump_data->data;
 		dump_smem_cfg->num_lmacs = cpu_to_le32(mem_cfg->num_lmacs);
 		dump_smem_cfg->num_txfifo_entries =
 			cpu_to_le32(mem_cfg->num_txfifo_entries);
@@ -1071,8 +1071,8 @@ static int iwl_dump_ini_prph_iter(struct iwl_fw_runtime *fwrt,
 				  struct iwl_dump_ini_region_data *reg_data,
 				  void *range_ptr, int idx)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
-	struct iwl_fw_ini_error_dump_range *range = (struct iwl_fw_ini_error_dump_range *)range_ptr;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_error_dump_range *range = (typeof range)range_ptr;
 	__le32 *val = range->data;
 	u32 prph_val;
 	u32 addr = le32_to_cpu(reg->addrs[idx]) +
@@ -1095,8 +1095,8 @@ static int iwl_dump_ini_csr_iter(struct iwl_fw_runtime *fwrt,
 				 struct iwl_dump_ini_region_data *reg_data,
 				 void *range_ptr, int idx)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
-	struct iwl_fw_ini_error_dump_range *range = (struct iwl_fw_ini_error_dump_range *)range_ptr;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_error_dump_range *range = (typeof range)range_ptr;
 	__le32 *val = range->data;
 	u32 addr = le32_to_cpu(reg->addrs[idx]) +
 		   le32_to_cpu(reg->dev_addr.offset);
@@ -1146,8 +1146,8 @@ static int iwl_dump_ini_dev_mem_iter(struct iwl_fw_runtime *fwrt,
 				     struct iwl_dump_ini_region_data *reg_data,
 				     void *range_ptr, int idx)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
-	struct iwl_fw_ini_error_dump_range *range = (struct iwl_fw_ini_error_dump_range *)range_ptr;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_error_dump_range *range = (typeof range)range_ptr;
 	u32 addr = le32_to_cpu(reg->addrs[idx]) +
 		   le32_to_cpu(reg->dev_addr.offset);
 
@@ -1166,7 +1166,7 @@ static int _iwl_dump_ini_paging_iter(struct iwl_fw_runtime *fwrt,
 	 * fwrt->num_of_paging_blk + 1
 	 */
 	struct page *page = fwrt->fw_paging_db[++idx].fw_paging_block;
-	struct iwl_fw_ini_error_dump_range *range = (struct iwl_fw_ini_error_dump_range *)range_ptr;
+	struct iwl_fw_ini_error_dump_range *range = (typeof range)range_ptr;
 	dma_addr_t addr = fwrt->fw_paging_db[idx].fw_paging_phys;
 	u32 page_size = fwrt->fw_paging_db[idx].fw_paging_size;
 
@@ -1191,7 +1191,7 @@ static int iwl_dump_ini_paging_iter(struct iwl_fw_runtime *fwrt,
 	if (!fwrt->trans->trans_cfg->gen2)
 		return _iwl_dump_ini_paging_iter(fwrt, range_ptr, idx);
 
-	range = (struct iwl_fw_ini_error_dump_range *)range_ptr;
+	range = (typeof range)range_ptr;
 	page_size = fwrt->trans->init_dram.paging[idx].size;
 
 	range->page_num = cpu_to_le32(idx);
@@ -1207,8 +1207,8 @@ iwl_dump_ini_mon_dram_iter(struct iwl_fw_runtime *fwrt,
 			   struct iwl_dump_ini_region_data *reg_data,
 			   void *range_ptr, int idx)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
-	struct iwl_fw_ini_error_dump_range *range = (struct iwl_fw_ini_error_dump_range *)range_ptr;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_error_dump_range *range = (typeof range)range_ptr;
 	struct iwl_dram_data *frag;
 	u32 alloc_id = le32_to_cpu(reg->dram_alloc_id);
 
@@ -1226,8 +1226,8 @@ static int iwl_dump_ini_mon_smem_iter(struct iwl_fw_runtime *fwrt,
 				      struct iwl_dump_ini_region_data *reg_data,
 				      void *range_ptr, int idx)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
-	struct iwl_fw_ini_error_dump_range *range = (struct iwl_fw_ini_error_dump_range *)range_ptr;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_error_dump_range *range = (typeof range)range_ptr;
 	u32 addr = le32_to_cpu(reg->internal_buffer.base_addr);
 
 	range->internal_base_addr = cpu_to_le32(addr);
@@ -1241,7 +1241,7 @@ static int iwl_dump_ini_mon_smem_iter(struct iwl_fw_runtime *fwrt,
 static bool iwl_ini_txf_iter(struct iwl_fw_runtime *fwrt,
 			     struct iwl_dump_ini_region_data *reg_data, int idx)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 	struct iwl_txf_iter_data *iter = &fwrt->dump.txf_iter_data;
 	struct iwl_fwrt_shared_mem_cfg *cfg = &fwrt->smem_cfg;
 	int txf_num = cfg->num_txfifo_entries;
@@ -1294,10 +1294,10 @@ static int iwl_dump_ini_txf_iter(struct iwl_fw_runtime *fwrt,
 				 struct iwl_dump_ini_region_data *reg_data,
 				 void *range_ptr, int idx)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
-	struct iwl_fw_ini_error_dump_range *range = (struct iwl_fw_ini_error_dump_range *)range_ptr;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_error_dump_range *range = (typeof range)range_ptr;
 	struct iwl_txf_iter_data *iter = &fwrt->dump.txf_iter_data;
-	struct iwl_fw_ini_error_dump_register *reg_dump = (struct iwl_fw_ini_error_dump_register *)range->data;
+	struct iwl_fw_ini_error_dump_register *reg_dump = (typeof reg_dump)range->data;
 	u32 offs = le32_to_cpu(reg->fifos.offset), addr;
 	u32 registers_num = iwl_tlv_array_len(reg_data->reg_tlv, reg, addrs);
 	u32 registers_size = registers_num * sizeof(*reg_dump);
@@ -1345,7 +1345,7 @@ static int iwl_dump_ini_txf_iter(struct iwl_fw_runtime *fwrt,
 
 	/* Read FIFO */
 	addr = TXF_READ_MODIFY_DATA + offs;
-	data = (__le32 *)reg_dump;
+	data = (typeof data)reg_dump;
 	for (i = 0; i < iter->fifo_size; i += sizeof(*data))
 		*data++ = cpu_to_le32(iwl_read_prph_no_grab(fwrt->trans, addr));
 
@@ -1365,7 +1365,7 @@ static void iwl_ini_get_rxf_data(struct iwl_fw_runtime *fwrt,
 				 struct iwl_dump_ini_region_data *reg_data,
 				 struct iwl_ini_rxf_data *data)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 	u32 fid1 = le32_to_cpu(reg->fifos.fid[0]);
 	u32 fid2 = le32_to_cpu(reg->fifos.fid[1]);
 	u8 fifo_idx;
@@ -1426,10 +1426,10 @@ static int iwl_dump_ini_rxf_iter(struct iwl_fw_runtime *fwrt,
 				 struct iwl_dump_ini_region_data *reg_data,
 				 void *range_ptr, int idx)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
-	struct iwl_fw_ini_error_dump_range *range = (struct iwl_fw_ini_error_dump_range *)range_ptr;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_error_dump_range *range = (typeof range)range_ptr;
 	struct iwl_ini_rxf_data rxf_data;
-	struct iwl_fw_ini_error_dump_register *reg_dump = (struct iwl_fw_ini_error_dump_register *)range->data;
+	struct iwl_fw_ini_error_dump_register *reg_dump = (typeof reg_dump)range->data;
 	u32 offs = le32_to_cpu(reg->fifos.offset), addr;
 	u32 registers_num = iwl_tlv_array_len(reg_data->reg_tlv, reg, addrs);
 	u32 registers_size = registers_num * sizeof(*reg_dump);
@@ -1479,7 +1479,7 @@ static int iwl_dump_ini_rxf_iter(struct iwl_fw_runtime *fwrt,
 
 	/* Read FIFO */
 	addr =  RXF_FIFO_RD_FENCE_INC + offs;
-	data = (__le32 *)reg_dump;
+	data = (typeof data)reg_dump;
 	for (i = 0; i < rxf_data.size; i += sizeof(*data))
 		*data++ = cpu_to_le32(iwl_read_prph_no_grab(fwrt->trans, addr));
 
@@ -1494,9 +1494,9 @@ iwl_dump_ini_err_table_iter(struct iwl_fw_runtime *fwrt,
 			    struct iwl_dump_ini_region_data *reg_data,
 			    void *range_ptr, int idx)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 	struct iwl_fw_ini_region_err_table *err_table = &reg->err_table;
-	struct iwl_fw_ini_error_dump_range *range = (struct iwl_fw_ini_error_dump_range *)range_ptr;
+	struct iwl_fw_ini_error_dump_range *range = (typeof range)range_ptr;
 	u32 addr = le32_to_cpu(err_table->base_addr) +
 		   le32_to_cpu(err_table->offset);
 
@@ -1533,7 +1533,7 @@ static int iwl_dump_ini_fw_pkt_iter(struct iwl_fw_runtime *fwrt,
 				    struct iwl_dump_ini_region_data *reg_data,
 				    void *range_ptr, int idx)
 {
-	struct iwl_fw_ini_error_dump_range *range = (struct iwl_fw_ini_error_dump_range *)range_ptr;
+	struct iwl_fw_ini_error_dump_range *range = (typeof range)range_ptr;
 	struct iwl_rx_packet *pkt = reg_data->dump_data->fw_pkt;
 	u32 pkt_len;
 
@@ -1555,7 +1555,7 @@ iwl_dump_ini_mem_fill_header(struct iwl_fw_runtime *fwrt,
 			     struct iwl_dump_ini_region_data *reg_data,
 			     void *data)
 {
-	struct iwl_fw_ini_error_dump *dump = (struct iwl_fw_ini_error_dump *)data;
+	struct iwl_fw_ini_error_dump *dump = (typeof dump)data;
 
 	dump->header.version = cpu_to_le32(IWL_INI_DUMP_VER);
 
@@ -1599,7 +1599,7 @@ iwl_dump_ini_mon_fill_header(struct iwl_fw_runtime *fwrt,
 			     struct iwl_fw_ini_monitor_dump *data,
 			     const struct iwl_fw_mon_regs *addrs)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 	u32 alloc_id = le32_to_cpu(reg->dram_alloc_id);
 	unsigned long flags;
 
@@ -1627,7 +1627,7 @@ iwl_dump_ini_mon_dram_fill_header(struct iwl_fw_runtime *fwrt,
 				  struct iwl_dump_ini_region_data *reg_data,
 				  void *data)
 {
-	struct iwl_fw_ini_monitor_dump *mon_dump = (struct iwl_fw_ini_monitor_dump *)data;
+	struct iwl_fw_ini_monitor_dump *mon_dump = (typeof mon_dump)data;
 
 	return iwl_dump_ini_mon_fill_header(fwrt, reg_data, mon_dump,
 					    &fwrt->trans->cfg->mon_dram_regs);
@@ -1638,7 +1638,7 @@ iwl_dump_ini_mon_smem_fill_header(struct iwl_fw_runtime *fwrt,
 				  struct iwl_dump_ini_region_data *reg_data,
 				  void *data)
 {
-	struct iwl_fw_ini_monitor_dump *mon_dump = (struct iwl_fw_ini_monitor_dump *)data;
+	struct iwl_fw_ini_monitor_dump *mon_dump = (typeof mon_dump)data;
 
 	return iwl_dump_ini_mon_fill_header(fwrt, reg_data, mon_dump,
 					    &fwrt->trans->cfg->mon_smem_regs);
@@ -1649,8 +1649,8 @@ iwl_dump_ini_err_table_fill_header(struct iwl_fw_runtime *fwrt,
 				   struct iwl_dump_ini_region_data *reg_data,
 				   void *data)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
-	struct iwl_fw_ini_err_table_dump *dump = (struct iwl_fw_ini_err_table_dump *)data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_err_table_dump *dump = (typeof dump)data;
 
 	dump->header.version = cpu_to_le32(IWL_INI_DUMP_VER);
 	dump->version = reg->err_table.version;
@@ -1676,7 +1676,7 @@ iwl_dump_ini_special_mem_fill_header(struct iwl_fw_runtime *fwrt,
 static u32 iwl_dump_ini_mem_ranges(struct iwl_fw_runtime *fwrt,
 				   struct iwl_dump_ini_region_data *reg_data)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 
 	return iwl_tlv_array_len(reg_data->reg_tlv, reg, addrs);
 }
@@ -1694,7 +1694,7 @@ static u32
 iwl_dump_ini_mon_dram_ranges(struct iwl_fw_runtime *fwrt,
 			     struct iwl_dump_ini_region_data *reg_data)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 	struct iwl_fw_mon *fw_mon;
 	u32 ranges = 0, alloc_id = le32_to_cpu(reg->dram_alloc_id);
 	int i;
@@ -1731,7 +1731,7 @@ static u32 iwl_dump_ini_single_range(struct iwl_fw_runtime *fwrt,
 static u32 iwl_dump_ini_mem_get_size(struct iwl_fw_runtime *fwrt,
 				     struct iwl_dump_ini_region_data *reg_data)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 	u32 size = le32_to_cpu(reg->dev_addr.size);
 	u32 ranges = iwl_dump_ini_mem_ranges(fwrt, reg_data);
 
@@ -1768,7 +1768,7 @@ static u32
 iwl_dump_ini_mon_dram_get_size(struct iwl_fw_runtime *fwrt,
 			       struct iwl_dump_ini_region_data *reg_data)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 	struct iwl_fw_mon *fw_mon;
 	u32 size = 0, alloc_id = le32_to_cpu(reg->dram_alloc_id);
 	int i;
@@ -1794,7 +1794,7 @@ static u32
 iwl_dump_ini_mon_smem_get_size(struct iwl_fw_runtime *fwrt,
 			       struct iwl_dump_ini_region_data *reg_data)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 	u32 size;
 
 	size = le32_to_cpu(reg->internal_buffer.size);
@@ -1810,7 +1810,7 @@ iwl_dump_ini_mon_smem_get_size(struct iwl_fw_runtime *fwrt,
 static u32 iwl_dump_ini_txf_get_size(struct iwl_fw_runtime *fwrt,
 				     struct iwl_dump_ini_region_data *reg_data)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 	struct iwl_txf_iter_data *iter = &fwrt->dump.txf_iter_data;
 	u32 registers_num = iwl_tlv_array_len(reg_data->reg_tlv, reg, addrs);
 	u32 size = 0;
@@ -1833,7 +1833,7 @@ static u32 iwl_dump_ini_txf_get_size(struct iwl_fw_runtime *fwrt,
 static u32 iwl_dump_ini_rxf_get_size(struct iwl_fw_runtime *fwrt,
 				     struct iwl_dump_ini_region_data *reg_data)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 	struct iwl_ini_rxf_data rx_data;
 	u32 registers_num = iwl_tlv_array_len(reg_data->reg_tlv, reg, addrs);
 	u32 size = sizeof(struct iwl_fw_ini_error_dump) +
@@ -1853,7 +1853,7 @@ static u32
 iwl_dump_ini_err_table_get_size(struct iwl_fw_runtime *fwrt,
 				struct iwl_dump_ini_region_data *reg_data)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 	u32 size = le32_to_cpu(reg->err_table.size);
 
 	if (size)
@@ -1931,7 +1931,7 @@ static u32 iwl_dump_ini_mem(struct iwl_fw_runtime *fwrt, struct list_head *list,
 			    struct iwl_dump_ini_region_data *reg_data,
 			    const struct iwl_dump_ini_mem_ops *ops)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)reg_data->reg_tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)reg_data->reg_tlv->data;
 	struct iwl_fw_ini_dump_entry *entry;
 	struct iwl_fw_error_dump_data *tlv;
 	struct iwl_fw_ini_error_dump_header *header;
@@ -1947,13 +1947,13 @@ static u32 iwl_dump_ini_mem(struct iwl_fw_runtime *fwrt, struct list_head *list,
 	if (!size)
 		return 0;
 
-	entry = (struct iwl_fw_ini_dump_entry *)vzalloc(sizeof(*entry) + sizeof(*tlv) + size);
+	entry = (typeof entry)vzalloc(sizeof(*entry) + sizeof(*tlv) + size);
 	if (!entry)
 		return 0;
 
 	entry->size = sizeof(*tlv) + size;
 
-	tlv = (struct iwl_fw_error_dump_data *)entry->data;
+	tlv = (typeof tlv)entry->data;
 	tlv->type = reg->type;
 	tlv->len = cpu_to_le32(size);
 
@@ -1962,7 +1962,7 @@ static u32 iwl_dump_ini_mem(struct iwl_fw_runtime *fwrt, struct list_head *list,
 
 	num_of_ranges = ops->get_num_of_ranges(fwrt, reg_data);
 
-	header = (struct iwl_fw_ini_error_dump_header *)tlv->data;
+	header = (typeof header)tlv->data;
 	header->region_id = reg->id;
 	header->num_of_ranges = cpu_to_le32(num_of_ranges);
 	header->name_len = cpu_to_le32(IWL_FW_INI_MAX_NAME);
@@ -2016,17 +2016,17 @@ static u32 iwl_dump_ini_info(struct iwl_fw_runtime *fwrt,
 		num_of_cfg_names++;
 	}
 
-	entry = (struct iwl_fw_ini_dump_entry *)vzalloc(sizeof(*entry) + size);
+	entry = (typeof entry)vzalloc(sizeof(*entry) + size);
 	if (!entry)
 		return 0;
 
 	entry->size = size;
 
-	tlv = (struct iwl_fw_error_dump_data *)entry->data;
+	tlv = (typeof tlv)entry->data;
 	tlv->type = cpu_to_le32(IWL_INI_DUMP_INFO_TYPE);
 	tlv->len = cpu_to_le32(size - sizeof(*tlv));
 
-	dump = (struct iwl_fw_ini_dump_info *)tlv->data;
+	dump = (typeof dump)tlv->data;
 
 	dump->version = cpu_to_le32(IWL_INI_DUMP_VER);
 	dump->time_point = trigger->time_point;
@@ -2081,7 +2081,7 @@ static u32 iwl_dump_ini_info(struct iwl_fw_runtime *fwrt,
 	dump->num_of_cfg_names = cpu_to_le32(num_of_cfg_names);
 	list_for_each_entry(node, &fwrt->trans->dbg.debug_info_tlv_list, list) {
 		struct iwl_fw_ini_debug_info_tlv *debug_info =
-			(struct iwl_fw_ini_debug_info_tlv *)node->tlv.data;
+			(typeof debug_info)node->tlv.data;
 
 		cfg_name->image_type = debug_info->image_type;
 		cfg_name->cfg_name_len =
@@ -2214,7 +2214,7 @@ static u32 iwl_dump_ini_trigger(struct iwl_fw_runtime *fwrt,
 			continue;
 		}
 
-		reg = (struct iwl_fw_ini_region_tlv *)reg_data.reg_tlv->data;
+		reg = (typeof reg)reg_data.reg_tlv->data;
 		reg_type = le32_to_cpu(reg->type);
 		if (reg_type >= ARRAY_SIZE(iwl_dump_ini_region_ops))
 			continue;
@@ -2257,7 +2257,7 @@ static u32 iwl_dump_ini_file_gen(struct iwl_fw_runtime *fwrt,
 	    !le64_to_cpu(trigger->regions_mask))
 		return 0;
 
-	entry = (struct iwl_fw_ini_dump_entry *)vzalloc(sizeof(*entry) + sizeof(*hdr));
+	entry = (typeof entry)vzalloc(sizeof(*entry) + sizeof(*hdr));
 	if (!entry)
 		return 0;
 
@@ -2269,7 +2269,7 @@ static u32 iwl_dump_ini_file_gen(struct iwl_fw_runtime *fwrt,
 		return 0;
 	}
 
-	hdr = (struct iwl_fw_ini_dump_file_hdr *)entry->data;
+	hdr = (typeof hdr)entry->data;
 	hdr->barker = cpu_to_le32(IWL_FW_INI_ERROR_DUMP_BARKER);
 	hdr->file_len = cpu_to_le32(size + entry->size);
 
@@ -2501,7 +2501,7 @@ int iwl_fw_dbg_collect(struct iwl_fw_runtime *fwrt,
 		delay = le32_to_cpu(trigger->stop_delay) * USEC_PER_MSEC;
 	}
 
-	desc = (struct iwl_fw_dump_desc *)kzalloc(sizeof(*desc) + len, GFP_ATOMIC);
+	desc = (typeof desc)kzalloc(sizeof(*desc) + len, GFP_ATOMIC);
 	if (!desc)
 		return -ENOMEM;
 
@@ -2617,9 +2617,9 @@ int iwl_fw_start_dbg_conf(struct iwl_fw_runtime *fwrt, u8 conf_id)
 			 fwrt->dump.conf);
 
 	/* Send all HCMDs for configuring the FW debug */
-	ptr = (u8 *)&fwrt->fw->dbg.conf_tlv[conf_id]->hcmd;
+	ptr = (typeof ptr)&fwrt->fw->dbg.conf_tlv[conf_id]->hcmd;
 	for (i = 0; i < fwrt->fw->dbg.conf_tlv[conf_id]->num_of_hcmds; i++) {
-		struct iwl_fw_dbg_conf_hcmd *cmd = (struct iwl_fw_dbg_conf_hcmd *)ptr;
+		struct iwl_fw_dbg_conf_hcmd *cmd = (typeof cmd)ptr;
 		struct iwl_host_cmd hcmd = {
 			.id = cmd->id,
 			.len = { le16_to_cpu(cmd->len), },
@@ -2713,7 +2713,7 @@ void iwl_fw_dbg_read_d3_debug_data(struct iwl_fw_runtime *fwrt)
 		return;
 
 	if (!fwrt->dump.d3_debug_data) {
-		fwrt->dump.d3_debug_data = (u32 *)kmalloc(cfg->d3_debug_data_length,
+		fwrt->dump.d3_debug_data = (typeof fwrt->dump.d3_debug_data)kmalloc(cfg->d3_debug_data_length,
 						   GFP_KERNEL);
 		if (!fwrt->dump.d3_debug_data) {
 			IWL_ERR(fwrt,

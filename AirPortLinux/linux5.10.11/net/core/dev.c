@@ -86,7 +86,7 @@ static int __net_init netdev_init(struct net *net)
     if (net->dev_index_head == NULL)
         goto err_idx;
     
-//    RAW_INIT_NOTIFIER_HEAD(&net->netdev_chain);
+    RAW_INIT_NOTIFIER_HEAD(&net->netdev_chain);
     
     return 0;
     
@@ -1653,18 +1653,11 @@ static void list_netdevice(struct net_device *dev)
     dev_base_seq_inc(net);
 }
 
-#define NOTIFY_DONE        0x0000        /* Don't care */
-#define NOTIFY_OK        0x0001        /* Suits me */
-#define NOTIFY_STOP_MASK    0x8000        /* Don't call further */
-#define NOTIFY_BAD        (NOTIFY_STOP_MASK|0x0002)
-/* Bad/Veto action */
+/*
+ *    Our notifier list
+ */
 
-/* Restore (negative) errno value from notify return value. */
-static inline int notifier_to_errno(int ret)
-{
-    ret &= ~NOTIFY_STOP_MASK;
-    return ret > NOTIFY_OK ? NOTIFY_OK - ret : 0;
-}
+static RAW_NOTIFIER_HEAD(netdev_chain);
 
 
 int register_netdevice(struct net_device *dev)
@@ -1879,12 +1872,12 @@ int register_netdevice_notifier(struct notifier_block *nb)
     struct net *net;
     int err;
 
-//    /* Close race with setup_net() and cleanup_net() */
-//    down_write(&pernet_ops_rwsem);
-//    rtnl_lock();
-//    err = raw_notifier_chain_register(&netdev_chain, nb);
-//    if (err)
-//        goto unlock;
+    /* Close race with setup_net() and cleanup_net() */
+    down_write(&pernet_ops_rwsem);
+    rtnl_lock();
+    err = raw_notifier_chain_register(&netdev_chain, nb);
+    if (err)
+        goto unlock;
 //    if (dev_boot_phase)
 //        goto unlock;
     for_each_net(net) {
@@ -1892,19 +1885,18 @@ int register_netdevice_notifier(struct notifier_block *nb)
         if (err)
             goto rollback;
     }
-//
-//unlock:
-//    rtnl_unlock();
-//    up_write(&pernet_ops_rwsem);
-//    return err;
-//
+
+unlock:
+    rtnl_unlock();
+    up_write(&pernet_ops_rwsem);
+    return err;
+
 rollback:
 //    for_each_net_continue_reverse(net)
 //        call_netdevice_unregister_net_notifiers(nb, net);
-//
-//    raw_notifier_chain_unregister(&netdev_chain, nb);
-//    goto unlock;
-    return 0;
+
+    raw_notifier_chain_unregister(&netdev_chain, nb);
+    goto unlock;
 }
 EXPORT_SYMBOL(register_netdevice_notifier);
 
@@ -2471,11 +2463,10 @@ static int call_netdevice_notifiers_info(unsigned long val,
          * Hopefully, one day, the global one is going to be removed after
          * all notifier block registrators get converted to be per-netns.
          */
-    //    ret = raw_notifier_call_chain(&net->netdev_chain, val, info);
-    //    if (ret & NOTIFY_STOP_MASK)
-    //        return ret;
-    //    return raw_notifier_call_chain(&netdev_chain, val, info);
-    return 0;
+        ret = raw_notifier_call_chain(&net->netdev_chain, val, info);
+        if (ret & NOTIFY_STOP_MASK)
+            return ret;
+        return raw_notifier_call_chain(&netdev_chain, val, info);
 }
 
 
@@ -3287,6 +3278,23 @@ int netif_rx(struct sk_buff *skb)
 }
 EXPORT_SYMBOL(netif_rx);
 
+int netif_rx_ni(struct sk_buff *skb)
+{
+    int err = 0;
+    
+//    trace_netif_rx_ni_entry(skb);
+    
+//    preempt_disable();
+//    err = netif_rx_internal(skb);
+//    if (local_softirq_pending())
+//        do_softirq();
+//    preempt_enable();
+//    trace_netif_rx_ni_exit(err);
+    
+    return err;
+}
+EXPORT_SYMBOL(netif_rx_ni);
+
 
 static int __dev_set_allmulti(struct net_device *dev, int inc, bool notify)
 {
@@ -3595,3 +3603,71 @@ void netif_receive_skb_list(struct list_head *head)
 //    trace_netif_receive_skb_list_exit(0);
 }
 EXPORT_SYMBOL(netif_receive_skb_list);
+
+
+/*
+ * Invalidate hardware checksum when packet is to be mangled, and
+ * complete checksum manually on outgoing path.
+ */
+int skb_checksum_help(struct sk_buff *skb)
+{
+    __wsum csum;
+    int ret = 0, offset;
+    
+    if (skb->ip_summed == CHECKSUM_COMPLETE)
+        goto out_set_summed;
+    
+    if (unlikely(skb_shinfo(skb)->gso_size)) {
+        skb_warn_bad_offload(skb);
+        return -EINVAL;
+    }
+    
+    /* Before computing a checksum, we should make sure no frag could
+     * be modified by an external entity : checksum could be wrong.
+     */
+    if (skb_has_shared_frag(skb)) {
+        ret = __skb_linearize(skb);
+        if (ret)
+            goto out;
+    }
+    
+    offset = skb_checksum_start_offset(skb);
+    BUG_ON(offset >= skb_headlen(skb));
+    csum = skb_checksum(skb, offset, skb->len - offset, 0);
+    
+    offset += skb->csum_offset;
+    BUG_ON(offset + sizeof(__sum16) > skb_headlen(skb));
+    
+    ret = skb_ensure_writable(skb, offset + sizeof(__sum16));
+    if (ret)
+        goto out;
+    
+#define CSUM_MANGLED_0 ((__force __sum16)0xffff)
+    *(__sum16 *)(skb->data + offset) = csum_fold(csum) ?: CSUM_MANGLED_0;
+out_set_summed:
+    skb->ip_summed = CHECKSUM_NONE;
+out:
+    return ret;
+}
+EXPORT_SYMBOL(skb_checksum_help);
+
+/**
+ *    dev_close - shutdown an interface.
+ *    @dev: device to shutdown
+ *
+ *    This function moves an active device into down state. A
+ *    %NETDEV_GOING_DOWN is sent to the netdev notifier chain. The device
+ *    is then deactivated and finally a %NETDEV_DOWN is sent to the notifier
+ *    chain.
+ */
+void dev_close(struct net_device *dev)
+{
+    if (dev->flags & IFF_UP) {
+        LIST_HEAD(single);
+        
+        list_add(&dev->close_list, &single);
+        dev_close_many(&single, true);
+        list_del(&single);
+    }
+}
+EXPORT_SYMBOL(dev_close);

@@ -44,7 +44,7 @@ int cfg80211_mgd_wext_connect(struct cfg80211_registered_device *rdev,
         return 0;
     
     if (wdev->wext.keys && wdev->wext.keys->def != -1) {
-        ck = (struct cfg80211_cached_keys *)kmemdup(wdev->wext.keys, sizeof(*ck), GFP_KERNEL);
+        ck = (typeof ck)kmemdup(wdev->wext.keys, sizeof(*ck), GFP_KERNEL);
         if (!ck)
             return -ENOMEM;
         for (i = 0; i < CFG80211_MAX_WEP_KEYS; i++)
@@ -242,7 +242,7 @@ int cfg80211_mgd_wext_siwap(struct net_device *dev,
 {
     struct wireless_dev *wdev = dev->ieee80211_ptr;
     struct cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
-    u8 *bssid = (u8 *)ap_addr->sa_data;
+    u8 *bssid = (typeof bssid)ap_addr->sa_data;
     int err;
     
     /* call only for station! */
@@ -315,7 +315,7 @@ int cfg80211_wext_siwgenie(struct net_device *dev,
 {
     struct wireless_dev *wdev = dev->ieee80211_ptr;
     struct cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
-    u8 *ie = (u8 *)extra;
+    u8 *ie = (typeof ie)extra;
     int ie_len = data->length, err;
     
     if (wdev->iftype != NL80211_IFTYPE_STATION)
@@ -333,7 +333,7 @@ int cfg80211_wext_siwgenie(struct net_device *dev,
         goto out;
     
     if (ie_len) {
-        ie = (u8 *)kmemdup(extra, ie_len, GFP_KERNEL);
+        ie = (typeof ie)kmemdup(extra, ie_len, GFP_KERNEL);
         if (!ie) {
             err = -ENOMEM;
             goto out;
@@ -364,7 +364,7 @@ int cfg80211_wext_siwmlme(struct net_device *dev,
                           struct iw_point *data, char *extra)
 {
     struct wireless_dev *wdev = dev->ieee80211_ptr;
-    struct iw_mlme *mlme = (struct iw_mlme *)extra;
+    struct iw_mlme *mlme = (typeof mlme)extra;
     struct cfg80211_registered_device *rdev;
     int err;
     

@@ -201,6 +201,7 @@ int __x = (x);          \
 
 #define EXPORT_SYMBOL(x)
 #define EXPORT_SYMBOL_GPL(x)
+#define NOKPROBE_SYMBOL(x)
 
 #define ASSERT_RTNL()
 
@@ -461,15 +462,16 @@ static inline int __must_check PTR_ERR_OR_ZERO(__force const void *ptr)
 
 #define IRQF_SHARED 0
 
-#define dev_printk(level, dev, format...)  kprintf(format)
-#define dev_emerg(dev, format...)   kprintf(format)
-#define dev_alert(dev, format...)   kprintf(format)
-#define dev_crit(dev, format...)    kprintf(format)
-#define dev_err(dev, format...)     kprintf(format)
-#define dev_warn(dev, format...)    kprintf(format)
-#define dev_notice(dev, format...)  kprintf(format)
-#define dev_info(dev, format...)    kprintf(format)
 #define ksize(x) sizeof(&x)
+
+#define dev_printk(level, dev, fmt...)  kprintf(fmt)
+#define dev_emerg(dev, fmt...)   kprintf(fmt)
+#define dev_alert(dev, fmt...)   kprintf(fmt)
+#define dev_crit(dev, fmt...)    kprintf(fmt)
+#define dev_err(dev, fmt...)     kprintf(fmt)
+#define dev_warn(dev, fmt...)    kprintf(fmt)
+#define dev_notice(dev, fmt...)  kprintf(fmt)
+#define dev_info(dev, fmt...)    kprintf(fmt)
 
 
 #define sizeof_field(TYPE, MEMBER) sizeof((((TYPE *)0)->MEMBER))

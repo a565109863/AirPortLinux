@@ -108,7 +108,7 @@ tasklet_action_common(void* tqarg, wait_result_t waitResult)
         
         kprintf("-----%s: line = %d, t->func_name = %s", __FUNCTION__, __LINE__, t->func_name);
         t->func(t->data);
-        DebugLog("-----%s: line = %d, t->func_name = %s", __FUNCTION__, __LINE__, t->func_name);
+        kprintf("-----%s: line = %d, t->func_name = %s end", __FUNCTION__, __LINE__, t->func_name);
     }
     
 }

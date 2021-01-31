@@ -1848,6 +1848,9 @@ irqreturn_t iwl_pcie_irq_handler(int irq, void *dev_id)
 	 */
 	if (unlikely(!inta)) {
 		IWL_DEBUG_ISR(trans, "Ignore interrupt, inta == 0\n");
+        
+        kprintf("--%s: line = %d, test_bit(STATUS_INT_ENABLED, &trans->status) = %d", __FUNCTION__, __LINE__, test_bit(STATUS_INT_ENABLED, &trans->status));
+        
 		/*
 		 * Re-enable interrupts here since we don't
 		 * have anything to service

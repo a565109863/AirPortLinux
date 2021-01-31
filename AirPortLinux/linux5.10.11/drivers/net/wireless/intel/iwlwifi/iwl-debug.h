@@ -70,7 +70,13 @@ __printf(5, 6) static inline void
 __iwl_dbg(struct device *dev,
 	  u32 level, bool limit, const char *function,
 	  const char *fmt, ...)
-{}
+{
+    va_list args;
+    
+    va_start(args, fmt);
+    vprintf(fmt, args);
+    va_end(args);
+}
 #endif
 
 #define iwl_print_hex_error(m, p, len)					\

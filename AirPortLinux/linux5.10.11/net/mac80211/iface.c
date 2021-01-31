@@ -1844,6 +1844,7 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
              struct wireless_dev **new_wdev, enum nl80211_iftype type,
              struct vif_params *params)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct net_device *ndev = NULL;
     struct ieee80211_sub_if_data *sdata = NULL;
     struct txq_info *txqi;

@@ -1255,7 +1255,7 @@ static int __netlink_sendskb(struct sock *sk, struct sk_buff *skb)
 
 int netlink_sendskb(struct sock *sk, struct sk_buff *skb)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     int len = __netlink_sendskb(sk, skb);
 
     sock_put(sk);
@@ -1315,7 +1315,7 @@ static int netlink_unicast_kernel(struct sock *sk, struct sk_buff *skb,
 int netlink_unicast(struct sock *ssk, struct sk_buff *skb,
                     u32 portid, int nonblock)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct sock *sk;
     int err;
     long timeo;
@@ -1339,14 +1339,14 @@ retry:
 //        return err;
 //    }
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     err = netlink_attachskb(sk, skb, &timeo, ssk);
     if (err == 1)
         goto retry;
     if (err)
         return err;
 
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     return netlink_sendskb(sk, skb);
 }
 EXPORT_SYMBOL(netlink_unicast);
@@ -2385,8 +2385,9 @@ EXPORT_SYMBOL(__netlink_dump_start);
 void netlink_ack(struct sk_buff *in_skb, struct nlmsghdr *nlh, int err,
                  const struct netlink_ext_ack *extack)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     return;
+    
     struct sk_buff *skb;
     struct nlmsghdr *rep;
     struct nlmsgerr *errmsg;
@@ -2487,7 +2488,7 @@ int netlink_rcv_skb(struct sk_buff *skb, int (*cb)(struct sk_buff *,
         if (nlh->nlmsg_type < NLMSG_MIN_TYPE)
             goto ack;
 
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
         err = cb(skb, nlh, &extack);
         if (err == -EINTR)
             goto skip;

@@ -109,7 +109,7 @@ int cfg80211_wext_giwrange(struct net_device *dev,
                struct iw_point *data, char *extra)
 {
     struct wireless_dev *wdev = dev->ieee80211_ptr;
-    struct iw_range *range = (struct iw_range *) extra;
+    struct iw_range *range = (typeof range) extra;
     int band;
     int i, c = 0;
 
@@ -410,7 +410,7 @@ static int __cfg80211_set_encryption(struct cfg80211_registered_device *rdev,
      * to do it first in case the allocation fails. Don't use wext.
      */
     if (!wdev->wext.keys) {
-        wdev->wext.keys = (struct cfg80211_cached_keys *)kzalloc(sizeof(*wdev->wext.keys),
+        wdev->wext.keys = (typeof wdev->wext.keys)kzalloc(sizeof(*wdev->wext.keys),
                       GFP_KERNEL);
         if (!wdev->wext.keys)
             return -ENOMEM;
@@ -607,7 +607,7 @@ static int cfg80211_wext_siwencode(struct net_device *dev,
     }
 
     memset(&params, 0, sizeof(params));
-    params.key = (const u8 *)keybuf;
+    params.key = (typeof params.key)keybuf;
     params.key_len = erq->length;
     if (erq->length == 5)
         params.cipher = WLAN_CIPHER_SUITE_WEP40;
@@ -627,7 +627,7 @@ static int cfg80211_wext_siwencodeext(struct net_device *dev,
 {
     struct wireless_dev *wdev = dev->ieee80211_ptr;
     struct cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
-    struct iw_encode_ext *ext = (struct iw_encode_ext *) extra;
+    struct iw_encode_ext *ext = (typeof ext) extra;
     const u8 *addr;
     int idx;
     bool remove = false;
@@ -690,7 +690,7 @@ static int cfg80211_wext_siwencodeext(struct net_device *dev,
             idx--;
     }
 
-    addr = (const u8 *)ext->addr.sa_data;
+    addr = (typeof addr)ext->addr.sa_data;
     if (is_broadcast_ether_addr(addr))
         addr = NULL;
 
@@ -1439,14 +1439,14 @@ static int cfg80211_wext_siwpmksa(struct net_device *dev,
     struct wireless_dev *wdev = dev->ieee80211_ptr;
     struct cfg80211_registered_device *rdev = wiphy_to_rdev(wdev->wiphy);
     struct cfg80211_pmksa cfg_pmksa;
-    struct iw_pmksa *pmksa = (struct iw_pmksa *)extra;
+    struct iw_pmksa *pmksa = (typeof pmksa)extra;
 
     memset(&cfg_pmksa, 0, sizeof(struct cfg80211_pmksa));
 
     if (wdev->iftype != NL80211_IFTYPE_STATION)
         return -EINVAL;
 
-    cfg_pmksa.bssid = (const u8 *)pmksa->bssid.sa_data;
+    cfg_pmksa.bssid = (typeof cfg_pmksa.bssid)pmksa->bssid.sa_data;
     cfg_pmksa.pmkid = pmksa->pmkid;
 
     switch (pmksa->cmd) {

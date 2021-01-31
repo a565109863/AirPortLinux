@@ -726,12 +726,12 @@ static int iwl_pcie_load_section(struct iwl_trans *trans, u8 section_num,
 	IWL_DEBUG_FW(trans, "[%d] uCode section being loaded...\n",
 		     section_num);
 
-	v_addr = (u8 *)dma_alloc_coherent(trans->dev, chunk_sz, &p_addr,
+	v_addr = (typeof v_addr)dma_alloc_coherent(trans->dev, chunk_sz, &p_addr,
 				    GFP_KERNEL | __GFP_NOWARN);
 	if (!v_addr) {
 		IWL_DEBUG_INFO(trans, "Falling back to small chunks of DMA\n");
 		chunk_sz = PAGE_SIZE;
-		v_addr = (u8 *)dma_alloc_coherent(trans->dev, chunk_sz,
+		v_addr = (typeof v_addr)dma_alloc_coherent(trans->dev, chunk_sz,
 					    &p_addr, GFP_KERNEL);
 		if (!v_addr)
 			return -ENOMEM;
@@ -2164,24 +2164,24 @@ static int iwl_trans_pcie_read_mem(struct iwl_trans *trans, u32 addr,
 
 	while (offs < dwords) {
 		/* limit the time we spin here under lock to 1/2s */
-//		ktime_t timeout = ktime_add_us(ktime_get(), 500 * USEC_PER_MSEC);
+        ktime_t timeout = ktime_add_us(ktime_get(), 500 * USEC_PER_MSEC);
 
 		if (iwl_trans_grab_nic_access(trans, &flags)) {
 			iwl_write32(trans, HBUS_TARG_MEM_RADDR,
 				    addr + 4 * offs);
 
-//			while (offs < dwords) {
-//				vals[offs] = iwl_read32(trans,
-//							HBUS_TARG_MEM_RDAT);
-//				offs++;
-//
-//				/* calling ktime_get is expensive so
-//				 * do it once in 128 reads
-//				 */
-//				if (offs % 128 == 0 && ktime_after(ktime_get(),
-//								   timeout))
-//					break;
-//			}
+            while (offs < dwords) {
+                vals[offs] = iwl_read32(trans,
+                            HBUS_TARG_MEM_RDAT);
+                offs++;
+
+                /* calling ktime_get is expensive so
+                 * do it once in 128 reads
+                 */
+                if (offs % 128 == 0 && ktime_after(ktime_get(),
+                                   timeout))
+                    break;
+            }
 			iwl_trans_release_nic_access(trans, &flags);
 		} else {
 			return -EBUSY;

@@ -114,7 +114,7 @@ int iwl_calib_set(struct iwl_priv *priv,
 {
 	struct iwl_calib_result *res, *tmp;
 
-	res = (struct iwl_calib_result *)kmalloc(sizeof(*res) + len - sizeof(struct iwl_calib_hdr),
+	res = (typeof res)kmalloc(sizeof(*res) + len - sizeof(struct iwl_calib_hdr),
 		      GFP_ATOMIC);
 	if (!res)
 		return -ENOMEM;

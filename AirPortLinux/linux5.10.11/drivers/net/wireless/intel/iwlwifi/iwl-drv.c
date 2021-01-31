@@ -1408,7 +1408,7 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
 	/* dump all fw memory areas by default */
 	fw->dbg.dump_mask = 0xffffffff;
 
-	pieces = (struct iwl_firmware_pieces *)kzalloc(sizeof(*pieces), GFP_KERNEL);
+	pieces = (typeof(pieces))kzalloc(sizeof(*pieces), GFP_KERNEL);
 	if (!pieces)
 		goto out_free_fw;
 
@@ -1425,7 +1425,7 @@ static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
 	}
 
 	/* Data from ucode file:  header followed by uCode images */
-	ucode = (struct iwl_ucode_header *)ucode_raw->data;
+	ucode = (typeof(ucode))ucode_raw->data;
 
 	if (ucode->ver)
 		err = iwl_parse_v1_v2_firmware(drv, ucode_raw, pieces);
@@ -1696,7 +1696,7 @@ struct iwl_drv *iwl_drv_start(struct iwl_trans *trans)
 	struct iwl_drv *drv;
 	int ret;
 
-	drv = (struct iwl_drv *)kzalloc(sizeof(*drv), GFP_KERNEL);
+	drv = (typeof(drv))kzalloc(sizeof(*drv), GFP_KERNEL);
 	if (!drv) {
 		ret = -ENOMEM;
 		goto err;
@@ -1779,7 +1779,7 @@ struct iwl_mod_params iwlwifi_mod_params = {
 	.bt_coex_active = true,
 	.power_level = IWL_POWER_INDEX_1,
 	.uapsd_disable = IWL_DISABLE_UAPSD_BSS | IWL_DISABLE_UAPSD_P2P_CLIENT,
-	.enable_ini = true,
+//    .enable_ini = true,
 	/* the rest are 0 by default */
 };
 IWL_EXPORT_SYMBOL(iwlwifi_mod_params);
@@ -1871,7 +1871,7 @@ static void __exit iwl_drv_exit(void)
 module_exit(iwl_drv_exit);
 
 #ifdef CONFIG_IWLWIFI_DEBUG
-module_param_named(debug, iwlwifi_mod_params.debug_level, uint, 0644);
+//module_param_named(debug, iwlwifi_mod_params.debug_level, uint, 0644);
 MODULE_PARM_DESC(debug, "debug output mask");
 #endif
 

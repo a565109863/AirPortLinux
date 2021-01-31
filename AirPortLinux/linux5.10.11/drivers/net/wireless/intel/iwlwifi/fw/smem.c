@@ -66,7 +66,7 @@
 static void iwl_parse_shared_mem_22000(struct iwl_fw_runtime *fwrt,
 				       struct iwl_rx_packet *pkt)
 {
-	struct iwl_shared_mem_cfg *mem_cfg = (struct iwl_shared_mem_cfg *)pkt->data;
+	struct iwl_shared_mem_cfg *mem_cfg = (typeof mem_cfg)pkt->data;
 	int i, lmac;
 	int lmac_num = le32_to_cpu(mem_cfg->lmac_num);
 	u8 api_ver = iwl_fw_lookup_notif_ver(fwrt->fw, SYSTEM_GROUP,
@@ -101,7 +101,7 @@ static void iwl_parse_shared_mem_22000(struct iwl_fw_runtime *fwrt,
 static void iwl_parse_shared_mem(struct iwl_fw_runtime *fwrt,
 				 struct iwl_rx_packet *pkt)
 {
-	struct iwl_shared_mem_cfg_v2 *mem_cfg = (struct iwl_shared_mem_cfg_v2 *)pkt->data;
+	struct iwl_shared_mem_cfg_v2 *mem_cfg = (typeof mem_cfg)pkt->data;
 	int i;
 
 	fwrt->smem_cfg.num_lmacs = 1;

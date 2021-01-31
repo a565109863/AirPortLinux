@@ -1561,10 +1561,11 @@ skb_flow_dissect_tunnel_info(const struct sk_buff *skb,
 
 static inline __u32 skb_get_hash(struct sk_buff *skb)
 {
-    if (!skb->l4_hash && !skb->sw_hash)
-        __skb_get_hash(skb);
-
-    return skb->hash;
+//    if (!skb->l4_hash && !skb->sw_hash)
+//        __skb_get_hash(skb);
+//
+//    return skb->hash;
+    return 0;
 }
 
 static inline __u32 skb_get_hash_flowi6(struct sk_buff *skb, const struct flowi6 *fl6)

@@ -895,7 +895,7 @@ struct iwl_priv {
 static inline struct iwl_rxon_context *
 iwl_rxon_ctx_from_vif(struct ieee80211_vif *vif)
 {
-	struct iwl_vif_priv *vif_priv = (struct iwl_vif_priv *)vif->drv_priv;
+	struct iwl_vif_priv *vif_priv = (typeof vif_priv)vif->drv_priv;
 
 	return vif_priv->ctx;
 }

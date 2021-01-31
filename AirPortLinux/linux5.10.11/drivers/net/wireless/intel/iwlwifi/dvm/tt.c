@@ -611,10 +611,10 @@ void iwl_tt_initialize(struct iwl_priv *priv)
 
 	if (priv->lib->adv_thermal_throttle) {
 		IWL_DEBUG_TEMP(priv, "Advanced Thermal Throttling\n");
-		tt->restriction = (struct iwl_tt_restriction *)kcalloc(IWL_TI_STATE_MAX,
+		tt->restriction = (typeof tt->restriction)kcalloc(IWL_TI_STATE_MAX,
 					  sizeof(struct iwl_tt_restriction),
 					  GFP_KERNEL);
-		tt->transaction = (struct iwl_tt_trans *)kcalloc(IWL_TI_STATE_MAX *
+		tt->transaction = (typeof tt->transaction)kcalloc(IWL_TI_STATE_MAX *
 					  (IWL_TI_STATE_MAX - 1),
 					  sizeof(struct iwl_tt_trans),
 					  GFP_KERNEL);

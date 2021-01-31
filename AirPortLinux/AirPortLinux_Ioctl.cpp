@@ -237,7 +237,7 @@ IOReturn AirPortLinux::setSCAN_REQ(IOInterface *interface, struct apple80211_sca
 //    ifscan(this->ifname);
     
     if (this->fTimerEventSource) {
-        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+//        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         this->fTimerEventSource->setAction(&AirPortLinux::scanDone);
         this->fTimerEventSource->setTimeoutMS(200);
     }

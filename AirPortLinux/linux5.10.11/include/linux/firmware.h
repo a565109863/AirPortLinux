@@ -30,7 +30,7 @@ struct device *device)
 static int firmware_request_nowarn(const struct firmware **fw, const char *name,
 struct device *device)
 {
-    return 0;
+    return -EIO;
 }
 
 int request_firmware_nowait(

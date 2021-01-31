@@ -1484,10 +1484,10 @@ int __init cfg80211_init(void)
     if (err)
         goto out_fail_pernet;
 
-//    err = wiphy_sysfs_init();
-//    if (err)
-//        goto out_fail_sysfs;
-
+    err = wiphy_sysfs_init();
+    if (err)
+        goto out_fail_sysfs;
+    
     err = register_netdevice_notifier(&cfg80211_netdev_notifier);
     if (err)
         goto out_fail_notifier;
@@ -1519,7 +1519,7 @@ out_fail_nl80211:
 //    unregister_netdevice_notifier(&cfg80211_netdev_notifier);
 out_fail_notifier:
 //    wiphy_sysfs_exit();
-//out_fail_sysfs:
+out_fail_sysfs:
 //    unregister_pernet_device(&cfg80211_pernet_ops);
 out_fail_pernet:
     return err;

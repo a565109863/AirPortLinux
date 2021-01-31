@@ -1076,8 +1076,8 @@ static int query_regdb_file(const char *alpha2)
 //                       (void *)alpha2, regdb_fw_cb);
 }
 
-//int reg_reload_regdb(void)
-//{
+int reg_reload_regdb(void)
+{
 //    const struct firmware *fw;
 //    void *db;
 //    int err;
@@ -1106,7 +1106,8 @@ static int query_regdb_file(const char *alpha2)
 // out:
 //    release_firmware(fw);
 //    return err;
-//}
+    return 0;
+}
 
 static bool reg_query_database(struct regulatory_request *request)
 {
@@ -3760,7 +3761,6 @@ EXPORT_SYMBOL(regulatory_set_wiphy_regd);
 int regulatory_set_wiphy_regd_sync_rtnl(struct wiphy *wiphy,
                     struct ieee80211_regdomain *rd)
 {
-    DebugLog("--%s: 80211 line = %d", __FUNCTION__, __LINE__);
     int ret;
 
     ASSERT_RTNL();
@@ -3799,29 +3799,29 @@ void wiphy_regulatory_register(struct wiphy *wiphy)
     wiphy_update_regulatory(wiphy, lr->initiator);
     wiphy_all_share_dfs_chan_state(wiphy);
 }
-//
-//void wiphy_regulatory_deregister(struct wiphy *wiphy)
-//{
-//    struct wiphy *request_wiphy = NULL;
-//    struct regulatory_request *lr;
-//
-//    lr = get_last_request();
-//
-//    if (!reg_dev_ignore_cell_hint(wiphy))
-//        reg_num_devs_support_basehint--;
-//
-//    rcu_free_regdom(get_wiphy_regdom(wiphy));
-//    RCU_INIT_POINTER(wiphy->regd, NULL);
-//
-//    if (lr)
-//        request_wiphy = wiphy_idx_to_wiphy(lr->wiphy_idx);
-//
-//    if (!request_wiphy || request_wiphy != wiphy)
-//        return;
-//
-//    lr->wiphy_idx = WIPHY_IDX_INVALID;
-//    lr->country_ie_env = ENVIRON_ANY;
-//}
+
+void wiphy_regulatory_deregister(struct wiphy *wiphy)
+{
+    struct wiphy *request_wiphy = NULL;
+    struct regulatory_request *lr;
+
+    lr = get_last_request();
+
+    if (!reg_dev_ignore_cell_hint(wiphy))
+        reg_num_devs_support_basehint--;
+
+    rcu_free_regdom(get_wiphy_regdom(wiphy));
+    RCU_INIT_POINTER(wiphy->regd, NULL);
+
+    if (lr)
+        request_wiphy = wiphy_idx_to_wiphy(lr->wiphy_idx);
+
+    if (!request_wiphy || request_wiphy != wiphy)
+        return;
+
+    lr->wiphy_idx = WIPHY_IDX_INVALID;
+    lr->country_ie_env = ENVIRON_ANY;
+}
 
 /*
  * See FCC notices for UNII band definitions

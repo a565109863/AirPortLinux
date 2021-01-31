@@ -143,12 +143,14 @@ bool AirPortLinux::start(IOService* provider) {
     this->pdev->dev.dev = this;
     this->pdev->dev.dev->fPciDevice = fPciDevice;
     memcpy(this->pdev->dev.name, "AirPortLinux", sizeof(this->pdev->dev.name));
+    
+    cfg80211_init();
+    
     int err = iwl_pci_probe(this->pdev, this->pdev->dev.ent);
     if (err)
         return NULL;
     kprintf("--%s: line = %d err = %d", __FUNCTION__, __LINE__, err);
     
-    cfg80211_init();
     
     if (!attachInterface((IONetworkInterface**) &this->iface, true)) {
         panic("AirPortLinux: Failed to attach interface!");

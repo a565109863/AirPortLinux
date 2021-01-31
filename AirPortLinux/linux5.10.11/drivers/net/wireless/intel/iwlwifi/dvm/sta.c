@@ -48,7 +48,7 @@ static int iwl_sta_ucode_activate(struct iwl_priv *priv, u8 sta_id)
 static void iwl_process_add_sta_resp(struct iwl_priv *priv,
 				     struct iwl_rx_packet *pkt)
 {
-	struct iwl_add_sta_resp *add_sta_resp = (struct iwl_add_sta_resp *)pkt->data;
+	struct iwl_add_sta_resp *add_sta_resp = (typeof add_sta_resp)pkt->data;
 
 	IWL_DEBUG_INFO(priv, "Processing response for adding station\n");
 
@@ -79,7 +79,7 @@ static void iwl_process_add_sta_resp(struct iwl_priv *priv,
 
 void iwl_add_sta_callback(struct iwl_priv *priv, struct iwl_rx_cmd_buffer *rxb)
 {
-	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
+	struct iwl_rx_packet *pkt = (typeof pkt)rxb_addr(rxb);
 
 	iwl_process_add_sta_resp(priv, pkt);
 }
@@ -112,7 +112,7 @@ int iwl_send_add_sta(struct iwl_priv *priv,
 		return ret;
 
 	pkt = cmd.resp_pkt;
-	add_sta_resp = (struct iwl_add_sta_resp  *)pkt->data;
+	add_sta_resp = (typeof add_sta_resp)pkt->data;
 
 	/* debug messages are printed in the handler */
 	if (add_sta_resp->status == ADD_STA_SUCCESS_MSK) {
@@ -306,7 +306,7 @@ u8 iwl_prep_station(struct iwl_priv *priv, struct iwl_rxon_context *ctx,
 	if (sta) {
 		struct iwl_station_priv *sta_priv;
 
-		sta_priv = (struct iwl_station_priv *)sta->drv_priv;
+		sta_priv = (typeof sta_priv)sta->drv_priv;
 		sta_priv->ctx = ctx;
 	}
 
@@ -429,7 +429,7 @@ static int iwl_send_remove_station(struct iwl_priv *priv,
 		return ret;
 
 	pkt = cmd.resp_pkt;
-	rem_sta_resp = (struct iwl_rem_sta_resp *)pkt->data;
+	rem_sta_resp = (typeof rem_sta_resp)pkt->data;
 
 	switch (rem_sta_resp->status) {
 	case REM_STA_SUCCESS_MSK:
@@ -869,7 +869,7 @@ iwl_sta_alloc_lq(struct iwl_priv *priv, struct iwl_rxon_context *ctx,
 {
 	struct iwl_link_quality_cmd *link_cmd;
 
-	link_cmd = (struct iwl_link_quality_cmd *)kzalloc(sizeof(struct iwl_link_quality_cmd), GFP_KERNEL);
+	link_cmd = (typeof link_cmd)kzalloc(sizeof(struct iwl_link_quality_cmd), GFP_KERNEL);
 	if (!link_cmd) {
 		IWL_ERR(priv, "Unable to allocate memory for LQ cmd.\n");
 		return NULL;
@@ -944,7 +944,7 @@ static int iwl_send_static_wepkey_cmd(struct iwl_priv *priv,
 	int i, not_empty = 0;
 	u8 buff[sizeof(struct iwl_wep_cmd) +
 		sizeof(struct iwl_wep_key) * WEP_KEYS_MAX];
-	struct iwl_wep_cmd *wep_cmd = (struct iwl_wep_cmd *)buff;
+	struct iwl_wep_cmd *wep_cmd = (typeof wep_cmd)buff;
 	size_t cmd_size  = sizeof(struct iwl_wep_cmd);
 	struct iwl_host_cmd cmd = {
 		.id = ctx->wep_key_cmd,
@@ -1063,7 +1063,7 @@ static u8 iwlagn_key_sta_id(struct iwl_priv *priv,
 			    struct ieee80211_vif *vif,
 			    struct ieee80211_sta *sta)
 {
-	struct iwl_vif_priv *vif_priv = (struct iwl_vif_priv *)vif->drv_priv;
+	struct iwl_vif_priv *vif_priv = (typeof vif_priv)vif->drv_priv;
 
 	if (sta)
 		return iwl_sta_id(sta);

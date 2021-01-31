@@ -100,7 +100,7 @@ int iwlagn_hwrate_to_mac80211_idx(u32 rate_n_flags, enum nl80211_band band)
 int iwlagn_manage_ibss_station(struct iwl_priv *priv,
 			       struct ieee80211_vif *vif, bool add)
 {
-	struct iwl_vif_priv *vif_priv = (struct iwl_vif_priv *)vif->drv_priv;
+	struct iwl_vif_priv *vif_priv = (typeof vif_priv)vif->drv_priv;
 
 	if (add)
 		return iwlagn_add_bssid_station(priv, vif_priv->ctx,
@@ -627,8 +627,8 @@ static bool iwlagn_fill_txpower_mode(struct iwl_priv *priv,
 static void iwlagn_bt_coex_profile_notif(struct iwl_priv *priv,
 					 struct iwl_rx_cmd_buffer *rxb)
 {
-	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
-	struct iwl_bt_coex_profile_notif *coex = (struct iwl_bt_coex_profile_notif *)pkt->data;
+	struct iwl_rx_packet *pkt = (typeof pkt)rxb_addr(rxb);
+	struct iwl_bt_coex_profile_notif *coex = (typeof coex)pkt->data;
 	struct iwl_bt_uart_msg *uart_msg = &coex->last_bt_uart_msg;
 
 	if (priv->bt_enable_flag == IWLAGN_BT_FLAG_COEX_MODE_DISABLED) {

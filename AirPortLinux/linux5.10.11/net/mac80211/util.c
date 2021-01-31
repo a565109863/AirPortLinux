@@ -40,7 +40,7 @@ struct ieee80211_hw *wiphy_to_ieee80211_hw(struct wiphy *wiphy)
 {
     struct ieee80211_local *local;
 
-    local = (struct ieee80211_local *)wiphy_priv(wiphy);
+    local = (typeof local)wiphy_priv(wiphy);
     return &local->hw;
 }
 EXPORT_SYMBOL(wiphy_to_ieee80211_hw);
@@ -65,7 +65,7 @@ u8 *ieee80211_get_bssid(struct ieee80211_hdr *hdr, size_t len,
     }
 
     if (ieee80211_is_s1g_beacon(fc)) {
-        struct ieee80211_ext *ext = (struct ieee80211_ext *) hdr;
+        struct ieee80211_ext *ext = (typeof ext) hdr;
 
         return ext->u.s1g_beacon.sa;
     }
@@ -103,7 +103,7 @@ void ieee80211_tx_set_protected(struct ieee80211_tx_data *tx)
     struct ieee80211_hdr *hdr;
 
     skb_queue_walk(&tx->skbs, skb) {
-        hdr = (struct ieee80211_hdr *) skb->data;
+        hdr = (typeof hdr) skb->data;
         hdr->frame_control |= cpu_to_le16(IEEE80211_FCTL_PROTECTED);
     }
 }
@@ -388,7 +388,7 @@ _ieee80211_wake_txqs(struct ieee80211_local *local, unsigned long *flags)
 
 void ieee80211_wake_txqs(unsigned long data)
 {
-    struct ieee80211_local *local = (struct ieee80211_local *)data;
+    struct ieee80211_local *local = (typeof local)data;
     unsigned long flags;
 
     spin_lock_irqsave(&local->queue_stop_reason_lock, flags);
@@ -955,14 +955,14 @@ static void ieee80211_parse_extension_element(u32 *crc,
     switch (elem->data[0]) {
     case WLAN_EID_EXT_HE_MU_EDCA:
         if (len == sizeof(*elems->mu_edca_param_set)) {
-            elems->mu_edca_param_set = (struct ieee80211_mu_edca_param_set *)data;
+            elems->mu_edca_param_set = (typeof elems->mu_edca_param_set)data;
             if (crc)
                 *crc = crc32_be(*crc, (unsigned char const *)elem,
                         elem->datalen + 2);
         }
         break;
     case WLAN_EID_EXT_HE_CAPABILITY:
-        elems->he_cap = (const u8*)data;
+        elems->he_cap = (typeof elems->he_cap)data;
         elems->he_cap_len = len;
         break;
     case WLAN_EID_EXT_HE_OPERATION:
@@ -971,29 +971,29 @@ static void ieee80211_parse_extension_element(u32 *crc,
             if (crc)
                 *crc = crc32_be(*crc, (unsigned char const *)elem,
                         elem->datalen + 2);
-            elems->he_operation = (const struct ieee80211_he_operation *)data;
+            elems->he_operation = (typeof elems->he_operation)data;
         }
         break;
     case WLAN_EID_EXT_UORA:
         if (len == 1)
-            elems->uora_element = (const u8 *)data;
+            elems->uora_element = (typeof elems->uora_element)data;
         break;
     case WLAN_EID_EXT_MAX_CHANNEL_SWITCH_TIME:
         if (len == 3)
-            elems->max_channel_switch_time = (const u8 *)data;
+            elems->max_channel_switch_time = (typeof elems->max_channel_switch_time)data;
         break;
     case WLAN_EID_EXT_MULTIPLE_BSSID_CONFIGURATION:
         if (len == sizeof(*elems->mbssid_config_ie))
-            elems->mbssid_config_ie = (const struct ieee80211_multiple_bssid_configuration *)data;
+            elems->mbssid_config_ie = (typeof elems->mbssid_config_ie)data;
         break;
     case WLAN_EID_EXT_HE_SPR:
         if (len >= sizeof(*elems->he_spr) &&
             len >= ieee80211_he_spr_size((const u8 *)data))
-            elems->he_spr = (const struct ieee80211_he_spr *)data;
+            elems->he_spr = (typeof elems->he_spr)data;
         break;
     case WLAN_EID_EXT_HE_6GHZ_CAPA:
         if (len == sizeof(*elems->he_6ghz_capa))
-            elems->he_6ghz_capa = (const struct ieee80211_he_6ghz_capa *)data;
+            elems->he_6ghz_capa = (typeof elems->he_6ghz_capa)data;
         break;
     }
 }
@@ -1085,14 +1085,14 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
                 elem_parse_failed = true;
                 break;
             }
-            elems->lnk_id = (const struct ieee80211_tdls_lnkie *)((char *)pos - 2);
+            elems->lnk_id = (typeof elems->lnk_id)(pos - 2);
             break;
         case WLAN_EID_CHAN_SWITCH_TIMING:
             if (elen != sizeof(struct ieee80211_ch_switch_timing)) {
                 elem_parse_failed = true;
                 break;
             }
-            elems->ch_sw_timing = (const struct ieee80211_ch_switch_timing *)pos;
+            elems->ch_sw_timing = (typeof elems->ch_sw_timing)pos;
             break;
         case WLAN_EID_EXT_CAPABILITY:
             elems->ext_capab = pos;
@@ -1101,6 +1101,13 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
         case WLAN_EID_SSID:
             elems->ssid = pos;
             elems->ssid_len = elen;
+            
+            u_int8_t        ni_essid[32];
+            memset(ni_essid, 0, 32 * sizeof(u_int8_t));
+            memcpy(ni_essid, elems->ssid, elems->ssid_len);
+            ni_essid[elems->ssid_len] = '\0';
+            kprintf("--%s: line = %d irq  len = %d, ssid = %s", __FUNCTION__, __LINE__, elems->ssid_len, ni_essid);
+            
             break;
         case WLAN_EID_SUPP_RATES:
             elems->supp_rates = pos;
@@ -1114,7 +1121,7 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
             break;
         case WLAN_EID_TIM:
             if (elen >= sizeof(struct ieee80211_tim_ie)) {
-                elems->tim = (const struct ieee80211_tim_ie *)pos;
+                elems->tim = (typeof elems->tim)pos;
                 elems->tim_len = elen;
             } else
                 elem_parse_failed = true;
@@ -1159,25 +1166,25 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
             break;
         case WLAN_EID_HT_CAPABILITY:
             if (elen >= sizeof(struct ieee80211_ht_cap))
-                elems->ht_cap_elem = (const struct ieee80211_ht_cap *)pos;
+                elems->ht_cap_elem = (typeof elems->ht_cap_elem)pos;
             else
                 elem_parse_failed = true;
             break;
         case WLAN_EID_HT_OPERATION:
             if (elen >= sizeof(struct ieee80211_ht_operation))
-                elems->ht_operation = (struct ieee80211_ht_operation *)pos;
+                elems->ht_operation = (typeof elems->ht_operation)pos;
             else
                 elem_parse_failed = true;
             break;
         case WLAN_EID_VHT_CAPABILITY:
             if (elen >= sizeof(struct ieee80211_vht_cap))
-                elems->vht_cap_elem = (const struct ieee80211_vht_cap *)pos;
+                elems->vht_cap_elem = (typeof elems->vht_cap_elem)pos;
             else
                 elem_parse_failed = true;
             break;
         case WLAN_EID_VHT_OPERATION:
             if (elen >= sizeof(struct ieee80211_vht_operation)) {
-                elems->vht_operation = (const struct ieee80211_vht_operation *)pos;
+                elems->vht_operation = (typeof elems->vht_operation)pos;
                 if (calc_crc)
                     crc = crc32_be(crc, pos - 2, elen + 2);
                 break;
@@ -1199,7 +1206,7 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
             break;
         case WLAN_EID_MESH_CONFIG:
             if (elen >= sizeof(struct ieee80211_meshconf_ie))
-                elems->mesh_config = (const struct ieee80211_meshconf_ie *)pos;
+                elems->mesh_config = (typeof elems->mesh_config)pos;
             else
                 elem_parse_failed = true;
             break;
@@ -1209,7 +1216,7 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
             break;
         case WLAN_EID_MESH_AWAKE_WINDOW:
             if (elen >= 2)
-                elems->awake_window = (const __le16 *)pos;
+                elems->awake_window = (typeof elems->awake_window)pos;
             break;
         case WLAN_EID_PREQ:
             elems->preq = pos;
@@ -1225,7 +1232,7 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
             break;
         case WLAN_EID_RANN:
             if (elen >= sizeof(struct ieee80211_rann_ie))
-                elems->rann = (const struct ieee80211_rann_ie *)pos;
+                elems->rann = (typeof elems->rann)pos;
             else
                 elem_parse_failed = true;
             break;
@@ -1234,21 +1241,21 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
                 elem_parse_failed = true;
                 break;
             }
-            elems->ch_switch_ie = (const struct ieee80211_channel_sw_ie *)pos;
+            elems->ch_switch_ie = (typeof elems->ch_switch_ie)pos;
             break;
         case WLAN_EID_EXT_CHANSWITCH_ANN:
             if (elen != sizeof(struct ieee80211_ext_chansw_ie)) {
                 elem_parse_failed = true;
                 break;
             }
-            elems->ext_chansw_ie = (const struct ieee80211_ext_chansw_ie *)pos;
+            elems->ext_chansw_ie = (typeof elems->ext_chansw_ie)pos;
             break;
         case WLAN_EID_SECONDARY_CHANNEL_OFFSET:
             if (elen != sizeof(struct ieee80211_sec_chan_offs_ie)) {
                 elem_parse_failed = true;
                 break;
             }
-            elems->sec_chan_offs = (const struct ieee80211_sec_chan_offs_ie *)pos;
+            elems->sec_chan_offs = (typeof elems->sec_chan_offs)pos;
             break;
         case WLAN_EID_CHAN_SWITCH_PARAM:
             if (elen !=
@@ -1256,7 +1263,7 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
                 elem_parse_failed = true;
                 break;
             }
-            elems->mesh_chansw_params_ie = (struct ieee80211_mesh_chansw_params_ie *)pos;
+            elems->mesh_chansw_params_ie = (typeof elems->mesh_chansw_params_ie)pos;
             break;
         case WLAN_EID_WIDE_BW_CHANNEL_SWITCH:
             if (!action ||
@@ -1264,7 +1271,7 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
                 elem_parse_failed = true;
                 break;
             }
-            elems->wide_bw_chansw_ie = (const struct ieee80211_wide_bw_chansw_ie *)pos;
+            elems->wide_bw_chansw_ie = (typeof elems->wide_bw_chansw_ie)pos;
             break;
         case WLAN_EID_CHANNEL_SWITCH_WRAPPER:
             if (action) {
@@ -1281,7 +1288,7 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
             if (ie) {
                 if (ie[1] == sizeof(*elems->wide_bw_chansw_ie))
                     elems->wide_bw_chansw_ie =
-                        (const struct ieee80211_wide_bw_chansw_ie *)(ie + 2);
+                        (typeof elems->wide_bw_chansw_ie)(ie + 2);
                 else
                     elem_parse_failed = true;
             }
@@ -1327,17 +1334,17 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
                 elem_parse_failed = true;
                 break;
             }
-            elems->addba_ext_ie = (const struct ieee80211_addba_ext_ie *)pos;
+            elems->addba_ext_ie = (typeof elems->addba_ext_ie)pos;
             break;
         case WLAN_EID_TIMEOUT_INTERVAL:
             if (elen >= sizeof(struct ieee80211_timeout_interval_ie))
-                elems->timeout_int = (const struct ieee80211_timeout_interval_ie *)pos;
+                elems->timeout_int = (typeof elems->timeout_int)pos;
             else
                 elem_parse_failed = true;
             break;
         case WLAN_EID_BSS_MAX_IDLE_PERIOD:
             if (elen >= sizeof(*elems->max_idle_period_ie))
-                elems->max_idle_period_ie = (const struct ieee80211_bss_max_idle_period_ie *)pos;
+                elems->max_idle_period_ie = (typeof elems->max_idle_period_ie)pos;
             break;
         case WLAN_EID_RSNX:
             elems->rsnx = pos;
@@ -1350,25 +1357,25 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
             break;
         case WLAN_EID_S1G_CAPABILITIES:
             if (elen == sizeof(*elems->s1g_capab))
-                elems->s1g_capab = (const struct ieee80211_s1g_cap *)pos;
+                elems->s1g_capab = (typeof elems->s1g_capab)pos;
             else
                 elem_parse_failed = true;
             break;
         case WLAN_EID_S1G_OPERATION:
             if (elen == sizeof(*elems->s1g_oper))
-                elems->s1g_oper = (const struct ieee80211_s1g_oper_ie *)pos;
+                elems->s1g_oper = (typeof elems->s1g_oper)pos;
             else
                 elem_parse_failed = true;
             break;
         case WLAN_EID_S1G_BCN_COMPAT:
             if (elen == sizeof(*elems->s1g_bcn_compat))
-                elems->s1g_bcn_compat = (const struct ieee80211_s1g_bcn_compat_ie *)pos;
+                elems->s1g_bcn_compat = (typeof elems->s1g_bcn_compat)pos;
             else
                 elem_parse_failed = true;
             break;
         case WLAN_EID_AID_RESPONSE:
             if (elen == sizeof(struct ieee80211_aid_response_ie))
-                elems->aid_resp = (const struct ieee80211_aid_response_ie *)pos;
+                elems->aid_resp = (typeof elems->aid_resp)pos;
             else
                 elem_parse_failed = true;
             break;
@@ -1444,10 +1451,12 @@ static size_t ieee802_11_find_bssid_profile(const u8 *start, size_t len,
                            elem->data[0],
                            index[2],
                            new_bssid);
+            
+            kprintf("---%s new_bssid=%s\n", __FUNCTION__, ether_sprintf((u_char *)&new_bssid));
             if (ether_addr_equal(new_bssid, bss_bssid)) {
                 found = true;
                 elems->bssid_index_len = index[1];
-                elems->bssid_index = (const struct ieee80211_bssid_index *)&index[2];
+                elems->bssid_index = (typeof elems->bssid_index)&index[2];
                 break;
             }
         }
@@ -1469,7 +1478,7 @@ u32 ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
     elems->ie_start = start;
     elems->total_len = len;
 
-    nontransmitted_profile = (u8 *)kmalloc(len, GFP_ATOMIC);
+    nontransmitted_profile = (typeof nontransmitted_profile)kmalloc(len, GFP_ATOMIC);
     if (nontransmitted_profile) {
         nontransmitted_profile_len =
             ieee802_11_find_bssid_profile(start, len, elems,
@@ -1685,7 +1694,7 @@ void ieee80211_send_auth(struct ieee80211_sub_if_data *sdata,
 
     skb_reserve(skb, local->hw.extra_tx_headroom + IEEE80211_WEP_IV_LEN);
 
-    mgmt = (struct ieee80211_mgmt *)skb_put_zero(skb, 24 + 6);
+    mgmt = (typeof mgmt)skb_put_zero(skb, 24 + 6);
     mgmt->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT |
                       IEEE80211_STYPE_AUTH);
     memcpy(mgmt->da, da, ETH_ALEN);
@@ -1715,7 +1724,7 @@ void ieee80211_send_deauth_disassoc(struct ieee80211_sub_if_data *sdata,
 {
     struct ieee80211_local *local = sdata->local;
     struct sk_buff *skb;
-    struct ieee80211_mgmt *mgmt = (struct ieee80211_mgmt *)frame_buf;
+    struct ieee80211_mgmt *mgmt = (typeof mgmt)frame_buf;
 
     /* build frame */
     mgmt->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT | stype);
@@ -2052,7 +2061,7 @@ struct sk_buff *ieee80211_build_probe_req(struct ieee80211_sub_if_data *sdata,
     skb_put(skb, ies_len);
 
     if (dst) {
-        mgmt = (struct ieee80211_mgmt *) skb->data;
+        mgmt = (typeof mgmt) skb->data;
         memcpy(mgmt->da, dst, ETH_ALEN);
         memcpy(mgmt->bssid, dst, ETH_ALEN);
     }
@@ -2239,7 +2248,7 @@ static int ieee80211_reconfig_nan(struct ieee80211_sub_if_data *sdata)
     if (WARN_ON(res))
         return res;
 
-    funcs = (struct cfg80211_nan_func **)kcalloc(sdata->local->hw.max_nan_de_entries + 1,
+    funcs = (typeof funcs)kcalloc(sdata->local->hw.max_nan_de_entries + 1,
             sizeof(*funcs),
             GFP_KERNEL);
     if (!funcs)
@@ -2987,7 +2996,7 @@ void ieee80211_ie_build_he_6ghz_cap(struct ieee80211_sub_if_data *sdata,
         break;
     }
 
-    pos = (u8 *)skb_put(skb, 2 + 1 + sizeof(cap));
+    pos = (typeof pos)skb_put(skb, 2 + 1 + sizeof(cap));
     ieee80211_write_he_6ghz_cap(pos, cpu_to_le16(cap),
                     pos + 2 + 1 + sizeof(cap));
 }
@@ -3000,7 +3009,7 @@ u8 *ieee80211_ie_build_ht_oper(u8 *pos, struct ieee80211_sta_ht_cap *ht_cap,
     /* Build HT Information */
     *pos++ = WLAN_EID_HT_OPERATION;
     *pos++ = sizeof(struct ieee80211_ht_operation);
-    ht_oper = (struct ieee80211_ht_operation *)pos;
+    ht_oper = (typeof ht_oper)pos;
     ht_oper->primary_chan = ieee80211_frequency_to_channel(
                     chandef->chan->center_freq);
     switch (chandef->width) {
@@ -3072,7 +3081,7 @@ u8 *ieee80211_ie_build_vht_oper(u8 *pos, struct ieee80211_sta_vht_cap *vht_cap,
 
     *pos++ = WLAN_EID_VHT_OPERATION;
     *pos++ = sizeof(struct ieee80211_vht_operation);
-    vht_oper = (struct ieee80211_vht_operation *)pos;
+    vht_oper = (typeof vht_oper)pos;
     vht_oper->center_freq_seg0_idx = ieee80211_frequency_to_channel(
                             chandef->center_freq1);
     if (chandef->center_freq2)
@@ -3140,7 +3149,7 @@ u8 *ieee80211_ie_build_he_oper(u8 *pos, struct cfg80211_chan_def *chandef)
         he_oper_params |= u32_encode_bits(1,
                 IEEE80211_HE_OPERATION_6GHZ_OP_INFO);
 
-    he_oper = (struct ieee80211_he_operation *)pos;
+    he_oper = (typeof he_oper)pos;
     he_oper->he_oper_params = cpu_to_le32(he_oper_params);
 
     /* don't require special HE peer rates */
@@ -3151,7 +3160,7 @@ u8 *ieee80211_ie_build_he_oper(u8 *pos, struct cfg80211_chan_def *chandef)
         goto out;
 
     /* TODO add VHT operational */
-    he_6ghz_op = (struct ieee80211_he_6ghz_oper *)pos;
+    he_6ghz_op = (typeof he_6ghz_op)pos;
     he_6ghz_op->minrate = 6; /* 6 Mbps */
     he_6ghz_op->primary =
         ieee80211_frequency_to_channel(chandef->chan->center_freq);
@@ -3550,7 +3559,7 @@ int ieee80211_add_srates_ie(struct ieee80211_sub_if_data *sdata,
     if (skb_tailroom(skb) < rates + 2)
         return -ENOMEM;
 
-    pos = (u8 *)skb_put(skb, rates + 2);
+    pos = (typeof pos)skb_put(skb, rates + 2);
     *pos++ = WLAN_EID_SUPP_RATES;
     *pos++ = rates;
     for (i = 0; i < rates; i++) {
@@ -3599,7 +3608,7 @@ int ieee80211_add_ext_srates_ie(struct ieee80211_sub_if_data *sdata,
         return -ENOMEM;
 
     if (exrates) {
-        pos = (u8 *)skb_put(skb, exrates + 2);
+        pos = (typeof pos)skb_put(skb, exrates + 2);
         *pos++ = WLAN_EID_EXT_SUPP_RATES;
         *pos++ = exrates;
         for (i = 8; i < sband->n_bitrates; i++) {
@@ -3921,7 +3930,7 @@ int ieee80211_send_action_csa(struct ieee80211_sub_if_data *sdata,
         return -ENOMEM;
 
     skb_reserve(skb, local->tx_headroom);
-    mgmt = (struct ieee80211_mgmt *)skb_put_zero(skb, hdr_len);
+    mgmt = (typeof mgmt)skb_put_zero(skb, hdr_len);
     mgmt->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT |
                       IEEE80211_STYPE_ACTION);
 
@@ -3935,7 +3944,7 @@ int ieee80211_send_action_csa(struct ieee80211_sub_if_data *sdata,
     }
     mgmt->u.action.category = WLAN_CATEGORY_SPECTRUM_MGMT;
     mgmt->u.action.u.chan_switch.action_code = WLAN_ACTION_SPCT_CHL_SWITCH;
-    pos = (u8 *)skb_put(skb, 5);
+    pos = (typeof pos)skb_put(skb, 5);
     *pos++ = WLAN_EID_CHANNEL_SWITCH;            /* EID */
     *pos++ = 3;                        /* IE length */
     *pos++ = csa_settings->block_tx ? 1 : 0;        /* CSA mode */
@@ -4359,7 +4368,7 @@ static void
 ieee80211_iter_max_chans(const struct ieee80211_iface_combination *c,
              void *data)
 {
-    u32 *max_num_different_channels = (u32 *)data;
+    u32 *max_num_different_channels = (typeof max_num_different_channels)data;
 
     *max_num_different_channels = max(*max_num_different_channels,
                       c->num_different_channels);
@@ -4432,7 +4441,7 @@ void ieee80211_add_s1g_capab_ie(struct ieee80211_sub_if_data *sdata,
             ifmgd->s1g_capa.supp_mcs_nss[i] & mask;
     }
 
-    pos = (u8 *)skb_put(skb, 2 + sizeof(s1g_capab));
+    pos = (typeof pos)skb_put(skb, 2 + sizeof(s1g_capab));
     *pos++ = WLAN_EID_S1G_CAPABILITIES;
     *pos++ = sizeof(s1g_capab);
 
@@ -4442,7 +4451,7 @@ void ieee80211_add_s1g_capab_ie(struct ieee80211_sub_if_data *sdata,
 void ieee80211_add_aid_request_ie(struct ieee80211_sub_if_data *sdata,
                   struct sk_buff *skb)
 {
-    u8 *pos = (u8 *)skb_put(skb, 3);
+    u8 *pos = (typeof pos)skb_put(skb, 3);
 
     *pos++ = WLAN_EID_AID_REQUEST;
     *pos++ = 1;

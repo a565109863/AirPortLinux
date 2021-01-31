@@ -1003,7 +1003,7 @@ int iwl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
     kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	const struct iwl_cfg_trans_params *trans =
-		(struct iwl_cfg_trans_params *)(ent->driver_data);
+		(typeof(trans))(ent->driver_data);
 	const struct iwl_cfg *cfg_7265d __maybe_unused = NULL;
 	struct iwl_trans *iwl_trans;
 	struct iwl_trans_pcie *trans_pcie;
@@ -1015,7 +1015,7 @@ int iwl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	 * at the same time.  The cfg is used to compare with the old
 	 * full cfg structs.
 	 */
-	const struct iwl_cfg *cfg = (struct iwl_cfg *)(ent->driver_data);
+	const struct iwl_cfg *cfg = (typeof(cfg))(ent->driver_data);
 
 	/* make sure trans is the first element in iwl_cfg */
 	BUILD_BUG_ON(offsetof(struct iwl_cfg, trans));

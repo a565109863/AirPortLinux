@@ -1176,7 +1176,7 @@ static int iwl_txq_dyn_alloc_dma(struct iwl_trans *trans,
 	if (WARN_ON(size > bc_tbl_entries))
 		return -EINVAL;
 
-	txq = (struct iwl_txq *)kzalloc(sizeof(*txq), GFP_KERNEL);
+	txq = (typeof(txq))kzalloc(sizeof(*txq), GFP_KERNEL);
 	if (!txq)
 		return -ENOMEM;
 

@@ -58,7 +58,7 @@ static int iwl_send_scan_abort(struct iwl_priv *priv)
 	if (ret)
 		return ret;
 
-	status = (__le32 *)cmd.resp_pkt->data;
+	status = (typeof status)cmd.resp_pkt->data;
 	if (*status != CAN_ABORT_STATUS) {
 		/* The scan abort will return 1 for success or
 		 * 2 for "failure".  A failure condition can be
@@ -237,8 +237,8 @@ static void iwl_rx_reply_scan(struct iwl_priv *priv,
 			      struct iwl_rx_cmd_buffer *rxb)
 {
 #ifdef CONFIG_IWLWIFI_DEBUG
-	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
-	struct iwl_scanreq_notification *notif = (struct iwl_scanreq_notification *)pkt->data;
+	struct iwl_rx_packet *pkt = (typeof pkt)rxb_addr(rxb);
+	struct iwl_scanreq_notification *notif = (typeof notif)pkt->data;
 
 	IWL_DEBUG_SCAN(priv, "Scan request status = 0x%x\n", notif->status);
 #endif
@@ -248,8 +248,8 @@ static void iwl_rx_reply_scan(struct iwl_priv *priv,
 static void iwl_rx_scan_start_notif(struct iwl_priv *priv,
 				    struct iwl_rx_cmd_buffer *rxb)
 {
-	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
-	struct iwl_scanstart_notification *notif = (struct iwl_scanstart_notification *)pkt->data;
+	struct iwl_rx_packet *pkt = (typeof pkt)rxb_addr(rxb);
+	struct iwl_scanstart_notification *notif = (typeof notif)pkt->data;
 
 	priv->scan_start_tsf = le32_to_cpu(notif->tsf_low);
 	IWL_DEBUG_SCAN(priv, "Scan start: "
@@ -267,8 +267,8 @@ static void iwl_rx_scan_results_notif(struct iwl_priv *priv,
 				      struct iwl_rx_cmd_buffer *rxb)
 {
 #ifdef CONFIG_IWLWIFI_DEBUG
-	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
-	struct iwl_scanresults_notification *notif = (struct iwl_scanresults_notification *)pkt->data;
+	struct iwl_rx_packet *pkt = (typeof pkt)rxb_addr(rxb);
+	struct iwl_scanresults_notification *notif = (typeof notif)pkt->data;
 
 	IWL_DEBUG_SCAN(priv, "Scan ch.res: "
 		       "%d [802.11%s] "
@@ -289,8 +289,8 @@ static void iwl_rx_scan_results_notif(struct iwl_priv *priv,
 static void iwl_rx_scan_complete_notif(struct iwl_priv *priv,
 				       struct iwl_rx_cmd_buffer *rxb)
 {
-	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
-	struct iwl_scancomplete_notification *scan_notif = (struct iwl_scancomplete_notification *)pkt->data;
+	struct iwl_rx_packet *pkt = (typeof pkt)rxb_addr(rxb);
+	struct iwl_scancomplete_notification *scan_notif = (typeof scan_notif)pkt->data;
 
 	IWL_DEBUG_SCAN(priv, "Scan complete: %d channels (TSF 0x%08X:%08X) - %d\n",
 		       scan_notif->scanned_channels,
@@ -654,7 +654,7 @@ static int iwlagn_request_scan(struct iwl_priv *priv, struct ieee80211_vif *vif)
 			return -ENOMEM;
 		}
 	}
-	scan = (struct iwl_scan_cmd *)priv->scan_cmd;
+	scan = (typeof scan)priv->scan_cmd;
 	memset(scan, 0, scan_cmd_size);
 
 	scan->quiet_plcp_th = IWL_PLCP_QUIET_THRESH;

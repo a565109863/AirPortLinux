@@ -65,7 +65,7 @@ static ssize_t iwl_dbgfs_sram_read(struct file *file,
 	int len = 0;
 	int pos = 0;
 	int sram;
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	const struct fw_img *img;
 	size_t bufsz;
 
@@ -88,7 +88,7 @@ static ssize_t iwl_dbgfs_sram_read(struct file *file,
 	}
 
 	bufsz =  50 + len * 4;
-	buf = (char *)kmalloc(bufsz, GFP_KERNEL);
+	buf = (typeof buf)kmalloc(bufsz, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
 
@@ -146,7 +146,7 @@ static ssize_t iwl_dbgfs_sram_write(struct file *file,
 					const char __user *user_buf,
 					size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[64];
 	int buf_size;
 	u32 offset, len;
@@ -174,7 +174,7 @@ static ssize_t iwl_dbgfs_wowlan_sram_read(struct file *file,
 					  char __user *user_buf,
 					  size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	const struct fw_img *img = &priv->fw->img[IWL_UCODE_WOWLAN];
 
 	if (!priv->wowlan_sram)
@@ -187,7 +187,7 @@ static ssize_t iwl_dbgfs_wowlan_sram_read(struct file *file,
 static ssize_t iwl_dbgfs_stations_read(struct file *file, char __user *user_buf,
 					size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	struct iwl_station_entry *station;
 	struct iwl_tid_data *tid_data;
 	char *buf;
@@ -196,7 +196,7 @@ static ssize_t iwl_dbgfs_stations_read(struct file *file, char __user *user_buf,
 	/* Add 30 for initial string */
 	const size_t bufsz = 30 + sizeof(char) * 500 * (priv->num_stations);
 
-	buf = (char *)kmalloc(bufsz, GFP_KERNEL);
+	buf = (typeof buf)kmalloc(bufsz, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
 
@@ -246,7 +246,7 @@ static ssize_t iwl_dbgfs_nvm_read(struct file *file,
 				       loff_t *ppos)
 {
 	ssize_t ret;
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0, ofs = 0, buf_size = 0;
 	const u8 *ptr;
 	char *buf;
@@ -262,7 +262,7 @@ static ssize_t iwl_dbgfs_nvm_read(struct file *file,
 		return -ENOMEM;
 
 	/* 4 characters for byte 0xYY */
-	buf = (char *)kzalloc(buf_size, GFP_KERNEL);
+	buf = (typeof buf)kzalloc(buf_size, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
 
@@ -282,14 +282,14 @@ static ssize_t iwl_dbgfs_nvm_read(struct file *file,
 static ssize_t iwl_dbgfs_channels_read(struct file *file, char __user *user_buf,
 				       size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	struct ieee80211_channel *channels = NULL;
 	const struct ieee80211_supported_band *supp_band = NULL;
 	int pos = 0, i, bufsz = PAGE_SIZE;
 	char *buf;
 	ssize_t ret;
 
-	buf = (char *)kzalloc(bufsz, GFP_KERNEL);
+	buf = (typeof buf)kzalloc(bufsz, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
 
@@ -348,7 +348,7 @@ static ssize_t iwl_dbgfs_status_read(struct file *file,
 						char __user *user_buf,
 						size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[512];
 	int pos = 0;
 	const size_t bufsz = sizeof(buf);
@@ -382,7 +382,7 @@ static ssize_t iwl_dbgfs_rx_handlers_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 
 	int pos = 0;
 	int cnt = 0;
@@ -390,7 +390,7 @@ static ssize_t iwl_dbgfs_rx_handlers_read(struct file *file,
 	int bufsz = 24 * 64; /* 24 items * 64 char per item */
 	ssize_t ret;
 
-	buf = (char *)kzalloc(bufsz, GFP_KERNEL);
+	buf = (typeof buf)kzalloc(bufsz, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
 
@@ -411,7 +411,7 @@ static ssize_t iwl_dbgfs_rx_handlers_write(struct file *file,
 					 const char __user *user_buf,
 					 size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 
 	char buf[8];
 	int buf_size;
@@ -433,7 +433,7 @@ static ssize_t iwl_dbgfs_rx_handlers_write(struct file *file,
 static ssize_t iwl_dbgfs_qos_read(struct file *file, char __user *user_buf,
 				       size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	struct iwl_rxon_context *ctx;
 	int pos = 0, i;
 	char buf[256 * NUM_IWL_RXON_CTX];
@@ -461,7 +461,7 @@ static ssize_t iwl_dbgfs_thermal_throttling_read(struct file *file,
 				char __user *user_buf,
 				size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	struct iwl_tt_mgmt *tt = &priv->thermal_throttle;
 	struct iwl_tt_restriction *restriction;
 	char buf[100];
@@ -493,7 +493,7 @@ static ssize_t iwl_dbgfs_disable_ht40_write(struct file *file,
 					 const char __user *user_buf,
 					 size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[8];
 	int buf_size;
 	int ht40;
@@ -516,7 +516,7 @@ static ssize_t iwl_dbgfs_disable_ht40_read(struct file *file,
 					 char __user *user_buf,
 					 size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[100];
 	int pos = 0;
 	const size_t bufsz = sizeof(buf);
@@ -531,7 +531,7 @@ static ssize_t iwl_dbgfs_temperature_read(struct file *file,
 					 char __user *user_buf,
 					 size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[8];
 	int pos = 0;
 	const size_t bufsz = sizeof(buf);
@@ -545,7 +545,7 @@ static ssize_t iwl_dbgfs_sleep_level_override_write(struct file *file,
 						    const char __user *user_buf,
 						    size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[8];
 	int buf_size;
 	int value;
@@ -587,7 +587,7 @@ static ssize_t iwl_dbgfs_sleep_level_override_read(struct file *file,
 						   char __user *user_buf,
 						   size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[10];
 	int pos, value;
 	const size_t bufsz = sizeof(buf);
@@ -605,7 +605,7 @@ static ssize_t iwl_dbgfs_current_sleep_command_read(struct file *file,
 						    char __user *user_buf,
 						    size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[200];
 	int pos = 0, i;
 	const size_t bufsz = sizeof(buf);
@@ -671,7 +671,7 @@ static ssize_t iwl_dbgfs_ucode_rx_stats_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0;
 	char *buf;
 	int bufsz = sizeof(struct statistics_rx_phy) * 40 +
@@ -687,7 +687,7 @@ static ssize_t iwl_dbgfs_ucode_rx_stats_read(struct file *file,
 	if (!iwl_is_alive(priv))
 		return -EAGAIN;
 
-	buf = (char *)kzalloc(bufsz, GFP_KERNEL);
+	buf = (typeof buf)kzalloc(bufsz, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
 
@@ -1104,7 +1104,7 @@ static ssize_t iwl_dbgfs_ucode_tx_stats_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0;
 	char *buf;
 	int bufsz = (sizeof(struct statistics_tx) * 48) + 250;
@@ -1114,7 +1114,7 @@ static ssize_t iwl_dbgfs_ucode_tx_stats_read(struct file *file,
 	if (!iwl_is_alive(priv))
 		return -EAGAIN;
 
-	buf = (char *)kzalloc(bufsz, GFP_KERNEL);
+	buf = (typeof buf)kzalloc(bufsz, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
 
@@ -1301,7 +1301,7 @@ static ssize_t iwl_dbgfs_ucode_general_stats_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0;
 	char *buf;
 	int bufsz = sizeof(struct statistics_general) * 10 + 300;
@@ -1314,7 +1314,7 @@ static ssize_t iwl_dbgfs_ucode_general_stats_read(struct file *file,
 	if (!iwl_is_alive(priv))
 		return -EAGAIN;
 
-	buf = (char *)kzalloc(bufsz, GFP_KERNEL);
+	buf = (typeof buf)kzalloc(bufsz, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
 
@@ -1421,7 +1421,7 @@ static ssize_t iwl_dbgfs_ucode_bt_stats_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0;
 	char *buf;
 	int bufsz = (sizeof(struct statistics_bt_activity) * 24) + 200;
@@ -1441,7 +1441,7 @@ static ssize_t iwl_dbgfs_ucode_bt_stats_read(struct file *file,
 
 	if (ret)
 		return -EAGAIN;
-	buf = (char *)kzalloc(bufsz, GFP_KERNEL);
+	buf = (typeof buf)kzalloc(bufsz, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
 
@@ -1509,7 +1509,7 @@ static ssize_t iwl_dbgfs_reply_tx_error_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0;
 	char *buf;
 	int bufsz = (sizeof(struct reply_tx_error_statistics) * 24) +
@@ -1519,7 +1519,7 @@ static ssize_t iwl_dbgfs_reply_tx_error_read(struct file *file,
 	if (!iwl_is_alive(priv))
 		return -EAGAIN;
 
-	buf = (char *)kzalloc(bufsz, GFP_KERNEL);
+	buf = (typeof buf)kzalloc(bufsz, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
 
@@ -1651,7 +1651,7 @@ static ssize_t iwl_dbgfs_sensitivity_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0;
 	int cnt = 0;
 	char *buf;
@@ -1660,7 +1660,7 @@ static ssize_t iwl_dbgfs_sensitivity_read(struct file *file,
 	struct iwl_sensitivity_data *data;
 
 	data = &priv->sensitivity_data;
-	buf = (char *)kzalloc(bufsz, GFP_KERNEL);
+	buf = (typeof buf)kzalloc(bufsz, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
 
@@ -1730,7 +1730,7 @@ static ssize_t iwl_dbgfs_chain_noise_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0;
 	int cnt = 0;
 	char *buf;
@@ -1739,7 +1739,7 @@ static ssize_t iwl_dbgfs_chain_noise_read(struct file *file,
 	struct iwl_chain_noise_data *data;
 
 	data = &priv->chain_noise_data;
-	buf = (char *)kzalloc(bufsz, GFP_KERNEL);
+	buf = (typeof buf)kzalloc(bufsz, GFP_KERNEL);
 	if (!buf)
 		return -ENOMEM;
 
@@ -1786,7 +1786,7 @@ static ssize_t iwl_dbgfs_power_save_status_read(struct file *file,
 						    char __user *user_buf,
 						    size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[60];
 	int pos = 0;
 	const size_t bufsz = sizeof(buf);
@@ -1809,7 +1809,7 @@ static ssize_t iwl_dbgfs_clear_ucode_statistics_write(struct file *file,
 					 const char __user *user_buf,
 					 size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[8];
 	int buf_size;
 	int clear;
@@ -1833,7 +1833,7 @@ static ssize_t iwl_dbgfs_ucode_tracing_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0;
 	char buf[128];
 	const size_t bufsz = sizeof(buf);
@@ -1854,7 +1854,7 @@ static ssize_t iwl_dbgfs_ucode_tracing_write(struct file *file,
 					 const char __user *user_buf,
 					 size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[8];
 	int buf_size;
 	int trace;
@@ -1884,7 +1884,7 @@ static ssize_t iwl_dbgfs_rxon_flags_read(struct file *file,
 					 char __user *user_buf,
 					 size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int len = 0;
 	char buf[20];
 
@@ -1897,7 +1897,7 @@ static ssize_t iwl_dbgfs_rxon_filter_flags_read(struct file *file,
 						char __user *user_buf,
 						size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int len = 0;
 	char buf[20];
 
@@ -1910,7 +1910,7 @@ static ssize_t iwl_dbgfs_missed_beacon_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0;
 	char buf[12];
 	const size_t bufsz = sizeof(buf);
@@ -1925,7 +1925,7 @@ static ssize_t iwl_dbgfs_missed_beacon_write(struct file *file,
 					 const char __user *user_buf,
 					 size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[8];
 	int buf_size;
 	int missed;
@@ -1951,7 +1951,7 @@ static ssize_t iwl_dbgfs_plcp_delta_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0;
 	char buf[12];
 	const size_t bufsz = sizeof(buf);
@@ -1966,7 +1966,7 @@ static ssize_t iwl_dbgfs_plcp_delta_write(struct file *file,
 					const char __user *user_buf,
 					size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[8];
 	int buf_size;
 	int plcp;
@@ -1990,7 +1990,7 @@ static ssize_t iwl_dbgfs_rf_reset_read(struct file *file,
 				       char __user *user_buf,
 				       size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0;
 	char buf[300];
 	const size_t bufsz = sizeof(buf);
@@ -2015,7 +2015,7 @@ static ssize_t iwl_dbgfs_rf_reset_write(struct file *file,
 					const char __user *user_buf,
 					size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int ret;
 
 	ret = iwl_force_rf_reset(priv, true);
@@ -2026,7 +2026,7 @@ static ssize_t iwl_dbgfs_txfifo_flush_write(struct file *file,
 					const char __user *user_buf,
 					size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[8];
 	int buf_size;
 	int flush;
@@ -2050,7 +2050,7 @@ static ssize_t iwl_dbgfs_bt_traffic_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	int pos = 0;
 	char buf[200];
 	const size_t bufsz = sizeof(buf);
@@ -2095,7 +2095,7 @@ static ssize_t iwl_dbgfs_protection_mode_read(struct file *file,
 					char __user *user_buf,
 					size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 
 	int pos = 0;
 	char buf[40];
@@ -2116,7 +2116,7 @@ static ssize_t iwl_dbgfs_protection_mode_write(struct file *file,
 					const char __user *user_buf,
 					size_t count, loff_t *ppos) {
 
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[8];
 	int buf_size;
 	int rts;
@@ -2157,7 +2157,7 @@ static ssize_t iwl_dbgfs_echo_test_write(struct file *file,
 					const char __user *user_buf,
 					size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[8];
 	int buf_size;
 
@@ -2175,7 +2175,7 @@ static ssize_t iwl_dbgfs_log_event_read(struct file *file,
 					 char __user *user_buf,
 					 size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char *buf = NULL;
 	ssize_t ret;
 
@@ -2190,7 +2190,7 @@ static ssize_t iwl_dbgfs_log_event_write(struct file *file,
 					const char __user *user_buf,
 					size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	u32 event_log_flag;
 	char buf[8];
 	int buf_size;
@@ -2216,7 +2216,7 @@ static ssize_t iwl_dbgfs_calib_disabled_read(struct file *file,
 					 char __user *user_buf,
 					 size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[120];
 	int pos = 0;
 	const size_t bufsz = sizeof(buf);
@@ -2244,7 +2244,7 @@ static ssize_t iwl_dbgfs_calib_disabled_write(struct file *file,
 					      const char __user *user_buf,
 					      size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	char buf[8];
 	u32 calib_disabled;
 	int buf_size;
@@ -2265,7 +2265,7 @@ static ssize_t iwl_dbgfs_fw_restart_write(struct file *file,
 					  const char __user *user_buf,
 					  size_t count, loff_t *ppos)
 {
-	struct iwl_priv *priv = (struct iwl_priv *)file->private_data;
+	struct iwl_priv *priv = (typeof priv)file->private_data;
 	bool fw_restart = iwlwifi_mod_params.fw_restart;
 	int __maybe_unused ret;
 

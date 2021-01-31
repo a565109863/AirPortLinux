@@ -158,7 +158,6 @@ void delayed_work_timer_fn(struct timer_list *t)
 //    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct delayed_work *dwork = from_timer(dwork, t, timer);
 
-//    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     /* should have been called from irqsafe timer with irq already off */
     __queue_work(dwork->cpu, dwork->wq, &dwork->work);
 }
@@ -175,7 +174,7 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
     WARN_ON_ONCE(timer_pending(timer));
     WARN_ON_ONCE(!list_empty(&work->entry));
 
-    kprintf("--%s: line = %d, timer->name = %s, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, timer->name, wq->name, work->func_name);
+    kprintf("--%s: line = %d, timer->func_name = %s, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, timer->func_name, wq->name, work->func_name);
     /*
      * If @delay is 0, queue @dwork->work immediately.  This is for
      * both optimization and correctness.  The earliest @timer can
@@ -190,7 +189,7 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
     dwork->wq = wq;
     dwork->cpu = cpu;
     timer->expires = jiffies + delay;
-    kprintf("--%s: line = %d, timer->name = %s, timer->expires = %lu, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, timer->name, timer->expires, wq->name, work->func_name);
+    kprintf("--%s: line = %d, timer->func_name = %s, timer->expires = %lu, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, timer->func_name, timer->expires, wq->name, work->func_name);
 
     if (unlikely(cpu != WORK_CPU_UNBOUND))
         add_timer_on(timer, cpu);
@@ -535,7 +534,7 @@ EXPORT_SYMBOL_GPL(cancel_work_sync);
  */
 bool flush_delayed_work(struct delayed_work *dwork)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 //    local_irq_disable();
     if (del_timer_sync(&dwork->timer))
         __queue_work(dwork->cpu, dwork->wq, &dwork->work);

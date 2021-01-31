@@ -52,6 +52,7 @@ int dma_alloc_from_dev_coherent(struct device *dev, ssize_t size,
     
     bufDes = IOBufferMemoryDescriptor::inTaskWithPhysicalMask(kernel_task, (kIODirectionInOut | kIOMemoryPhysicallyContiguous | kIOMapInhibitCache), size, *dev->dma_mask);
     if (bufDes == NULL) {
+        printf("inTaskWithPhysicalMask()\n");
         return 0;
     }
     

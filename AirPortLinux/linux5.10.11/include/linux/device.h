@@ -62,7 +62,7 @@ struct device {
 static int dev_set_name(struct device *dev, const char *fmt, ...)
 {
     va_list vargs;
-    int err;
+    int err = 0;
 
     va_start(vargs, fmt);
     vsnprintf(dev->name, sizeof(dev->name), fmt, vargs);

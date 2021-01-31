@@ -2842,7 +2842,7 @@ ieee80211_bss(struct wiphy *wiphy, struct iw_request_info *info,
           struct cfg80211_internal_bss *bss, char *current_ev,
           char *end_buf)
 {
-    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     const struct cfg80211_bss_ies *ies;
     struct iw_event iwe;
     const u8 *ie;

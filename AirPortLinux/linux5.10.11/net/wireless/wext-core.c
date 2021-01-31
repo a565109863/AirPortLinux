@@ -427,7 +427,7 @@ static int wext_netdev_notifier_call(struct notifier_block *nb,
 //    if (!nlh)
 //        return NULL;
 //
-//    r = (struct ifinfomsg *)nlmsg_data(nlh);
+//    r = (typeof r)nlmsg_data(nlh);
 //    r->ifi_family = AF_UNSPEC;
 //    r->__ifi_pad = 0;
 //    r->ifi_type = dev->type;
@@ -800,7 +800,7 @@ static int ioctl_standard_iw_point(struct iw_point *iwp, unsigned int cmd,
     }
     
     /* kzalloc() ensures NULL-termination for essid_compat. */
-    extra = (char *)kzalloc(extra_size, GFP_KERNEL);
+    extra = (typeof extra)kzalloc(extra_size, GFP_KERNEL);
     if (!extra)
         return -ENOMEM;
 
@@ -814,7 +814,7 @@ static int ioctl_standard_iw_point(struct iw_point *iwp, unsigned int cmd,
         }
 
         if (cmd == SIOCSIWENCODEEXT) {
-            struct iw_encode_ext *ee = (struct iw_encode_ext *) extra;
+            struct iw_encode_ext *ee = (typeof ee) extra;
 
             if (iwp->length < sizeof(*ee) + ee->key_len) {
                 err = -EFAULT;
@@ -862,7 +862,7 @@ static int ioctl_standard_iw_point(struct iw_point *iwp, unsigned int cmd,
     /* Generate an event to notify listeners of the change */
     if ((descr->flags & IW_DESCR_FLAG_EVENT) &&
         ((err == 0) || (err == -EIWCOMMIT))) {
-        union iwreq_data *data = (union iwreq_data *) iwp;
+        union iwreq_data *data = (typeof data) iwp;
         
         if (descr->flags & IW_DESCR_FLAG_RESTRICT)
             /* If the event is restricted, don't
@@ -922,7 +922,6 @@ static int wireless_process_ioctl(struct net *net, struct iwreq *iwr,
                   wext_ioctl_func standard,
                   wext_ioctl_func _private)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct net_device *dev;
     iw_handler    handler;
     
@@ -981,7 +980,6 @@ static int wext_ioctl_dispatch(struct net *net, struct iwreq *iwr,
                    wext_ioctl_func standard,
                    wext_ioctl_func _private)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     int ret = wext_permission_check(cmd);
     
     if (ret)
@@ -1041,7 +1039,6 @@ static int ioctl_standard_call(struct net_device *    dev,
 #ifdef CONFIG_WEXT_CORE
 int wext_handle_ioctl(struct net *net, unsigned int cmd, void __user *arg)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct iw_request_info info = { .cmd = cmd, .flags = 0 };
     struct iwreq iwr;
     int ret;
@@ -1080,7 +1077,7 @@ static int compat_standard_call(struct net_device    *dev,
     if (descr->header_type != IW_HEADER_TYPE_POINT)
         return ioctl_standard_call(dev, iwr, cmd, info, handler);
 
-    iwp_compat = (struct compat_iw_point *) &iwr->u.data;
+    iwp_compat = (typeof iwp_compat) &iwr->u.data;
     iwp.pointer = compat_ptr(iwp_compat->pointer);
     iwp.length = iwp_compat->length;
     iwp.flags = iwp_compat->flags;

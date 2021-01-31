@@ -211,6 +211,9 @@ ieee80211_bss_info_update(struct ieee80211_local *local,
 
     ieee802_11_parse_elems(elements, len - baselen, false, &elems,
                    mgmt->bssid, cbss->bssid);
+    
+    kprintf("--%s: line = %d irq  bssid=%s\n", __FUNCTION__, __LINE__, ether_sprintf(cbss->bssid));
+    kprintf("--%s: line = %d irq  bssid=%s\n", __FUNCTION__, __LINE__, ether_sprintf(mgmt->bssid));
 
     /* In case the signal is invalid update the status */
     signal_valid = channel == cbss->channel;
@@ -391,6 +394,7 @@ static bool ieee80211_prep_hw_scan(struct ieee80211_sub_if_data *sdata)
 
 static void __ieee80211_scan_completed(struct ieee80211_hw *hw, bool aborted)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = hw_to_local(hw);
     bool hw_scan = test_bit(SCAN_HW_SCANNING, &local->scanning);
     bool was_scanning = local->scanning;
@@ -481,6 +485,7 @@ static void __ieee80211_scan_completed(struct ieee80211_hw *hw, bool aborted)
 void ieee80211_scan_completed(struct ieee80211_hw *hw,
                   struct cfg80211_scan_info *info)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = hw_to_local(hw);
 
     trace_api_scan_completed(local, info->aborted);
@@ -1027,6 +1032,7 @@ static void ieee80211_scan_state_resume(struct ieee80211_local *local,
 
 void ieee80211_scan_work(struct work_struct *work)
 {
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local =
         container_of(work, struct ieee80211_local, scan_work.work);
     struct ieee80211_sub_if_data *sdata;
@@ -1076,6 +1082,7 @@ void ieee80211_scan_work(struct work_struct *work)
             goto out;
     }
 
+    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     /*
      * as long as no delay is required advance immediately
      * without scheduling a new work

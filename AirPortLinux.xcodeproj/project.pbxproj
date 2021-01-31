@@ -23,6 +23,10 @@
 		181EEE7E25C4490E00751767 /* notifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 181EEE7C25C4490E00751767 /* notifier.h */; };
 		181EEE7F25C4490E00751767 /* notifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 181EEE7C25C4490E00751767 /* notifier.h */; };
 		181EEE8025C4490E00751767 /* notifier.h in Headers */ = {isa = PBXBuildFile; fileRef = 181EEE7C25C4490E00751767 /* notifier.h */; };
+		186E114525C68C6500C8656E /* kdebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 186E114425C68C6500C8656E /* kdebug.h */; };
+		186E114625C68C6500C8656E /* kdebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 186E114425C68C6500C8656E /* kdebug.h */; };
+		186E114725C68C6500C8656E /* kdebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 186E114425C68C6500C8656E /* kdebug.h */; };
+		186E114825C68C6500C8656E /* kdebug.h in Headers */ = {isa = PBXBuildFile; fileRef = 186E114425C68C6500C8656E /* kdebug.h */; };
 		187079FF25C3A6B20066BC98 /* shash.c in Sources */ = {isa = PBXBuildFile; fileRef = 187077DC25C3A6B00066BC98 /* shash.c */; };
 		18707A0025C3A6B20066BC98 /* shash.c in Sources */ = {isa = PBXBuildFile; fileRef = 187077DC25C3A6B00066BC98 /* shash.c */; };
 		18707A0125C3A6B20066BC98 /* shash.c in Sources */ = {isa = PBXBuildFile; fileRef = 187077DC25C3A6B00066BC98 /* shash.c */; };
@@ -2111,6 +2115,14 @@
 		18A4383225C3C654000DAE97 /* iwl-agn-hw.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A4358C25C3C652000DAE97 /* iwl-agn-hw.h */; };
 		18A4383325C3C654000DAE97 /* iwl-agn-hw.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A4358C25C3C652000DAE97 /* iwl-agn-hw.h */; };
 		18A4383425C3C654000DAE97 /* iwl-agn-hw.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A4358C25C3C652000DAE97 /* iwl-agn-hw.h */; };
+		37152F9725C680ED004031DF /* notifier.c in Sources */ = {isa = PBXBuildFile; fileRef = 37152F9625C680ED004031DF /* notifier.c */; };
+		37152F9825C680ED004031DF /* notifier.c in Sources */ = {isa = PBXBuildFile; fileRef = 37152F9625C680ED004031DF /* notifier.c */; };
+		37152F9925C680ED004031DF /* notifier.c in Sources */ = {isa = PBXBuildFile; fileRef = 37152F9625C680ED004031DF /* notifier.c */; };
+		37152F9A25C680ED004031DF /* notifier.c in Sources */ = {isa = PBXBuildFile; fileRef = 37152F9625C680ED004031DF /* notifier.c */; };
+		37152F9D25C681F3004031DF /* rwsem.h in Headers */ = {isa = PBXBuildFile; fileRef = 37152F9C25C681F3004031DF /* rwsem.h */; };
+		37152F9E25C681F3004031DF /* rwsem.h in Headers */ = {isa = PBXBuildFile; fileRef = 37152F9C25C681F3004031DF /* rwsem.h */; };
+		37152F9F25C681F3004031DF /* rwsem.h in Headers */ = {isa = PBXBuildFile; fileRef = 37152F9C25C681F3004031DF /* rwsem.h */; };
+		37152FA025C681F3004031DF /* rwsem.h in Headers */ = {isa = PBXBuildFile; fileRef = 37152F9C25C681F3004031DF /* rwsem.h */; };
 		374023F82587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
 		374023F92587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
 		374023FA2587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
@@ -2211,6 +2223,14 @@
 		37CFFA352573F1EE0047098B /* apple80211.h in Headers */ = {isa = PBXBuildFile; fileRef = 37CFF2B72573EB150047098B /* apple80211.h */; };
 		37CFFA362573F1EE0047098B /* compat.h in Headers */ = {isa = PBXBuildFile; fileRef = 37CFF2C52573ECC00047098B /* compat.h */; };
 		37CFFA372573F1EE0047098B /* iwlwifi.h in Headers */ = {isa = PBXBuildFile; fileRef = 37CFF2C42573ECC00047098B /* iwlwifi.h */; };
+		37D2CE5225C577E00009C8D2 /* ioctl.c in Sources */ = {isa = PBXBuildFile; fileRef = 37D2CE5125C577E00009C8D2 /* ioctl.c */; };
+		37D2CE5325C577E00009C8D2 /* ioctl.c in Sources */ = {isa = PBXBuildFile; fileRef = 37D2CE5125C577E00009C8D2 /* ioctl.c */; };
+		37D2CE5425C577E00009C8D2 /* ioctl.c in Sources */ = {isa = PBXBuildFile; fileRef = 37D2CE5125C577E00009C8D2 /* ioctl.c */; };
+		37D2CE5525C577E00009C8D2 /* ioctl.c in Sources */ = {isa = PBXBuildFile; fileRef = 37D2CE5125C577E00009C8D2 /* ioctl.c */; };
+		37D2CE5725C5794F0009C8D2 /* s1g.c in Sources */ = {isa = PBXBuildFile; fileRef = 37D2CE5625C5794F0009C8D2 /* s1g.c */; };
+		37D2CE5825C5794F0009C8D2 /* s1g.c in Sources */ = {isa = PBXBuildFile; fileRef = 37D2CE5625C5794F0009C8D2 /* s1g.c */; };
+		37D2CE5925C5794F0009C8D2 /* s1g.c in Sources */ = {isa = PBXBuildFile; fileRef = 37D2CE5625C5794F0009C8D2 /* s1g.c */; };
+		37D2CE5A25C5794F0009C8D2 /* s1g.c in Sources */ = {isa = PBXBuildFile; fileRef = 37D2CE5625C5794F0009C8D2 /* s1g.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -2218,6 +2238,7 @@
 		1805C326259AEBA00069998A /* help_ifconfig.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = help_ifconfig.c; sourceTree = "<group>"; };
 		181EEE5B25C3FA6100751767 /* dmapool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = dmapool.h; sourceTree = "<group>"; };
 		181EEE7C25C4490E00751767 /* notifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = notifier.h; sourceTree = "<group>"; };
+		186E114425C68C6500C8656E /* kdebug.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kdebug.h; sourceTree = "<group>"; };
 		187077DC25C3A6B00066BC98 /* shash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = shash.c; sourceTree = "<group>"; };
 		187077DF25C3A6B00066BC98 /* net_namespace.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = net_namespace.c; sourceTree = "<group>"; };
 		187077E025C3A6B00066BC98 /* dev_ioctl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dev_ioctl.h; sourceTree = "<group>"; };
@@ -2740,6 +2761,8 @@
 		18A4358A25C3C652000DAE97 /* trans-gen2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "trans-gen2.c"; sourceTree = "<group>"; };
 		18A4358B25C3C652000DAE97 /* iwl-devtrace-ucode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "iwl-devtrace-ucode.h"; sourceTree = "<group>"; };
 		18A4358C25C3C652000DAE97 /* iwl-agn-hw.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "iwl-agn-hw.h"; sourceTree = "<group>"; };
+		37152F9625C680ED004031DF /* notifier.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = notifier.c; sourceTree = "<group>"; };
+		37152F9C25C681F3004031DF /* rwsem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rwsem.h; sourceTree = "<group>"; };
 		374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-21.ucode"; sourceTree = "<group>"; };
 		374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-22.ucode"; sourceTree = "<group>"; };
 		374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-31.ucode"; sourceTree = "<group>"; };
@@ -2771,6 +2794,8 @@
 		37CFF6192573EEC00047098B /* AirPortLinux.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirPortLinux.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		37CFF7CC2573EFE40047098B /* AirPortLinux.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirPortLinux.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		37CFF97F2573F1340047098B /* AirPortLinux.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirPortLinux.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		37D2CE5125C577E00009C8D2 /* ioctl.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = ioctl.c; sourceTree = "<group>"; };
+		37D2CE5625C5794F0009C8D2 /* s1g.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = s1g.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2830,6 +2855,7 @@
 			children = (
 				187077DE25C3A6B00066BC98 /* core */,
 				187077EB25C3A6B00066BC98 /* ethernet */,
+				37D2CE5025C577AE0009C8D2 /* ethtool */,
 				1870781625C3A6B10066BC98 /* mac80211 */,
 				1870781425C3A6B10066BC98 /* net_namespace.h */,
 				187077E625C3A6B00066BC98 /* netlink */,
@@ -2845,13 +2871,13 @@
 		187077DE25C3A6B00066BC98 /* core */ = {
 			isa = PBXGroup;
 			children = (
-				187077DF25C3A6B00066BC98 /* net_namespace.c */,
-				187077E025C3A6B00066BC98 /* dev_ioctl.h */,
 				187077E125C3A6B00066BC98 /* dev_addr_lists.c */,
-				187077E225C3A6B00066BC98 /* filter.c */,
-				187077E325C3A6B00066BC98 /* rtnetlink.c */,
 				187077E425C3A6B00066BC98 /* dev_ioctl.c */,
+				187077E025C3A6B00066BC98 /* dev_ioctl.h */,
 				187077E525C3A6B00066BC98 /* dev.c */,
+				187077E225C3A6B00066BC98 /* filter.c */,
+				187077DF25C3A6B00066BC98 /* net_namespace.c */,
+				187077E325C3A6B00066BC98 /* rtnetlink.c */,
 			);
 			path = core;
 			sourceTree = "<group>";
@@ -2975,6 +3001,7 @@
 				1870782425C3A6B10066BC98 /* rate.c */,
 				1870784325C3A6B10066BC98 /* rate.h */,
 				1870782125C3A6B10066BC98 /* rx.c */,
+				37D2CE5625C5794F0009C8D2 /* s1g.c */,
 				1870782F25C3A6B10066BC98 /* scan.c */,
 				1870783225C3A6B10066BC98 /* spectmgmt.c */,
 				1870782D25C3A6B10066BC98 /* sta_info.c */,
@@ -3188,6 +3215,7 @@
 				187079E025C3A6B20066BC98 /* bitmap.h */,
 				1870797E25C3A6B20066BC98 /* bitops.h */,
 				1870796F25C3A6B20066BC98 /* bitrev.c */,
+				186E114425C68C6500C8656E /* kdebug.h */,
 				187079B325C3A6B20066BC98 /* bitrev.h */,
 				187079F425C3A6B20066BC98 /* bits.h */,
 				1870799825C3A6B20066BC98 /* bsearch.h */,
@@ -3197,7 +3225,6 @@
 				187079C325C3A6B20066BC98 /* compat.h */,
 				187079C525C3A6B20066BC98 /* compiler.c */,
 				1870798525C3A6B20066BC98 /* compiler.h */,
-				181EEE7C25C4490E00751767 /* notifier.h */,
 				1870797625C3A6B20066BC98 /* completion.h */,
 				187079F025C3A6B20066BC98 /* const.h */,
 				187079BD25C3A6B20066BC98 /* cpu.h */,
@@ -3263,6 +3290,8 @@
 				1870798E25C3A6B20066BC98 /* netdev_features.h */,
 				187079F725C3A6B20066BC98 /* netdevice.h */,
 				187079A825C3A6B20066BC98 /* netlink.h */,
+				37152F9625C680ED004031DF /* notifier.c */,
+				181EEE7C25C4490E00751767 /* notifier.h */,
 				1870798625C3A6B20066BC98 /* of.h */,
 				1870799625C3A6B20066BC98 /* pci_regs.h */,
 				1870799225C3A6B20066BC98 /* pci.c */,
@@ -3276,6 +3305,7 @@
 				1870797725C3A6B20066BC98 /* rbtree_augmented.h */,
 				1870797425C3A6B20066BC98 /* rbtree.c */,
 				187079B425C3A6B20066BC98 /* rbtree.h */,
+				37152F9C25C681F3004031DF /* rwsem.h */,
 				187079BC25C3A6B20066BC98 /* rculist.c */,
 				1870798725C3A6B20066BC98 /* rculist.h */,
 				187079C925C3A6B20066BC98 /* rcupdate.h */,
@@ -3659,6 +3689,14 @@
 			path = apple80211;
 			sourceTree = "<group>";
 		};
+		37D2CE5025C577AE0009C8D2 /* ethtool */ = {
+			isa = PBXGroup;
+			children = (
+				37D2CE5125C577E00009C8D2 /* ioctl.c */,
+			);
+			path = ethtool;
+			sourceTree = "<group>";
+		};
 		37E824812573F3F6001A3370 /* firmware */ = {
 			isa = PBXGroup;
 			children = (
@@ -3848,6 +3886,7 @@
 				1870800725C3A6B60066BC98 /* task.h in Headers */,
 				18707F5725C3A6B50066BC98 /* regulatory.h in Headers */,
 				18A4367D25C3C653000DAE97 /* img.h in Headers */,
+				186E114525C68C6500C8656E /* kdebug.h in Headers */,
 				1870817725C3A6B70066BC98 /* average.h in Headers */,
 				18707B4725C3A6B30066BC98 /* fils_aead.h in Headers */,
 				18A435CD25C3C653000DAE97 /* sta.h in Headers */,
@@ -3880,6 +3919,7 @@
 				18707E8725C3A6B50066BC98 /* net.h in Headers */,
 				1870803725C3A6B60066BC98 /* of.h in Headers */,
 				18A436C925C3C653000DAE97 /* tx.h in Headers */,
+				37152F9D25C681F3004031DF /* rwsem.h in Headers */,
 				37CFF2BB2573EB150047098B /* apple80211_ioctl.h in Headers */,
 				37CFF4762573ECC10047098B /* iwlwifi.h in Headers */,
 				1870812325C3A6B60066BC98 /* kernel.h in Headers */,
@@ -4172,6 +4212,7 @@
 				18707F7C25C3A6B50066BC98 /* fq.h in Headers */,
 				18707B2425C3A6B30066BC98 /* debugfs_key.h in Headers */,
 				18A4367E25C3C653000DAE97 /* img.h in Headers */,
+				186E114625C68C6500C8656E /* kdebug.h in Headers */,
 				18707F6825C3A6B50066BC98 /* iw_handler.h in Headers */,
 				1870809425C3A6B60066BC98 /* acpi.h in Headers */,
 				18A435CE25C3C653000DAE97 /* sta.h in Headers */,
@@ -4204,6 +4245,7 @@
 				18707E6C25C3A6B50066BC98 /* gcc_intrin.h in Headers */,
 				187081CC25C3A6B70066BC98 /* if.h in Headers */,
 				18A436CA25C3C653000DAE97 /* tx.h in Headers */,
+				37152F9E25C681F3004031DF /* rwsem.h in Headers */,
 				18707AF025C3A6B30066BC98 /* debug.h in Headers */,
 				18707B0025C3A6B30066BC98 /* wme.h in Headers */,
 				18707AC025C3A6B30066BC98 /* wext-compat.h in Headers */,
@@ -4496,6 +4538,7 @@
 				18707F7D25C3A6B50066BC98 /* fq.h in Headers */,
 				18707B2525C3A6B30066BC98 /* debugfs_key.h in Headers */,
 				18A4367F25C3C653000DAE97 /* img.h in Headers */,
+				186E114725C68C6500C8656E /* kdebug.h in Headers */,
 				18707F6925C3A6B50066BC98 /* iw_handler.h in Headers */,
 				1870809525C3A6B60066BC98 /* acpi.h in Headers */,
 				18A435CF25C3C653000DAE97 /* sta.h in Headers */,
@@ -4528,6 +4571,7 @@
 				18707E6D25C3A6B50066BC98 /* gcc_intrin.h in Headers */,
 				187081CD25C3A6B70066BC98 /* if.h in Headers */,
 				18A436CB25C3C653000DAE97 /* tx.h in Headers */,
+				37152F9F25C681F3004031DF /* rwsem.h in Headers */,
 				18707AF125C3A6B30066BC98 /* debug.h in Headers */,
 				18707B0125C3A6B30066BC98 /* wme.h in Headers */,
 				18707AC125C3A6B30066BC98 /* wext-compat.h in Headers */,
@@ -4820,6 +4864,7 @@
 				18707F7E25C3A6B50066BC98 /* fq.h in Headers */,
 				18707B2625C3A6B30066BC98 /* debugfs_key.h in Headers */,
 				18A4368025C3C653000DAE97 /* img.h in Headers */,
+				186E114825C68C6500C8656E /* kdebug.h in Headers */,
 				18707F6A25C3A6B50066BC98 /* iw_handler.h in Headers */,
 				1870809625C3A6B60066BC98 /* acpi.h in Headers */,
 				18A435D025C3C653000DAE97 /* sta.h in Headers */,
@@ -4852,6 +4897,7 @@
 				18707E6E25C3A6B50066BC98 /* gcc_intrin.h in Headers */,
 				187081CE25C3A6B70066BC98 /* if.h in Headers */,
 				18A436CC25C3C653000DAE97 /* tx.h in Headers */,
+				37152FA025C681F3004031DF /* rwsem.h in Headers */,
 				18707AF225C3A6B30066BC98 /* debug.h in Headers */,
 				18707B0225C3A6B30066BC98 /* wme.h in Headers */,
 				18707AC225C3A6B30066BC98 /* wext-compat.h in Headers */,
@@ -5224,6 +5270,7 @@
 				18707A1725C3A6B30066BC98 /* dev_ioctl.c in Sources */,
 				187080C325C3A6B60066BC98 /* crc32.c in Sources */,
 				18707A9B25C3A6B30066BC98 /* mlme.c in Sources */,
+				37152F9725C680ED004031DF /* notifier.c in Sources */,
 				18707EAB25C3A6B50066BC98 /* nl80211.c in Sources */,
 				18707AAB25C3A6B30066BC98 /* ap.c in Sources */,
 				18707B3725C3A6B30066BC98 /* offchannel.c in Sources */,
@@ -5263,6 +5310,7 @@
 				18A435ED25C3C653000DAE97 /* scan.c in Sources */,
 				18707A4325C3A6B30066BC98 /* trace.c in Sources */,
 				18707F6F25C3A6B50066BC98 /* fq_impl.c in Sources */,
+				37D2CE5725C5794F0009C8D2 /* s1g.c in Sources */,
 				18707BA725C3A6B30066BC98 /* key.c in Sources */,
 				187080E725C3A6B60066BC98 /* fls.c in Sources */,
 				18A4361525C3C653000DAE97 /* sf.c in Sources */,
@@ -5348,6 +5396,7 @@
 				18707B2B25C3A6B30066BC98 /* tdls.c in Sources */,
 				187080FF25C3A6B60066BC98 /* kmemleak.c in Sources */,
 				18A4381925C3C654000DAE97 /* trans.c in Sources */,
+				37D2CE5225C577E00009C8D2 /* ioctl.c in Sources */,
 				18707ED325C3A6B50066BC98 /* aead.c in Sources */,
 				18A435B125C3C653000DAE97 /* ftm-responder.c in Sources */,
 				18707EC325C3A6B50066BC98 /* aes.c in Sources */,
@@ -5458,6 +5507,7 @@
 				18707AA425C3A6B30066BC98 /* wext-core.c in Sources */,
 				18707FDC25C3A6B60066BC98 /* bitrev.c in Sources */,
 				1870820C25C3A6B70066BC98 /* rhashtable.c in Sources */,
+				37152F9825C680ED004031DF /* notifier.c in Sources */,
 				18707FB425C3A6B60066BC98 /* pkt_sched.c in Sources */,
 				18707A1825C3A6B30066BC98 /* dev_ioctl.c in Sources */,
 				187080C425C3A6B60066BC98 /* crc32.c in Sources */,
@@ -5497,6 +5547,7 @@
 				18A435EE25C3C653000DAE97 /* scan.c in Sources */,
 				18707F0425C3A6B50066BC98 /* memneq.c in Sources */,
 				18707B6025C3A6B30066BC98 /* aes_cmac.c in Sources */,
+				37D2CE5825C5794F0009C8D2 /* s1g.c in Sources */,
 				18707BC825C3A6B30066BC98 /* tkip.c in Sources */,
 				1870808825C3A6B60066BC98 /* errno.c in Sources */,
 				18707A4425C3A6B30066BC98 /* trace.c in Sources */,
@@ -5582,6 +5633,7 @@
 				18707A3C25C3A6B30066BC98 /* radiotap.c in Sources */,
 				18707B2C25C3A6B30066BC98 /* tdls.c in Sources */,
 				18A4381A25C3C654000DAE97 /* trans.c in Sources */,
+				37D2CE5325C577E00009C8D2 /* ioctl.c in Sources */,
 				1870810025C3A6B60066BC98 /* kmemleak.c in Sources */,
 				18A435B225C3C653000DAE97 /* ftm-responder.c in Sources */,
 				18707ED425C3A6B50066BC98 /* aead.c in Sources */,
@@ -5692,6 +5744,7 @@
 				18707AA525C3A6B30066BC98 /* wext-core.c in Sources */,
 				18707FDD25C3A6B60066BC98 /* bitrev.c in Sources */,
 				1870820D25C3A6B70066BC98 /* rhashtable.c in Sources */,
+				37152F9925C680ED004031DF /* notifier.c in Sources */,
 				18707FB525C3A6B60066BC98 /* pkt_sched.c in Sources */,
 				18707A1925C3A6B30066BC98 /* dev_ioctl.c in Sources */,
 				187080C525C3A6B60066BC98 /* crc32.c in Sources */,
@@ -5731,6 +5784,7 @@
 				18A435EF25C3C653000DAE97 /* scan.c in Sources */,
 				18707F0525C3A6B50066BC98 /* memneq.c in Sources */,
 				18707B6125C3A6B30066BC98 /* aes_cmac.c in Sources */,
+				37D2CE5925C5794F0009C8D2 /* s1g.c in Sources */,
 				18707BC925C3A6B30066BC98 /* tkip.c in Sources */,
 				1870808925C3A6B60066BC98 /* errno.c in Sources */,
 				18707A4525C3A6B30066BC98 /* trace.c in Sources */,
@@ -5816,6 +5870,7 @@
 				18707A3D25C3A6B30066BC98 /* radiotap.c in Sources */,
 				18707B2D25C3A6B30066BC98 /* tdls.c in Sources */,
 				18A4381B25C3C654000DAE97 /* trans.c in Sources */,
+				37D2CE5425C577E00009C8D2 /* ioctl.c in Sources */,
 				1870810125C3A6B60066BC98 /* kmemleak.c in Sources */,
 				18A435B325C3C653000DAE97 /* ftm-responder.c in Sources */,
 				18707ED525C3A6B50066BC98 /* aead.c in Sources */,
@@ -5926,6 +5981,7 @@
 				18707AA625C3A6B30066BC98 /* wext-core.c in Sources */,
 				18707FDE25C3A6B60066BC98 /* bitrev.c in Sources */,
 				1870820E25C3A6B70066BC98 /* rhashtable.c in Sources */,
+				37152F9A25C680ED004031DF /* notifier.c in Sources */,
 				18707FB625C3A6B60066BC98 /* pkt_sched.c in Sources */,
 				18707A1A25C3A6B30066BC98 /* dev_ioctl.c in Sources */,
 				187080C625C3A6B60066BC98 /* crc32.c in Sources */,
@@ -5965,6 +6021,7 @@
 				18A435F025C3C653000DAE97 /* scan.c in Sources */,
 				18707F0625C3A6B50066BC98 /* memneq.c in Sources */,
 				18707B6225C3A6B30066BC98 /* aes_cmac.c in Sources */,
+				37D2CE5A25C5794F0009C8D2 /* s1g.c in Sources */,
 				18707BCA25C3A6B30066BC98 /* tkip.c in Sources */,
 				1870808A25C3A6B60066BC98 /* errno.c in Sources */,
 				18707A4625C3A6B30066BC98 /* trace.c in Sources */,
@@ -6050,6 +6107,7 @@
 				18707A3E25C3A6B30066BC98 /* radiotap.c in Sources */,
 				18707B2E25C3A6B30066BC98 /* tdls.c in Sources */,
 				18A4381C25C3C654000DAE97 /* trans.c in Sources */,
+				37D2CE5525C577E00009C8D2 /* ioctl.c in Sources */,
 				1870810225C3A6B60066BC98 /* kmemleak.c in Sources */,
 				18A435B425C3C653000DAE97 /* ftm-responder.c in Sources */,
 				18707ED625C3A6B50066BC98 /* aead.c in Sources */,

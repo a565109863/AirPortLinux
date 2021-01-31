@@ -167,7 +167,6 @@ long sock_ioctl(int sk, unsigned cmd, unsigned long arg)
     } else
 #ifdef CONFIG_WEXT_CORE
     if (cmd >= SIOCIWFIRST && cmd <= SIOCIWLAST) {
-        kprintf("--%s: line = %d, cmd = %d", __FUNCTION__, __LINE__, cmd);
         err = wext_handle_ioctl(net, cmd, argp);
     } else
 #endif

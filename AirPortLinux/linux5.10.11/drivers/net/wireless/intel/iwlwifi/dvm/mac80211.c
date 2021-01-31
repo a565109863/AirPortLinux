@@ -604,7 +604,7 @@ static int iwlagn_mac_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 			      struct ieee80211_key_conf *key)
 {
 	struct iwl_priv *priv = IWL_MAC80211_GET_DVM(hw);
-	struct iwl_vif_priv *vif_priv = (struct iwl_vif_priv *)vif->drv_priv;
+	struct iwl_vif_priv *vif_priv = (typeof vif_priv)vif->drv_priv;
 	struct iwl_rxon_context *ctx = vif_priv->ctx;
 	int ret;
 	bool is_default_wep_key = false;
@@ -712,7 +712,7 @@ static int iwlagn_mac_ampdu_action(struct ieee80211_hw *hw,
 	u16 tid = params->tid;
 	u16 *ssn = &params->ssn;
 	u8 buf_size = params->buf_size;
-	struct iwl_station_priv *sta_priv = (struct iwl_station_priv *) sta->drv_priv;
+	struct iwl_station_priv *sta_priv = (typeof sta_priv) sta->drv_priv;
 
 	IWL_DEBUG_HT(priv, "A-MPDU action on addr %pM tid %d\n",
 		     sta->addr, tid);
@@ -780,8 +780,8 @@ static int iwlagn_mac_sta_add(struct ieee80211_hw *hw,
 			      struct ieee80211_sta *sta)
 {
 	struct iwl_priv *priv = IWL_MAC80211_GET_DVM(hw);
-	struct iwl_station_priv *sta_priv = (struct iwl_station_priv *)sta->drv_priv;
-	struct iwl_vif_priv *vif_priv = (struct iwl_vif_priv *)vif->drv_priv;
+	struct iwl_station_priv *sta_priv = (typeof sta_priv)sta->drv_priv;
+	struct iwl_vif_priv *vif_priv = (typeof vif_priv)vif->drv_priv;
 	bool is_ap = vif->type == NL80211_IFTYPE_STATION;
 	int ret;
 	u8 sta_id;
@@ -813,7 +813,7 @@ static int iwlagn_mac_sta_remove(struct ieee80211_hw *hw,
 				 struct ieee80211_sta *sta)
 {
 	struct iwl_priv *priv = IWL_MAC80211_GET_DVM(hw);
-	struct iwl_station_priv *sta_priv = (struct iwl_station_priv *)sta->drv_priv;
+	struct iwl_station_priv *sta_priv = (typeof sta_priv)sta->drv_priv;
 	int ret;
 
 	IWL_DEBUG_INFO(priv, "proceeding to remove station %pM\n", sta->addr);
@@ -842,7 +842,7 @@ static int iwlagn_mac_sta_state(struct ieee80211_hw *hw,
 				enum ieee80211_sta_state new_state)
 {
 	struct iwl_priv *priv = IWL_MAC80211_GET_DVM(hw);
-	struct iwl_vif_priv *vif_priv = (struct iwl_vif_priv *)vif->drv_priv;
+	struct iwl_vif_priv *vif_priv = (typeof vif_priv)vif->drv_priv;
 	enum {
 		NONE, ADD, REMOVE, HT_RATE_INIT, ADD_RATE_INIT,
 	} op = NONE;
@@ -1162,7 +1162,7 @@ static int iwlagn_mac_conf_tx(struct ieee80211_hw *hw,
 			      const struct ieee80211_tx_queue_params *params)
 {
 	struct iwl_priv *priv = IWL_MAC80211_GET_DVM(hw);
-	struct iwl_vif_priv *vif_priv = (struct iwl_vif_priv *)vif->drv_priv;
+	struct iwl_vif_priv *vif_priv = (typeof vif_priv)vif->drv_priv;
 	struct iwl_rxon_context *ctx = vif_priv->ctx;
 	int q;
 
@@ -1267,7 +1267,7 @@ static int iwlagn_mac_add_interface(struct ieee80211_hw *hw,
 				    struct ieee80211_vif *vif)
 {
 	struct iwl_priv *priv = IWL_MAC80211_GET_DVM(hw);
-	struct iwl_vif_priv *vif_priv = (struct iwl_vif_priv *)vif->drv_priv;
+	struct iwl_vif_priv *vif_priv = (typeof vif_priv)vif->drv_priv;
 	struct iwl_rxon_context *tmp, *ctx = NULL;
 	int err;
 	enum nl80211_iftype viftype = ieee80211_vif_type_p2p(vif);
@@ -1546,7 +1546,7 @@ static void iwlagn_mac_sta_notify(struct ieee80211_hw *hw,
 				  struct ieee80211_sta *sta)
 {
 	struct iwl_priv *priv = IWL_MAC80211_GET_DVM(hw);
-	struct iwl_station_priv *sta_priv = (struct iwl_station_priv *)sta->drv_priv;
+	struct iwl_station_priv *sta_priv = (typeof sta_priv)sta->drv_priv;
 	int sta_id;
 
 	IWL_DEBUG_MAC80211(priv, "enter\n");
@@ -1617,7 +1617,7 @@ struct ieee80211_hw *iwl_alloc_all(void)
 	if (!hw)
 		goto out;
 
-	op_mode = (struct iwl_op_mode *)hw->priv;
+	op_mode = (typeof op_mode)hw->priv;
 	priv = IWL_OP_MODE_GET_DVM(op_mode);
 	priv->hw = hw;
 

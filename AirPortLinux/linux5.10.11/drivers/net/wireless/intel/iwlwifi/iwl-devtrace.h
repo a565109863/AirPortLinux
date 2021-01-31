@@ -19,7 +19,7 @@
 #if !defined(__IWLWIFI_DEVICE_TRACE)
 static inline bool iwl_trace_data(struct sk_buff *skb)
 {
-	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+	struct ieee80211_hdr *hdr = (typeof hdr)skb->data;
 	__le16 fc = hdr->frame_control;
 	int offs = 24; /* start with normal header length */
 
@@ -49,7 +49,7 @@ static inline size_t iwl_rx_trace_len(const struct iwl_trans *trans,
 				      void *rxbuf, size_t len,
 				      size_t *out_hdr_offset)
 {
-	struct iwl_cmd_header *cmd = (struct iwl_cmd_header *)((u8 *)rxbuf + sizeof(__le32));
+	struct iwl_cmd_header *cmd = (typeof cmd)((u8 *)rxbuf + sizeof(__le32));
 	struct ieee80211_hdr *hdr = NULL;
 	size_t hdr_offset;
 
@@ -62,7 +62,7 @@ static inline size_t iwl_rx_trace_len(const struct iwl_trans *trans,
 	if (out_hdr_offset)
 		*out_hdr_offset = hdr_offset;
 
-	hdr = (struct ieee80211_hdr *)((u8 *)cmd + hdr_offset);
+	hdr = (typeof hdr)((u8 *)cmd + hdr_offset);
 	if (!ieee80211_is_data(hdr->frame_control))
 		return len;
 	/* maybe try to identify EAPOL frames? */

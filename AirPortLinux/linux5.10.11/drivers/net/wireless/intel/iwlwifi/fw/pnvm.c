@@ -21,8 +21,8 @@ struct iwl_pnvm_section {
 static bool iwl_pnvm_complete_fn(struct iwl_notif_wait_data *notif_wait,
 				 struct iwl_rx_packet *pkt, void *data)
 {
-	struct iwl_trans *trans = (struct iwl_trans *)data;
-	struct iwl_pnvm_init_complete_ntfy *pnvm_ntf = (struct iwl_pnvm_init_complete_ntfy *)pkt->data;
+	struct iwl_trans *trans = (typeof trans)data;
+	struct iwl_pnvm_init_complete_ntfy *pnvm_ntf = (typeof pnvm_ntf)pkt->data;
 
 	IWL_DEBUG_FW(trans,
 		     "PNVM complete notification received with status %d\n",
@@ -47,7 +47,7 @@ static int iwl_pnvm_handle_section(struct iwl_trans *trans, const u8 *data,
 		u32 tlv_len, tlv_type;
 
 		len -= sizeof(*tlv);
-		tlv = (struct iwl_ucode_tlv *)data;
+		tlv = (typeof tlv)data;
 
 		tlv_len = le32_to_cpu(tlv->length);
 		tlv_type = le32_to_cpu(tlv->type);
@@ -102,7 +102,7 @@ static int iwl_pnvm_handle_section(struct iwl_trans *trans, const u8 *data,
 
 			break;
 		case IWL_UCODE_TLV_SEC_RT: {
-			struct iwl_pnvm_section *section = (struct iwl_pnvm_section *)data;
+			struct iwl_pnvm_section *section = (typeof section)data;
 			u32 data_len = tlv_len - sizeof(*section);
 
 			IWL_DEBUG_FW(trans,
@@ -118,7 +118,7 @@ static int iwl_pnvm_handle_section(struct iwl_trans *trans, const u8 *data,
 			IWL_DEBUG_FW(trans, "Adding data (size %d)\n",
 				     data_len);
 
-			tmp = (u8 *)krealloc(pnvm_data, size + data_len, GFP_KERNEL);
+			tmp = (typeof tmp)krealloc(pnvm_data, size + data_len, GFP_KERNEL);
 			if (!tmp) {
 				IWL_DEBUG_FW(trans,
 					     "Couldn't allocate (more) pnvm_data\n");
@@ -175,7 +175,7 @@ static int iwl_pnvm_parse(struct iwl_trans *trans, const u8 *data,
 		u32 tlv_len, tlv_type;
 
 		len -= sizeof(*tlv);
-		tlv = (struct iwl_ucode_tlv *)data;
+		tlv = (typeof tlv)data;
 
 		tlv_len = le32_to_cpu(tlv->length);
 		tlv_type = le32_to_cpu(tlv->type);
@@ -188,7 +188,7 @@ static int iwl_pnvm_parse(struct iwl_trans *trans, const u8 *data,
 
 		if (tlv_type == IWL_UCODE_TLV_PNVM_SKU) {
 			struct iwl_sku_id *sku_id =
-				(struct iwl_sku_id *)(data + sizeof(*tlv));
+				(typeof sku_id)(data + sizeof(*tlv));
 
 			IWL_DEBUG_FW(trans,
 				     "Got IWL_UCODE_TLV_PNVM_SKU len %d\n",

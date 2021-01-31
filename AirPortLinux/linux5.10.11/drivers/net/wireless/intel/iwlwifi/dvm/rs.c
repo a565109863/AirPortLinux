@@ -871,17 +871,17 @@ static void rs_tx_status(void *priv_r, struct ieee80211_supported_band *sband,
 	int legacy_success;
 	int retries;
 	int rs_index, mac_index, i;
-	struct iwl_lq_sta *lq_sta = (struct iwl_lq_sta *)priv_sta;
+	struct iwl_lq_sta *lq_sta = (typeof lq_sta)priv_sta;
 	struct iwl_link_quality_cmd *table;
-	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
-	struct iwl_op_mode *op_mode = (struct iwl_op_mode *)priv_r;
+	struct ieee80211_hdr *hdr = (typeof hdr)skb->data;
+	struct iwl_op_mode *op_mode = (typeof op_mode)priv_r;
 	struct iwl_priv *priv = IWL_OP_MODE_GET_DVM(op_mode);
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 	enum mac80211_rate_control_flags mac_flags;
 	u32 tx_rate;
 	struct iwl_scale_tbl_info tbl_type;
 	struct iwl_scale_tbl_info *curr_tbl, *other_tbl, *tmp_tbl;
-	struct iwl_station_priv *sta_priv = (struct iwl_station_priv *)sta->drv_priv;
+	struct iwl_station_priv *sta_priv = (typeof sta_priv)sta->drv_priv;
 	struct iwl_rxon_context *ctx = sta_priv->ctx;
 
 	IWL_DEBUG_RATE_LIMIT(priv, "get frame ack response, update rate scale window\n");
@@ -1241,7 +1241,7 @@ static int rs_switch_to_mimo2(struct iwl_priv *priv,
 	u16 rate_mask;
 	s32 rate;
 	s8 is_green = lq_sta->is_green;
-	struct iwl_station_priv *sta_priv = (struct iwl_station_priv *)sta->drv_priv;
+	struct iwl_station_priv *sta_priv = (typeof sta_priv)sta->drv_priv;
 	struct iwl_rxon_context *ctx = sta_priv->ctx;
 
 	if (!conf_is_ht(conf) || !sta->ht_cap.ht_supported)
@@ -1296,7 +1296,7 @@ static int rs_switch_to_mimo3(struct iwl_priv *priv,
 	u16 rate_mask;
 	s32 rate;
 	s8 is_green = lq_sta->is_green;
-	struct iwl_station_priv *sta_priv = (struct iwl_station_priv *)sta->drv_priv;
+	struct iwl_station_priv *sta_priv = (typeof sta_priv)sta->drv_priv;
 	struct iwl_rxon_context *ctx = sta_priv->ctx;
 
 	if (!conf_is_ht(conf) || !sta->ht_cap.ht_supported)
@@ -1352,7 +1352,7 @@ static int rs_switch_to_siso(struct iwl_priv *priv,
 	u16 rate_mask;
 	u8 is_green = lq_sta->is_green;
 	s32 rate;
-	struct iwl_station_priv *sta_priv = (struct iwl_station_priv *)sta->drv_priv;
+	struct iwl_station_priv *sta_priv = (typeof sta_priv)sta->drv_priv;
 	struct iwl_rxon_context *ctx = sta_priv->ctx;
 
 	if (!conf_is_ht(conf) || !sta->ht_cap.ht_supported)
@@ -2184,7 +2184,7 @@ static void rs_rate_scale_perform(struct iwl_priv *priv,
 	struct ieee80211_hw *hw = priv->hw;
 	struct ieee80211_conf *conf = &hw->conf;
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+	struct ieee80211_hdr *hdr = (typeof hdr)skb->data;
 	int low = IWL_RATE_INVALID;
 	int high = IWL_RATE_INVALID;
 	int index;
@@ -2206,7 +2206,7 @@ static void rs_rate_scale_perform(struct iwl_priv *priv,
 	s32 sr;
 	u8 tid = IWL_MAX_TID_COUNT;
 	struct iwl_tid_data *tid_data;
-	struct iwl_station_priv *sta_priv = (struct iwl_station_priv *)sta->drv_priv;
+	struct iwl_station_priv *sta_priv = (typeof sta_priv)sta->drv_priv;
 	struct iwl_rxon_context *ctx = sta_priv->ctx;
 
 	IWL_DEBUG_RATE(priv, "rate scale calculate new rate for skb\n");
@@ -2643,7 +2643,7 @@ static void rs_initialize_lq(struct iwl_priv *priv,
 	if (!sta || !lq_sta)
 		return;
 
-	sta_priv = (struct iwl_station_priv *)sta->drv_priv;
+	sta_priv = (typeof sta_priv)sta->drv_priv;
 	ctx = sta_priv->ctx;
 
 	i = lq_sta->last_txrate_idx;
@@ -2686,10 +2686,10 @@ static void rs_get_rate(void *priv_r, struct ieee80211_sta *sta, void *priv_sta,
 	struct sk_buff *skb = txrc->skb;
 	struct ieee80211_supported_band *sband = txrc->sband;
 	struct iwl_op_mode *op_mode __maybe_unused =
-			(struct iwl_op_mode *)priv_r;
+			(typeof op_mode)priv_r;
 	struct iwl_priv *priv __maybe_unused = IWL_OP_MODE_GET_DVM(op_mode);
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-	struct iwl_lq_sta *lq_sta = (struct iwl_lq_sta *)priv_sta;
+	struct iwl_lq_sta *lq_sta = (typeof lq_sta)priv_sta;
 	int rate_idx;
 
 	IWL_DEBUG_RATE_LIMIT(priv, "rate scale calculate new rate for skb\n");
@@ -2750,9 +2750,9 @@ static void rs_get_rate(void *priv_r, struct ieee80211_sta *sta, void *priv_sta,
 static void *rs_alloc_sta(void *priv_rate, struct ieee80211_sta *sta,
 			  gfp_t gfp)
 {
-	struct iwl_station_priv *sta_priv = (struct iwl_station_priv *) sta->drv_priv;
+	struct iwl_station_priv *sta_priv = (typeof sta_priv) sta->drv_priv;
 	struct iwl_op_mode *op_mode __maybe_unused =
-			(struct iwl_op_mode *)priv_rate;
+			(typeof op_mode)priv_rate;
 	struct iwl_priv *priv __maybe_unused = IWL_OP_MODE_GET_DVM(op_mode);
 
 	IWL_DEBUG_RATE(priv, "create station rate scale window\n");
@@ -2774,7 +2774,7 @@ void iwl_rs_rate_init(struct iwl_priv *priv, struct ieee80211_sta *sta, u8 sta_i
 	struct ieee80211_supported_band *sband;
 	unsigned long supp; /* must be unsigned long for for_each_set_bit */
 
-	sta_priv = (struct iwl_station_priv *) sta->drv_priv;
+	sta_priv = (typeof sta_priv) sta->drv_priv;
 	lq_sta = &sta_priv->lq_sta;
 	sband = hw->wiphy->bands[conf->chandef.chan->band];
 
@@ -3023,7 +3023,7 @@ static void rs_free(void *priv_rate)
 static void rs_free_sta(void *priv_r, struct ieee80211_sta *sta,
 			void *priv_sta)
 {
-	struct iwl_op_mode *op_mode __maybe_unused = (struct iwl_op_mode *)priv_r;
+	struct iwl_op_mode *op_mode __maybe_unused = (typeof op_mode)priv_r;
 	struct iwl_priv *priv __maybe_unused = IWL_OP_MODE_GET_DVM(op_mode);
 
 	IWL_DEBUG_RATE(priv, "enter\n");
@@ -3062,7 +3062,7 @@ static void rs_dbgfs_set_mcs(struct iwl_lq_sta *lq_sta,
 static ssize_t rs_sta_dbgfs_scale_table_write(struct file *file,
 			const char __user *user_buf, size_t count, loff_t *ppos)
 {
-	struct iwl_lq_sta *lq_sta = (struct iwl_lq_sta *)file->private_data;
+	struct iwl_lq_sta *lq_sta = (typeof lq_sta)file->private_data;
 	struct iwl_priv *priv;
 	char buf[64];
 	size_t buf_size;
@@ -3094,12 +3094,12 @@ static ssize_t rs_sta_dbgfs_scale_table_read(struct file *file,
 	int index = 0;
 	ssize_t ret;
 
-	struct iwl_lq_sta *lq_sta = (struct iwl_lq_sta *)file->private_data;
+	struct iwl_lq_sta *lq_sta = (typeof lq_sta)file->private_data;
 	struct iwl_priv *priv;
 	struct iwl_scale_tbl_info *tbl = &(lq_sta->lq_info[lq_sta->active_tbl]);
 
 	priv = lq_sta->drv;
-	buff = (char *)kmalloc(1024, GFP_KERNEL);
+	buff = (typeof buff)kmalloc(1024, GFP_KERNEL);
 	if (!buff)
 		return -ENOMEM;
 
@@ -3181,9 +3181,9 @@ static ssize_t rs_sta_dbgfs_stats_table_read(struct file *file,
 	int i, j;
 	ssize_t ret;
 
-	struct iwl_lq_sta *lq_sta = (struct iwl_lq_sta *)file->private_data;
+	struct iwl_lq_sta *lq_sta = (typeof lq_sta)file->private_data;
 
-	buff = (char *)kmalloc(1024, GFP_KERNEL);
+	buff = (typeof buff)kmalloc(1024, GFP_KERNEL);
 	if (!buff)
 		return -ENOMEM;
 
@@ -3220,7 +3220,7 @@ static const struct file_operations rs_sta_dbgfs_stats_table_ops = {
 static ssize_t rs_sta_dbgfs_rate_scale_data_read(struct file *file,
 			char __user *user_buf, size_t count, loff_t *ppos)
 {
-	struct iwl_lq_sta *lq_sta = (struct iwl_lq_sta *)file->private_data;
+	struct iwl_lq_sta *lq_sta = (typeof lq_sta)file->private_data;
 	struct iwl_scale_tbl_info *tbl = &lq_sta->lq_info[lq_sta->active_tbl];
 	char buff[120];
 	int desc = 0;
@@ -3246,7 +3246,7 @@ static const struct file_operations rs_sta_dbgfs_rate_scale_data_ops = {
 static void rs_add_debugfs(void *priv, void *priv_sta,
 					struct dentry *dir)
 {
-	struct iwl_lq_sta *lq_sta = (struct iwl_lq_sta *)priv_sta;
+	struct iwl_lq_sta *lq_sta = (typeof lq_sta)priv_sta;
 
 //	debugfs_create_file("rate_scale_table", 0600, dir, lq_sta,
 //			    &rs_sta_dbgfs_scale_table_ops);

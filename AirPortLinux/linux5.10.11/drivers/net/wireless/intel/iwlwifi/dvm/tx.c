@@ -263,7 +263,7 @@ int iwlagn_tx_skb(struct iwl_priv *priv,
 		  struct ieee80211_sta *sta,
 		  struct sk_buff *skb)
 {
-	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+	struct ieee80211_hdr *hdr = (typeof hdr)skb->data;
 	struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 	struct iwl_station_priv *sta_priv = NULL;
 	struct iwl_rxon_context *ctx = &priv->contexts[IWL_RXON_CTX_BSS];
@@ -303,7 +303,7 @@ int iwlagn_tx_skb(struct iwl_priv *priv,
 		    pskb_expand_head(skb, 0, noa_data->length,
 				     GFP_ATOMIC) == 0) {
 			skb_put_data(skb, noa_data->data, noa_data->length);
-			hdr = (struct ieee80211_hdr *)skb->data;
+			hdr = (typeof hdr)skb->data;
 		}
 	}
 
@@ -323,7 +323,7 @@ int iwlagn_tx_skb(struct iwl_priv *priv,
 	}
 
 	if (sta)
-		sta_priv = (struct iwl_station_priv *)sta->drv_priv;
+		sta_priv = (typeof sta_priv)sta->drv_priv;
 
 	if (sta_priv && sta_priv->asleep &&
 	    (info->flags & IEEE80211_TX_CTL_NO_PS_BUFFER)) {
@@ -349,7 +349,7 @@ int iwlagn_tx_skb(struct iwl_priv *priv,
 		goto drop_unlock_priv;
 
 	dev_cmd->hdr.cmd = REPLY_TX;
-	tx_cmd = (struct iwl_tx_cmd *) dev_cmd->payload;
+	tx_cmd = (typeof tx_cmd) dev_cmd->payload;
 
 	/* Total # bytes to be transmitted */
 	len = (u16)skb->len;
@@ -681,7 +681,7 @@ int iwlagn_tx_agg_flush(struct iwl_priv *priv, struct ieee80211_vif *vif,
 int iwlagn_tx_agg_oper(struct iwl_priv *priv, struct ieee80211_vif *vif,
 			struct ieee80211_sta *sta, u16 tid, u8 buf_size)
 {
-	struct iwl_station_priv *sta_priv = (struct iwl_station_priv *) sta->drv_priv;
+	struct iwl_station_priv *sta_priv = (typeof sta_priv) sta->drv_priv;
 	struct iwl_rxon_context *ctx = iwl_rxon_ctx_from_vif(vif);
 	int q, fifo;
 	u16 ssn;
@@ -794,7 +794,7 @@ static void iwlagn_non_agg_tx_status(struct iwl_priv *priv,
 	rcu_read_lock();
 	sta = ieee80211_find_sta(ctx->vif, addr1);
 	if (sta) {
-		sta_priv = (struct iwl_station_priv *)sta->drv_priv;
+		sta_priv = (typeof sta_priv)sta->drv_priv;
 		/* avoid atomic ops if this isn't a client */
 		if (sta_priv->client &&
 		    atomic_dec_return(&sta_priv->pending_frames) == 0)
@@ -1112,11 +1112,11 @@ static void iwl_check_abort_status(struct iwl_priv *priv,
 
 void iwlagn_rx_reply_tx(struct iwl_priv *priv, struct iwl_rx_cmd_buffer *rxb)
 {
-	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
+	struct iwl_rx_packet *pkt = (typeof pkt)rxb_addr(rxb);
 	u16 sequence = le16_to_cpu(pkt->hdr.sequence);
 	int txq_id = SEQ_TO_QUEUE(sequence);
 	int cmd_index __maybe_unused = SEQ_TO_INDEX(sequence);
-	struct iwlagn_tx_resp *tx_resp = (struct iwlagn_tx_resp *)pkt->data;
+	struct iwlagn_tx_resp *tx_resp = (typeof tx_resp)pkt->data;
 	struct ieee80211_hdr *hdr;
 	u32 status = le16_to_cpu(tx_resp->status.status);
 	u16 ssn = iwlagn_get_scd_ssn(tx_resp);
@@ -1180,13 +1180,13 @@ void iwlagn_rx_reply_tx(struct iwl_priv *priv, struct iwl_rx_cmd_buffer *rxb)
 
 		/* process frames */
 		skb_queue_walk(&skbs, skb) {
-			hdr = (struct ieee80211_hdr *)skb->data;
+			hdr = (typeof hdr)skb->data;
 
 			if (!ieee80211_is_data_qos(hdr->frame_control))
 				priv->last_seq_ctl = tx_resp->seq_ctl;
 
 			info = IEEE80211_SKB_CB(skb);
-			ctx = (struct iwl_rxon_context *)info->driver_data[0];
+			ctx = (typeof ctx)info->driver_data[0];
 			iwl_trans_free_tx_cmd(priv->trans,
 					      (struct iwl_device_tx_cmd *)info->driver_data[1]);
 
@@ -1265,8 +1265,8 @@ void iwlagn_rx_reply_tx(struct iwl_priv *priv, struct iwl_rx_cmd_buffer *rxb)
 void iwlagn_rx_reply_compressed_ba(struct iwl_priv *priv,
 				   struct iwl_rx_cmd_buffer *rxb)
 {
-	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
-	struct iwl_compressed_ba_resp *ba_resp = (struct iwl_compressed_ba_resp *)pkt->data;
+	struct iwl_rx_packet *pkt = (typeof pkt)rxb_addr(rxb);
+	struct iwl_compressed_ba_resp *ba_resp = (typeof ba_resp)pkt->data;
 	struct iwl_ht_agg *agg;
 	struct sk_buff_head reclaimed_skbs;
 	struct sk_buff *skb;
@@ -1355,7 +1355,7 @@ void iwlagn_rx_reply_compressed_ba(struct iwl_priv *priv,
 	freed = 0;
 
 	skb_queue_walk(&reclaimed_skbs, skb) {
-		struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+		struct ieee80211_hdr *hdr = (typeof hdr)skb->data;
 		struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
 
 		if (ieee80211_is_data_qos(hdr->frame_control))

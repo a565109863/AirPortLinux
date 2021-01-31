@@ -161,7 +161,7 @@ static void iwl_set_beacon_tim(struct iwl_priv *priv,
 			       u8 *beacon, u32 frame_size)
 {
 	u16 tim_idx;
-	struct ieee80211_mgmt *mgmt = (struct ieee80211_mgmt *)beacon;
+	struct ieee80211_mgmt *mgmt = (typeof mgmt)beacon;
 
 	/*
 	 * The index is relative to frame start but we start looking at the
@@ -211,7 +211,7 @@ int iwlagn_send_beacon_cmd(struct iwl_priv *priv)
 	/* Allocate beacon command */
 	if (!priv->beacon_cmd)
 		priv->beacon_cmd = kzalloc(sizeof(*tx_beacon_cmd), GFP_KERNEL);
-	tx_beacon_cmd = (struct iwl_tx_beacon_cmd *)priv->beacon_cmd;
+	tx_beacon_cmd = (typeof tx_beacon_cmd)priv->beacon_cmd;
 	if (!tx_beacon_cmd)
 		return -ENOMEM;
 
@@ -831,7 +831,7 @@ int iwl_alive_start(struct iwl_priv *priv)
 
 	if (iwl_is_associated_ctx(ctx) && !priv->wowlan) {
 		struct iwl_rxon_cmd *active_rxon =
-				(struct iwl_rxon_cmd *)&ctx->active;
+				(typeof active_rxon)&ctx->active;
 		/* apply any changes in staging */
 		ctx->staging.filter_flags |= RXON_FILTER_ASSOC_MSK;
 		active_rxon->filter_flags &= ~RXON_FILTER_ASSOC_MSK;
@@ -1258,7 +1258,7 @@ static struct iwl_op_mode *iwl_op_mode_dvm_start(struct iwl_trans *trans,
 		goto out;
 	}
 
-	op_mode = (struct iwl_op_mode *)hw->priv;
+	op_mode = (typeof op_mode)hw->priv;
 	op_mode->ops = &iwl_dvm_ops;
 	priv = IWL_OP_MODE_GET_DVM(op_mode);
 	priv->trans = trans;
@@ -1871,7 +1871,7 @@ int iwl_dump_nic_event_log(struct iwl_priv *priv, bool full_log,
 			bufsz = capacity * 48;
 		else
 			bufsz = size * 48;
-		*buf = kmalloc(bufsz, GFP_KERNEL);
+		*buf = (typeof(*buf))kmalloc(bufsz, GFP_KERNEL);
 		if (!*buf)
 			return -ENOMEM;
 	}

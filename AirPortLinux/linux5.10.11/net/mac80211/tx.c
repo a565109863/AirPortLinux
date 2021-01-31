@@ -103,7 +103,7 @@ static __le16 ieee80211_duration(struct ieee80211_tx_data *tx,
      *   at the highest possible rate belonging to the PHY rates in the
      *   BSSBasicRateSet
      */
-    hdr = (struct ieee80211_hdr *)skb->data;
+    hdr = (typeof(hdr))skb->data;
     if (ieee80211_is_ctl(hdr->frame_control)) {
         /* TODO: These control frames are not currently sent by
          * mac80211, but should they be implemented, this function
@@ -292,7 +292,7 @@ static ieee80211_tx_result debug_noinline
 ieee80211_tx_h_check_assoc(struct ieee80211_tx_data *tx)
 {
 
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)tx->skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr))tx->skb->data;
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(tx->skb);
     bool assoc = false;
 
@@ -406,7 +406,7 @@ static ieee80211_tx_result
 ieee80211_tx_h_multicast_ps_buf(struct ieee80211_tx_data *tx)
 {
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(tx->skb);
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)tx->skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr))tx->skb->data;
     struct ps_data *ps;
 
     /*
@@ -487,7 +487,7 @@ ieee80211_tx_h_unicast_ps_buf(struct ieee80211_tx_data *tx)
 {
     struct sta_info *sta = tx->sta;
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(tx->skb);
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)tx->skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr))tx->skb->data;
     struct ieee80211_local *local = tx->local;
 
     if (unlikely(!sta))
@@ -593,7 +593,7 @@ ieee80211_tx_h_select_key(struct ieee80211_tx_data *tx)
 {
     struct ieee80211_key *key;
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(tx->skb);
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)tx->skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr))tx->skb->data;
 
     if (unlikely(info->flags & IEEE80211_TX_INTFL_DONT_ENCRYPT)) {
         tx->key = NULL;
@@ -674,7 +674,7 @@ static ieee80211_tx_result debug_noinline
 ieee80211_tx_h_rate_ctrl(struct ieee80211_tx_data *tx)
 {
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(tx->skb);
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)tx->skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr))tx->skb->data;
     struct ieee80211_supported_band *sband;
     u32 len;
     struct ieee80211_tx_rate_control txrc;
@@ -809,7 +809,7 @@ static ieee80211_tx_result debug_noinline
 ieee80211_tx_h_sequence(struct ieee80211_tx_data *tx)
 {
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(tx->skb);
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)tx->skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr))tx->skb->data;
     int tid;
 
     /*
@@ -932,7 +932,7 @@ ieee80211_tx_h_fragment(struct ieee80211_tx_data *tx)
 {
     struct sk_buff *skb = tx->skb;
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr))skb->data;
     int frag_threshold = tx->local->hw.wiphy->frag_threshold;
     int hdrlen;
     int fragnum;
@@ -978,7 +978,7 @@ ieee80211_tx_h_fragment(struct ieee80211_tx_data *tx)
     skb_queue_walk(&tx->skbs, skb) {
         const __le16 morefrags = cpu_to_le16(IEEE80211_FCTL_MOREFRAGS);
 
-        hdr = (struct ieee80211_hdr *)skb->data;
+        hdr = (typeof(hdr))skb->data;
         info = IEEE80211_SKB_CB(skb);
 
         if (!skb_queue_is_last(&tx->skbs, skb)) {
@@ -1065,7 +1065,7 @@ ieee80211_tx_h_calculate_duration(struct ieee80211_tx_data *tx)
     bool group_addr;
 
     skb_queue_walk(&tx->skbs, skb) {
-        hdr = (struct ieee80211_hdr *) skb->data;
+        hdr = (typeof(hdr)) skb->data;
         if (unlikely(ieee80211_is_pspoll(hdr->frame_control)))
             break; /* must not overwrite AID */
         if (!skb_queue_is_last(&tx->skbs, skb)) {
@@ -1185,7 +1185,7 @@ ieee80211_tx_prepare(struct ieee80211_sub_if_data *sdata,
      */
     info->control.flags &= ~IEEE80211_TX_INTCFL_NEED_TXPROCESSING;
 
-    hdr = (struct ieee80211_hdr *) skb->data;
+    hdr = (typeof(hdr)) skb->data;
 
     if (likely(sta)) {
         if (!IS_ERR(sta))
@@ -1254,7 +1254,7 @@ static struct txq_info *ieee80211_get_txq(struct ieee80211_local *local,
                       struct sta_info *sta,
                       struct sk_buff *skb)
 {
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr)) skb->data;
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
     struct ieee80211_txq *txq = NULL;
 
@@ -1992,7 +1992,7 @@ void ieee80211_xmit(struct ieee80211_sub_if_data *sdata,
 {
     struct ieee80211_local *local = sdata->local;
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *) skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr)) skb->data;
     int headroom;
     enum ieee80211_encrypt encrypt;
 
@@ -2015,7 +2015,7 @@ void ieee80211_xmit(struct ieee80211_sub_if_data *sdata,
     }
 
     /* reload after potential resize */
-    hdr = (struct ieee80211_hdr *) skb->data;
+    hdr = (typeof(hdr)) skb->data;
     info->control.vif = &sdata->vif;
 
     if (ieee80211_vif_is_mesh(&sdata->vif)) {
@@ -2262,7 +2262,7 @@ netdev_tx_t ieee80211_monitor_start_xmit(struct sk_buff *skb,
     if (skb->len < len_rthdr + 2)
         goto fail;
 
-    hdr = (struct ieee80211_hdr *)(skb->data + len_rthdr);
+    hdr = (typeof(hdr))(skb->data + len_rthdr);
     hdrlen = ieee80211_hdrlen(hdr->frame_control);
 
     if (skb->len < len_rthdr + hdrlen)
@@ -2911,7 +2911,7 @@ void ieee80211_check_fast_xmit(struct sta_info *sta)
     struct ieee80211_fast_tx build = {}, *fast_tx = NULL, *old;
     struct ieee80211_local *local = sta->local;
     struct ieee80211_sub_if_data *sdata = sta->sdata;
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)build.hdr;
+    struct ieee80211_hdr *hdr = (typeof(hdr))build.hdr;
     struct ieee80211_chanctx_conf *chanctx_conf;
     __le16 fc;
 
@@ -3216,7 +3216,7 @@ static bool ieee80211_amsdu_prepare_head(struct ieee80211_sub_if_data *sdata,
 
     data = skb_push(skb, sizeof(*amsdu_hdr));
     memmove(data, (u8 *)data + sizeof(*amsdu_hdr), hdr_len);
-    hdr = (struct ieee80211_hdr *)data;
+    hdr = (typeof(hdr))data;
     amsdu_hdr = (struct ethhdr *)((u8 *)data + hdr_len);
     /* h_80211_src/dst is addr* field within hdr */
     h_80211_src = (u8 *)data + fast_tx->sa_offs;
@@ -3399,7 +3399,7 @@ static void ieee80211_xmit_fast_finish(struct ieee80211_sub_if_data *sdata,
                        struct sk_buff *skb)
 {
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+    struct ieee80211_hdr *hdr = (typeof(hdr))skb->data;
     u8 tid = IEEE80211_NUM_TIDS;
 
     if (key)
@@ -3463,7 +3463,7 @@ static bool ieee80211_xmit_fast(struct ieee80211_sub_if_data *sdata,
     int hw_headroom = sdata->local->hw.extra_tx_headroom;
     struct ethhdr eth;
     struct ieee80211_tx_info *info;
-    struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)fast_tx->hdr;
+    struct ieee80211_hdr *hdr = (typeof(hdr))fast_tx->hdr;
     struct ieee80211_tx_data tx;
     ieee80211_tx_result r;
     struct tid_ampdu_tx *tid_tx = NULL;
@@ -3521,7 +3521,7 @@ static bool ieee80211_xmit_fast(struct ieee80211_sub_if_data *sdata,
     }
 
     memcpy(&eth, skb->data, ETH_HLEN - 2);
-    hdr = (struct ieee80211_hdr *)skb_push(skb, extra_head);
+    hdr = (typeof(hdr))skb_push(skb, extra_head);
     memcpy(skb->data, fast_tx->hdr, fast_tx->hdr_len);
     memcpy(skb->data + fast_tx->da_offs, eth.h_dest, ETH_ALEN);
     memcpy(skb->data + fast_tx->sa_offs, eth.h_source, ETH_ALEN);
@@ -3623,7 +3623,7 @@ begin:
 
     spin_unlock_bh(&fq->lock);
 
-    hdr = (struct ieee80211_hdr *)skb->data;
+    hdr = (typeof(hdr))skb->data;
     info = IEEE80211_SKB_CB(skb);
 
     memset(&tx, 0, sizeof(tx));
@@ -4337,7 +4337,7 @@ ieee80211_build_data_template(struct ieee80211_sub_if_data *sdata,
     if (IS_ERR(skb))
         goto out;
 
-    hdr = (struct ieee80211_hdr *)skb->data;
+    hdr = (typeof(hdr))skb->data;
     tx.sta = sta_info_get(sdata, hdr->addr1);
     tx.skb = skb;
 
@@ -4408,7 +4408,7 @@ static bool ieee80211_tx_pending_skb(struct ieee80211_local *local,
         __skb_queue_head_init(&skbs);
         __skb_queue_tail(&skbs, skb);
 
-        hdr = (struct ieee80211_hdr *)skb->data;
+        hdr = (typeof(hdr))skb->data;
         sta = sta_info_get(sdata, hdr->addr1);
 
         result = __ieee80211_tx(local, &skbs, skb->len, sta, true);
@@ -4843,7 +4843,7 @@ __ieee80211_beacon_get(struct ieee80211_hw *hw,
         skb_reserve(skb, local->tx_headroom);
         skb_put_data(skb, beacon->head, beacon->head_len);
 
-        hdr = (struct ieee80211_hdr *) skb->data;
+        hdr = (typeof(hdr)) skb->data;
         hdr->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT |
                          IEEE80211_STYPE_BEACON);
     } else if (ieee80211_vif_is_mesh(&sdata->vif)) {
@@ -5010,7 +5010,7 @@ struct sk_buff *ieee80211_proberesp_get(struct ieee80211_hw *hw,
 
     skb_put_data(skb, presp->data, presp->len);
 
-    hdr = (struct ieee80211_hdr *) skb->data;
+    hdr = (typeof(hdr)) skb->data;
     memset(hdr->addr1, 0, sizeof(hdr->addr1));
 
 out:
@@ -5286,7 +5286,7 @@ ieee80211_get_buffered_bc(struct ieee80211_hw *hw,
 
         if (!skb_queue_empty(&ps->bc_buf) && skb->len >= 2) {
             struct ieee80211_hdr *hdr =
-                (struct ieee80211_hdr *) skb->data;
+                (typeof(hdr)) skb->data;
             /* more buffered multicast/broadcast frames ==> set
              * MoreData flag in IEEE 802.11 header to inform PS
              * STAs */

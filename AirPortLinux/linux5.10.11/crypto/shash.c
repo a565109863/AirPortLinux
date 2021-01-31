@@ -41,7 +41,7 @@ static int shash_setkey_unaligned(struct crypto_shash *tfm, const u8 *key,
 //    if (!buffer)
 //        return -ENOMEM;
 //
-//    alignbuffer = (u8 *)ALIGN((unsigned long)buffer, alignmask + 1);
+//    alignbuffer = (typeof alignbuffer)ALIGN((unsigned long)buffer, alignmask + 1);
 //    memcpy(alignbuffer, key, keylen);
 //    err = shash->setkey(tfm, alignbuffer, keylen);
 //    kzfree(buffer);

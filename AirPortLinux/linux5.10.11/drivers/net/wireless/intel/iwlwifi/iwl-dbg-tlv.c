@@ -123,7 +123,7 @@ static int iwl_dbg_tlv_add(struct iwl_ucode_tlv *tlv, struct list_head *list)
 	u32 len = le32_to_cpu(tlv->length);
 	struct iwl_dbg_tlv_node *node;
 
-	node = (struct iwl_dbg_tlv_node *)kzalloc(sizeof(*node) + len, GFP_KERNEL);
+	node = (typeof node)kzalloc(sizeof(*node) + len, GFP_KERNEL);
 	if (!node)
 		return -ENOMEM;
 
@@ -135,7 +135,7 @@ static int iwl_dbg_tlv_add(struct iwl_ucode_tlv *tlv, struct list_head *list)
 
 static bool iwl_dbg_tlv_ver_support(struct iwl_ucode_tlv *tlv)
 {
-	struct iwl_fw_ini_header *hdr = (struct iwl_fw_ini_header *)&tlv->data[0];
+	struct iwl_fw_ini_header *hdr = (typeof hdr)&tlv->data[0];
 	u32 type = le32_to_cpu(tlv->type);
 	u32 tlv_idx = type - IWL_UCODE_TLV_DEBUG_BASE;
 	u32 ver = le32_to_cpu(hdr->version);
@@ -150,7 +150,7 @@ static bool iwl_dbg_tlv_ver_support(struct iwl_ucode_tlv *tlv)
 static int iwl_dbg_tlv_alloc_debug_info(struct iwl_trans *trans,
 					struct iwl_ucode_tlv *tlv)
 {
-	struct iwl_fw_ini_debug_info_tlv *debug_info = (struct iwl_fw_ini_debug_info_tlv *)tlv->data;
+	struct iwl_fw_ini_debug_info_tlv *debug_info = (typeof debug_info)tlv->data;
 
 	if (le32_to_cpu(tlv->length) != sizeof(*debug_info))
 		return -EINVAL;
@@ -164,7 +164,7 @@ static int iwl_dbg_tlv_alloc_debug_info(struct iwl_trans *trans,
 static int iwl_dbg_tlv_alloc_buf_alloc(struct iwl_trans *trans,
 				       struct iwl_ucode_tlv *tlv)
 {
-	struct iwl_fw_ini_allocation_tlv *alloc = (struct iwl_fw_ini_allocation_tlv *)tlv->data;
+	struct iwl_fw_ini_allocation_tlv *alloc = (typeof alloc)tlv->data;
 	u32 buf_location;
 	u32 alloc_id;
 
@@ -204,7 +204,7 @@ err:
 static int iwl_dbg_tlv_alloc_hcmd(struct iwl_trans *trans,
 				  struct iwl_ucode_tlv *tlv)
 {
-	struct iwl_fw_ini_hcmd_tlv *hcmd = (struct iwl_fw_ini_hcmd_tlv *)tlv->data;
+	struct iwl_fw_ini_hcmd_tlv *hcmd = (typeof hcmd)tlv->data;
 	u32 tp = le32_to_cpu(hcmd->time_point);
 
 	if (le32_to_cpu(tlv->length) <= sizeof(*hcmd))
@@ -228,7 +228,7 @@ static int iwl_dbg_tlv_alloc_hcmd(struct iwl_trans *trans,
 static int iwl_dbg_tlv_alloc_region(struct iwl_trans *trans,
 				    struct iwl_ucode_tlv *tlv)
 {
-	struct iwl_fw_ini_region_tlv *reg = (struct iwl_fw_ini_region_tlv *)tlv->data;
+	struct iwl_fw_ini_region_tlv *reg = (typeof reg)tlv->data;
 	struct iwl_ucode_tlv **active_reg;
 	u32 id = le32_to_cpu(reg->id);
 	u32 type = le32_to_cpu(reg->type);
@@ -268,7 +268,7 @@ static int iwl_dbg_tlv_alloc_region(struct iwl_trans *trans,
 		kfree(*active_reg);
 	}
 
-	*active_reg = (struct iwl_ucode_tlv *)kmemdup(tlv, tlv_len, GFP_KERNEL);
+	*active_reg = (typeof *active_reg)kmemdup(tlv, tlv_len, GFP_KERNEL);
 	if (!*active_reg)
 		return -ENOMEM;
 
@@ -280,7 +280,7 @@ static int iwl_dbg_tlv_alloc_region(struct iwl_trans *trans,
 static int iwl_dbg_tlv_alloc_trigger(struct iwl_trans *trans,
 				     struct iwl_ucode_tlv *tlv)
 {
-	struct iwl_fw_ini_trigger_tlv *trig = (struct iwl_fw_ini_trigger_tlv *)tlv->data;
+	struct iwl_fw_ini_trigger_tlv *trig = (typeof trig)tlv->data;
 	u32 tp = le32_to_cpu(trig->time_point);
 	struct iwl_ucode_tlv *dup = NULL;
 	int ret;
@@ -297,11 +297,11 @@ static int iwl_dbg_tlv_alloc_trigger(struct iwl_trans *trans,
 	}
 
 	if (!le32_to_cpu(trig->occurrences)) {
-		dup = (struct iwl_ucode_tlv *)kmemdup(tlv, sizeof(*tlv) + le32_to_cpu(tlv->length),
+		dup = (typeof dup)kmemdup(tlv, sizeof(*tlv) + le32_to_cpu(tlv->length),
 				GFP_KERNEL);
 		if (!dup)
 			return -ENOMEM;
-		trig = (struct iwl_fw_ini_trigger_tlv *)dup->data;
+		trig = (typeof trig)dup->data;
 		trig->occurrences = cpu_to_le32(-1);
 		tlv = dup;
 	}
@@ -324,7 +324,7 @@ static int (*dbg_tlv_alloc[])(struct iwl_trans *trans,
 void iwl_dbg_tlv_alloc(struct iwl_trans *trans, struct iwl_ucode_tlv *tlv,
 		       bool ext)
 {
-	struct iwl_fw_ini_header *hdr = (struct iwl_fw_ini_header *)&tlv->data[0];
+	struct iwl_fw_ini_header *hdr = (typeof hdr)&tlv->data[0];
 	u32 type = le32_to_cpu(tlv->type);
 	u32 tlv_idx = type - IWL_UCODE_TLV_DEBUG_BASE;
 	u32 domain = le32_to_cpu(hdr->domain);
@@ -465,7 +465,7 @@ static int iwl_dbg_tlv_parse_bin(struct iwl_trans *trans, const u8 *data,
 
 	while (len >= sizeof(*tlv)) {
 		len -= sizeof(*tlv);
-		tlv = (struct iwl_ucode_tlv *)data;
+		tlv = (typeof tlv)data;
 
 		tlv_len = le32_to_cpu(tlv->length);
 
@@ -590,7 +590,7 @@ static int iwl_dbg_tlv_alloc_fragments(struct iwl_fw_runtime *fwrt,
 	num_frags = min_t(u32, num_frags, remain_pages);
 	frag_pages = DIV_ROUND_UP(remain_pages, num_frags);
 
-	fw_mon->frags = (struct iwl_dram_data *)kcalloc(num_frags, sizeof(*fw_mon->frags), GFP_KERNEL);
+	fw_mon->frags = (typeof fw_mon->frags)kcalloc(num_frags, sizeof(*fw_mon->frags), GFP_KERNEL);
 	if (!fw_mon->frags)
 		return -ENOMEM;
 
@@ -711,7 +711,7 @@ static void iwl_dbg_tlv_send_hcmds(struct iwl_fw_runtime *fwrt,
 	struct iwl_dbg_tlv_node *node;
 
 	list_for_each_entry(node, hcmd_list, list) {
-		struct iwl_fw_ini_hcmd_tlv *hcmd = (struct iwl_fw_ini_hcmd_tlv *)node->tlv.data;
+		struct iwl_fw_ini_hcmd_tlv *hcmd = (typeof hcmd)node->tlv.data;
 		struct iwl_fw_ini_hcmd *hcmd_data = &hcmd->hcmd;
 		u16 hcmd_len = le32_to_cpu(node->tlv.length) - sizeof(*hcmd);
 		struct iwl_host_cmd cmd = {
@@ -729,7 +729,7 @@ static void iwl_dbg_tlv_periodic_trig_handler(struct timer_list *t)
 	struct iwl_dbg_tlv_timer_node *timer_node =
 		from_timer(timer_node, t, timer);
 	struct iwl_fwrt_dump_data dump_data = {
-		.trig = (struct iwl_fw_ini_trigger_tlv *)timer_node->tlv->data,
+		.trig = (typeof dump_data.trig)timer_node->tlv->data,
 	};
 	int ret;
 
@@ -752,7 +752,7 @@ static void iwl_dbg_tlv_set_periodic_trigs(struct iwl_fw_runtime *fwrt)
 		&fwrt->trans->dbg.time_point[IWL_FW_INI_TIME_POINT_PERIODIC].active_trig_list;
 
 	list_for_each_entry(node, trig_list, list) {
-		struct iwl_fw_ini_trigger_tlv *trig = (struct iwl_fw_ini_trigger_tlv *)node->tlv.data;
+		struct iwl_fw_ini_trigger_tlv *trig = (typeof trig)node->tlv.data;
 		struct iwl_dbg_tlv_timer_node *timer_node;
 		u32 occur = le32_to_cpu(trig->occurrences), collect_interval;
 		u32 min_interval = 100;
@@ -779,7 +779,7 @@ static void iwl_dbg_tlv_set_periodic_trigs(struct iwl_fw_runtime *fwrt)
 
 		collect_interval = le32_to_cpu(trig->data[0]);
 
-		timer_node = (struct iwl_dbg_tlv_timer_node *)kzalloc(sizeof(*timer_node), GFP_KERNEL);
+		timer_node = (typeof timer_node)kzalloc(sizeof(*timer_node), GFP_KERNEL);
 		if (!timer_node) {
 			IWL_ERR(fwrt,
 				"WRT: Failed to allocate periodic trigger\n");
@@ -804,8 +804,8 @@ static void iwl_dbg_tlv_set_periodic_trigs(struct iwl_fw_runtime *fwrt)
 static bool is_trig_data_contained(struct iwl_ucode_tlv *_new,
 				   struct iwl_ucode_tlv *old)
 {
-	struct iwl_fw_ini_trigger_tlv *new_trig = (struct iwl_fw_ini_trigger_tlv *)_new->data;
-	struct iwl_fw_ini_trigger_tlv *old_trig = (struct iwl_fw_ini_trigger_tlv *)old->data;
+	struct iwl_fw_ini_trigger_tlv *new_trig = (typeof new_trig)_new->data;
+	struct iwl_fw_ini_trigger_tlv *old_trig = (typeof old_trig)old->data;
 	__le32 *new_data = new_trig->data, *old_data = old_trig->data;
 	u32 new_dwords_num = iwl_tlv_array_len(_new, new_trig, data);
 	u32 old_dwords_num = iwl_tlv_array_len(old, old_trig, data);
@@ -832,8 +832,8 @@ static int iwl_dbg_tlv_override_trig_node(struct iwl_fw_runtime *fwrt,
 					  struct iwl_dbg_tlv_node *node)
 {
 	struct iwl_ucode_tlv *node_tlv = &node->tlv;
-	struct iwl_fw_ini_trigger_tlv *node_trig = (struct iwl_fw_ini_trigger_tlv *)node_tlv->data;
-	struct iwl_fw_ini_trigger_tlv *trig = (struct iwl_fw_ini_trigger_tlv *)trig_tlv->data;
+	struct iwl_fw_ini_trigger_tlv *node_trig = (typeof node_trig)node_tlv->data;
+	struct iwl_fw_ini_trigger_tlv *trig = (typeof trig)trig_tlv->data;
 	u32 policy = le32_to_cpu(trig->apply_policy);
 	u32 size = le32_to_cpu(trig_tlv->length);
 	u32 trig_data_len = size - sizeof(*trig);
@@ -861,7 +861,7 @@ static int iwl_dbg_tlv_override_trig_node(struct iwl_fw_runtime *fwrt,
 
 		list_del(&node->list);
 
-		tmp = (struct iwl_dbg_tlv_node *)krealloc(node, sizeof(*node) + size, GFP_KERNEL);
+		tmp = (typeof tmp)krealloc(node, sizeof(*node) + size, GFP_KERNEL);
 		if (!tmp) {
 			IWL_WARN(fwrt,
 				 "WRT: No memory to override trigger (time point %u)\n",
@@ -874,7 +874,7 @@ static int iwl_dbg_tlv_override_trig_node(struct iwl_fw_runtime *fwrt,
 
 		list_add(&tmp->list, prev);
 		node_tlv = &tmp->tlv;
-		node_trig = (struct iwl_fw_ini_trigger_tlv *)node_tlv->data;
+		node_trig = (typeof node_trig)node_tlv->data;
 	}
 
 	memcpy(node_trig->data + offset, trig->data, trig_data_len);
@@ -911,7 +911,7 @@ iwl_dbg_tlv_add_active_trigger(struct iwl_fw_runtime *fwrt,
 			       struct list_head *trig_list,
 			       struct iwl_ucode_tlv *trig_tlv)
 {
-	struct iwl_fw_ini_trigger_tlv *trig = (struct iwl_fw_ini_trigger_tlv *)trig_tlv->data;
+	struct iwl_fw_ini_trigger_tlv *trig = (typeof trig)trig_tlv->data;
 	struct iwl_dbg_tlv_node *node, *match = NULL;
 	u32 policy = le32_to_cpu(trig->apply_policy);
 
@@ -956,12 +956,12 @@ static bool iwl_dbg_tlv_check_fw_pkt(struct iwl_fw_runtime *fwrt,
 				     u32 trig_data)
 {
 	struct iwl_rx_packet *pkt = tp_data->fw_pkt;
-	struct iwl_cmd_header *wanted_hdr = (struct iwl_cmd_header *)&trig_data;
+	struct iwl_cmd_header *wanted_hdr = (typeof wanted_hdr)&trig_data;
 
 	if (pkt && (pkt->hdr.cmd == wanted_hdr->cmd &&
 		    pkt->hdr.group_id == wanted_hdr->group_id)) {
 		struct iwl_rx_packet *fw_pkt =
-			(struct iwl_rx_packet *)kmemdup(pkt,
+			(typeof fw_pkt)kmemdup(pkt,
 				sizeof(*pkt) + iwl_rx_packet_payload_len(pkt),
 				GFP_ATOMIC);
 
@@ -989,7 +989,7 @@ iwl_dbg_tlv_tp_trigger(struct iwl_fw_runtime *fwrt,
 
 	list_for_each_entry(node, active_trig_list, list) {
 		struct iwl_fwrt_dump_data dump_data = {
-			.trig = (struct iwl_fw_ini_trigger_tlv *)node->tlv.data,
+			.trig = (typeof dump_data.trig)node->tlv.data,
 		};
 		u32 num_data = iwl_tlv_array_len(&node->tlv, dump_data.trig,
 						 data);
