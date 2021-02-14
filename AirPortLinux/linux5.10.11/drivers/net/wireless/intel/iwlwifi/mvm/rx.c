@@ -342,7 +342,7 @@ static void iwl_mvm_rx_csum(struct ieee80211_sta *sta,
 void iwl_mvm_rx_rx_mpdu(struct iwl_mvm *mvm, struct napi_struct *napi,
 			struct iwl_rx_cmd_buffer *rxb)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct ieee80211_hdr *hdr;
 	struct ieee80211_rx_status *rx_status;
 	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);

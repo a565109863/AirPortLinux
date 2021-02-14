@@ -545,13 +545,21 @@ int dev_queue_xmit(struct sk_buff *skb)
 }
 EXPORT_SYMBOL(dev_queue_xmit);
 
+static inline void netdev_set_xmit_lockdep_class(spinlock_t *lock,
+                         unsigned short dev_type)
+{
+}
+
+static inline void netdev_set_addr_lockdep_class(struct net_device *dev)
+{
+}
 
 static void netdev_init_one_queue(struct net_device *dev,
                   struct netdev_queue *queue, void *_unused)
 {
     /* Initialize queue lock */
     spin_lock_init(&queue->_xmit_lock);
-    lockdep_set_class(&queue->_xmit_lock, &dev->qdisc_xmit_lock_key);
+    netdev_set_xmit_lockdep_class(&queue->_xmit_lock, dev->type);
     queue->xmit_lock_owner = -1;
     netdev_queue_numa_node_write(queue, NUMA_NO_NODE);
     queue->dev = dev;
@@ -592,32 +600,6 @@ void netif_tx_stop_all_queues(struct net_device *dev)
     }
 }
 EXPORT_SYMBOL(netif_tx_stop_all_queues);
-
-static void netdev_register_lockdep_key(struct net_device *dev)
-{
-//    lockdep_register_key(&dev->qdisc_tx_busylock_key);
-//    lockdep_register_key(&dev->qdisc_running_key);
-//    lockdep_register_key(&dev->qdisc_xmit_lock_key);
-//    lockdep_register_key(&dev->addr_list_lock_key);
-}
-
-static void netdev_unregister_lockdep_key(struct net_device *dev)
-{
-//    lockdep_unregister_key(&dev->qdisc_tx_busylock_key);
-//    lockdep_unregister_key(&dev->qdisc_running_key);
-//    lockdep_unregister_key(&dev->qdisc_xmit_lock_key);
-//    lockdep_unregister_key(&dev->addr_list_lock_key);
-}
-
-void netdev_update_lockdep_key(struct net_device *dev)
-{
-//    lockdep_unregister_key(&dev->addr_list_lock_key);
-//    lockdep_register_key(&dev->addr_list_lock_key);
-
-    lockdep_set_class(&dev->addr_list_lock, &dev->addr_list_lock_key);
-}
-EXPORT_SYMBOL(netdev_update_lockdep_key);
-
 
 
 #define REG_STATE_NEW        0x0
@@ -829,14 +811,14 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
     /* ensure 32-byte alignment of whole construct */
     alloc_size += NETDEV_ALIGN - 1;
 
-    p = (struct net_device *)kvzalloc(alloc_size, GFP_KERNEL | __GFP_RETRY_MAYFAIL);
+    p = (typeof p)kvzalloc(alloc_size, GFP_KERNEL | __GFP_RETRY_MAYFAIL);
     if (!p)
         return NULL;
 
     dev = PTR_ALIGN(p, NETDEV_ALIGN);
     dev->padded = (char *)dev - (char *)p;
 
-    dev->pcpu_refcnt = (int *)alloc_percpu(int);
+    dev->pcpu_refcnt = (typeof dev->pcpu_refcnt)alloc_percpu(int);
     if (!dev->pcpu_refcnt)
         goto free_dev;
 
@@ -845,17 +827,17 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
 
     dev_mc_init(dev);
     dev_uc_init(dev);
-    
-    netdev_init(&init_net);
 
     dev_net_set(dev, &init_net);
-
-    netdev_register_lockdep_key(dev);
 
     dev->gso_max_size = GSO_MAX_SIZE;
     dev->gso_max_segs = GSO_MAX_SEGS;
     dev->upper_level = 1;
     dev->lower_level = 1;
+#ifdef CONFIG_LOCKDEP
+    dev->nested_level = 0;
+    INIT_LIST_HEAD(&dev->unlink_list);
+#endif
 
     INIT_LIST_HEAD(&dev->napi_list);
     INIT_LIST_HEAD(&dev->unreg_list);
@@ -872,7 +854,6 @@ struct net_device *alloc_netdev_mqs(int sizeof_priv, const char *name,
     dev->priv_flags = IFF_XMIT_DST_RELEASE | IFF_XMIT_DST_RELEASE_PERM;
     setup(dev);
 
-#define DEFAULT_TX_QUEUE_LEN    1000
     if (!dev->tx_queue_len) {
         dev->priv_flags |= IFF_NO_QUEUE;
         dev->tx_queue_len = DEFAULT_TX_QUEUE_LEN;
@@ -1534,7 +1515,7 @@ int __netdev_update_features(struct net_device *dev)
     /* driver might be less strict about feature dependencies */
     features = netdev_fix_features(dev, features);
 
-    /* some features can't be enabled if they're off an an upper device */
+    /* some features can't be enabled if they're off on an upper device */
     netdev_for_each_upper_dev_rcu(dev, upper, iter)
         features = netdev_sync_upper_features(dev, upper, features);
 
@@ -1660,6 +1641,23 @@ static void list_netdevice(struct net_device *dev)
 static RAW_NOTIFIER_HEAD(netdev_chain);
 
 
+/**
+ *    register_netdevice    - register a network device
+ *    @dev: device to register
+ *
+ *    Take a completed network device structure and add it to the kernel
+ *    interfaces. A %NETDEV_REGISTER message is sent to the netdev notifier
+ *    chain. 0 is returned on success. A negative errno code is returned
+ *    on a failure to set up the device, or if the name is a duplicate.
+ *
+ *    Callers must hold the rtnl semaphore. You may want
+ *    register_netdev() instead of this.
+ *
+ *    BUGS:
+ *    The locking appears insufficient to guarantee two parallel registers
+ *    will not get the same name.
+ */
+
 int register_netdevice(struct net_device *dev)
 {
     int ret;
@@ -1676,8 +1674,12 @@ int register_netdevice(struct net_device *dev)
     BUG_ON(dev->reg_state != NETREG_UNINITIALIZED);
     BUG_ON(!net);
 
+//    ret = ethtool_check_ops(dev->ethtool_ops);
+//    if (ret)
+//        return ret;
+
     spin_lock_init(&dev->addr_list_lock);
-    lockdep_set_class(&dev->addr_list_lock, &dev->addr_list_lock_key);
+    netdev_set_addr_lockdep_class(dev);
 
     ret = dev_get_valid_name(net, dev, dev->name);
     if (ret < 0)
@@ -1795,17 +1797,24 @@ int register_netdevice(struct net_device *dev)
     ret = notifier_to_errno(ret);
     if (ret) {
 //        rollback_registered(dev);
-//        rcu_barrier();
+        rcu_barrier();
 
         dev->reg_state = NETREG_UNREGISTERED;
+        /* We should put the kobject that hold in
+         * netdev_unregister_kobject(), otherwise
+         * the net device cannot be freed when
+         * driver calls free_netdev(), because the
+         * kobject is being hold.
+         */
+//        kobject_put(&dev->dev.kobj);
     }
     /*
      *    Prevent userspace races by waiting until the network
      *    device is fully setup before sending notifications.
      */
-//    if (!dev->rtnl_link_ops ||
-//        dev->rtnl_link_state == RTNL_LINK_INITIALIZED)
-//        rtmsg_ifinfo(RTM_NEWLINK, dev, ~0U, GFP_KERNEL);
+    if (!dev->rtnl_link_ops ||
+        dev->rtnl_link_state == RTNL_LINK_INITIALIZED)
+        rtmsg_ifinfo(RTM_NEWLINK, dev, ~0U, GFP_KERNEL);
 
 out:
     return ret;
@@ -1930,8 +1939,7 @@ static struct napi_struct *napi_by_id(unsigned int napi_id)
 
 static void napi_hash_add(struct napi_struct *napi)
 {
-    if (test_bit(NAPI_STATE_NO_BUSY_POLL, &napi->state) ||
-        test_and_set_bit(NAPI_STATE_HASHED, &napi->state))
+    if (test_bit(NAPI_STATE_NO_BUSY_POLL, &napi->state))
         return;
 
 //    spin_lock(&napi_hash_lock);
@@ -1952,69 +1960,73 @@ static void napi_hash_add(struct napi_struct *napi)
 /* Warning : caller is responsible to make sure rcu grace period
  * is respected before freeing memory containing @napi
  */
-bool napi_hash_del(struct napi_struct *napi)
+static void napi_hash_del(struct napi_struct *napi)
 {
-    bool rcu_sync_needed = false;
-    
 //    spin_lock(&napi_hash_lock);
-    
-    if (test_and_clear_bit(NAPI_STATE_HASHED, &napi->state)) {
-        rcu_sync_needed = true;
-        hlist_del_rcu(&napi->napi_hash_node);
-    }
+
+    hlist_del_init_rcu(&napi->napi_hash_node);
+
 //    spin_unlock(&napi_hash_lock);
-    return rcu_sync_needed;
 }
-EXPORT_SYMBOL_GPL(napi_hash_del);
 
-
-/* Must be called in process context */
-void netif_napi_del(struct napi_struct *napi)
+static void netif_free_tx_queues(struct net_device *dev)
 {
-    might_sleep();
-    if (napi_hash_del(napi))
-        synchronize_net();
-    list_del_init(&napi->dev_list);
-    napi_free_frags(napi);
-    
-    flush_gro_hash(napi);
-    napi->gro_bitmask = 0;
+    kvfree(dev->_tx);
 }
-EXPORT_SYMBOL(netif_napi_del);
 
+static void netif_free_rx_queues(struct net_device *dev)
+{
+    unsigned int i, count = dev->num_rx_queues;
 
+    /* netif_alloc_rx_queues alloc failed, resources have been unreg'ed */
+    if (!dev->_rx)
+        return;
+
+    for (i = 0; i < count; i++)
+        xdp_rxq_info_unreg(&dev->_rx[i].xdp_rxq);
+
+    kvfree(dev->_rx);
+}
+
+/**
+ * free_netdev - free network device
+ * @dev: device
+ *
+ * This function does the last stage of destroying an allocated device
+ * interface. The reference to the device object is released. If this
+ * is the last reference then it will be freed.Must be called in process
+ * context.
+ */
 void free_netdev(struct net_device *dev)
 {
     struct napi_struct *p, *n;
-    
+
     might_sleep();
-//    netif_free_tx_queues(dev);
-//    netif_free_rx_queues(dev);
-    
+    netif_free_tx_queues(dev);
+    netif_free_rx_queues(dev);
+
     kfree(rcu_dereference_protected(dev->ingress_queue, 1));
-    
+
     /* Flush device addresses */
     dev_addr_flush(dev);
-    
+
     list_for_each_entry_safe(p, n, &dev->napi_list, dev_list)
-    netif_napi_del(p);
-    
+        netif_napi_del(p);
+
     free_percpu(dev->pcpu_refcnt);
     dev->pcpu_refcnt = NULL;
     free_percpu(dev->xdp_bulkq);
     dev->xdp_bulkq = NULL;
-    
-    netdev_unregister_lockdep_key(dev);
-    
+
     /*  Compatibility with error handling in drivers */
     if (dev->reg_state == NETREG_UNINITIALIZED) {
         netdev_freemem(dev);
         return;
     }
-    
+
     BUG_ON(dev->reg_state != NETREG_UNREGISTERED);
     dev->reg_state = NETREG_RELEASED;
-    
+
     /* will free via device release */
 //    put_device(&dev->dev);
 }
@@ -2049,7 +2061,7 @@ void synchronize_rcu(void)
 
 /* Delayed registration/unregisteration */
 static LIST_HEAD(net_todo_list);
-//DECLARE_WAIT_QUEUE_HEAD(netdev_unregistering_wq);
+DECLARE_WAIT_QUEUE_HEAD(netdev_unregistering_wq);
 
 static void net_set_todo(struct net_device *dev)
 {
@@ -3232,7 +3244,7 @@ int netif_receive_skb(struct sk_buff *skb)
 //    trace_netif_receive_skb_exit(ret);
 
 //    return ret;
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     return 0;
 }
 EXPORT_SYMBOL(netif_receive_skb);
@@ -3671,3 +3683,76 @@ void dev_close(struct net_device *dev)
     }
 }
 EXPORT_SYMBOL(dev_close);
+
+u32 dev_xdp_prog_id(struct net_device *dev, enum bpf_xdp_mode mode)
+{
+//    struct bpf_prog *prog = dev_xdp_prog(dev, mode);
+//
+//    return prog ? prog->aux->id : 0;
+    return 0;
+}
+
+
+/* Must be called in process context */
+void __netif_napi_del(struct napi_struct *napi)
+{
+    if (!test_and_clear_bit(NAPI_STATE_LISTED, &napi->state))
+        return;
+    
+    napi_hash_del(napi);
+    list_del_rcu(&napi->dev_list);
+    napi_free_frags(napi);
+    
+    flush_gro_hash(napi);
+    napi->gro_bitmask = 0;
+}
+EXPORT_SYMBOL(__netif_napi_del);
+
+
+/**
+ *    netdev_state_change - device changes state
+ *    @dev: device to cause notification
+ *
+ *    Called to indicate a device has changed state. This function calls
+ *    the notifier chains for netdev_chain and sends a NEWLINK message
+ *    to the routing socket.
+ */
+void netdev_state_change(struct net_device *dev)
+{
+    if (dev->flags & IFF_UP) {
+        struct netdev_notifier_change_info change_info = {
+            .info.dev = dev,
+        };
+        
+        call_netdevice_notifiers_info(NETDEV_CHANGE,
+                                      &change_info.info);
+        rtmsg_ifinfo(RTM_NEWLINK, dev, 0, GFP_KERNEL);
+    }
+}
+EXPORT_SYMBOL(netdev_state_change);
+
+/**
+ *    unregister_netdevice_many - unregister many devices
+ *    @head: list of devices
+ *
+ *  Note: As most callers use a stack allocated list_head,
+ *  we force a list_del() to make sure stack wont be corrupted later.
+ */
+void unregister_netdevice_many(struct list_head *head)
+{
+    struct net_device *dev;
+    
+    if (!list_empty(head)) {
+        rollback_registered_many(head);
+        list_for_each_entry(dev, head, unreg_list)
+        net_set_todo(dev);
+        list_del(head);
+    }
+}
+EXPORT_SYMBOL(unregister_netdevice_many);
+
+
+struct pernet_operations __net_initdata netdev_net_ops = {
+    .init = netdev_init,
+//    .exit = netdev_exit,
+};

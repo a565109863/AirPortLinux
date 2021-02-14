@@ -105,7 +105,7 @@ EXPORT_SYMBOL(dma_alloc_attrs);
 
 struct page *alloc_pages(gfp_t gtp, size_t order)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+//    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     struct page *page = (struct page *)kmalloc(sizeof(struct page), GFP_KERNEL);
     page->order = order;
     page->dm_mapsize = PAGE_SIZE << order;
@@ -123,7 +123,7 @@ void __free_page(struct page *page)
     struct page *tmp;
     list_for_each_entry(tmp, &page_list, list) {
         if (tmp == page) {
-            kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+//            kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
             if (tmp->dmaCmd) {
                 tmp->dmaCmd->clearMemoryDescriptor();
                 tmp->dmaCmd->release();
@@ -211,7 +211,7 @@ dma_addr_t dma_map_page_attrs(struct device *dev,
 void dma_unmap_page_attrs(struct device *dev, dma_addr_t addr,
     size_t size, enum dma_data_direction dir, unsigned long attrs)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+//    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     
 //    struct page *tmp;
 //    list_for_each_entry(tmp, &page_list, list) {
@@ -247,7 +247,7 @@ void dma_unmap_page_attrs(struct device *dev, dma_addr_t addr,
 dma_addr_t dma_map_single_attrs(struct device *dev, void *ptr,
     size_t size, enum dma_data_direction dir, unsigned long attrs)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 //    debug_dma_map_single(dev, ptr, size);
     return dma_map_page_attrs(dev, virt_to_page(ptr), offset_in_page(ptr),
                               size, dir, 1);

@@ -238,6 +238,7 @@ IOReturn AirPortLinux::setSCAN_REQ(IOInterface *interface, struct apple80211_sca
     
     if (this->fTimerEventSource) {
 //        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+        this->fTimerEventSource->cancelTimeout();
         this->fTimerEventSource->setAction(&AirPortLinux::scanDone);
         this->fTimerEventSource->setTimeoutMS(200);
     }
@@ -262,6 +263,7 @@ IOReturn AirPortLinux::setSCAN_REQ_MULTIPLE(IOInterface *interface, struct apple
 //    ifscan(this->ifname);
     
     if (this->fTimerEventSource) {
+        this->fTimerEventSource->cancelTimeout();
         this->fTimerEventSource->setAction(&AirPortLinux::scanDone);
         this->fTimerEventSource->setTimeoutMS(200);
     }
@@ -274,30 +276,15 @@ IOReturn AirPortLinux::setSCAN_REQ_MULTIPLE(IOInterface *interface, struct apple
 
 IOReturn AirPortLinux::getSCAN_RESULT(IOInterface *interface, struct apple80211_scan_result **sr)
 {
-//    if (scanResults->getCount() == 0) {
-//        this->scanFlag = false;
-//        return 0x0C;
-//    }
-//    while (scanIndex < scanResults->getCount()) {
-//        OSObject* scanObj = scanResults->getObject(scanIndex++);
-//        if (scanObj == NULL) {
-//            continue;
-//        }
-//
-//        OSData* scanresult = OSDynamicCast(OSData, scanObj);
-//        struct ieee80211_nodereq *na_node = (struct ieee80211_nodereq *)scanresult->getBytesNoCopy();
-//
-//        struct apple80211_scan_result* oneResult =
-//        (struct apple80211_scan_result*)IOMalloc(sizeof(struct apple80211_scan_result));
-//        scanConvertResult(na_node, oneResult);
-//
-//        *sr = oneResult;
-//        return kIOReturnSuccess;
-//    }
+    struct apple80211_scan_result* oneResult =
+            (struct apple80211_scan_result*)IOMalloc(sizeof(struct apple80211_scan_result));
+    IOReturn ret = this->scanConvertResult(oneResult);
+    if (ret != kIOReturnSuccess) {
+        IOFree(oneResult, sizeof(struct apple80211_scan_result));
+    }
+    *sr = oneResult;
     
-    this->scanFlag = false;
-    
-    return 0x05;
+    return ret;
 }
 
 //
@@ -312,49 +299,44 @@ IOReturn AirPortLinux::getCARD_CAPABILITIES(IOInterface *interface, struct apple
     
     u_int32_t caps = 0;
     
-    caps |=  1 << APPLE80211_CAP_AES;
-    caps |=  1 << APPLE80211_CAP_AES_CCM;
-//
-//    if (ic->ic_caps & IEEE80211_C_WEP)
-    caps |= 1 << APPLE80211_CAP_WEP;
-//    if (ic->ic_caps & IEEE80211_C_RSN) {
-//        caps |=  1 << APPLE80211_CAP_TKIP;
-//        caps |=  1 << APPLE80211_CAP_TKIPMIC;
-//        caps |=  1 << APPLE80211_CAP_WPA;
-//        caps |=  1 << APPLE80211_CAP_WPA1;
-//        caps |=  1 << APPLE80211_CAP_WPA2;
-//    }
-//    if (ic->ic_caps & IEEE80211_C_MONITOR)
-    caps |= 1 << APPLE80211_CAP_MONITOR;
-//    if (ic->ic_caps & IEEE80211_C_SHSLOT)
-    caps |= 1 << APPLE80211_CAP_SHSLOT;
-//    if (ic->ic_caps & IEEE80211_C_SHPREAMBLE)
-    caps |= 1 << APPLE80211_CAP_SHPREAMBLE;
-//    //    if (ic->ic_caps & IEEE80211_C_AHDEMO)           caps |= 1 << APPLE80211_CAP_IBSS;
-//    if (ic->ic_caps & IEEE80211_C_PMGT)
-    caps |= 1 << APPLE80211_CAP_PMGT;
-//    if (ic->ic_caps & IEEE80211_C_TXPMGT)
-    caps |= 1 << APPLE80211_CAP_TXPMGT;
-//    //    if (ic->ic_caps & IEEE80211_C_QOS)              caps |= 1 << APPLE80211_CAP_WME;
-//
-    cd->capabilities[0] = (caps & 0xff);
-    cd->capabilities[1] = (caps >> 8) & 0xff;
+//    if (caps & IEEE80211_C_WEP)
+        cd->capabilities[0] |= 1 << APPLE80211_CAP_WEP;
+//    if (caps & IEEE80211_C_RSN)
+        cd->capabilities[0] |= 1 << APPLE80211_CAP_TKIP | 1 << APPLE80211_CAP_AES_CCM;
+    // Disable not implemented capabilities
+    // if (caps & IEEE80211_C_PMGT)
+    //     cd->capabilities[0] |= 1 << APPLE80211_CAP_PMGT;
+    // if (caps & IEEE80211_C_IBSS)
+    //     cd->capabilities[0] |= 1 << APPLE80211_CAP_IBSS;
+    // if (caps & IEEE80211_C_HOSTAP)
+    //     cd->capabilities[0] |= 1 << APPLE80211_CAP_HOSTAP;
+    // AES not enabled, like on Apple cards
     
-    //    cd->capabilities[2] |= 0x13;    // 无线网络唤醒;
-    //    cd->capabilities[2] |= 0xc0;    // 批量扫描;
-    //    cd->capabilities[4] |= 0x1;     // 隔空投送
+//    if (caps & IEEE80211_C_SHSLOT)
+        cd->capabilities[1] |= 1 << (APPLE80211_CAP_SHSLOT - 8);
+//    if (caps & IEEE80211_C_SHPREAMBLE)
+        cd->capabilities[1] |= 1 << (APPLE80211_CAP_SHPREAMBLE - 8);
+//    if (caps & IEEE80211_C_RSN)
+        cd->capabilities[1] |= 1 << (APPLE80211_CAP_WPA1 - 8) | 1 << (APPLE80211_CAP_WPA2 - 8) | 1 << (APPLE80211_CAP_TKIPMIC - 8);
+    // Disable not implemented capabilities
+    // if (caps & IEEE80211_C_TXPMGT)
+    //     cd->capabilities[1] |= 1 << (APPLE80211_CAP_TXPMGT - 8);
+    // if (caps & IEEE80211_C_MONITOR)
+    //     cd->capabilities[1] |= 1 << (APPLE80211_CAP_MONITOR - 8);
+    // WPA not enabled, like on Apple cards
     
-    //    cd->capabilities[0] |= 0xab;
-    //    cd->capabilities[1] |= 0x7e;
-    cd->capabilities[2] |= 0x3 | 0x4 | 0x13 | 0x20 | 0x28| 0x80 | 0xc0;
-    cd->capabilities[3] |= 0x2 | 0x23;
-    //    cd->capabilities[4] |= 0x1;
-    cd->capabilities[5] |= 0x80;
-    cd->capabilities[6] |= 0x8D;
-    cd->capabilities[7] = 0x84;
-    
+    cd->version = APPLE80211_VERSION;
+    cd->capabilities[2] = 0xFF; // BURST, WME, SHORT_GI_40MHZ, SHORT_GI_20MHZ, WOW, TSN, ?, ?
+    cd->capabilities[3] = 0x2B;
+    cd->capabilities[4] = 0xAD;
+    cd->capabilities[5] = 0x80;//isCntryDefaultSupported
+    cd->capabilities[5] |= 0x0C;
+    cd->capabilities[6] = 0x8D;
+    cd->capabilities[7] = 0x84; // This byte contains Apple Watch unlock
+    //cd->capabilities[8] = 0x40;
+    //cd->capabilities[8] |= 8;//dfs white list
+    //cd->capabilities[9] = 0x28;
     return kIOReturnSuccess;
-    
 }
 
 //
@@ -417,7 +399,7 @@ IOReturn AirPortLinux::getPHY_MODE(IOInterface *interface,
 //    }
     
     phy_mode = APPLE80211_MODE_11A | APPLE80211_MODE_11B | APPLE80211_MODE_11G
-    | APPLE80211_MODE_11N | APPLE80211_MODE_11AC;
+    | APPLE80211_MODE_11N | APPLE80211_MODE_11AC | APPLE80211_MODE_11AX;
     pd->phy_mode = phy_mode;
     pd->active_phy_mode = APPLE80211_MODE_11AC;
     return kIOReturnSuccess;
@@ -763,7 +745,7 @@ IOReturn AirPortLinux::getSUPPORTED_CHANNELS(IOInterface *interface,
     
     strncpy(wrq.ifr_name, this->ifname, IFNAMSIZ);
     int ret = ioctl(1, SIOCGIWRANGE, &wrq);
-    if (ret < 0)
+    if (ret != 0)
     {
         return kIOReturnError;
     }
@@ -866,9 +848,8 @@ IOReturn AirPortLinux::getANTENNA_DIVERSITY(IOInterface *interface,
 IOReturn AirPortLinux::getDRIVER_VERSION(IOInterface *interface, struct apple80211_version_data *hv)
 {
     hv->version = APPLE80211_VERSION;
-    struct iwl_trans *iwl_trans = (struct iwl_trans *)pci_get_drvdata(this->pdev);
-    strncpy(hv->string, iwl_trans->name, sizeof(hv->string));
-    hv->string_len = strlen(iwl_trans->name);
+    strncpy(hv->string, this->fw_vername, sizeof(hv->string));
+    hv->string_len = strlen(this->fw_vername);
     
     return kIOReturnSuccess;
 }
@@ -880,9 +861,8 @@ IOReturn AirPortLinux::getDRIVER_VERSION(IOInterface *interface, struct apple802
 IOReturn AirPortLinux::getHARDWARE_VERSION(IOInterface *interface, struct apple80211_version_data *hv)
 {
     hv->version = APPLE80211_VERSION;
-    struct iwl_trans *iwl_trans = (struct iwl_trans *)pci_get_drvdata(this->pdev);
-    strncpy(hv->string, iwl_trans->name, sizeof(hv->string));
-    hv->string_len = strlen(iwl_trans->name);
+    strncpy(hv->string, this->fw_vername, sizeof(hv->string));
+    hv->string_len = strlen(this->fw_vername);
     
     return kIOReturnSuccess;
 }
@@ -1034,7 +1014,7 @@ IOReturn AirPortLinux::getROAM_THRESH(IOInterface* interface, struct apple80211_
 IOReturn AirPortLinux::setSCANCACHE_CLEAR(IOInterface *interface, void *dev)
 {
     //    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
-    scanFreeResults();
+//    scanFreeResults();
     return kIOReturnSuccess;
 }
 

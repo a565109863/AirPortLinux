@@ -396,7 +396,7 @@ static int __pci_enable_msix(struct pci_dev *dev, struct msix_entry *entries,
         if (count == 0)
             return -EINVAL;
         
-        kprintf("--%s: line = %d count = %d", __FUNCTION__, __LINE__, count);
+        DebugLog("--%s: line = %d count = %d", __FUNCTION__, __LINE__, count);
         if (nvec > count)
             return count;
     }
@@ -916,6 +916,16 @@ void pci_pme_active(struct pci_dev *dev, bool enable)
 EXPORT_SYMBOL(pci_pme_active);
 
 
+static inline int pci_no_d1d2(struct pci_dev *dev)
+{
+    unsigned int parent_dstates = 0;
+    
+//    if (dev->bus->self)
+//        parent_dstates = dev->bus->self->no_d1d2;
+    return (dev->no_d1d2 || parent_dstates);
+    
+}
+
 /**
  * pci_pm_init - Initialize PM functions of given PCI device
  * @dev: PCI device to handle.
@@ -929,8 +939,8 @@ void pci_pm_init(struct pci_dev *dev)
 //    pm_runtime_forbid(&dev->dev);
 //    pm_runtime_set_active(&dev->dev);
 //    pm_runtime_enable(&dev->dev);
-//    device_enable_async_suspend(&dev->dev);
-//    dev->wakeup_prepared = false;
+    device_enable_async_suspend(&dev->dev);
+    dev->wakeup_prepared = false;
 
     dev->pm_cap = 0;
     dev->pme_support = 0;
@@ -956,17 +966,17 @@ void pci_pm_init(struct pci_dev *dev)
 
     dev->d1_support = false;
     dev->d2_support = false;
-//    if (!pci_no_d1d2(dev)) {
-//        if (pmc & PCI_PM_CAP_D1)
-//            dev->d1_support = true;
-//        if (pmc & PCI_PM_CAP_D2)
-//            dev->d2_support = true;
-//
-//        if (dev->d1_support || dev->d2_support)
-//            pci_info(dev, "supports%s%s\n",
-//                   dev->d1_support ? " D1" : "",
-//                   dev->d2_support ? " D2" : "");
-//    }
+    if (!pci_no_d1d2(dev)) {
+        if (pmc & PCI_PM_CAP_D1)
+            dev->d1_support = true;
+        if (pmc & PCI_PM_CAP_D2)
+            dev->d2_support = true;
+
+        if (dev->d1_support || dev->d2_support)
+            pci_info(dev, "supports%s%s\n",
+                   dev->d1_support ? " D1" : "",
+                   dev->d2_support ? " D2" : "");
+    }
 
     pmc &= PCI_PM_CAP_PME_MASK;
     if (pmc) {

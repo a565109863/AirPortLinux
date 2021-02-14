@@ -10,11 +10,13 @@
 #define random_h
 
 #include <linux/types.h>
+#include <sys/random.h>
 
 static u32 get_random_u32(void)
 {
-    u32 i = 0;
-    return i;
+    u_int32_t ret;
+    read_random(&ret, sizeof(ret));
+    return ret;
 }
 
 

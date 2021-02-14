@@ -3704,5 +3704,6 @@ void iwl_trans_pcie_sync_nmi(struct iwl_trans *trans)
 	if (interrupts_enabled)
 		iwl_enable_interrupts(trans);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	iwl_trans_fw_error(trans);
 }

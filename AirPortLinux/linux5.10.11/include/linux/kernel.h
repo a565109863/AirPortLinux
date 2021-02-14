@@ -10,14 +10,14 @@
 #define kernel_h
 
 #include <linux/types.h>
-#include <linux/gfp.h>
+#include <linux/bug.h>
+#include <linux/_malloc.h>
 #include <linux/time.h>
 #include <linux/debugfs.h>
 #include <linux/bitfield.h>
 #include <linux/_string.h>
 #include <linux/cpu.h>
 #include <linux/atomic.h>
-#include <linux/list.h>
 
 #include <asm/swab.h>
 
@@ -29,9 +29,14 @@
 
 #define __ro_after_init
 #define __net_exit
+#define  noinline_for_stack
 
 #define inline
 
+#define smp_load_acquire(x) *(x)
+#define smp_store_release(x, y)
+
+#include <linux/list.h>
 
 #define NOTIFY_DONE        0x0000        /* Don't care */
 #define NOTIFY_OK        0x0001        /* Suits me */
@@ -39,6 +44,16 @@
 #define    NUMA_NO_NODE    (-1)
 typedef unsigned int __wsum;
 
+
+static inline void prefetch(const void *x)
+{
+    __builtin_prefetch(x, 0, 3);
+}
+
+static inline void prefetchw(const void *ptr)
+{
+    __builtin_prefetch(ptr, 1, 3);
+}
 
 /*
  * Divide positive or negative dividend by positive or negative divisor
@@ -61,231 +76,6 @@ typedef unsigned int __wsum;
 
 #define    ERFKILL        256    /* Operation not possible due to RF-kill */
 
-
-static void* malloc(vm_size_t len) {
-    void* addr = IOMalloc(len);
-    if (addr == NULL) {
-        return NULL;
-    }
-    bzero(addr, len);
-    return addr;
-}
-
-
-static void free(void* addr, int type, vm_size_t len)
-{
-    if (addr == NULL) {
-        return;
-    }
-    if (len == 0) {
-        IOFree(addr, sizeof(addr));
-    }else {
-        IOFree(addr, len);
-    }
-    addr = NULL;
-}
-
-static inline void *kmalloc(size_t size, gfp_t gfp)
-{
-    return malloc(size);
-}
-
-static inline void *kmalloc_array(size_t n, size_t size, gfp_t flags)
-{
-    return kmalloc(n * size, flags);
-}
-
-static inline void *kzalloc(size_t size, gfp_t gfp)
-{
-    void *p = kmalloc(size, gfp);
-
-    memset(p, 0, size);
-    return p;
-}
-
-static inline void *kcalloc(size_t n, size_t size, gfp_t flags)
-{
-    return kmalloc_array(n, size, flags | __GFP_ZERO);
-}
-#define kvcalloc kcalloc
-
-#define kvfree kfree
-
-
-static inline void *realloc(void* node, size_t s)
-{
-    void *p = kmalloc(s, __GFP_ZERO);
-    if (p && node) {
-        memcpy(p, node, s);
-    }
-    return p;
-}
-
-static inline void *__krealloc(void* node, size_t node_size, size_t s, gfp_t gfp)
-{
-    if (node_size >= s) {
-        return node;
-    }
-    void *p = kmalloc(s, gfp);
-    if (p && node) {
-        memcpy(p, node, node_size);
-    }
-    return p;
-}
-
-#define krealloc(n, s, g) __krealloc(n, s - sizeof(*n) , s, g)
-
-static void *kmemdup(const void *src, size_t len, gfp_t gfp)
-{
-    void *p;
-    p = kmalloc(len, gfp);
-    if (p)
-        memcpy(p, src, len);
-    return p;
-}
-
-
-static inline void *kvmalloc(size_t size, gfp_t flags)
-{
-    return kmalloc(size, flags | __GFP_ZERO);
-}
-
-static inline void *kvzalloc(size_t size, gfp_t flags)
-{
-    return kvmalloc(size, flags | __GFP_ZERO);
-}
-
-static void *vzalloc(unsigned long size)
-{
-    void *ret = IOMalloc(size);
-    return ret;
-}
-
-static void *__kmalloc(size_t size, gfp_t flags)
-{
-    return kmalloc(size, flags);
-}
-
-static __always_inline void *__kmalloc_node(size_t size, gfp_t flags, int node)
-{
-    return __kmalloc(size, flags);
-}
-
-static __always_inline void *kmalloc_node(size_t size, gfp_t flags, int node)
-{
-//#ifndef CONFIG_SLOB
-//    if (__builtin_constant_p(size) &&
-//        size <= KMALLOC_MAX_CACHE_SIZE) {
-//        unsigned int i = kmalloc_index(size);
-//
-//        if (!i)
-//            return ZERO_SIZE_PTR;
-//
-//        return kmem_cache_alloc_node_trace(
-//                kmalloc_caches[kmalloc_type(flags)][i],
-//                        flags, node, size);
-//    }
-//#endif
-    return __kmalloc_node(size, flags, node);
-}
-
-/**
- * kzalloc_node - allocate zeroed memory from a particular memory node.
- * @size: how many bytes of memory are required.
- * @flags: the type of memory to allocate (see kmalloc).
- * @node: memory node from which to allocate
- */
-static inline void *kzalloc_node(size_t size, gfp_t flags, int node)
-{
-    return kmalloc_node(size, flags | __GFP_ZERO, node);
-}
-
-
-
-
-
-static bool is_vmalloc_addr(const void *x)
-{
-    return true;
-}
-EXPORT_SYMBOL(is_vmalloc_addr);
-
-static inline void *alloc_pages_exact(size_t s, gfp_t gfp)
-{
-    return kmalloc(s, gfp);
-}
-
-static void __percpu *__alloc_percpu_gfp(size_t size, size_t align, gfp_t gfp)
-{
-    return vzalloc(size);
-}
-
-static void __percpu *__alloc_percpu(size_t size, size_t align)
-{
-   return vzalloc(size);
-}
-EXPORT_SYMBOL_GPL(__alloc_percpu);
-
-#define alloc_percpu_gfp(type, gfp)                    \
-    (typeof(type) __percpu *)__alloc_percpu_gfp(sizeof(type),    \
-                        __alignof__(type), gfp)
-
-static inline void kfree(const void *p)
-{
-//    if (p >= __kfree_ignore_start && p < __kfree_ignore_end)
-//        return;
-//    free(p);
-//    p = NULL;
-}
-
-static void kfree_sensitive(const void *p)
-{
-//   size_t ks;
-   void *mem = (void *)p;
-
-//   ks = ksize(mem);
-//   if (ks)
-//       memzero_explicit(mem, ks);
-   kfree(mem);
-}
-EXPORT_SYMBOL(kfree_sensitive);
-
-static inline void kfree(void *p, size_t n, size_t size)
-{
-//    if (p >= __kfree_ignore_start && p < __kfree_ignore_end)
-//        return;
-    free(p, 1, n * size);
-    p = NULL;
-//    free(void* addr, int type, vm_size_t len)
-}
-
-static void kzfree(const void *p)
-{
-    p = NULL;
-}
-
-static void vfree(const void *p)
-{
-    p = NULL;
-}
-
-static inline void free_pages_exact(void *p, size_t s)
-{
-    kfree(p, 1, s);
-}
-
-
-static inline void free_page(unsigned long addr)
-{
-//    free((void *)addr);
-}
-
-
-static void *kmalloc_track_caller(size_t size, gfp_t gfp)
-{
-    return kmalloc(size, gfp);
-}
-
 /**
  * container_of - cast a member of a structure out to the containing structure
  * @ptr:    the pointer to the member.
@@ -303,25 +93,38 @@ static void *kmalloc_track_caller(size_t size, gfp_t gfp)
 
 
 
-#define pr_err kprintf
-#define pr_debug kprintf
-#define pr_info kprintf
-#define pr_err_ratelimited kprintf
+#define request_module          kprintf
 
-#define netdev_info(d, arg...) kprintf(arg)
-#define netdev_err(d, arg...) kprintf(arg)
-#define net_info_ratelimited  kprintf
-#define netdev_warn(d, arg...) kprintf(arg)
-#define netdev_crit(d, arg...) kprintf(arg)
-#define netdev_notice(d, arg...) kprintf(arg)
-#define netdev_alert(d, arg...) kprintf(arg)
-#define netdev_emerg(d, arg...) kprintf(arg)
+#define pr_emerg                kprintf
+#define pr_warn                 kprintf
+#define pr_warn_ratelimited     kprintf
+#define pr_err                  kprintf
+#define pr_debug                kprintf
+#define pr_info                 kprintf
+#define pr_err_ratelimited      kprintf
+
+#define net_dbg_ratelimited     kprintf
+#define net_warn_ratelimited    kprintf
+#define net_info_ratelimited    kprintf
+
+#define seq_printf(m, arg...)       kprintf(arg)
+#define netdev_info(d, arg...)      kprintf(arg)
+#define netdev_err(d, arg...)       kprintf(arg)
+#define netdev_warn(d, arg...)      kprintf(arg)
+#define netdev_crit(d, arg...)      kprintf(arg)
+#define netdev_notice(d, arg...)    kprintf(arg)
+#define netdev_alert(d, arg...)     kprintf(arg)
+#define netdev_emerg(d, arg...)     kprintf(arg)
 #define netdev_printk(l, d, arg...) kprintf(arg)
 
-
-#define __builtin_expect(x, expected_value) (x)
-#define unlikely(x) __builtin_expect(!!(x), 0)
-#define likely(x) __builtin_expect(!!(x), 1)
+#define dev_printk(level, dev, fmt...)  kprintf(fmt)
+#define dev_emerg(dev, fmt...)          kprintf(fmt)
+#define dev_alert(dev, fmt...)          kprintf(fmt)
+#define dev_crit(dev, fmt...)           kprintf(fmt)
+#define dev_err(dev, fmt...)            kprintf(fmt)
+#define dev_warn(dev, fmt...)           kprintf(fmt)
+#define dev_notice(dev, fmt...)         kprintf(fmt)
+#define dev_info(dev, fmt...)           kprintf(fmt)
 
 #define __cond_lock(nic_access, y) y
 
@@ -687,5 +490,7 @@ extern enum system_states {
     SYSTEM_RESTART,
     SYSTEM_SUSPEND,
 } system_state;
+
+#define set_current_state(x)
 
 #endif /* kernel_h */

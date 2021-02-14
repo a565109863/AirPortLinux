@@ -1947,7 +1947,7 @@ static inline u32 iwl_mvm_flushable_queues(struct iwl_mvm *mvm)
 
 static inline void iwl_mvm_stop_device(struct iwl_mvm *mvm)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	lockdep_assert_held(&mvm->mutex);
 	iwl_fw_cancel_timestamp(&mvm->fwrt);
 	clear_bit(IWL_MVM_STATUS_FIRMWARE_RUNNING, &mvm->status);

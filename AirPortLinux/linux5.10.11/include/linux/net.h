@@ -204,16 +204,17 @@ struct proto_ops {
                                  size_t size);
     int        (*set_rcvlowat)(struct sock *sk, int val);
 };
-//
-//#define DECLARE_SOCKADDR(type, dst, src)    \
-//type dst = ({ __sockaddr_check_size(sizeof(*dst)); (type) src; })
-//
-//struct net_proto_family {
-//    int        family;
-//    int        (*create)(struct net *net, struct socket *sock,
-//                         int protocol, int kern);
-//    struct module    *owner;
-//};
+
+#define DECLARE_SOCKADDR(type, dst, src)    \
+type dst = ({ __sockaddr_check_size(sizeof(*dst)); (type) src; })
+
+
+struct net_proto_family {
+    int        family;
+    int        (*create)(struct net *net, struct socket *sock,
+                         int protocol, int kern);
+    void    *owner;
+};
 
 //struct iovec;
 //struct kvec;

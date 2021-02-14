@@ -426,63 +426,6 @@ enum netlink_validation {
                 NL_VALIDATE_NESTED)
 
 
-struct rtnl_link_ops {
-   struct list_head    list;
-
-   const char        *kind;
-
-   size_t            priv_size;
-   void            (*setup)(struct net_device *dev);
-
-   unsigned int        maxtype;
-   const struct nla_policy    *policy;
-   int            (*validate)(struct nlattr *tb[],
-                       struct nlattr *data[],
-                       struct netlink_ext_ack *extack);
-
-   int            (*newlink)(struct net *src_net,
-                      struct net_device *dev,
-                      struct nlattr *tb[],
-                      struct nlattr *data[],
-                      struct netlink_ext_ack *extack);
-   int            (*changelink)(struct net_device *dev,
-                         struct nlattr *tb[],
-                         struct nlattr *data[],
-                         struct netlink_ext_ack *extack);
-   void            (*dellink)(struct net_device *dev,
-                      struct list_head *head);
-
-   size_t            (*get_size)(const struct net_device *dev);
-   int            (*fill_info)(struct sk_buff *skb,
-                        const struct net_device *dev);
-
-   size_t            (*get_xstats_size)(const struct net_device *dev);
-   int            (*fill_xstats)(struct sk_buff *skb,
-                          const struct net_device *dev);
-   unsigned int        (*get_num_tx_queues)(void);
-   unsigned int        (*get_num_rx_queues)(void);
-
-   unsigned int        slave_maxtype;
-   const struct nla_policy    *slave_policy;
-   int            (*slave_changelink)(struct net_device *dev,
-                           struct net_device *slave_dev,
-                           struct nlattr *tb[],
-                           struct nlattr *data[],
-                           struct netlink_ext_ack *extack);
-   size_t            (*get_slave_size)(const struct net_device *dev,
-                         const struct net_device *slave_dev);
-   int            (*fill_slave_info)(struct sk_buff *skb,
-                          const struct net_device *dev,
-                          const struct net_device *slave_dev);
-   struct net        *(*get_link_net)(const struct net_device *dev);
-   size_t            (*get_linkxstats_size)(const struct net_device *dev,
-                              int attr);
-   int            (*fill_linkxstats)(struct sk_buff *skb,
-                          const struct net_device *dev,
-                          int *prividx, int attr);
-};
-
-
 int netlink_rcv_skb(struct sk_buff *skb,
             int (*cb)(struct sk_buff *, struct nlmsghdr *,
                   struct netlink_ext_ack *));
@@ -1024,8 +967,8 @@ static inline int nlmsg_multicast(struct sock *sk, struct sk_buff *skb,
 //    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     NETLINK_CB(skb).dst_group = group;
 
-//    err = netlink_broadcast(sk, skb, portid, group, flags);
-//    if (err > 0)
+    err = netlink_broadcast(sk, skb, portid, group, flags);
+    if (err > 0)
         err = 0;
 
     return err;

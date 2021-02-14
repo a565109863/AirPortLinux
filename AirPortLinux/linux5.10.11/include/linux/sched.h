@@ -13,4 +13,6 @@
 
 #define    MAX_SCHEDULE_TIMEOUT        LONG_MAX
 
+#define TASK_UNINTERRUPTIBLE    2
+
 #endif /* sched_h */

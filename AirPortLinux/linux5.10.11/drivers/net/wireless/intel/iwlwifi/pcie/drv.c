@@ -1001,7 +1001,7 @@ static const struct iwl_dev_info iwl_dev_info_table[] = {
 
 int iwl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	const struct iwl_cfg_trans_params *trans =
 		(typeof(trans))(ent->driver_data);
 	const struct iwl_cfg *cfg_7265d __maybe_unused = NULL;

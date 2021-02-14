@@ -16,16 +16,18 @@ typedef unsigned int ifnet_ctl_cmd_t;
 //
 #include "help_ifconfig.h"
 
-#define DebugLog(x, args...) \
-if(1) { \
-    thread_t new_thread = current_thread(); \
-    uint64_t new_thread_id = thread_tid(new_thread); \
-    kprintf(x " tid = %llu", args, new_thread_id); \
-    IOSleep(1000); \
-}
+//#define DebugLog(x, args...) \
+//if(1) { \
+//    thread_t new_thread = current_thread(); \
+//    uint64_t new_thread_id = thread_tid(new_thread); \
+//    kprintf(x " tid = %llu", args, new_thread_id); \
+//    IOSleep(1000); \
+//}
 
 
 extern struct pci_dev *_pdev;
+
+struct wpa_scan_results;
 
 enum {
     kIOMessageNetworkChanged,
@@ -215,6 +217,7 @@ public:
     int chanspec2applechannel(int flags);
     struct ieee80211_nodereq* findScanResult(apple80211_assoc_data* ad);
     IOReturn scanConvertResult(struct ieee80211_nodereq *nr, struct apple80211_scan_result* oneResult);
+    IOReturn scanConvertResult(struct apple80211_scan_result* oneResult);
     
     void setLinkState(int linkState);
     bool isConnected();
@@ -275,6 +278,7 @@ public:
     
     OSArray* scanResults;
     uint32_t scanIndex;
+    struct wpa_scan_results *res;
 
     void* if_softc;
     bool firstUp = true;
@@ -312,7 +316,7 @@ public:
     int times = 0;
     
     
-    
+    char fw_vername[APPLE80211_MAX_VERSION_LEN];
     
 //    struct _ifreq ifr;
 

@@ -61,15 +61,22 @@ void queue_work_run(void* tqarg, wait_result_t waitResult)
             
             list_del(&work->entry);
             
-            clear_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work));
+//            clear_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work));
+            
+            kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
+            
+            if (!test_and_clear_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))){
+                workqueue_mutex_unlock(&wq->mutex);
+                continue;
+            }
             
             workqueue_mutex_unlock(&wq->mutex);
             
-            kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
             if (work->func) {
+//                kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
                 (*work->func)(work);
+//                kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s end", __FUNCTION__, __LINE__, wq->name, work->func_name);
             }
-            kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s end", __FUNCTION__, __LINE__, wq->name, work->func_name);
 //            kfree(work);
         }
         
@@ -95,7 +102,7 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
     vsnprintf(wq->name, sizeof(wq->name), fmt, args);
     va_end(args);
     
-    kprintf("-----%s: line = %d, fmt = %s, wq->name = %s end", __FUNCTION__, __LINE__, fmt, wq->name);
+    DebugLog("-----%s: line = %d, fmt = %s, wq->name = %s end", __FUNCTION__, __LINE__, fmt, wq->name);
     
     INIT_LIST_HEAD(&wq->list);
 
@@ -110,7 +117,7 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
 void __queue_work(int cpu, struct workqueue_struct *wq,
                          struct work_struct *work)
 {
-    kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
+//    kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
     workqueue_mutex_lock(&wq->mutex);
     list_add_tail(&work->entry, &wq->list);
     IORecursiveLockWakeup(wq->mutex.lock, &wq->work_color, true);
@@ -137,7 +144,7 @@ bool queue_work_on(int cpu, struct workqueue_struct *wq,
     
 //    local_irq_save(flags);
     
-    kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
+//    kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
     if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
         __queue_work(cpu, wq, work);
         ret = true;
@@ -174,7 +181,7 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
     WARN_ON_ONCE(timer_pending(timer));
     WARN_ON_ONCE(!list_empty(&work->entry));
 
-    kprintf("--%s: line = %d, timer->func_name = %s, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, timer->func_name, wq->name, work->func_name);
+    DebugLog("--%s: line = %d, timer->func_name = %s, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, timer->func_name, wq->name, work->func_name);
     /*
      * If @delay is 0, queue @dwork->work immediately.  This is for
      * both optimization and correctness.  The earliest @timer can
@@ -189,7 +196,7 @@ static void __queue_delayed_work(int cpu, struct workqueue_struct *wq,
     dwork->wq = wq;
     dwork->cpu = cpu;
     timer->expires = jiffies + delay;
-    kprintf("--%s: line = %d, timer->func_name = %s, timer->expires = %lu, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, timer->func_name, timer->expires, wq->name, work->func_name);
+    DebugLog("--%s: line = %d, timer->func_name = %s, timer->expires = %lu, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, timer->func_name, timer->expires, wq->name, work->func_name);
 
     if (unlikely(cpu != WORK_CPU_UNBOUND))
         add_timer_on(timer, cpu);
@@ -219,8 +226,9 @@ bool queue_delayed_work_on(int cpu, struct workqueue_struct *wq,
     /* read the comment in __queue_work() */
 //    local_irq_save(flags);
 
+    DebugLog("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
     if (!test_and_set_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))) {
-        kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
+        DebugLog("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
         __queue_delayed_work(cpu, wq, dwork, delay);
         ret = true;
     }
@@ -381,6 +389,16 @@ static bool __cancel_work(struct work_struct *work, bool is_dwork)
 {
 //    unsigned long flags;
     int ret = true;
+    
+    struct delayed_work *dwork = container_of(work, struct delayed_work, work);
+    struct timer_list *timer = &dwork->timer;
+    
+    if (is_dwork) {
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+        cancel_timer(timer);
+    }
+    
+    clear_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work));
 
 //    do {
 //        ret = try_to_grab_pending(work, is_dwork, &flags);
@@ -399,6 +417,17 @@ static bool __cancel_work_timer(struct work_struct *work, bool is_dwork)
 //    static DECLARE_WAIT_QUEUE_HEAD(cancel_waitq);
 //    unsigned long flags;
     int ret = true;
+    
+    struct delayed_work *dwork = container_of(work, struct delayed_work, work);
+    struct timer_list *timer = &dwork->timer;
+    
+    if (is_dwork) {
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+        cancel_timer(timer);
+    }
+    
+    clear_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work));
+    
 //
 //    do {
 //        ret = try_to_grab_pending(work, is_dwork, &flags);
@@ -534,7 +563,7 @@ EXPORT_SYMBOL_GPL(cancel_work_sync);
  */
 bool flush_delayed_work(struct delayed_work *dwork)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 //    local_irq_disable();
     if (del_timer_sync(&dwork->timer))
         __queue_work(dwork->cpu, dwork->wq, &dwork->work);

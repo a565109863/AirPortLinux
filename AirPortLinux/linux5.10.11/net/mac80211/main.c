@@ -893,7 +893,7 @@ static int ieee80211_init_cipher_suites(struct ieee80211_local *local)
 
 int ieee80211_register_hw(struct ieee80211_hw *hw)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = hw_to_local(hw);
     int result, i;
     int band;

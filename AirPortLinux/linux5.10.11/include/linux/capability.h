@@ -385,4 +385,43 @@ static inline bool capable(int cap)
     return true;
 }
 
+
+static inline bool has_capability(struct task_struct *t, int cap)
+{
+    return true;
+}
+static inline bool has_ns_capability(struct task_struct *t,
+                  struct user_namespace *ns, int cap)
+{
+    return true;
+}
+static inline bool has_capability_noaudit(struct task_struct *t, int cap)
+{
+    return true;
+}
+static inline bool has_ns_capability_noaudit(struct task_struct *t,
+                      struct user_namespace *ns, int cap)
+{
+    return true;
+}
+static inline bool ns_capable(struct user_namespace *ns, int cap)
+{
+    return true;
+}
+static inline bool ns_capable_noaudit(struct user_namespace *ns, int cap)
+{
+    return true;
+}
+static inline bool ns_capable_setid(struct user_namespace *ns, int cap)
+{
+    return true;
+}
+
+static bool file_ns_capable(const struct file *file, struct user_namespace *ns,
+            int cap)
+{
+    return true;
+}
+EXPORT_SYMBOL(file_ns_capable);
+
 #endif /* _UAPI_LINUX_CAPABILITY_H */

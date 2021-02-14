@@ -611,7 +611,7 @@ static struct iwl_op_mode *
 iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 		      const struct iwl_fw *fw, struct dentry *dbgfs_dir)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct ieee80211_hw *hw;
 	struct iwl_op_mode *op_mode;
 	struct iwl_mvm *mvm;
@@ -841,7 +841,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 	}
 
 	scan_size = iwl_mvm_scan_size(mvm);
-    kprintf("--%s: line = %d scan_size = %d", __FUNCTION__, __LINE__, scan_size);
+    DebugLog("--%s: line = %d scan_size = %d", __FUNCTION__, __LINE__, scan_size);
 
 	mvm->scan_cmd = kmalloc(scan_size, GFP_KERNEL);
 	if (!mvm->scan_cmd)
@@ -868,7 +868,7 @@ iwl_op_mode_mvm_start(struct iwl_trans *trans, const struct iwl_cfg *cfg,
 
 	iwl_mvm_toggle_tx_ant(mvm, &mvm->mgmt_last_antenna_idx);
 
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	return op_mode;
 
  out_free:
@@ -1003,7 +1003,6 @@ static void iwl_mvm_rx_common(struct iwl_mvm *mvm,
 			      struct iwl_rx_cmd_buffer *rxb,
 			      struct iwl_rx_packet *pkt)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	int i;
 	union iwl_dbg_tlv_tp_data tp_data = { .fw_pkt = pkt };
 
@@ -1017,7 +1016,6 @@ static void iwl_mvm_rx_common(struct iwl_mvm *mvm,
 	 * access to it in the notification wait entry.
 	 */
 	iwl_notification_wait_notify(&mvm->notif_wait, pkt);
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
 
 	for (i = 0; i < ARRAY_SIZE(iwl_mvm_rx_handlers); i++) {
 		const struct iwl_rx_handlers *rx_h = &iwl_mvm_rx_handlers[i];
@@ -1027,7 +1025,7 @@ static void iwl_mvm_rx_common(struct iwl_mvm *mvm,
 			continue;
 
 		if (rx_h->context == RX_HANDLER_SYNC) {
-            kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+            DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 			rx_h->fn(mvm, rxb);
 			return;
 		}
@@ -1037,7 +1035,7 @@ static void iwl_mvm_rx_common(struct iwl_mvm *mvm,
 		if (!entry)
 			return;
 
-        kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+        DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 		entry->rxb._page = rxb_steal_page(rxb);
 		entry->rxb._offset = rxb->_offset;
 		entry->rxb._rx_page_order = rxb->_rx_page_order;
@@ -1055,7 +1053,7 @@ static void iwl_mvm_rx(struct iwl_op_mode *op_mode,
 		       struct napi_struct *napi,
 		       struct iwl_rx_cmd_buffer *rxb)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
 	struct iwl_mvm *mvm = IWL_OP_MODE_GET_MVM(op_mode);
 	u16 cmd = WIDE_ID(pkt->hdr.group_id, pkt->hdr.cmd);
@@ -1072,7 +1070,7 @@ static void iwl_mvm_rx_mq(struct iwl_op_mode *op_mode,
 			  struct napi_struct *napi,
 			  struct iwl_rx_cmd_buffer *rxb)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
 	struct iwl_mvm *mvm = IWL_OP_MODE_GET_MVM(op_mode);
 	u16 cmd = WIDE_ID(pkt->hdr.group_id, pkt->hdr.cmd);

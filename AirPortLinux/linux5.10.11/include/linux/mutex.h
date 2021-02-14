@@ -40,6 +40,11 @@ static void __mutex_unlock(struct mutex *m, const char *name, const char *fn) {
 #define mutex_init(m)
 #define mutex_lock(m)
 #define mutex_unlock(m)
+#define mutex_trylock(m)    0
+#define mutex_is_locked(m)  0
+
+#define write_lock_bh(x)
+#define write_unlock_bh(x)
 
 
 static void mutex_destroy(struct mutex *m) {

@@ -11,6 +11,7 @@
 
 #include <linux/if_ether.h>
 #include <linux/netdevice.h>
+#include <linux/rtnetlink.h>
 
 #ifndef ETH_P_TDLS
 #define ETH_P_TDLS    0x890D          /* TDLS */

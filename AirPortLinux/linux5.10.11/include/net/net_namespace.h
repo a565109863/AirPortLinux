@@ -80,7 +80,7 @@ struct user_namespace {
 //#ifdef CONFIG_PERSISTENT_KEYRINGS
 //    struct key        *persistent_keyring_register;
 //#endif
-//    struct work_struct    work;
+    struct work_struct    work;
 //#ifdef CONFIG_SYSCTL
 //    struct ctl_table_set    set;
 //    struct ctl_table_header *sysctls;
@@ -273,6 +273,8 @@ extern struct net init_net;
 //#endif /* CONFIG_NET_NS */
 
 
+extern struct user_namespace init_user_ns;
+
 extern struct list_head net_namespace_list;
 int net_ns_init(void);
 
@@ -409,7 +411,7 @@ static inline struct net *read_pnet(const possible_net_t *pnet)
 int peernet2id_alloc(struct net *net, struct net *peer, gfp_t gfp);
 int peernet2id(const struct net *net, struct net *peer);
 bool peernet_has_id(const struct net *net, struct net *peer);
-//struct net *get_net_ns_by_id(const struct net *net, int id);
+struct net *get_net_ns_by_id(const struct net *net, int id);
 
 struct pernet_operations {
     struct list_head list;
@@ -529,4 +531,32 @@ int register_pernet_device(struct pernet_operations *);
 //    atomic_inc(&net->fnhe_genid);
 //}
 //
+
+
+struct net_generic {
+    union {
+        struct {
+            unsigned int len;
+            struct rcu_head rcu;
+        } s;
+        
+        void *ptr[0];
+    };
+};
+
+static inline void *net_generic(const struct net *net, unsigned int id)
+{
+    struct net_generic *ng;
+    void *ptr;
+    
+    rcu_read_lock();
+    ng = rcu_dereference(net->gen);
+    ptr = ng->ptr[id];
+    rcu_read_unlock();
+    
+    return ptr;
+}
+
+
+
 #endif /* __NET_NET_NAMESPACE_H */

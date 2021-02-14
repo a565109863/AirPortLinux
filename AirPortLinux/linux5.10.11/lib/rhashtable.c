@@ -115,24 +115,30 @@ static union nested_table *nested_table_alloc(struct rhashtable *ht,
                           union nested_table __rcu **prev,
                           bool leaf)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     union nested_table *ntbl;
     int i;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     ntbl = rcu_dereference(*prev);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (ntbl)
         return ntbl;
 
     ntbl = (union nested_table *)kzalloc(PAGE_SIZE, GFP_ATOMIC);
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (ntbl && leaf) {
         for (i = 0; i < PAGE_SIZE / sizeof(ntbl[0]); i++)
             INIT_RHT_NULLS_HEAD(ntbl[i].bucket);
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (cmpxchg((union nested_table **)prev, NULL, ntbl) == NULL)
         return ntbl;
     /* Raced with another thread. */
     kfree(ntbl);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     return rcu_dereference(*prev);
 }
 
@@ -317,7 +323,7 @@ static int rhashtable_rehash_table(struct rhashtable *ht)
         err = rhashtable_rehash_chain(ht, old_hash);
         if (err)
             return err;
-//        cond_resched();
+        cond_resched();
     }
 
     /* Publish the new table pointer. */
@@ -961,8 +967,7 @@ static size_t rounded_hashtable_size(const struct rhashtable_params *params)
 
 static u32 rhashtable_jhash2(const void *key, u32 length, u32 seed)
 {
-//    return jhash2(key, length, seed);
-    return 0;
+    return jhash2((const u32 *)key, length, seed);
 }
 
 /**
@@ -1138,7 +1143,7 @@ restart:
         for (i = 0; i < tbl->size; i++) {
             struct rhash_head *pos, *next;
 
-//            cond_resched();
+            cond_resched();
             for (pos = rht_ptr_exclusive(rht_bucket(tbl, i)),
                  next = !rht_is_a_nulls(pos) ?
                     rht_dereference(pos->next, ht) : NULL;
@@ -1210,6 +1215,7 @@ struct rhash_lock_head **rht_bucket_nested_insert(struct rhashtable *ht,
                           struct bucket_table *tbl,
                           unsigned int hash)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     const unsigned int shift = PAGE_SHIFT - ilog2(sizeof(void *));
     unsigned int index = hash & ((1 << tbl->nest) - 1);
     unsigned int size = tbl->size >> tbl->nest;
@@ -1220,6 +1226,7 @@ struct rhash_lock_head **rht_bucket_nested_insert(struct rhashtable *ht,
     ntbl = nested_table_alloc(ht, &ntbl[index].table,
                   size <= (1 << shift));
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     while (ntbl && size > (1 << shift)) {
         index = hash & ((1 << shift) - 1);
         size >>= shift;

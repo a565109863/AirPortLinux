@@ -1363,6 +1363,7 @@ struct genl_family genl_ctrl = {
 
 static int __net_init genl_pernet_init(struct net *net)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct netlink_kernel_cfg cfg = {
         .input        = genl_rcv,
         .flags        = NL_CFG_F_NONROOT_RECV,
@@ -1371,12 +1372,20 @@ static int __net_init genl_pernet_init(struct net *net)
     /* we'll bump the group number right afterwards */
     net->genl_sock = netlink_kernel_create(net, NETLINK_GENERIC, &cfg);
 
+    DebugLog("--%s: line = %d !net->genl_sock = %d", __FUNCTION__, __LINE__, !net->genl_sock);
+    DebugLog("--%s: line = %d !net->genl_sock = %d", __FUNCTION__, __LINE__, !net->genl_sock);
+    DebugLog("--%s: line = %d !net->genl_sock = %d", __FUNCTION__, __LINE__, !net->genl_sock);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    
     if (!net->genl_sock && net_eq(net, &init_net))
         panic("GENL: Cannot initialize generic netlink\n");
-
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!net->genl_sock)
         return -ENOMEM;
-
+    
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     return 0;
 }
 
@@ -1391,7 +1400,7 @@ static struct pernet_operations genl_pernet_ops = {
     .exit = genl_pernet_exit,
 };
 
-static int __init genl_init(void)
+int __init genl_init(void)
 {
     int err;
 

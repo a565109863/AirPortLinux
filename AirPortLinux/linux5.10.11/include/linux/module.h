@@ -9,8 +9,6 @@
 #ifndef module_h
 #define module_h
 
-#define request_module kprintf
-
 #define module_param(x, y, z)
 #define MODULE_PARM_DESC(x, y)
 
@@ -47,6 +45,8 @@
 
 #define KBUILD_MODNAME "intelwifi"
 #define THIS_MODULE NULL
+
+#define MODULE_NAME_LEN 64
 
 
 #endif /* module_h */

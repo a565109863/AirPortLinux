@@ -216,7 +216,7 @@ static void cfg80211_rfkill_poll(struct rfkill *rfkill, void *data)
 {
     struct cfg80211_registered_device *rdev = (typeof(rdev))data;
 
-//    rdev_rfkill_poll(rdev);
+    rdev_rfkill_poll(rdev);
 }
 
 void cfg80211_stop_p2p_device(struct cfg80211_registered_device *rdev,
@@ -491,7 +491,7 @@ use_default_name:
 //    device_initialize(&rdev->wiphy.dev);
 //    rdev->wiphy.dev.class = &ieee80211_class;
     rdev->wiphy.dev.platform_data = rdev;
-//    device_enable_async_suspend(&rdev->wiphy.dev);
+    device_enable_async_suspend(&rdev->wiphy.dev);
 
     INIT_WORK(&rdev->destroy_work, cfg80211_destroy_iface_wk);
     INIT_WORK(&rdev->sched_scan_stop_wk, cfg80211_sched_scan_stop_wk);
@@ -508,15 +508,15 @@ use_default_name:
 
     wiphy_net_set(&rdev->wiphy, &init_net);
 
-//    rdev->rfkill_ops.set_block = cfg80211_rfkill_set_block;
-//    rdev->rfkill = rfkill_alloc(dev_name(&rdev->wiphy.dev),
-//                   &rdev->wiphy.dev, RFKILL_TYPE_WLAN,
-//                   &rdev->rfkill_ops, rdev);
+    rdev->rfkill_ops.set_block = cfg80211_rfkill_set_block;
+    rdev->rfkill = rfkill_alloc(dev_name(&rdev->wiphy.dev),
+                   &rdev->wiphy.dev, RFKILL_TYPE_WLAN,
+                   &rdev->rfkill_ops, rdev);
 
-//    if (!rdev->rfkill) {
-//        wiphy_free(&rdev->wiphy);
-//        return NULL;
-//    }
+    if (!rdev->rfkill) {
+        wiphy_free(&rdev->wiphy);
+        return NULL;
+    }
 
     INIT_WORK(&rdev->rfkill_block, cfg80211_rfkill_block_work);
     INIT_WORK(&rdev->conn_work, cfg80211_conn_work);
@@ -974,13 +974,13 @@ int wiphy_register(struct wiphy *wiphy)
     rdev->wiphy.registered = true;
     rtnl_unlock();
 
-//    res = rfkill_register(rdev->rfkill);
-//    if (res) {
-//        rfkill_destroy(rdev->rfkill);
-//        rdev->rfkill = NULL;
-//        wiphy_unregister(&rdev->wiphy);
-//        return res;
-//    }
+    res = rfkill_register(rdev->rfkill);
+    if (res) {
+        rfkill_destroy(rdev->rfkill);
+        rdev->rfkill = NULL;
+        wiphy_unregister(&rdev->wiphy);
+        return res;
+    }
 
     return 0;
 }

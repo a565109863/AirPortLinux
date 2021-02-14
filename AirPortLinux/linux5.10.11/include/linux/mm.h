@@ -104,7 +104,7 @@ static void __free_pages_ok(struct page *page, unsigned int order)
 
 static inline void free_the_page(struct page *page, unsigned int order)
 {
-    kprintf("--%s: line = %d order = %d", __FUNCTION__, __LINE__, order);
+//    kprintf("--%s: line = %d order = %d", __FUNCTION__, __LINE__, order);
     if (order == 0)        /* Via pcp? */
         free_unref_page(page);
     else
@@ -113,7 +113,7 @@ static inline void free_the_page(struct page *page, unsigned int order)
 
 static void __free_pages(struct page *page, unsigned int order)
 {
-    kprintf("--%s: line = %d order = %d", __FUNCTION__, __LINE__, order);
+//    kprintf("--%s: line = %d order = %d", __FUNCTION__, __LINE__, order);
     if (put_page_testzero(page))
         free_the_page(page, order);
 }

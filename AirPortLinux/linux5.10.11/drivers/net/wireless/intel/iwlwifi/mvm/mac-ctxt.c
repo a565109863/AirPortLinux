@@ -1336,7 +1336,7 @@ static void iwl_mvm_csa_count_down(struct iwl_mvm *mvm,
 void iwl_mvm_rx_beacon_notif(struct iwl_mvm *mvm,
 			     struct iwl_rx_cmd_buffer *rxb)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
 	struct iwl_extended_beacon_notif *beacon = (struct iwl_extended_beacon_notif *)pkt->data;
 	struct iwl_extended_beacon_notif_v5 *beacon_v5 = (struct iwl_extended_beacon_notif_v5 *)pkt->data;

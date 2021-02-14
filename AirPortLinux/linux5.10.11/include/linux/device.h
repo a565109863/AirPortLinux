@@ -203,4 +203,13 @@ devm_request_threaded_irq(struct device *dev, unsigned int irq,
                           unsigned long irqflags, const char *devname,
                           void *dev_id);
 
+
+
+static inline void device_enable_async_suspend(struct device *dev)
+{
+    if (!dev->power.is_prepared)
+        dev->power.async_suspend = true;
+}
+
+
 #endif /* device_h */

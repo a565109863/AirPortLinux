@@ -235,9 +235,9 @@ rfkill_alloc(const char *name,
 
 static inline int __must_check rfkill_register(struct rfkill *rfkill)
 {
-    if (rfkill == (struct rfkill *)ERR_PTR(-ENODEV))
+//    if (rfkill == (struct rfkill *)ERR_PTR(-ENODEV))
         return 0;
-    return -EINVAL;
+//    return -EINVAL;
 }
 
 static inline void rfkill_pause_polling(struct rfkill *rfkill)

@@ -82,11 +82,6 @@
 #define __ro_after_init
 #define _RET_IP_    1
 
-extern inline void prefetchw(const void *ptr)
-{
-    __builtin_prefetch(ptr, 1, 3);
-}
-
 
 
 
@@ -2879,18 +2874,18 @@ EXPORT_SYMBOL(__skb_checksum_complete);
 
 static __wsum warn_crc32c_csum_update(const void *buff, int len, __wsum sum)
 {
-//    net_warn_ratelimited(
-//        "%s: attempt to compute crc32c without libcrc32c.ko\n",
-//        __func__);
+    net_warn_ratelimited(
+        "%s: attempt to compute crc32c without libcrc32c.ko\n",
+        __func__);
     return 0;
 }
 
 static __wsum warn_crc32c_csum_combine(__wsum csum, __wsum csum2,
                        int offset, int len)
 {
-//    net_warn_ratelimited(
-//        "%s: attempt to compute crc32c without libcrc32c.ko\n",
-//        __func__);
+    net_warn_ratelimited(
+        "%s: attempt to compute crc32c without libcrc32c.ko\n",
+        __func__);
     return 0;
 }
 
@@ -5112,8 +5107,8 @@ EXPORT_SYMBOL(skb_checksum_trimmed);
 
 void __skb_warn_lro_forwarding(const struct sk_buff *skb)
 {
-//    net_warn_ratelimited("%s: received packets cannot be forwarded while LRO is enabled\n",
-//                 skb->dev->name);
+    net_warn_ratelimited("%s: received packets cannot be forwarded while LRO is enabled\n",
+                 skb->dev->name);
 }
 EXPORT_SYMBOL(__skb_warn_lro_forwarding);
 

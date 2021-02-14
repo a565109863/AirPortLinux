@@ -377,13 +377,15 @@ static inline struct rhash_head *rht_ptr(
     struct bucket_table *tbl,
     unsigned int hash)
 {
-    return rht_dereference_bucket(__rht_ptr(bkt), tbl, hash);
+    struct rhash_head *_bkt = __rht_ptr(bkt);
+    return (struct rhash_head *)rht_dereference_bucket(_bkt, tbl, hash);
 }
 
 static inline struct rhash_head *rht_ptr_exclusive(
     struct rhash_lock_head *const *bkt)
 {
-    return rcu_dereference_protected(__rht_ptr(bkt), 1);
+    struct rhash_head *_bkt = __rht_ptr(bkt);
+    return (struct rhash_head *)rcu_dereference_protected(_bkt, 1);
 }
 
 static inline void rht_assign_locked(struct rhash_lock_head **bkt,

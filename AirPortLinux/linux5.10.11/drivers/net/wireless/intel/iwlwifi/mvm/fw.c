@@ -339,7 +339,7 @@ static bool iwl_wait_phy_db_entry(struct iwl_notif_wait_data *notif_wait,
 static int iwl_mvm_load_ucode_wait_alive(struct iwl_mvm *mvm,
 					 enum iwl_ucode_type ucode_type)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_notification_wait alive_wait;
 	struct iwl_mvm_alive_data alive_data = {};
 	const struct fw_img *fw;
@@ -600,7 +600,7 @@ static void iwl_mvm_phy_filter_init(struct iwl_mvm *mvm,
 
 static int iwl_send_phy_cfg_cmd(struct iwl_mvm *mvm)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_phy_cfg_cmd_v3 phy_cfg_cmd;
 	enum iwl_ucode_type ucode_type = mvm->fwrt.cur_fw_img;
 	struct iwl_phy_specific_cfg phy_filters = {};
@@ -651,7 +651,7 @@ static int iwl_send_phy_cfg_cmd(struct iwl_mvm *mvm)
 
 int iwl_run_init_mvm_ucode(struct iwl_mvm *mvm, bool read_nvm)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_notification_wait calib_wait;
 	static const u16 init_complete[] = {
 		INIT_COMPLETE_NOTIF,

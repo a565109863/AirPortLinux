@@ -21,6 +21,20 @@ typedef struct {
     u64        v;
 } u64_stats_t;
 
+static inline u64 u64_stats_read(const u64_stats_t *p)
+{
+    return p->v;
+}
+
+static inline void u64_stats_add(u64_stats_t *p, unsigned long val)
+{
+    p->v += val;
+}
+
+static inline void u64_stats_inc(u64_stats_t *p)
+{
+    p->v++;
+}
 
 static inline void u64_stats_init(struct u64_stats_sync *syncp)
 {

@@ -1844,7 +1844,7 @@ int ieee80211_if_add(struct ieee80211_local *local, const char *name,
              struct wireless_dev **new_wdev, enum nl80211_iftype type,
              struct vif_params *params)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct net_device *ndev = NULL;
     struct ieee80211_sub_if_data *sdata = NULL;
     struct txq_info *txqi;
@@ -2086,7 +2086,7 @@ void ieee80211_remove_interfaces(struct ieee80211_local *local)
             list_add(&sdata->list, &wdev_list);
     }
     mutex_unlock(&local->iflist_mtx);
-//    unregister_netdevice_many(&unreg_list);
+    unregister_netdevice_many(&unreg_list);
 
     list_for_each_entry_safe(sdata, tmp, &wdev_list, list) {
         list_del(&sdata->list);

@@ -173,8 +173,7 @@ EXPORT_SYMBOL(sk_ns_capable);
  */
 bool sk_capable(const struct sock *sk, int cap)
 {
-//    return sk_ns_capable(sk, &init_user_ns, cap);
-    return true;
+    return sk_ns_capable(sk, &init_user_ns, cap);
 }
 EXPORT_SYMBOL(sk_capable);
 
@@ -189,8 +188,7 @@ EXPORT_SYMBOL(sk_capable);
  */
 bool sk_net_capable(const struct sock *sk, int cap)
 {
-//    return sk_ns_capable(sk, sock_net(sk)->user_ns, cap);
-    return true;
+    return sk_ns_capable(sk, sock_net(sk)->user_ns, cap);
 }
 EXPORT_SYMBOL(sk_net_capable);
 

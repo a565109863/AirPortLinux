@@ -936,11 +936,15 @@ void ieee80211_queue_delayed_work(struct ieee80211_hw *hw,
                   struct delayed_work *dwork,
                   unsigned long delay)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = hw_to_local(hw);
 
-    if (!ieee80211_can_queue_work(local))
+    if (!ieee80211_can_queue_work(local)) {
+        DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
         return;
+    }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     queue_delayed_work(local->workqueue, dwork, delay);
 }
 EXPORT_SYMBOL(ieee80211_queue_delayed_work);
@@ -1105,8 +1109,8 @@ _ieee802_11_parse_elems_crc(const u8 *start, size_t len, bool action,
             u_int8_t        ni_essid[32];
             memset(ni_essid, 0, 32 * sizeof(u_int8_t));
             memcpy(ni_essid, elems->ssid, elems->ssid_len);
-            ni_essid[elems->ssid_len] = '\0';
-            kprintf("--%s: line = %d irq  len = %d, ssid = %s", __FUNCTION__, __LINE__, elems->ssid_len, ni_essid);
+//            ni_essid[elems->ssid_len] = '\0';
+            DebugLog("--%s: line = %d irq  len = %d, ssid = %s", __FUNCTION__, __LINE__, elems->ssid_len, ni_essid);
             
             break;
         case WLAN_EID_SUPP_RATES:
@@ -1452,7 +1456,7 @@ static size_t ieee802_11_find_bssid_profile(const u8 *start, size_t len,
                            index[2],
                            new_bssid);
             
-            kprintf("---%s new_bssid=%s\n", __FUNCTION__, ether_sprintf((u_char *)&new_bssid));
+            DebugLog("---%s new_bssid=%s\n", __FUNCTION__, ether_sprintf((u_char *)&new_bssid));
             if (ether_addr_equal(new_bssid, bss_bssid)) {
                 found = true;
                 elems->bssid_index_len = index[1];

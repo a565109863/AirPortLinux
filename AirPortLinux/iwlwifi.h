@@ -15,6 +15,11 @@ extern int iwl_drv_init(struct pci_dev *pdev);
 int iwl_mvm_init(void);
 int iwl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *ent);
 
+
+int __init cfg80211_init(void);
+int __init netlink_proto_init(void);
+extern struct pernet_operations netdev_net_ops;
+
 //#include "if_iwm.h"
 //#include "if_wpi.h"
 //#include "if_iwn.h"

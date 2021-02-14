@@ -1385,7 +1385,6 @@ static void _iwl_op_mode_stop(struct iwl_drv *drv)
  */
 static void iwl_req_fw_callback(const struct firmware *ucode_raw, void *context)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_drv *drv = (struct iwl_drv *)context;
 	struct iwl_fw *fw = &drv->fw;
 	struct iwl_ucode_header *ucode;
@@ -1704,7 +1703,7 @@ struct iwl_drv *iwl_drv_start(struct iwl_trans *trans)
 
 	drv->trans = trans;
 	drv->dev = trans->dev;
-    kprintf("--%s: line = %d, drv->trans->cfg->name = %s", __FUNCTION__, __LINE__, drv->trans->cfg->name);
+    DebugLog("--%s: line = %d, drv->trans->cfg->name = %s", __FUNCTION__, __LINE__, drv->trans->cfg->name);
 
 	init_completion(&drv->request_firmware_complete);
 	INIT_LIST_HEAD(&drv->list);

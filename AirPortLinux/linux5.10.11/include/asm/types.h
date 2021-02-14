@@ -72,13 +72,13 @@ typedef IOSimpleLock* spinlock_t;
 //typedef IOPhysicalAddress dma_addr_t;
 
 
-#define DebugLog(x, args...) \
-if(1) { \
-thread_t new_thread = current_thread(); \
-uint64_t new_thread_id = thread_tid(new_thread); \
-kprintf(x " tid = %llu", args, new_thread_id); \
-IOSleep(1000); \
-}
+//#define DebugLog(x, args...) \
+//if(1) { \
+//thread_t new_thread = current_thread(); \
+//uint64_t new_thread_id = thread_tid(new_thread); \
+//kprintf(x " tid = %llu", args, new_thread_id); \
+//IOSleep(1000); \
+//}
 
 
 typedef struct { volatile int counter; } atomic_t;
@@ -177,9 +177,9 @@ int __x = (x);          \
 (__x < 0) ? -__x : __x;     \
 })
 
-
 #define __builtin_expect(x, expected_value) (x)
 #define unlikely(x) __builtin_expect(!!(x), 0)
+#define likely(x) __builtin_expect(!!(x), 1)
 
 #include <net/compat.h>
 
@@ -202,16 +202,6 @@ int __x = (x);          \
 #define EXPORT_SYMBOL(x)
 #define EXPORT_SYMBOL_GPL(x)
 #define NOKPROBE_SYMBOL(x)
-
-#define ASSERT_RTNL()
-
-
-#define pr_emerg                kprintf
-#define pr_warn                 kprintf
-#define pr_warn_ratelimited     kprintf
-#define net_dbg_ratelimited     kprintf
-#define seq_printf(m, arg...)   kprintf(arg)
-
 
 #define might_sleep()
 #define msleep(x) IODelay(x * 1000)
@@ -242,6 +232,7 @@ static int msleep_interruptible(int x)
 #define __bitwise
 #define __force
 #define __init
+#define __ref
 #define __exit
 #define __user
 #define __iomem
@@ -259,6 +250,9 @@ static int msleep_interruptible(int x)
 #define __read_mostly
 
 #define rcu_barrier()
+
+
+#define subsys_initcall(x)
 
 
 typedef __u16 __bitwise __le16;
@@ -428,14 +422,19 @@ static inline int __must_check PTR_ERR_OR_ZERO(__force const void *ptr)
 
 
 #define __rcu
-#define rcu_dereference(x) x
+#define rcu_dereference(p) \
+({ \
+typeof(p) _________p1 = READ_ONCE(p); \
+(_________p1); \
+})
 #define rcu_read_lock()
 #define rcu_read_unlock()
 //#define rcu_dereference_protected(x, y) x
 //#define RCU_INIT_POINTER(x, y) x = y
 
-#define rtnl_lock()
-#define rtnl_unlock()
+//#define rtnl_lock()
+//#define rtnl_unlock()
+#define cond_resched()
 
 #define rcu_access_pointer(x) (x)
 //#define rcu_dereference_check(p, c) p
@@ -452,8 +451,6 @@ static inline int __must_check PTR_ERR_OR_ZERO(__force const void *ptr)
 
 #define struct_size(x, y, z) sizeof(*x) + sizeof(typeof(x->y[0])) * z
 
-#define rtnl_dereference(x) x
-
 #define num_online_cpus() 8
 #define cpumask_next(x, y) 1
 #define cpumask_set_cpu(x, y)
@@ -463,15 +460,6 @@ static inline int __must_check PTR_ERR_OR_ZERO(__force const void *ptr)
 #define IRQF_SHARED 0
 
 #define ksize(x) sizeof(&x)
-
-#define dev_printk(level, dev, fmt...)  kprintf(fmt)
-#define dev_emerg(dev, fmt...)   kprintf(fmt)
-#define dev_alert(dev, fmt...)   kprintf(fmt)
-#define dev_crit(dev, fmt...)    kprintf(fmt)
-#define dev_err(dev, fmt...)     kprintf(fmt)
-#define dev_warn(dev, fmt...)    kprintf(fmt)
-#define dev_notice(dev, fmt...)  kprintf(fmt)
-#define dev_info(dev, fmt...)    kprintf(fmt)
 
 
 #define sizeof_field(TYPE, MEMBER) sizeof((((TYPE *)0)->MEMBER))
@@ -483,8 +471,9 @@ static inline int __must_check PTR_ERR_OR_ZERO(__force const void *ptr)
 #define CONFIG_IWLWIFI_DEBUGFS 1
 #define CONFIG_MAC80211_DEBUGFS 1
 
-#define CONFIG_PM 1
-#define CONFIG_64BIT 1
+#define CONFIG_PM       1
+#define CONFIG_64BIT    1
+//#define CONFIG_RFKILL   1
 
 #define CONFIG_MAC80211_STA_HASH_MAX_SIZE 128
 

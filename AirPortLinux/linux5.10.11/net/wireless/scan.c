@@ -913,6 +913,7 @@ int cfg80211_scan(struct cfg80211_registered_device *rdev)
 void ___cfg80211_scan_done(struct cfg80211_registered_device *rdev,
                bool send_message)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct cfg80211_scan_request *request, *rdev_req;
     struct wireless_dev *wdev;
     struct sk_buff *msg;
@@ -975,6 +976,8 @@ void ___cfg80211_scan_done(struct cfg80211_registered_device *rdev,
 
     kfree(rdev->scan_req);
     rdev->scan_req = NULL;
+    
+    DebugLog("--%s: line = %d, rdev->scan_req = %d, rdev->scan_msg = %d", __FUNCTION__, __LINE__, rdev->scan_req, rdev->scan_msg);
 
     if (!send_message)
         rdev->scan_msg = msg;
@@ -984,6 +987,7 @@ void ___cfg80211_scan_done(struct cfg80211_registered_device *rdev,
 
 void __cfg80211_scan_done(struct work_struct *wk)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct cfg80211_registered_device *rdev;
 
     rdev = container_of(wk, struct cfg80211_registered_device,
@@ -2842,7 +2846,6 @@ ieee80211_bss(struct wiphy *wiphy, struct iw_request_info *info,
           struct cfg80211_internal_bss *bss, char *current_ev,
           char *end_buf)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
     const struct cfg80211_bss_ies *ies;
     struct iw_event iwe;
     const u8 *ie;
@@ -2944,7 +2947,7 @@ ieee80211_bss(struct wiphy *wiphy, struct iw_request_info *info,
                 u_int8_t        ni_essid[32];
                 memset(ni_essid, 0, 32 * sizeof(u_int8_t));
                 memcpy(ni_essid, ((u8 *)ie + 2), iwe.u.data.length);
-                ni_essid[iwe.u.data.length] = '\0';
+//                ni_essid[iwe.u.data.length] = '\0';
                 kprintf("--%s: line = %d irq  len = %d, ssid = %s", __FUNCTION__, __LINE__, iwe.u.data.length, ni_essid);
                 
                 
@@ -3152,7 +3155,9 @@ int cfg80211_wext_giwscan(struct net_device *dev,
 
     if (IS_ERR(rdev))
         return PTR_ERR(rdev);
-
+    
+    DebugLog("--%s: line = %d, rdev->scan_req = %d, rdev->scan_msg = %d", __FUNCTION__, __LINE__, rdev->scan_req, rdev->scan_msg);
+    
     if (rdev->scan_req || rdev->scan_msg)
         return -EAGAIN;
 

@@ -8,6 +8,27 @@
 #include <net/wireless/core.h>
 #include <net/wireless/nl80211.h>
 #include "iwl-trans.h"
+#include "fw/img.h"
+
+struct iwl_drv {
+    struct list_head list;
+    struct iwl_fw fw;
+    
+    struct iwl_op_mode *op_mode;
+    struct iwl_trans *trans;
+    struct device *dev;
+    
+    int fw_index;                   /* firmware we're trying to load */
+    char firmware_name[64];         /* name of firmware file to load */
+    
+    struct completion request_firmware_complete;
+    
+#ifdef CONFIG_IWLWIFI_DEBUGFS
+    struct dentry *dbgfs_drv;
+    struct dentry *dbgfs_trans;
+    struct dentry *dbgfs_op_mode;
+#endif
+};
 
 OSDefineMetaClassAndStructors(AirPortLinux, IOController);
 //OSDefineMetaClassAndStructors(IOKitTimeout, OSObject)
@@ -144,6 +165,12 @@ bool AirPortLinux::start(IOService* provider) {
     this->pdev->dev.dev->fPciDevice = fPciDevice;
     memcpy(this->pdev->dev.name, "AirPortLinux", sizeof(this->pdev->dev.name));
     
+//    netlink_proto_init();
+//    genl_init();
+//    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+//    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
+    
+    netdev_net_ops.init(&init_net);
     cfg80211_init();
     
     int err = iwl_pci_probe(this->pdev, this->pdev->dev.ent);
@@ -151,12 +178,14 @@ bool AirPortLinux::start(IOService* provider) {
         return NULL;
     kprintf("--%s: line = %d err = %d", __FUNCTION__, __LINE__, err);
     
+    struct iwl_trans *iwl_trans = (struct iwl_trans *)pci_get_drvdata(this->pdev);
+    snprintf(this->fw_vername, sizeof(this->fw_vername), "%s version %s", iwl_trans->name, iwl_trans->drv->fw.fw_version);
     
     if (!attachInterface((IONetworkInterface**) &this->iface, true)) {
         panic("AirPortLinux: Failed to attach interface!");
     }
     
-    this->scanResults = OSArray::withCapacity(512); // by default, but it autoexpands
+    this->scanResults = OSArray::withCapacity(5120); // by default, but it autoexpands
     
     this->mediumDict = OSDictionary::withCapacity(1);
     this->addMediumType(kIOMediumIEEE80211Auto, 128000,  MEDIUM_TYPE_AUTO);
@@ -213,7 +242,7 @@ IOReturn AirPortLinux::getHardwareAddress(IOEthernetAddress* addr)
     
     strncpy(ifr.ifr_name, this->ifname, sizeof(ifr.ifr_name));
     ret = ioctl(1, SIOCGIFHWADDR, &ifr);
-    if (ret) {
+    if (ret != 0) {
         return kIOReturnError;
     }
     
@@ -370,12 +399,7 @@ const OSString* AirPortLinux::newVendorString() const {
 }
 
 const OSString* AirPortLinux::newModelString() const {
-    #define kNameLenght 64
-    char modelName[kNameLenght];
-//    snprintf(modelName, kNameLenght, "Intel %s PCI Express Wifi", if_softc.sc_fwname);
-    struct iwl_trans *iwl_trans = (struct iwl_trans *)pci_get_drvdata(this->pdev);
-    return OSString::withCString(iwl_trans->name);
-//    return OSString::withCString(modelName);
+    return OSString::withCString(this->fw_vername);
 }
 
 //const OSString* AirPortLinux::newRevisionString() const {

@@ -17,15 +17,12 @@
 int ioctl(int sk, unsigned int cmd, void *ifr)
 {
     int ret = sock_ioctl(sk, cmd, (unsigned long)ifr);
-    if (ret) {
-        return -1;
-    }
-    return 0;
+    return ret;
 }
 
 int ifup(const char *ifname)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct _ifreq ifr = {};
     int sk, ret;
 
@@ -94,7 +91,7 @@ void scan(const char *ifname)
 {
     struct sk_buff *msg;
     
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     
     msg = nlmsg_new(sizeof(struct nlmsghdr), 123);
     if (!msg)
@@ -124,7 +121,7 @@ void scan(const char *ifname)
     
     genl_rcv(msg);
     
-    kprintf("--%s: line = %d end", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d end", __FUNCTION__, __LINE__);
     
 nla_put_failure:
     return ;

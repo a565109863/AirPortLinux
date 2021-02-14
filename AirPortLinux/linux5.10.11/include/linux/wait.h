@@ -76,4 +76,53 @@ static inline void __add_wait_queue_entry_tail(struct wait_queue_head *wq_head, 
 }
 
 
+
+/*
+ * wake flags
+ */
+#define WF_SYNC            0x01        /* Waker goes to sleep after wakeup */
+#define WF_FORK            0x02        /* Child wakeup after fork */
+#define WF_MIGRATED        0x04        /* Internal use, task got migrated */
+#define WF_ON_CPU        0x08        /* Wakee is on_cpu */
+
+
+
+extern void add_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
+extern void add_wait_queue_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
+extern void remove_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
+
+static inline void __add_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
+{
+    list_add(&wq_entry->entry, &wq_head->head);
+}
+
+static inline void
+__remove_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
+{
+    list_del(&wq_entry->entry);
+}
+
+long wait_woken(struct wait_queue_entry *wq_entry, unsigned mode, long timeout);
+int woken_wake_function(struct wait_queue_entry *wq_entry, unsigned mode, int sync, void *key);
+int autoremove_wake_function(struct wait_queue_entry *wq_entry, unsigned mode, int sync, void *key);
+
+extern void *current;
+
+#define DEFINE_WAIT_FUNC(name, function)                    \
+    struct wait_queue_entry name = {                    \
+        ._private    = current,                    \
+        .func        = function,                    \
+        .entry        = LIST_HEAD_INIT((name).entry),            \
+    }
+
+#define DEFINE_WAIT(name) DEFINE_WAIT_FUNC(name, autoremove_wake_function)
+
+#define init_wait(wait)                                \
+    do {                                    \
+        (wait)->_private = current;                    \
+        (wait)->func = autoremove_wake_function;            \
+        INIT_LIST_HEAD(&(wait)->entry);                    \
+        (wait)->flags = 0;                        \
+    } while (0)
+
 #endif /* linux_wait_h */

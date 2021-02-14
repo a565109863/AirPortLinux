@@ -10,6 +10,7 @@
 #define timer_h
 
 #include <linux/types.h>
+#include <linux/bug.h>
 #include <linux/jiffies.h>
 #include <linux/debugfs.h>
 
@@ -104,6 +105,7 @@ int mod_timer(struct timer_list *timer, unsigned long expires);
 int timer_pending(const struct timer_list * timer);
 #define del_timer_sync(t)        del_timer(t)
 
+void cancel_timer(struct timer_list *t);
 
 
 
@@ -172,7 +174,7 @@ void __sched usleep_range(unsigned long min, unsigned long max)
 {
     UInt32 r = random();
     
-    kprintf("--%s: line = %d r = %lu", __FUNCTION__, __LINE__, (min + r % (max - min)));
+    DebugLog("--%s: line = %d r = %lu", __FUNCTION__, __LINE__, (min + r % (max - min)));
     udelay((min + r % (max - min)));
 //    ktime_t exp = ktime_add_us(ktime_get(), min);
 //    u64 delta = (u64)(max - min) * NSEC_PER_USEC;

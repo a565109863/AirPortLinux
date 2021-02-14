@@ -382,6 +382,7 @@ EXPORT_SYMBOL(idr_replace);
 int ida_alloc_range(struct ida *ida, unsigned int min, unsigned int max,
                     gfp_t gfp)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     XA_STATE(xas, &ida->xa, min / IDA_BITMAP_BITS);
     unsigned bit = min % IDA_BITMAP_BITS;
     unsigned long flags;

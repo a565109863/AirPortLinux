@@ -306,7 +306,7 @@ bool queue_work_on(int cpu, struct workqueue_struct *wq,
 static inline bool queue_work(struct workqueue_struct *wq,
                   struct work_struct *work)
 {
-    kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
+//    kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
     return queue_work_on(WORK_CPU_UNBOUND, wq, work);
 }
 
@@ -446,7 +446,7 @@ static inline bool schedule_work_on(int cpu, struct work_struct *work)
  */
 static inline bool schedule_work(struct work_struct *work)
 {
-    kprintf("--%s: line = %d irq work->func_name = %s", __FUNCTION__, __LINE__, work->func_name);
+    DebugLog("--%s: line = %d irq work->func_name = %s", __FUNCTION__, __LINE__, work->func_name);
     return queue_work(system_wq, work);
 }
 

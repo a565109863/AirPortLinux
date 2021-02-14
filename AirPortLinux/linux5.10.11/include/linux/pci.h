@@ -29,10 +29,10 @@
 //#include <linux/pci_ids.h>
 #include <linux/pci_regs.h>
 
-#define pci_err(d, arg...) kprintf(arg)
+#define pci_err(d, arg...)  kprintf(arg)
 #define pci_info(d, arg...) kprintf(arg)
 #define pci_warn(d, arg...) kprintf(arg)
-#define pci_dbg(d, arg...) kprintf(arg)
+#define pci_dbg(d, arg...)  kprintf(arg)
 
 
 
@@ -523,9 +523,7 @@ static int pcim_iomap_regions_request_all(struct pci_dev *pdev, int mask,
 
 void __iomem * const *pcim_iomap_table(struct pci_dev *pdev);
 
-static struct pci_dev *to_pci_dev(struct device *device) {
-    return (struct pci_dev *)device->driver_data;
-}
+#define    to_pci_dev(n) container_of(n, struct pci_dev, dev)
 
 static
 int pci_disable_link_state(struct pci_dev *pdev, int state)

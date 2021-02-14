@@ -113,4 +113,92 @@
 #define PF_XDP        AF_XDP
 #define PF_MAX        AF_MAX
 
+
+/*
+ * Desired design of maximum size and alignment (see RFC2553)
+ */
+#define _K_SS_MAXSIZE    128    /* Implementation specific max size */
+#define _K_SS_ALIGNSIZE    (__alignof__ (struct sockaddr *))
+                /* Implementation specific desired alignment */
+
+typedef unsigned short __kernel_sa_family_t;
+
+struct __kernel_sockaddr_storage {
+    __kernel_sa_family_t    ss_family;        /* address family */
+    /* Following field(s) are implementation specific */
+    char        __data[_K_SS_MAXSIZE - sizeof(unsigned short)];
+                /* space to achieve desired size, */
+                /* _SS_MAXSIZE value minus size of ss_family */
+} __attribute__ ((aligned(_K_SS_ALIGNSIZE)));    /* force desired alignment */
+
+
+#define __sockaddr_check_size(size)    \
+    BUILD_BUG_ON(((size) > sizeof(struct __kernel_sockaddr_storage)))
+
+
+
+
+/* Setsockoptions(2) level. Thanks to BSD these must match IPPROTO_xxx */
+#define SOL_IP        0
+/* #define SOL_ICMP    1    No-no-no! Due to Linux :-) we cannot use SOL_ICMP=1 */
+#define SOL_TCP        6
+#define SOL_UDP        17
+#define SOL_IPV6    41
+#define SOL_ICMPV6    58
+#define SOL_SCTP    132
+#define SOL_UDPLITE    136     /* UDP-Lite (RFC 3828) */
+#define SOL_RAW        255
+#define SOL_IPX        256
+#define SOL_AX25    257
+#define SOL_ATALK    258
+#define SOL_NETROM    259
+#define SOL_ROSE    260
+#define SOL_DECNET    261
+#define    SOL_X25        262
+#define SOL_PACKET    263
+#define SOL_ATM        264    /* ATM layer (cell level) */
+#define SOL_AAL        265    /* ATM Adaption Layer (packet level) */
+#define SOL_IRDA        266
+#define SOL_NETBEUI    267
+#define SOL_LLC        268
+#define SOL_DCCP    269
+#define SOL_NETLINK    270
+#define SOL_TIPC    271
+#define SOL_RXRPC    272
+#define SOL_PPPOL2TP    273
+#define SOL_BLUETOOTH    274
+#define SOL_PNPIPE    275
+#define SOL_RDS        276
+#define SOL_IUCV    277
+#define SOL_CAIF    278
+#define SOL_ALG        279
+#define SOL_NFC        280
+#define SOL_KCM        281
+#define SOL_TLS        282
+#define SOL_XDP        283
+
+/* IPX options */
+#define IPX_TYPE    1
+
+//extern int move_addr_to_kernel(void __user *uaddr, int ulen, struct sockaddr_storage *kaddr);
+extern int put_cmsg(struct msghdr*, int level, int type, int len, void *data);
+
+
+//int netlink_send(struct sock *sock, int group, u16 type, void *msg, int len,
+//struct net_device *dev);
+//
+//#define call_int_hook(FUNC, g, sk, skb) (netlink_send(FUNC, IRC, __VA_ARGS__))
+
+static inline int security_netlink_send(struct sock *sk, struct sk_buff *skb)
+{
+//    return call_int_hook(netlink_send, 0, sk, skb);
+    return 0;
+}
+
+
+static inline void sock_prot_inuse_add(struct net *net, struct proto *prot,
+        int inc)
+{
+}
+
 #endif /* socket_h */

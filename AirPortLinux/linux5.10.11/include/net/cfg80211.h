@@ -22,8 +22,6 @@
 #include <linux/net.h>
 #include <net/regulatory.h>
 
-int __init cfg80211_init(void);
-
 /**
  * DOC: Introduction
  *

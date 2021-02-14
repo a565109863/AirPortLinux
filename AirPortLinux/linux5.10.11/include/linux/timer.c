@@ -25,9 +25,9 @@ void IOTimeout::timeout_run(OSObject* obj, IOTimerEventSource* timer)
     if (vt == NULL) {
         return;
     }
-    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->func_name);
+//    kprintf("--%s: line = %d, fn = %s", __FUNCTION__, __LINE__, vt->tl->func_name);
     vt->tl->function(vt->tl);
-    kprintf("--%s: line = %d, fn = %s end", __FUNCTION__, __LINE__, vt->tl->func_name);
+//    kprintf("--%s: line = %d, fn = %s end", __FUNCTION__, __LINE__, vt->tl->func_name);
 }
 
 void init_timer_key(struct timer_list *timer,
@@ -71,7 +71,7 @@ int __mod_timer(struct timer_list *timer, unsigned long expires, int flag)
  */
 void add_timer_on(struct timer_list *timer, int cpu)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     BUG_ON(timer_pending(timer) || !timer->function);
     
     unsigned long expires = 0;
@@ -96,7 +96,7 @@ EXPORT_SYMBOL_GPL(add_timer_on);
  */
 void add_timer(struct timer_list *timer)
 {
-    kprintf("--%s: line = %d, timer->expires = %lu", __FUNCTION__, __LINE__, timer->expires);
+    DebugLog("--%s: line = %d, timer->expires = %lu", __FUNCTION__, __LINE__, timer->expires);
     BUG_ON(timer_pending(timer));
     mod_timer(timer, timer->expires);
 }
@@ -117,8 +117,10 @@ int del_timer(struct timer_list *timer)
 {
     int ret = 0;
 
-    if (timer_pending(timer)) {
+    if (timer && timer->vt && timer->vt->timer) {
+//        kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
         timer->vt->timer->cancelTimeout();
+        ret = 1;
     }
 
     return ret;
@@ -135,6 +137,15 @@ int timer_pending(const struct timer_list * timer)
     return (timer && timer->vt && timer->vt->timer && timer->vt->timer->onThread() && (!timer->vt->timer->checkForWork()));
 }
 
+void cancel_timer(struct timer_list *t)
+{
+    if (!READ_ONCE(t->expires)){
+        return;
+    }
+    
+    del_timer(t);
+    WRITE_ONCE(t->expires, 0);
+}
 
 
 static void do_init_timer(struct timer_list *timer,

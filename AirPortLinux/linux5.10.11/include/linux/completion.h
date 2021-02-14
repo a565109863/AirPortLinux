@@ -34,7 +34,7 @@ static void complete(struct completion *x)
     IOLockWakeup(x->lock, x->event, true);
     IOLockUnlock(x->lock);
     
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     
 //    unsigned long flags;
 //

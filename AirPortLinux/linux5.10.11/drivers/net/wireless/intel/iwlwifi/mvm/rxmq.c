@@ -299,7 +299,7 @@ static void iwl_mvm_pass_packet_to_mac80211(struct iwl_mvm *mvm,
 					    struct ieee80211_sta *sta,
 					    bool csi)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	if (iwl_mvm_check_pn(mvm, skb, queue, sta))
 		kfree_skb(skb);
 	else
@@ -581,7 +581,7 @@ static void iwl_mvm_release_frames(struct iwl_mvm *mvm,
 				   struct iwl_mvm_reorder_buffer *reorder_buf,
 				   u16 nssn, u32 flags)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct iwl_mvm_reorder_buf_entry *entries =
 		&baid_data->entries[reorder_buf->queue *
 				    baid_data->entries_per_queue];
@@ -719,7 +719,7 @@ void iwl_mvm_reorder_timer_expired(struct timer_list *t)
 static void iwl_mvm_del_ba(struct iwl_mvm *mvm, int queue,
 			   struct iwl_mvm_delba_data *data)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct iwl_mvm_baid_data *ba_data;
 	struct ieee80211_sta *sta;
 	struct iwl_mvm_reorder_buffer *reorder_buf;
@@ -758,7 +758,7 @@ static void iwl_mvm_release_frames_from_notif(struct iwl_mvm *mvm,
 					      u8 baid, u16 nssn, int queue,
 					      u32 flags)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct ieee80211_sta *sta;
 	struct iwl_mvm_reorder_buffer *reorder_buf;
 	struct iwl_mvm_baid_data *ba_data;
@@ -803,7 +803,7 @@ static void iwl_mvm_nssn_sync(struct iwl_mvm *mvm,
 void iwl_mvm_rx_queue_notif(struct iwl_mvm *mvm, struct napi_struct *napi,
 			    struct iwl_rx_cmd_buffer *rxb, int queue)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
 	struct iwl_rxq_sync_notification *notif;
 	struct iwl_mvm_internal_rxq_notif *internal_notif;
@@ -1605,7 +1605,7 @@ static inline u8 iwl_mvm_nl80211_band_from_rx_msdu(u8 phy_band)
 void iwl_mvm_rx_mpdu_mq(struct iwl_mvm *mvm, struct napi_struct *napi,
 			struct iwl_rx_cmd_buffer *rxb, int queue)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct ieee80211_rx_status *rx_status;
 	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
 	struct iwl_rx_mpdu_desc *desc = (struct iwl_rx_mpdu_desc *)pkt->data;
@@ -1940,7 +1940,7 @@ out:
 void iwl_mvm_rx_monitor_no_data(struct iwl_mvm *mvm, struct napi_struct *napi,
 				struct iwl_rx_cmd_buffer *rxb, int queue)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct ieee80211_rx_status *rx_status;
 	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
 	struct iwl_rx_no_data *desc = (struct iwl_rx_no_data *)pkt->data;
@@ -2094,7 +2094,7 @@ void iwl_mvm_rx_frame_release(struct iwl_mvm *mvm, struct napi_struct *napi,
 void iwl_mvm_rx_bar_frame_release(struct iwl_mvm *mvm, struct napi_struct *napi,
 				  struct iwl_rx_cmd_buffer *rxb, int queue)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
 	struct iwl_rx_packet *pkt = (struct iwl_rx_packet *)rxb_addr(rxb);
 	struct iwl_bar_frame_release *release = (struct iwl_bar_frame_release *)pkt->data;
 	unsigned int baid = le32_get_bits(release->ba_info,

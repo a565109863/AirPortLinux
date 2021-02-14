@@ -684,7 +684,7 @@ static noinline int iw_handler_get_iwstats(struct net_device *    dev,
 
 static iw_handler get_handler(struct net_device *dev, unsigned int cmd)
 {
-    kprintf("--%s: line = %d cmd = 0x%x", __FUNCTION__, __LINE__, cmd);
+    DebugLog("--%s: line = %d cmd = 0x%x", __FUNCTION__, __LINE__, cmd);
     /* Don't "optimise" the following variable, it will crash */
     unsigned int    index;        /* *MUST* be unsigned */
     const struct iw_handler_def *handlers = NULL;

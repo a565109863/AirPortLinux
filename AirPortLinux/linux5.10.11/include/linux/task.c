@@ -106,9 +106,9 @@ tasklet_action_common(void* tqarg, wait_result_t waitResult)
         
         pthread_mutex_unlock(&tq->mtx);
         
-        kprintf("-----%s: line = %d, t->func_name = %s", __FUNCTION__, __LINE__, t->func_name);
+        DebugLog("-----%s: line = %d, t->func_name = %s", __FUNCTION__, __LINE__, t->func_name);
         t->func(t->data);
-        kprintf("-----%s: line = %d, t->func_name = %s end", __FUNCTION__, __LINE__, t->func_name);
+        DebugLog("-----%s: line = %d, t->func_name = %s end", __FUNCTION__, __LINE__, t->func_name);
     }
     
 }
@@ -119,7 +119,7 @@ struct taskletq *
 taskletq_create(const char *name, unsigned int nthreads, int ipl,
              unsigned int flags)
 {
-    kprintf("-----%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("-----%s: line = %d", __FUNCTION__, __LINE__);
     struct taskletq *tq;
     int error;
     
@@ -142,7 +142,7 @@ taskletq_create(const char *name, unsigned int nthreads, int ipl,
 
 void __tasklet_schedule(struct taskletq *tq, struct tasklet_struct *t)
 {
-    kprintf("-----%s: line = %d, t->func_name = %s", __FUNCTION__, __LINE__, t->func_name);
+    DebugLog("-----%s: line = %d, t->func_name = %s", __FUNCTION__, __LINE__, t->func_name);
     pthread_mutex_lock(&tq->mtx);
     TAILQ_INSERT_TAIL(&tq->list, t, t_entry);
     tq->cv->mtx = tq->mtx;

@@ -1931,7 +1931,7 @@ static bool reg_is_world_roaming(struct wiphy *wiphy)
 static void handle_reg_beacon(struct wiphy *wiphy, unsigned int chan_idx,
                   struct reg_beacon *reg_beacon)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+//    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     struct ieee80211_supported_band *sband;
     struct ieee80211_channel *chan;
     bool channel_changed = false;
@@ -1951,9 +1951,12 @@ static void handle_reg_beacon(struct wiphy *wiphy, unsigned int chan_idx,
     if (!reg_is_world_roaming(wiphy))
         return;
 
+    DebugLog("--%s: line = %d irq channel_changed = %d, chan_before = %d, chan = %d", __FUNCTION__, __LINE__, channel_changed, chan_before.hw_value, chan->hw_value);
     if (wiphy->regulatory_flags & REGULATORY_DISABLE_BEACON_HINTS)
         return;
 
+    DebugLog("--%s: line = %d irq channel_changed = %d, chan_before = %d, chan = %d", __FUNCTION__, __LINE__, channel_changed, chan_before.hw_value, chan->hw_value);
+    
     chan_before = *chan;
 
     if (chan->flags & IEEE80211_CHAN_NO_IR) {
@@ -1961,7 +1964,7 @@ static void handle_reg_beacon(struct wiphy *wiphy, unsigned int chan_idx,
         channel_changed = true;
     }
 
-    kprintf("--%s: line = %d irq channel_changed = %d, chan_before = %d, chan = %d", __FUNCTION__, __LINE__, channel_changed, chan_before.hw_value, chan->hw_value);
+    DebugLog("--%s: line = %d irq channel_changed = %d, chan_before = %d, chan = %d", __FUNCTION__, __LINE__, channel_changed, chan_before.hw_value, chan->hw_value);
     if (channel_changed)
         nl80211_send_beacon_hint_event(wiphy, &chan_before, chan);
 }
@@ -1973,7 +1976,7 @@ static void handle_reg_beacon(struct wiphy *wiphy, unsigned int chan_idx,
 static void wiphy_update_new_beacon(struct wiphy *wiphy,
                     struct reg_beacon *reg_beacon)
 {
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     unsigned int i;
     struct ieee80211_supported_band *sband;
 
@@ -2397,12 +2400,12 @@ static void reg_set_request_processed(void)
 static enum reg_request_treatment
 reg_process_hint_core(struct regulatory_request *core_request)
 {
-//    if (reg_query_database(core_request)) {
-//        core_request->intersect = false;
-//        core_request->processed = false;
-//        reg_update_last_request(core_request);
-//        return REG_REQ_OK;
-//    }
+    if (reg_query_database(core_request)) {
+        core_request->intersect = false;
+        core_request->processed = false;
+        reg_update_last_request(core_request);
+        return REG_REQ_OK;
+    }
 
     return REG_REQ_IGNORE;
 }
@@ -2900,11 +2903,11 @@ static void reg_process_self_managed_hints(void)
 static void reg_todo(struct work_struct *work)
 {
     rtnl_lock();
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     reg_process_pending_hints();
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     reg_process_pending_beacon_hints();
-    kprintf("--%s: line = %d irq", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d irq", __FUNCTION__, __LINE__);
     reg_process_self_managed_hints();
     rtnl_unlock();
 }

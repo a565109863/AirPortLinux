@@ -153,7 +153,7 @@ static struct page *__virt_to_page(void *ptr)
 
 static inline struct page *virt_to_head_page(const void *ptr, size_t size)
 {
-    kprintf("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct page *page = virt_to_page(ptr);
     page->dm_mapsize = size;
     return page;

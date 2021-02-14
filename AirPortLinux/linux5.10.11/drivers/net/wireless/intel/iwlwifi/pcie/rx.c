@@ -1679,6 +1679,7 @@ static void iwl_pcie_irq_handle_error(struct iwl_trans *trans)
 		del_timer(&trans->txqs.txq[i]->stuck_timer);
 	}
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/* The STATUS_FW_ERROR bit is set in this function. This must happen
 	 * before we wake up the command caller, to ensure a proper cleanup. */
 	iwl_trans_fw_error(trans);
@@ -1849,7 +1850,7 @@ irqreturn_t iwl_pcie_irq_handler(int irq, void *dev_id)
 	if (unlikely(!inta)) {
 		IWL_DEBUG_ISR(trans, "Ignore interrupt, inta == 0\n");
         
-        kprintf("--%s: line = %d, test_bit(STATUS_INT_ENABLED, &trans->status) = %d", __FUNCTION__, __LINE__, test_bit(STATUS_INT_ENABLED, &trans->status));
+        DebugLog("--%s: line = %d, test_bit(STATUS_INT_ENABLED, &trans->status) = %d", __FUNCTION__, __LINE__, test_bit(STATUS_INT_ENABLED, &trans->status));
         
 		/*
 		 * Re-enable interrupts here since we don't

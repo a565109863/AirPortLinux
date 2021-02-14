@@ -389,7 +389,7 @@ EXPORT_SYMBOL(sock_release);
 
 int sock_create_lite(int family, int type, int protocol, struct socket **res)
 {
-    int err;
+    int err = 0;
     struct socket *sock = NULL;
     
 //    err = security_socket_create(family, type, protocol, 1);

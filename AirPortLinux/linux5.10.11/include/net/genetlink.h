@@ -6,6 +6,8 @@
 #include <net/netlink.h>
 #include <net/net_namespace.h>
 
+int __init genl_init(void);
+
 #define GENLMSG_DEFAULT_SIZE (NLMSG_DEFAULT_SIZE - GENL_HDRLEN)
 
 /**

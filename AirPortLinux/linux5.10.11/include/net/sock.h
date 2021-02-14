@@ -2486,7 +2486,7 @@ static inline gfp_t gfp_any(void)
 //}
 
 
-#define sock_net(sk) &init_net
+#define sock_net(sk) (&init_net)
 
 //static inline
 //struct net *sock_net(struct sock *sk)
@@ -2556,8 +2556,8 @@ void sock_net_set(struct sock *sk, struct net *net)
 //int sock_recv_errqueue(struct sock *sk, struct msghdr *msg, int len, int level,
 //                       int type);
 //
-//bool sk_ns_capable(const struct sock *sk,
-//                   struct user_namespace *user_ns, int cap);
+bool sk_ns_capable(const struct sock *sk,
+                   struct user_namespace *user_ns, int cap);
 //bool sk_capable(const struct sock *sk, int cap);
 //bool sk_net_capable(const struct sock *sk, int cap);
 //
