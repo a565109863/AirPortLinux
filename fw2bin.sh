@@ -17,6 +17,7 @@ for fw in ${fw_files}; do
     target_file="${target_path}${fw_var_name}.c"
     rm -rf $target_file
     echo "//\n//  ${fw_var_name}.c\n//  AirPortLinux\n\n//  Created by Zhong-Mac on 2021/02/22.\n//  Copyright © 2021 Zhong-Mac. All rights reserved." >$target_file
+    echo "\n#include \"firmware_ucode.h\"">>$target_file
     
     echo "">>$target_file
     echo "const unsigned char ${fw_var_name}[] = {">>$target_file
@@ -32,9 +33,9 @@ target_file="${target_path}firmware_ucode.h"
 rm -rf $target_file
 
 echo "">>$target_file
-echo "//\n//  firmwarevar.h\n//  AirPortLinux\n\n//  Created by Zhong-Mac on 2021/02/22.\n//  Copyright © 2021 Zhong-Mac. All rights reserved." >$target_file
+echo "//\n//  firmware_ucode.h\n//  AirPortLinux\n\n//  Created by Zhong-Mac on 2021/02/22.\n//  Copyright © 2021 Zhong-Mac. All rights reserved." >$target_file
 echo "">>$target_file
-echo "#ifndef firmwarevar_h\n#define firmwarevar_h">>$target_file
+echo "#ifndef firmware_ucode_h\n#define firmware_ucode_h">>$target_file
 echo "">>$target_file
 
 echo "extern const struct firmware firmwares[];">>$target_file

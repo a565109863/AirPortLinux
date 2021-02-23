@@ -1,12 +1,12 @@
 //
-//  firmwarevar.h
+//  firmware_ucode.h
 //  AirPortLinux
 
 //  Created by Zhong-Mac on 2021/02/22.
 //  Copyright © 2021 Zhong-Mac. All rights reserved.
 
-#ifndef firmwarevar_h
-#define firmwarevar_h
+#ifndef firmware_ucode_h
+#define firmware_ucode_h
 
 extern const struct firmware firmwares[];
 extern const int firmwares_total;
