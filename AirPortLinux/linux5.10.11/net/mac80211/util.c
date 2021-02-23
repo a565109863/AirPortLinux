@@ -1685,6 +1685,7 @@ void ieee80211_send_auth(struct ieee80211_sub_if_data *sdata,
              const u8 *bssid, const u8 *key, u8 key_len, u8 key_idx,
              u32 tx_flags)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = sdata->local;
     struct sk_buff *skb;
     struct ieee80211_mgmt *mgmt;
@@ -1696,6 +1697,7 @@ void ieee80211_send_auth(struct ieee80211_sub_if_data *sdata,
     if (!skb)
         return;
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     skb_reserve(skb, local->hw.extra_tx_headroom + IEEE80211_WEP_IV_LEN);
 
     mgmt = (typeof mgmt)skb_put_zero(skb, 24 + 6);
@@ -1710,6 +1712,7 @@ void ieee80211_send_auth(struct ieee80211_sub_if_data *sdata,
     if (extra)
         skb_put_data(skb, extra, extra_len);
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     if (auth_alg == WLAN_AUTH_SHARED_KEY && transaction == 3) {
         mgmt->frame_control |= cpu_to_le16(IEEE80211_FCTL_PROTECTED);
         err = ieee80211_wep_encrypt(local, skb, key, key_len, key_idx);
@@ -1718,7 +1721,9 @@ void ieee80211_send_auth(struct ieee80211_sub_if_data *sdata,
 
     IEEE80211_SKB_CB(skb)->flags |= IEEE80211_TX_INTFL_DONT_ENCRYPT |
                     tx_flags;
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     ieee80211_tx_skb(sdata, skb);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
 }
 
 void ieee80211_send_deauth_disassoc(struct ieee80211_sub_if_data *sdata,

@@ -890,7 +890,7 @@ static bool sta_info_buffer_expired(struct sta_info *sta, struct sk_buff *skb)
            32 / 15625) * HZ;
     if (timeout < STA_TX_BUFFER_EXPIRE)
         timeout = STA_TX_BUFFER_EXPIRE;
-    return time_after(jiffies, info->control.jiffies + timeout);
+    return time_after(jiffies, info->control._jiffies + timeout);
 }
 
 

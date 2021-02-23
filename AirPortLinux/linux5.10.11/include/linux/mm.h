@@ -159,7 +159,6 @@ static inline void kunmap_atomic(void *addr)
 //#define kmalloc(size, flags) malloc(size, flags)
 //#define kfree(ptr) free(ptr)
 //#define kfree(ptr)
-#define vmalloc(size) malloc(size)
 //#define vfree(ptr) do { if (ptr != NULL) free(ptr); } while (0)
 
 //#define kzfree(x)

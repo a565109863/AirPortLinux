@@ -1068,7 +1068,7 @@ struct ieee80211_tx_info {
                     /* 2 bytes free */
                 };
                 /* only needed before rate control */
-                unsigned long jiffies;
+                unsigned long _jiffies;
             };
             /* NB: vif can be NULL for injected frames */
             struct ieee80211_vif *vif;

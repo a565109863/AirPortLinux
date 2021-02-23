@@ -13,23 +13,13 @@
 
 static unsigned long volatile jiffies = 1; //(10 * 60 * HZ);// ULONG_MAX - (10 * 60 * HZ);
 
-//#define jiffies        \
-//({        \
-//    uint64_t m,f;        \
-//    clock_get_uptime(&m);        \
-//    absolutetime_to_nanoseconds(m,&f);        \
-//    ((f * HZ) / 1000000000);        \
+//#define jiffies                         \
+//({                                      \
+//    uint64_t m,f;                       \
+//    clock_get_uptime(&m);               \
+//    absolutetime_to_nanoseconds(m,&f);  \
+//    ((f * HZ) / 1000000000);            \
 //})
-
-#undef MSEC_PER_SEC
-#undef USEC_PER_SEC
-#undef NSEC_PER_SEC
-#undef NSEC_PER_USEC
-
-#define MSEC_PER_SEC        1000L
-#define USEC_PER_SEC        1000000L
-#define NSEC_PER_SEC        1000000000L
-#define NSEC_PER_USEC        1000L
 
 static inline unsigned int jiffies_to_msecs(const unsigned long j)
 {
@@ -73,6 +63,28 @@ static inline unsigned long usecs_to_jiffies(const unsigned int u)
 #define round_jiffies usecs_to_jiffies
 
 
+#define typecheck(type,x) \
+({    type __dummy; \
+    typeof(x) __dummy2; \
+    (void)(&__dummy == &__dummy2); \
+    1; \
+})
+
+#define time_after(a,b)        \
+    (typecheck(unsigned long, a) && \
+     typecheck(unsigned long, b) && \
+     ((long)((b) - (a)) < 0))
+#define time_before(a,b)    time_after(b,a)
+
+#define time_after_eq(a,b)    \
+    (typecheck(unsigned long, a) && \
+     typecheck(unsigned long, b) && \
+     ((long)((a) - (b)) >= 0))
+#define time_before_eq(a,b)    time_after_eq(b,a)
+
+#define time_before(a,b)        time_after(b,a)
+#define time_is_before_jiffies(a) time_after((jiffies), a)
+#define time_is_after_jiffies(a) time_before((jiffies), a)
 
 
 #endif /* jiffies_h */

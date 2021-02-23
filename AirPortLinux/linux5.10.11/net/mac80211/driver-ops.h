@@ -32,6 +32,7 @@ static inline void drv_tx(struct ieee80211_local *local,
               struct ieee80211_tx_control *control,
               struct sk_buff *skb)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     local->ops->tx(&local->hw, control, skb);
 }
 
@@ -152,6 +153,7 @@ static inline void drv_bss_info_changed(struct ieee80211_local *local,
                     struct ieee80211_bss_conf *info,
                     u32 changed)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     might_sleep();
 
     if (WARN_ON_ONCE(changed & (BSS_CHANGED_BEACON |
@@ -823,6 +825,7 @@ static inline void drv_mgd_prepare_tx(struct ieee80211_local *local,
                       struct ieee80211_sub_if_data *sdata,
                       u16 duration)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     might_sleep();
 
     if (!check_sdata_in_driver(sdata))
@@ -830,9 +833,15 @@ static inline void drv_mgd_prepare_tx(struct ieee80211_local *local,
     WARN_ON_ONCE(sdata->vif.type != NL80211_IFTYPE_STATION);
 
     trace_drv_mgd_prepare_tx(local, sdata, duration);
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (local->ops->mgd_prepare_tx)
         local->ops->mgd_prepare_tx(&local->hw, &sdata->vif, duration);
     trace_drv_return_void(local);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
 }
 
 static inline void

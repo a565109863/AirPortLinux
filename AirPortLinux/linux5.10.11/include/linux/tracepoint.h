@@ -9,9 +9,7 @@
 #ifndef tracepoint_h
 #define tracepoint_h
 
-#define __stringify(x) x
-
-#define TP_printk(fmt, args...) "\"" fmt "\", "  __stringify(args)
+#define TP_printk(fmt, args...) fmt "\n", args
 
 #define TP_PROTO(args...)    args
 #define TP_ARGS(args...)    args

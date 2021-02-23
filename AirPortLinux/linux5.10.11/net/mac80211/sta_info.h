@@ -699,6 +699,7 @@ int sta_info_move_state(struct sta_info *sta,
 static inline void sta_info_pre_move_state(struct sta_info *sta,
                        enum ieee80211_sta_state new_state)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     int ret;
 
     WARN_ON_ONCE(test_sta_flag(sta, WLAN_STA_INSERTED));

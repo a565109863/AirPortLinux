@@ -169,6 +169,8 @@ static int cfg80211_conn_do_work(struct wireless_dev *wdev,
 		if (WARN_ON(!rdev->ops->auth))
 			return -EOPNOTSUPP;
 		wdev->conn->state = CFG80211_CONN_AUTHENTICATING;
+            DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+            DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
 		return cfg80211_mlme_auth(rdev, wdev->netdev,
 					  params->channel, params->auth_type,
 					  params->bssid,
@@ -182,6 +184,10 @@ static int cfg80211_conn_do_work(struct wireless_dev *wdev,
 	case CFG80211_CONN_ASSOCIATE_NEXT:
 		if (WARN_ON(!rdev->ops->assoc))
 			return -EOPNOTSUPP;
+            DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+            DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+            DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+            DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
 		wdev->conn->state = CFG80211_CONN_ASSOCIATING;
 		if (wdev->conn->prev_bssid_valid)
 			req.prev_bssid = wdev->conn->prev_bssid;

@@ -1265,7 +1265,7 @@ IOReturn AirPortLinux::scanConvertResult(struct apple80211_scan_result* oneResul
 //        struct wpa_scan_res *_res = (struct wpa_scan_res *)scanresult->getBytesNoCopy();
     
     while (this->scanIndex < this->res->num) {
-        struct wpa_scan_res *_res = this->res->res[scanIndex++];
+        struct wpa_scan_res *_res = this->res->res[this->scanIndex++];
         
         const u8 *ssid_ie = wpa_scan_get_ie(_res, WLAN_EID_SSID);
         uint8_t ssid_len = ssid_ie[1];
@@ -1324,6 +1324,8 @@ IOReturn AirPortLinux::scanConvertResult(struct apple80211_scan_result* oneResul
             oneResult->asr_ie_data = IOMalloc(oneResult->asr_ie_len);
             bcopy((_res + 1), oneResult->asr_ie_data, oneResult->asr_ie_len);
         }
+        
+        free_wpa_scan_res(_res);
         
         DebugLog("--%s: line = %d channel: %u,"
               "flags: %u,"

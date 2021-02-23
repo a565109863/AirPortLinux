@@ -9,6 +9,8 @@
 #ifndef vmalloc_h
 #define vmalloc_h
 
+#include <linux/_malloc.h>
 
+#define vmalloc(size) malloc(size)
 
 #endif /* vmalloc_h */

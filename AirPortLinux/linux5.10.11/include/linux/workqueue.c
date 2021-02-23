@@ -6,6 +6,7 @@
 //  Copyright © 2020 Zhong-Mac. All rights reserved.
 //
 
+#include <linux/jiffies.h>
 #include "workqueue.h"
 
 typedef struct mutex    workqueue_mutex_t;
@@ -63,24 +64,27 @@ void queue_work_run(void* tqarg, wait_result_t waitResult)
             
 //            clear_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work));
             
-            kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
+            DebugLog("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
             
             if (!test_and_clear_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))){
+                DebugLog("-----%s: line = %d, wq->name = %s, work->func_name = %s countinue", __FUNCTION__, __LINE__, wq->name, work->func_name);
                 workqueue_mutex_unlock(&wq->mutex);
                 continue;
             }
             
             workqueue_mutex_unlock(&wq->mutex);
             
+            DebugLog("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
             if (work->func) {
-//                kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s", __FUNCTION__, __LINE__, wq->name, work->func_name);
                 (*work->func)(work);
-//                kprintf("-----%s: line = %d, wq->name = %s, work->func_name = %s end", __FUNCTION__, __LINE__, wq->name, work->func_name);
+                DebugLog("-----%s: line = %d, wq->name = %s, work->func_name = %s end", __FUNCTION__, __LINE__, wq->name, work->func_name);
             }
 //            kfree(work);
         }
         
         workqueue_cond_wait(wq);
+        
+        DebugLog("-----%s: line = %d", __FUNCTION__, __LINE__);
     }
     
 }

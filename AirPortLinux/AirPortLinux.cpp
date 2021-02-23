@@ -83,6 +83,10 @@ IOService* AirPortLinux::probe(IOService* provider, SInt32 *score)
     if (err)
         goto fail;
     
+    err = iwl_init();
+    if (err)
+        goto fail;
+    
     this->pdev = __pdev;
     return this;
     

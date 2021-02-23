@@ -11,7 +11,6 @@
 
 #include <linux/types.h>
 #include <linux/bug.h>
-#include <linux/jiffies.h>
 #include <linux/debugfs.h>
 
 
@@ -108,38 +107,6 @@ int timer_pending(const struct timer_list * timer);
 void cancel_timer(struct timer_list *t);
 
 
-
-
-#define typecheck(type,x) \
-({    type __dummy; \
-    typeof(x) __dummy2; \
-    (void)(&__dummy == &__dummy2); \
-    1; \
-})
-
-#define time_after(a,b)        \
-    (typecheck(unsigned long, a) && \
-     typecheck(unsigned long, b) && \
-     ((long)((b) - (a)) < 0))
-#define time_before(a,b)    time_after(b,a)
-
-#define time_after_eq(a,b)    \
-    (typecheck(unsigned long, a) && \
-     typecheck(unsigned long, b) && \
-     ((long)((a) - (b)) >= 0))
-#define time_before_eq(a,b)    time_after_eq(b,a)
-
-//#define time_after(a,b)    ((long)(b) - (long)(a) < 0)
-//#define time_after_eq(a,b)    \
-(typecheck(unsigned long, a) && \
-typecheck(unsigned long, b) && \
-((long)((a) - (b)) >= 0))
-
-
-#define time_before(a,b)        time_after(b,a)
-#define time_is_before_jiffies(a) time_after(jiffies, a)
-#define time_is_after_jiffies(a) time_before(jiffies, a)
-
 #define from_timer(var, callback_timer, timer_fieldname) \
 container_of(callback_timer, typeof(*var), timer_fieldname)
 
@@ -150,7 +117,7 @@ container_of(callback_timer, typeof(*var), timer_fieldname)
 //#undef NSEC_PER_USEC
 
 /* Parameters used to convert the timespec values: */
-#define MSEC_PER_SEC    1000L
+//#define MSEC_PER_SEC    1000L
 //#define USEC_PER_MSEC    1000L
 //#define NSEC_PER_USEC    1000L
 //#define USEC_PER_SEC    1000000L
@@ -190,45 +157,8 @@ EXPORT_SYMBOL(usleep_range);
 
 #define raw_smp_processor_id() 0
 
-static unsigned long round_jiffies_common(unsigned long j, int cpu,
-        bool force_up)
-{
-    int rem;
-    unsigned long original = j;
-
-    /*
-     * We don't want all cpus firing their timers at once hitting the
-     * same lock or cachelines, so we skew each extra cpu with an extra
-     * 3 jiffies. This 3 jiffies came originally from the mm/ code which
-     * already did this.
-     * The skew is done by adding 3*cpunr, then round, then subtract this
-     * extra offset again.
-     */
-    j += cpu * 3;
-
-    rem = j % HZ;
-
-    /*
-     * If the target jiffie is just after a whole second (which can happen
-     * due to delays of the timer irq, long irq off times etc etc) then
-     * we should round down to the whole second, not up. Use 1/4th second
-     * as cutoff for this rounding as an extreme upper bound for this.
-     * But never round down if @force_up is set.
-     */
-    if (rem < HZ/4 && !force_up) /* round down */
-        j = j - rem;
-    else /* round up */
-        j = j - rem + HZ;
-
-    /* now that we have rounded, subtract the extra skew again */
-    j -= cpu * 3;
-
-    /*
-     * Make sure j is still in the future. Otherwise return the
-     * unmodified value.
-     */
-    return time_is_after_jiffies(j) ? j : original;
-}
+unsigned long round_jiffies_common(unsigned long j, int cpu,
+        bool force_up);
 
 /**
  * round_jiffies_up - function to round jiffies up to a full second

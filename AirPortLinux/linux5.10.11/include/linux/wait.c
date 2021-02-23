@@ -26,7 +26,7 @@ int wait_event_timeout(wait_queue_head_t q, int i, u32 timeout)
     if (timeout == 0) {
         ret = _pdev->dev.dev->fCommandGate->runAction(AirPortLinux::tsleepHandler, q.ident);
     } else {
-        timeout = timeout * USEC_PER_SEC;
+        timeout = timeout * MSEC_PER_SEC;
         ret = _pdev->dev.dev->fCommandGate->runAction(AirPortLinux::tsleepHandler, q.ident, &timeout);
     }
     

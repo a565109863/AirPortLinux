@@ -3314,6 +3314,7 @@ static void iwl_mvm_mac_mgd_prepare_tx(struct ieee80211_hw *hw,
 				       struct ieee80211_vif *vif,
 				       u16 req_duration)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_mvm *mvm = IWL_MAC80211_GET_MVM(hw);
 	u32 duration = IWL_MVM_TE_SESSION_PROTECTION_MAX_TIME_MS;
 	u32 min_duration = IWL_MVM_TE_SESSION_PROTECTION_MIN_TIME_MS;
@@ -3339,6 +3340,8 @@ static void iwl_mvm_mac_mgd_prepare_tx(struct ieee80211_hw *hw,
 		iwl_mvm_protect_session(mvm, vif, duration,
 					min_duration, 500, false);
 	mutex_unlock(&mvm->mutex);
+    
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
 }
 
 static int iwl_mvm_mac_sched_scan_start(struct ieee80211_hw *hw,

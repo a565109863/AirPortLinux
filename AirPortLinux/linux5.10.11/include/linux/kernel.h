@@ -11,7 +11,7 @@
 
 #include <linux/types.h>
 #include <linux/bug.h>
-#include <linux/_malloc.h>
+#include <linux/vmalloc.h>
 #include <linux/time.h>
 #include <linux/debugfs.h>
 #include <linux/bitfield.h>

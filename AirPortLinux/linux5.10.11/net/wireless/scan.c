@@ -385,8 +385,8 @@ static bool is_bss(struct cfg80211_bss *a, const u8 *bssid,
     const struct cfg80211_bss_ies *ies;
     const u8 *ssidie;
 
-    if (bssid && !ether_addr_equal(a->bssid, bssid))
-        return false;
+//    if (bssid && !ether_addr_equal(a->bssid, bssid))
+//        return false;
 
     if (!ssid)
         return true;
@@ -1417,6 +1417,7 @@ struct cfg80211_bss *cfg80211_get_bss(struct wiphy *wiphy,
                       enum ieee80211_bss_type bss_type,
                       enum ieee80211_privacy privacy)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     struct cfg80211_registered_device *rdev = wiphy_to_rdev(wiphy);
     struct cfg80211_internal_bss *bss, *res = NULL;
     unsigned long now = jiffies;
@@ -1427,6 +1428,7 @@ struct cfg80211_bss *cfg80211_get_bss(struct wiphy *wiphy,
 
     spin_lock_bh(&rdev->bss_lock);
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     list_for_each_entry(bss, &rdev->bss_list, list) {
         if (!cfg80211_bss_type_match(bss->pub.capability,
                          bss->pub.channel->band, bss_type))
@@ -1438,22 +1440,27 @@ struct cfg80211_bss *cfg80211_get_bss(struct wiphy *wiphy,
             continue;
         if (channel && bss->pub.channel != channel)
             continue;
-        if (!is_valid_ether_addr(bss->pub.bssid))
-            continue;
+//        if (!is_valid_ether_addr(bss->pub.bssid))
+//            continue;
         /* Don't get expired BSS structs */
         if (time_after(now, bss->ts + IEEE80211_SCAN_RESULT_EXPIRE) &&
             !atomic_read(&bss->hold))
             continue;
+        
+        DebugLog("--%s: line = %d, ssid = %s", __FUNCTION__, __LINE__, ssid);
         if (is_bss(&bss->pub, bssid, ssid, ssid_len)) {
+            DebugLogSleep("--%s: line = %d, ssid = %s", __FUNCTION__, __LINE__, ssid);
             res = bss;
             bss_ref_get(rdev, res);
             break;
         }
     }
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     spin_unlock_bh(&rdev->bss_lock);
     if (!res)
         return NULL;
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     trace_cfg80211_return_bss(&res->pub);
     return &res->pub;
 }

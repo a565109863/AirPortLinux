@@ -65,7 +65,7 @@ static void ieee80211_handle_filtered_frame(struct ieee80211_local *local,
      */
     memset(&info->control, 0, sizeof(info->control));
 
-    info->control.jiffies = jiffies;
+    info->control._jiffies = jiffies;
     info->control.vif = &sta->sdata->vif;
     info->control.flags |= IEEE80211_TX_INTCFL_NEED_TXPROCESSING;
     info->flags |= IEEE80211_TX_INTFL_RETRANSMISSION;

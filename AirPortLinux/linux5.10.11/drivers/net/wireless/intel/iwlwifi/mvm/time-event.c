@@ -551,11 +551,13 @@ static int iwl_mvm_time_event_send_add(struct iwl_mvm *mvm,
 		goto out_clear_te;
 	}
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	/* No need to wait for anything, so just pass 1 (0 isn't valid) */
 	ret = iwl_wait_notification(&mvm->notif_wait, &wait_time_event, 1);
 	/* should never fail */
 	WARN_ON_ONCE(ret);
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
 	if (ret) {
  out_clear_te:
 		spin_lock_bh(&mvm->time_event_lock);
@@ -570,6 +572,7 @@ void iwl_mvm_protect_session(struct iwl_mvm *mvm,
 			     u32 duration, u32 min_duration,
 			     u32 max_delay, bool wait_for_notif)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
 	struct iwl_mvm_vif *mvmvif = iwl_mvm_vif_from_mac80211(vif);
 	struct iwl_mvm_time_event_data *te_data = &mvmvif->time_event_data;
 	const u16 te_notif_response[] = { TIME_EVENT_NOTIFICATION };
@@ -618,6 +621,7 @@ void iwl_mvm_protect_session(struct iwl_mvm *mvm,
 				      TE_V2_START_IMMEDIATELY);
 
 	if (!wait_for_notif) {
+        DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
 		iwl_mvm_time_event_send_add(mvm, vif, te_data, &time_cmd);
 		return;
 	}
@@ -639,6 +643,8 @@ void iwl_mvm_protect_session(struct iwl_mvm *mvm,
 					 TU_TO_JIFFIES(max_delay))) {
 		IWL_ERR(mvm, "Failed to protect session until TE\n");
 	}
+    
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
 }
 
 static void iwl_mvm_cancel_session_protection(struct iwl_mvm *mvm,

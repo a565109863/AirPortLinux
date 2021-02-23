@@ -248,6 +248,7 @@ int cfg80211_mlme_auth(struct cfg80211_registered_device *rdev,
         .key_len = key_len,
         .key_idx = key_idx,
     };
+    DebugLogSleep("--%s: line = %d, ie_len = %d, auth_data_len = %d, auth_type = %d, key_len = %d, key_idx = %d", __FUNCTION__, __LINE__, ie_len, auth_data_len, auth_type, key_len, key_idx);
     int err;
 
     ASSERT_WDEV_LOCK(wdev);
@@ -313,6 +314,10 @@ int cfg80211_mlme_assoc(struct cfg80211_registered_device *rdev,
             const u8 *ssid, int ssid_len,
             struct cfg80211_assoc_request *req)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     struct wireless_dev *wdev = dev->ieee80211_ptr;
     int err;
 

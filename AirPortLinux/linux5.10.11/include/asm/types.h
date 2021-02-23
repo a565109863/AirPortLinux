@@ -177,9 +177,12 @@ int __x = (x);          \
 (__x < 0) ? -__x : __x;     \
 })
 
-#define __builtin_expect(x, expected_value) (x)
+//#define __builtin_expect(x, expected_value) (x)
 #define unlikely(x) __builtin_expect(!!(x), 0)
 #define likely(x) __builtin_expect(!!(x), 1)
+
+//#define likely(x)       OS_EXPECT(!!(x), 1)
+//#define unlikely(x)     OS_EXPECT(!!(x), 0)
 
 #include <net/compat.h>
 
@@ -222,7 +225,7 @@ static int msleep_interruptible(int x)
 #define __acquire(x)
 #define smp_rmb()
 
-#define __stringify(x) x
+#define __stringify     OS_STRINGIFY
 
 #define dump_stack(x)
 #define smp_mb()
@@ -362,6 +365,7 @@ static inline __u64 __be64_to_cpup(const __be64 *p)
 
 
 #define HZ 1000
+#define MSEC_PER_SEC        1000L
 #define USEC_PER_MSEC    1000UL
 //#define USEC_PER_SEC    1000000UL
 #define USEC_PER_JIFFY    (USEC_PER_SEC / HZ)
@@ -371,6 +375,22 @@ static inline __u64 __be64_to_cpup(const __be64 *p)
 #define CONFIG_IWLMVM   1
 #define CONFIG_CFG80211 1
 //#define CONFIG_ACPI     1
+
+
+#define CONFIG_MAC80211_OCB_DEBUG 1
+#define CONFIG_MAC80211_IBSS_DEBUG 1
+#define CONFIG_MAC80211_PS_DEBUG 1
+#define CONFIG_MAC80211_HT_DEBUG 1
+#define CONFIG_MAC80211_MPL_DEBUG 1
+#define CONFIG_MAC80211_MPATH_DEBUG 1
+#define CONFIG_MAC80211_MHWMP_DEBUG 1
+#define CONFIG_MAC80211_MESH_SYNC_DEBUG 1
+#define CONFIG_MAC80211_MESH_CSA_DEBUG 1
+#define CONFIG_MAC80211_MESH_PS_DEBUG 1
+#define CONFIG_MAC80211_TDLS_DEBUG 1
+#define CONFIG_MAC80211_STA_DEBUG 1
+#define CONFIG_MAC80211_MLME_DEBUG 1
+
 
 #define IS_ENABLED(x) (x)
 

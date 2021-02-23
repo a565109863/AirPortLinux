@@ -66,7 +66,7 @@ enum {
 
 
 
-#define net_ratelimit() 0
+#define net_ratelimit() 1
 
 
 

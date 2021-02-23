@@ -4349,6 +4349,7 @@ static void ieee80211_sta_connection_lost(struct ieee80211_sub_if_data *sdata,
 
 static int ieee80211_auth(struct ieee80211_sub_if_data *sdata)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = sdata->local;
     struct ieee80211_if_managed *ifmgd = &sdata->u.mgd;
     struct ieee80211_mgd_auth_data *auth_data = ifmgd->auth_data;
@@ -4359,9 +4360,11 @@ static int ieee80211_auth(struct ieee80211_sub_if_data *sdata)
 
     sdata_assert_lock(sdata);
 
+    DebugLog("--%s: line = %d, !auth_data = %d", __FUNCTION__, __LINE__, !auth_data);
     if (WARN_ON_ONCE(!auth_data))
         return -EINVAL;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     auth_data->tries++;
 
     if (auth_data->tries > IEEE80211_AUTH_MAX_TRIES) {
@@ -4377,12 +4380,15 @@ static int ieee80211_auth(struct ieee80211_sub_if_data *sdata)
         return -ETIMEDOUT;
     }
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     if (auth_data->algorithm == WLAN_AUTH_SAE)
         prepare_tx_duration =
             jiffies_to_msecs(IEEE80211_AUTH_TIMEOUT_SAE);
 
+    DebugLogSleep("--%s: line = %d, prepare_tx_duration = %d", __FUNCTION__, __LINE__, prepare_tx_duration);
     drv_mgd_prepare_tx(local, sdata, prepare_tx_duration);
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     sdata_info(sdata, "send auth to %pM (try %d/%d)\n",
            auth_data->bss->bssid, auth_data->tries,
            IEEE80211_AUTH_MAX_TRIES);
@@ -4399,12 +4405,18 @@ static int ieee80211_auth(struct ieee80211_sub_if_data *sdata)
         tx_flags = IEEE80211_TX_CTL_REQ_TX_STATUS |
                IEEE80211_TX_INTFL_MLME_CONN_TX;
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     ieee80211_send_auth(sdata, trans, auth_data->algorithm, status,
                 auth_data->data, auth_data->data_len,
                 auth_data->bss->bssid,
                 auth_data->bss->bssid, NULL, 0, 0,
                 tx_flags);
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     if (tx_flags == 0) {
         if (auth_data->algorithm == WLAN_AUTH_SAE)
             auth_data->timeout = jiffies +
@@ -4418,6 +4430,11 @@ static int ieee80211_auth(struct ieee80211_sub_if_data *sdata)
 
     auth_data->timeout_started = true;
     run_again(sdata, auth_data->timeout);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
 
     return 0;
 }
@@ -5434,24 +5451,32 @@ int ieee80211_mgd_auth(struct ieee80211_sub_if_data *sdata,
     }
 
     sdata_info(sdata, "authenticate with %pM\n", req->bss->bssid);
+    
+    DebugLog("--%s: line = %d, bssid = %s", __FUNCTION__, __LINE__, ether_sprintf(req->bss->bssid));
 
     err = ieee80211_prep_connection(sdata, req->bss, cont_auth, false);
+    DebugLog("--%s: line = %d, err = %d", __FUNCTION__, __LINE__, err);
     if (err)
         goto err_clear;
 
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     err = ieee80211_auth(sdata);
+    DebugLogSleep("--%s: line = %d, err = %d", __FUNCTION__, __LINE__, err);
     if (err) {
         sta_info_destroy_addr(sdata, req->bss->bssid);
         goto err_clear;
     }
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     /* hold our own reference */
     cfg80211_ref_bss(local->hw.wiphy, auth_data->bss);
     return 0;
 
  err_clear:
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     eth_zero_addr(ifmgd->bssid);
     ieee80211_bss_info_change_notify(sdata, BSS_CHANGED_BSSID);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     ifmgd->auth_data = NULL;
     mutex_lock(&sdata->local->mtx);
     ieee80211_vif_release_channel(sdata);

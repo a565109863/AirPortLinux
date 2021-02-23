@@ -1439,6 +1439,146 @@
 		18861BC525CFD53400F90563 /* scm.c in Sources */ = {isa = PBXBuildFile; fileRef = 18861BC325CFD53400F90563 /* scm.c */; };
 		18861BC625CFD53400F90563 /* scm.c in Sources */ = {isa = PBXBuildFile; fileRef = 18861BC325CFD53400F90563 /* scm.c */; };
 		18861BC725CFD53400F90563 /* scm.c in Sources */ = {isa = PBXBuildFile; fileRef = 18861BC325CFD53400F90563 /* scm.c */; };
+		189B815C25DA5CCC004EC6C5 /* driver_wext.h in Headers */ = {isa = PBXBuildFile; fileRef = 189B815A25DA5CCC004EC6C5 /* driver_wext.h */; };
+		189B815D25DA5CCC004EC6C5 /* driver_wext.h in Headers */ = {isa = PBXBuildFile; fileRef = 189B815A25DA5CCC004EC6C5 /* driver_wext.h */; };
+		189B815E25DA5CCC004EC6C5 /* driver_wext.h in Headers */ = {isa = PBXBuildFile; fileRef = 189B815A25DA5CCC004EC6C5 /* driver_wext.h */; };
+		189B815F25DA5CCC004EC6C5 /* driver_wext.h in Headers */ = {isa = PBXBuildFile; fileRef = 189B815A25DA5CCC004EC6C5 /* driver_wext.h */; };
+		189B816025DA5CCC004EC6C5 /* driver_wext.c in Sources */ = {isa = PBXBuildFile; fileRef = 189B815B25DA5CCC004EC6C5 /* driver_wext.c */; };
+		189B816125DA5CCC004EC6C5 /* driver_wext.c in Sources */ = {isa = PBXBuildFile; fileRef = 189B815B25DA5CCC004EC6C5 /* driver_wext.c */; };
+		189B816225DA5CCC004EC6C5 /* driver_wext.c in Sources */ = {isa = PBXBuildFile; fileRef = 189B815B25DA5CCC004EC6C5 /* driver_wext.c */; };
+		189B816325DA5CCC004EC6C5 /* driver_wext.c in Sources */ = {isa = PBXBuildFile; fileRef = 189B815B25DA5CCC004EC6C5 /* driver_wext.c */; };
+		189E028625E3AFE600854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026525E3AFE300854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c */; };
+		189E028725E3AFE600854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026525E3AFE300854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c */; };
+		189E028825E3AFE600854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026525E3AFE300854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c */; };
+		189E028925E3AFE600854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026525E3AFE300854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c */; };
+		189E028A25E3AFE600854111 /* firmware_ucode.h in Headers */ = {isa = PBXBuildFile; fileRef = 189E026625E3AFE300854111 /* firmware_ucode.h */; };
+		189E028B25E3AFE600854111 /* firmware_ucode.h in Headers */ = {isa = PBXBuildFile; fileRef = 189E026625E3AFE300854111 /* firmware_ucode.h */; };
+		189E028C25E3AFE600854111 /* firmware_ucode.h in Headers */ = {isa = PBXBuildFile; fileRef = 189E026625E3AFE300854111 /* firmware_ucode.h */; };
+		189E028D25E3AFE600854111 /* firmware_ucode.h in Headers */ = {isa = PBXBuildFile; fileRef = 189E026625E3AFE300854111 /* firmware_ucode.h */; };
+		189E028E25E3AFE600854111 /* iwlwifi_7260_17_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026725E3AFE300854111 /* iwlwifi_7260_17_ucode.c */; };
+		189E028F25E3AFE600854111 /* iwlwifi_7260_17_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026725E3AFE300854111 /* iwlwifi_7260_17_ucode.c */; };
+		189E029025E3AFE600854111 /* iwlwifi_7260_17_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026725E3AFE300854111 /* iwlwifi_7260_17_ucode.c */; };
+		189E029125E3AFE600854111 /* iwlwifi_7260_17_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026725E3AFE300854111 /* iwlwifi_7260_17_ucode.c */; };
+		189E029225E3AFE600854111 /* iwlwifi_6000_4_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026825E3AFE300854111 /* iwlwifi_6000_4_ucode.c */; };
+		189E029325E3AFE600854111 /* iwlwifi_6000_4_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026825E3AFE300854111 /* iwlwifi_6000_4_ucode.c */; };
+		189E029425E3AFE600854111 /* iwlwifi_6000_4_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026825E3AFE300854111 /* iwlwifi_6000_4_ucode.c */; };
+		189E029525E3AFE600854111 /* iwlwifi_6000_4_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026825E3AFE300854111 /* iwlwifi_6000_4_ucode.c */; };
+		189E029625E3AFE600854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026925E3AFE300854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c */; };
+		189E029725E3AFE600854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026925E3AFE300854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c */; };
+		189E029825E3AFE600854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026925E3AFE300854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c */; };
+		189E029925E3AFE600854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026925E3AFE300854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c */; };
+		189E029A25E3AFE600854111 /* iwlwifi_5000_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026A25E3AFE300854111 /* iwlwifi_5000_5_ucode.c */; };
+		189E029B25E3AFE600854111 /* iwlwifi_5000_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026A25E3AFE300854111 /* iwlwifi_5000_5_ucode.c */; };
+		189E029C25E3AFE600854111 /* iwlwifi_5000_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026A25E3AFE300854111 /* iwlwifi_5000_5_ucode.c */; };
+		189E029D25E3AFE600854111 /* iwlwifi_5000_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026A25E3AFE300854111 /* iwlwifi_5000_5_ucode.c */; };
+		189E029E25E3AFE600854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026B25E3AFE300854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c */; };
+		189E029F25E3AFE600854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026B25E3AFE300854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c */; };
+		189E02A025E3AFE600854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026B25E3AFE300854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c */; };
+		189E02A125E3AFE600854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026B25E3AFE300854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c */; };
+		189E02A225E3AFE600854111 /* iwlwifi_7265_17_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026C25E3AFE300854111 /* iwlwifi_7265_17_ucode.c */; };
+		189E02A325E3AFE600854111 /* iwlwifi_7265_17_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026C25E3AFE300854111 /* iwlwifi_7265_17_ucode.c */; };
+		189E02A425E3AFE600854111 /* iwlwifi_7265_17_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026C25E3AFE300854111 /* iwlwifi_7265_17_ucode.c */; };
+		189E02A525E3AFE600854111 /* iwlwifi_7265_17_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026C25E3AFE300854111 /* iwlwifi_7265_17_ucode.c */; };
+		189E02A625E3AFE600854111 /* iwlwifi_3160_17_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026D25E3AFE300854111 /* iwlwifi_3160_17_ucode.c */; };
+		189E02A725E3AFE600854111 /* iwlwifi_3160_17_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026D25E3AFE300854111 /* iwlwifi_3160_17_ucode.c */; };
+		189E02A825E3AFE600854111 /* iwlwifi_3160_17_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026D25E3AFE300854111 /* iwlwifi_3160_17_ucode.c */; };
+		189E02A925E3AFE600854111 /* iwlwifi_3160_17_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026D25E3AFE300854111 /* iwlwifi_3160_17_ucode.c */; };
+		189E02AA25E3AFE600854111 /* iwlwifi_8265_36_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026E25E3AFE300854111 /* iwlwifi_8265_36_ucode.c */; };
+		189E02AB25E3AFE600854111 /* iwlwifi_8265_36_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026E25E3AFE300854111 /* iwlwifi_8265_36_ucode.c */; };
+		189E02AC25E3AFE600854111 /* iwlwifi_8265_36_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026E25E3AFE300854111 /* iwlwifi_8265_36_ucode.c */; };
+		189E02AD25E3AFE600854111 /* iwlwifi_8265_36_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026E25E3AFE300854111 /* iwlwifi_8265_36_ucode.c */; };
+		189E02AE25E3AFE600854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026F25E3AFE400854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c */; };
+		189E02AF25E3AFE600854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026F25E3AFE400854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c */; };
+		189E02B025E3AFE600854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026F25E3AFE400854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c */; };
+		189E02B125E3AFE600854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E026F25E3AFE400854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c */; };
+		189E02B225E3AFE600854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027025E3AFE400854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c */; };
+		189E02B325E3AFE600854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027025E3AFE400854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c */; };
+		189E02B425E3AFE600854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027025E3AFE400854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c */; };
+		189E02B525E3AFE600854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027025E3AFE400854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c */; };
+		189E02B625E3AFE600854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027125E3AFE400854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c */; };
+		189E02B725E3AFE600854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027125E3AFE400854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c */; };
+		189E02B825E3AFE600854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027125E3AFE400854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c */; };
+		189E02B925E3AFE600854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027125E3AFE400854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c */; };
+		189E02BA25E3AFE600854111 /* iwlwifi_8000C_36_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027225E3AFE400854111 /* iwlwifi_8000C_36_ucode.c */; };
+		189E02BB25E3AFE600854111 /* iwlwifi_8000C_36_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027225E3AFE400854111 /* iwlwifi_8000C_36_ucode.c */; };
+		189E02BC25E3AFE600854111 /* iwlwifi_8000C_36_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027225E3AFE400854111 /* iwlwifi_8000C_36_ucode.c */; };
+		189E02BD25E3AFE600854111 /* iwlwifi_8000C_36_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027225E3AFE400854111 /* iwlwifi_8000C_36_ucode.c */; };
+		189E02BE25E3AFE600854111 /* iwlwifi_6000g2a_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027325E3AFE400854111 /* iwlwifi_6000g2a_6_ucode.c */; };
+		189E02BF25E3AFE600854111 /* iwlwifi_6000g2a_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027325E3AFE400854111 /* iwlwifi_6000g2a_6_ucode.c */; };
+		189E02C025E3AFE600854111 /* iwlwifi_6000g2a_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027325E3AFE400854111 /* iwlwifi_6000g2a_6_ucode.c */; };
+		189E02C125E3AFE600854111 /* iwlwifi_6000g2a_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027325E3AFE400854111 /* iwlwifi_6000g2a_6_ucode.c */; };
+		189E02C225E3AFE600854111 /* firmware_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027425E3AFE400854111 /* firmware_ucode.c */; };
+		189E02C325E3AFE600854111 /* firmware_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027425E3AFE400854111 /* firmware_ucode.c */; };
+		189E02C425E3AFE600854111 /* firmware_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027425E3AFE400854111 /* firmware_ucode.c */; };
+		189E02C525E3AFE600854111 /* firmware_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027425E3AFE400854111 /* firmware_ucode.c */; };
+		189E02CA25E3AFE600854111 /* iwlwifi_4965_2_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027625E3AFE400854111 /* iwlwifi_4965_2_ucode.c */; };
+		189E02CB25E3AFE600854111 /* iwlwifi_4965_2_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027625E3AFE400854111 /* iwlwifi_4965_2_ucode.c */; };
+		189E02CC25E3AFE600854111 /* iwlwifi_4965_2_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027625E3AFE400854111 /* iwlwifi_4965_2_ucode.c */; };
+		189E02CD25E3AFE600854111 /* iwlwifi_4965_2_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027625E3AFE400854111 /* iwlwifi_4965_2_ucode.c */; };
+		189E02CE25E3AFE600854111 /* iwlwifi_7265D_29_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027725E3AFE400854111 /* iwlwifi_7265D_29_ucode.c */; };
+		189E02CF25E3AFE600854111 /* iwlwifi_7265D_29_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027725E3AFE400854111 /* iwlwifi_7265D_29_ucode.c */; };
+		189E02D025E3AFE600854111 /* iwlwifi_7265D_29_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027725E3AFE400854111 /* iwlwifi_7265D_29_ucode.c */; };
+		189E02D125E3AFE600854111 /* iwlwifi_7265D_29_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027725E3AFE400854111 /* iwlwifi_7265D_29_ucode.c */; };
+		189E02D225E3AFE600854111 /* iwlwifi_3168_29_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027825E3AFE400854111 /* iwlwifi_3168_29_ucode.c */; };
+		189E02D325E3AFE600854111 /* iwlwifi_3168_29_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027825E3AFE400854111 /* iwlwifi_3168_29_ucode.c */; };
+		189E02D425E3AFE600854111 /* iwlwifi_3168_29_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027825E3AFE400854111 /* iwlwifi_3168_29_ucode.c */; };
+		189E02D525E3AFE600854111 /* iwlwifi_3168_29_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027825E3AFE400854111 /* iwlwifi_3168_29_ucode.c */; };
+		189E02D625E3AFE600854111 /* iwlwifi_3945_2_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027925E3AFE500854111 /* iwlwifi_3945_2_ucode.c */; };
+		189E02D725E3AFE600854111 /* iwlwifi_3945_2_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027925E3AFE500854111 /* iwlwifi_3945_2_ucode.c */; };
+		189E02D825E3AFE600854111 /* iwlwifi_3945_2_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027925E3AFE500854111 /* iwlwifi_3945_2_ucode.c */; };
+		189E02D925E3AFE600854111 /* iwlwifi_3945_2_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027925E3AFE500854111 /* iwlwifi_3945_2_ucode.c */; };
+		189E02DA25E3AFE600854111 /* iwlwifi_1000_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027A25E3AFE500854111 /* iwlwifi_1000_5_ucode.c */; };
+		189E02DB25E3AFE600854111 /* iwlwifi_1000_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027A25E3AFE500854111 /* iwlwifi_1000_5_ucode.c */; };
+		189E02DC25E3AFE600854111 /* iwlwifi_1000_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027A25E3AFE500854111 /* iwlwifi_1000_5_ucode.c */; };
+		189E02DD25E3AFE600854111 /* iwlwifi_1000_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027A25E3AFE500854111 /* iwlwifi_1000_5_ucode.c */; };
+		189E02DE25E3AFE600854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027B25E3AFE500854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c */; };
+		189E02DF25E3AFE600854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027B25E3AFE500854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c */; };
+		189E02E025E3AFE600854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027B25E3AFE500854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c */; };
+		189E02E125E3AFE600854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027B25E3AFE500854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c */; };
+		189E02E225E3AFE600854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027C25E3AFE500854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c */; };
+		189E02E325E3AFE600854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027C25E3AFE500854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c */; };
+		189E02E425E3AFE600854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027C25E3AFE500854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c */; };
+		189E02E525E3AFE600854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027C25E3AFE500854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c */; };
+		189E02E625E3AFE600854111 /* iwlwifi_100_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027D25E3AFE500854111 /* iwlwifi_100_5_ucode.c */; };
+		189E02E725E3AFE600854111 /* iwlwifi_100_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027D25E3AFE500854111 /* iwlwifi_100_5_ucode.c */; };
+		189E02E825E3AFE600854111 /* iwlwifi_100_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027D25E3AFE500854111 /* iwlwifi_100_5_ucode.c */; };
+		189E02E925E3AFE600854111 /* iwlwifi_100_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027D25E3AFE500854111 /* iwlwifi_100_5_ucode.c */; };
+		189E02EA25E3AFE600854111 /* iwlwifi_2030_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027E25E3AFE500854111 /* iwlwifi_2030_6_ucode.c */; };
+		189E02EB25E3AFE600854111 /* iwlwifi_2030_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027E25E3AFE500854111 /* iwlwifi_2030_6_ucode.c */; };
+		189E02EC25E3AFE600854111 /* iwlwifi_2030_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027E25E3AFE500854111 /* iwlwifi_2030_6_ucode.c */; };
+		189E02ED25E3AFE600854111 /* iwlwifi_2030_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027E25E3AFE500854111 /* iwlwifi_2030_6_ucode.c */; };
+		189E02EE25E3AFE600854111 /* iwlwifi_6050_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027F25E3AFE500854111 /* iwlwifi_6050_5_ucode.c */; };
+		189E02EF25E3AFE600854111 /* iwlwifi_6050_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027F25E3AFE500854111 /* iwlwifi_6050_5_ucode.c */; };
+		189E02F025E3AFE600854111 /* iwlwifi_6050_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027F25E3AFE500854111 /* iwlwifi_6050_5_ucode.c */; };
+		189E02F125E3AFE600854111 /* iwlwifi_6050_5_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E027F25E3AFE500854111 /* iwlwifi_6050_5_ucode.c */; };
+		189E02F225E3AFE600854111 /* iwlwifi_5150_2_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028025E3AFE500854111 /* iwlwifi_5150_2_ucode.c */; };
+		189E02F325E3AFE600854111 /* iwlwifi_5150_2_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028025E3AFE500854111 /* iwlwifi_5150_2_ucode.c */; };
+		189E02F425E3AFE600854111 /* iwlwifi_5150_2_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028025E3AFE500854111 /* iwlwifi_5150_2_ucode.c */; };
+		189E02F525E3AFE600854111 /* iwlwifi_5150_2_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028025E3AFE500854111 /* iwlwifi_5150_2_ucode.c */; };
+		189E02F625E3AFE600854111 /* iwlwifi_6000g2b_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028125E3AFE500854111 /* iwlwifi_6000g2b_6_ucode.c */; };
+		189E02F725E3AFE600854111 /* iwlwifi_6000g2b_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028125E3AFE500854111 /* iwlwifi_6000g2b_6_ucode.c */; };
+		189E02F825E3AFE600854111 /* iwlwifi_6000g2b_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028125E3AFE500854111 /* iwlwifi_6000g2b_6_ucode.c */; };
+		189E02F925E3AFE600854111 /* iwlwifi_6000g2b_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028125E3AFE500854111 /* iwlwifi_6000g2b_6_ucode.c */; };
+		189E02FA25E3AFE600854111 /* iwlwifi_105_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028225E3AFE600854111 /* iwlwifi_105_6_ucode.c */; };
+		189E02FB25E3AFE600854111 /* iwlwifi_105_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028225E3AFE600854111 /* iwlwifi_105_6_ucode.c */; };
+		189E02FC25E3AFE600854111 /* iwlwifi_105_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028225E3AFE600854111 /* iwlwifi_105_6_ucode.c */; };
+		189E02FD25E3AFE600854111 /* iwlwifi_105_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028225E3AFE600854111 /* iwlwifi_105_6_ucode.c */; };
+		189E02FE25E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028325E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c */; };
+		189E02FF25E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028325E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c */; };
+		189E030025E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028325E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c */; };
+		189E030125E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028325E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c */; };
+		189E030225E3AFE600854111 /* iwlwifi_135_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028425E3AFE600854111 /* iwlwifi_135_6_ucode.c */; };
+		189E030325E3AFE600854111 /* iwlwifi_135_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028425E3AFE600854111 /* iwlwifi_135_6_ucode.c */; };
+		189E030425E3AFE600854111 /* iwlwifi_135_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028425E3AFE600854111 /* iwlwifi_135_6_ucode.c */; };
+		189E030525E3AFE600854111 /* iwlwifi_135_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028425E3AFE600854111 /* iwlwifi_135_6_ucode.c */; };
+		189E030625E3AFE600854111 /* iwlwifi_2000_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028525E3AFE600854111 /* iwlwifi_2000_6_ucode.c */; };
+		189E030725E3AFE600854111 /* iwlwifi_2000_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028525E3AFE600854111 /* iwlwifi_2000_6_ucode.c */; };
+		189E030825E3AFE600854111 /* iwlwifi_2000_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028525E3AFE600854111 /* iwlwifi_2000_6_ucode.c */; };
+		189E030925E3AFE600854111 /* iwlwifi_2000_6_ucode.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E028525E3AFE600854111 /* iwlwifi_2000_6_ucode.c */; };
+		189E031425E3B2F300854111 /* firmware.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E031325E3B2F300854111 /* firmware.c */; };
+		189E031525E3B2F300854111 /* firmware.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E031325E3B2F300854111 /* firmware.c */; };
+		189E031625E3B2F300854111 /* firmware.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E031325E3B2F300854111 /* firmware.c */; };
+		189E031725E3B2F300854111 /* firmware.c in Sources */ = {isa = PBXBuildFile; fileRef = 189E031325E3B2F300854111 /* firmware.c */; };
 		18A4358D25C3C653000DAE97 /* iwl-drv.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A434DC25C3C652000DAE97 /* iwl-drv.h */; };
 		18A4358E25C3C653000DAE97 /* iwl-drv.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A434DC25C3C652000DAE97 /* iwl-drv.h */; };
 		18A4358F25C3C653000DAE97 /* iwl-drv.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A434DC25C3C652000DAE97 /* iwl-drv.h */; };
@@ -1859,10 +1999,6 @@
 		18A4372E25C3C653000DAE97 /* iwl-devtrace-data.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A4354725C3C652000DAE97 /* iwl-devtrace-data.h */; };
 		18A4372F25C3C653000DAE97 /* iwl-devtrace-data.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A4354725C3C652000DAE97 /* iwl-devtrace-data.h */; };
 		18A4373025C3C653000DAE97 /* iwl-devtrace-data.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A4354725C3C652000DAE97 /* iwl-devtrace-data.h */; };
-		18A4373125C3C653000DAE97 /* Kconfig in Resources */ = {isa = PBXBuildFile; fileRef = 18A4354825C3C652000DAE97 /* Kconfig */; };
-		18A4373225C3C653000DAE97 /* Kconfig in Resources */ = {isa = PBXBuildFile; fileRef = 18A4354825C3C652000DAE97 /* Kconfig */; };
-		18A4373325C3C653000DAE97 /* Kconfig in Resources */ = {isa = PBXBuildFile; fileRef = 18A4354825C3C652000DAE97 /* Kconfig */; };
-		18A4373425C3C653000DAE97 /* Kconfig in Resources */ = {isa = PBXBuildFile; fileRef = 18A4354825C3C652000DAE97 /* Kconfig */; };
 		18A4373525C3C653000DAE97 /* iwl-devtrace-msg.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A4354925C3C652000DAE97 /* iwl-devtrace-msg.h */; };
 		18A4373625C3C653000DAE97 /* iwl-devtrace-msg.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A4354925C3C652000DAE97 /* iwl-devtrace-msg.h */; };
 		18A4373725C3C653000DAE97 /* iwl-devtrace-msg.h in Headers */ = {isa = PBXBuildFile; fileRef = 18A4354925C3C652000DAE97 /* iwl-devtrace-msg.h */; };
@@ -2139,30 +2275,6 @@
 		37152F9E25C681F3004031DF /* rwsem.h in Headers */ = {isa = PBXBuildFile; fileRef = 37152F9C25C681F3004031DF /* rwsem.h */; };
 		37152F9F25C681F3004031DF /* rwsem.h in Headers */ = {isa = PBXBuildFile; fileRef = 37152F9C25C681F3004031DF /* rwsem.h */; };
 		37152FA025C681F3004031DF /* rwsem.h in Headers */ = {isa = PBXBuildFile; fileRef = 37152F9C25C681F3004031DF /* rwsem.h */; };
-		374023F82587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
-		374023F92587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
-		374023FA2587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
-		374023FB2587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */; };
-		374024542587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */; };
-		374024552587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */; };
-		374024562587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */; };
-		374024572587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */; };
-		3740248C2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */; };
-		3740248D2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */; };
-		3740248E2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */; };
-		3740248F2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */; };
-		374024942587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023892587BC42006B33D3 /* iwlwifi-8265-36.ucode */; };
-		374024952587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023892587BC42006B33D3 /* iwlwifi-8265-36.ucode */; };
-		374024962587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023892587BC42006B33D3 /* iwlwifi-8265-36.ucode */; };
-		374024972587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023892587BC42006B33D3 /* iwlwifi-8265-36.ucode */; };
-		374024A42587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */; };
-		374024A52587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */; };
-		374024A62587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */; };
-		374024A72587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */; };
-		374024D42587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */; };
-		374024D52587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */; };
-		374024D62587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */; };
-		374024D72587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */ = {isa = PBXBuildFile; fileRef = 374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */; };
 		37CFF28F2573CFF00047098B /* AirPortLinux.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 37CFF28E2573CFF00047098B /* AirPortLinux.hpp */; };
 		37CFF2912573CFF00047098B /* AirPortLinux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37CFF2902573CFF00047098B /* AirPortLinux.cpp */; };
 		37CFF2B82573EB150047098B /* IONetworkInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 37CFF2AB2573EB150047098B /* IONetworkInterface.h */; };
@@ -2616,6 +2728,42 @@
 		187079FD25C3A6B20066BC98 /* rhashtable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rhashtable.c; sourceTree = "<group>"; };
 		187079FE25C3A6B20066BC98 /* nlattr.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = nlattr.c; sourceTree = "<group>"; };
 		18861BC325CFD53400F90563 /* scm.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = scm.c; sourceTree = "<group>"; };
+		189B815A25DA5CCC004EC6C5 /* driver_wext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = driver_wext.h; sourceTree = "<group>"; };
+		189B815B25DA5CCC004EC6C5 /* driver_wext.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = driver_wext.c; sourceTree = "<group>"; };
+		189E021525E3AD9B00854111 /* fw2bin.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = fw2bin.sh; sourceTree = "<group>"; };
+		189E026525E3AFE300854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_Qu_b0_jf_b0_55_ucode.c; sourceTree = "<group>"; };
+		189E026625E3AFE300854111 /* firmware_ucode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = firmware_ucode.h; sourceTree = "<group>"; };
+		189E026725E3AFE300854111 /* iwlwifi_7260_17_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_7260_17_ucode.c; sourceTree = "<group>"; };
+		189E026825E3AFE300854111 /* iwlwifi_6000_4_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_6000_4_ucode.c; sourceTree = "<group>"; };
+		189E026925E3AFE300854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_9260_th_b0_jf_b0_46_ucode.c; sourceTree = "<group>"; };
+		189E026A25E3AFE300854111 /* iwlwifi_5000_5_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_5000_5_ucode.c; sourceTree = "<group>"; };
+		189E026B25E3AFE300854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_9000_pu_b0_jf_b0_46_ucode.c; sourceTree = "<group>"; };
+		189E026C25E3AFE300854111 /* iwlwifi_7265_17_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_7265_17_ucode.c; sourceTree = "<group>"; };
+		189E026D25E3AFE300854111 /* iwlwifi_3160_17_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_3160_17_ucode.c; sourceTree = "<group>"; };
+		189E026E25E3AFE300854111 /* iwlwifi_8265_36_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_8265_36_ucode.c; sourceTree = "<group>"; };
+		189E026F25E3AFE400854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_Qu_c0_hr_b0_55_ucode.c; sourceTree = "<group>"; };
+		189E027025E3AFE400854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_QuZ_a0_hr_b0_55_ucode.c; sourceTree = "<group>"; };
+		189E027125E3AFE400854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_Qu_c0_jf_b0_55_ucode.c; sourceTree = "<group>"; };
+		189E027225E3AFE400854111 /* iwlwifi_8000C_36_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_8000C_36_ucode.c; sourceTree = "<group>"; };
+		189E027325E3AFE400854111 /* iwlwifi_6000g2a_6_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_6000g2a_6_ucode.c; sourceTree = "<group>"; };
+		189E027425E3AFE400854111 /* firmware_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = firmware_ucode.c; sourceTree = "<group>"; };
+		189E027625E3AFE400854111 /* iwlwifi_4965_2_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_4965_2_ucode.c; sourceTree = "<group>"; };
+		189E027725E3AFE400854111 /* iwlwifi_7265D_29_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_7265D_29_ucode.c; sourceTree = "<group>"; };
+		189E027825E3AFE400854111 /* iwlwifi_3168_29_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_3168_29_ucode.c; sourceTree = "<group>"; };
+		189E027925E3AFE500854111 /* iwlwifi_3945_2_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_3945_2_ucode.c; sourceTree = "<group>"; };
+		189E027A25E3AFE500854111 /* iwlwifi_1000_5_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_1000_5_ucode.c; sourceTree = "<group>"; };
+		189E027B25E3AFE500854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_Qu_b0_hr_b0_55_ucode.c; sourceTree = "<group>"; };
+		189E027C25E3AFE500854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_QuZ_a0_jf_b0_55_ucode.c; sourceTree = "<group>"; };
+		189E027D25E3AFE500854111 /* iwlwifi_100_5_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_100_5_ucode.c; sourceTree = "<group>"; };
+		189E027E25E3AFE500854111 /* iwlwifi_2030_6_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_2030_6_ucode.c; sourceTree = "<group>"; };
+		189E027F25E3AFE500854111 /* iwlwifi_6050_5_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_6050_5_ucode.c; sourceTree = "<group>"; };
+		189E028025E3AFE500854111 /* iwlwifi_5150_2_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_5150_2_ucode.c; sourceTree = "<group>"; };
+		189E028125E3AFE500854111 /* iwlwifi_6000g2b_6_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_6000g2b_6_ucode.c; sourceTree = "<group>"; };
+		189E028225E3AFE600854111 /* iwlwifi_105_6_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_105_6_ucode.c; sourceTree = "<group>"; };
+		189E028325E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_cc_a0_55_ucode.c; sourceTree = "<group>"; };
+		189E028425E3AFE600854111 /* iwlwifi_135_6_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_135_6_ucode.c; sourceTree = "<group>"; };
+		189E028525E3AFE600854111 /* iwlwifi_2000_6_ucode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iwlwifi_2000_6_ucode.c; sourceTree = "<group>"; };
+		189E031325E3B2F300854111 /* firmware.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = firmware.c; sourceTree = "<group>"; };
 		18A434DC25C3C652000DAE97 /* iwl-drv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "iwl-drv.h"; sourceTree = "<group>"; };
 		18A434DD25C3C652000DAE97 /* iwl-csr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "iwl-csr.h"; sourceTree = "<group>"; };
 		18A434DE25C3C652000DAE97 /* iwl-phy-db.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "iwl-phy-db.c"; sourceTree = "<group>"; };
@@ -2791,12 +2939,6 @@
 		3714F47125D66E14008CE76F /* _malloc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = _malloc.c; sourceTree = "<group>"; };
 		37152F9625C680ED004031DF /* notifier.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = notifier.c; sourceTree = "<group>"; };
 		37152F9C25C681F3004031DF /* rwsem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = rwsem.h; sourceTree = "<group>"; };
-		374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-21.ucode"; sourceTree = "<group>"; };
-		374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-22.ucode"; sourceTree = "<group>"; };
-		374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-31.ucode"; sourceTree = "<group>"; };
-		374023892587BC42006B33D3 /* iwlwifi-8265-36.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-36.ucode"; sourceTree = "<group>"; };
-		3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-34.ucode"; sourceTree = "<group>"; };
-		374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iwlwifi-8265-27.ucode"; sourceTree = "<group>"; };
 		37CFF28B2573CFF00047098B /* AirPortLinux.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirPortLinux.kext; sourceTree = BUILT_PRODUCTS_DIR; };
 		37CFF28E2573CFF00047098B /* AirPortLinux.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = AirPortLinux.hpp; sourceTree = "<group>"; };
 		37CFF2902573CFF00047098B /* AirPortLinux.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AirPortLinux.cpp; sourceTree = "<group>"; };
@@ -3287,6 +3429,7 @@
 				187079E625C3A6B20066BC98 /* filter.h */,
 				187079A625C3A6B20066BC98 /* fips.h */,
 				187079BE25C3A6B20066BC98 /* firmware.h */,
+				189E031325E3B2F300854111 /* firmware.c */,
 				187079B225C3A6B20066BC98 /* fls.c */,
 				187079F325C3A6B20066BC98 /* fs.h */,
 				187079F125C3A6B20066BC98 /* genetlink.h */,
@@ -3425,6 +3568,13 @@
 			path = intel;
 			sourceTree = "<group>";
 		};
+		189E021625E3AE1A00854111 /* sources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = sources;
+			sourceTree = "<group>";
+		};
 		18A434DB25C3C652000DAE97 /* iwlwifi */ = {
 			isa = PBXGroup;
 			children = (
@@ -3478,44 +3628,44 @@
 		18A434E525C3C652000DAE97 /* mvm */ = {
 			isa = PBXGroup;
 			children = (
-				18A434E625C3C652000DAE97 /* ftm-responder.c */,
-				18A434E725C3C652000DAE97 /* led.c */,
-				18A434E825C3C652000DAE97 /* mac80211.c */,
-				18A434E925C3C652000DAE97 /* coex.c */,
-				18A434EA25C3C652000DAE97 /* nvm.c */,
-				18A434EB25C3C652000DAE97 /* d3.c */,
-				18A434EC25C3C652000DAE97 /* rx.c */,
-				18A434ED25C3C652000DAE97 /* sta.h */,
-				18A434EE25C3C652000DAE97 /* debugfs.c */,
 				18A434EF25C3C652000DAE97 /* binding.c */,
-				18A434F025C3C652000DAE97 /* Makefile */,
-				18A434F125C3C652000DAE97 /* rxmq.c */,
-				18A434F225C3C652000DAE97 /* time-event.c */,
-				18A434F325C3C652000DAE97 /* ops.c */,
-				18A434F425C3C652000DAE97 /* tdls.c */,
-				18A434F525C3C652000DAE97 /* scan.c */,
-				18A434F625C3C652000DAE97 /* phy-ctxt.c */,
-				18A434F725C3C652000DAE97 /* tt.c */,
-				18A434F825C3C652000DAE97 /* fw.c */,
-				18A434F925C3C652000DAE97 /* rs.h */,
-				18A434FA25C3C652000DAE97 /* power.c */,
+				18A434E925C3C652000DAE97 /* coex.c */,
 				18A434FB25C3C652000DAE97 /* constants.h */,
-				18A434FC25C3C652000DAE97 /* quota.c */,
-				18A434FD25C3C652000DAE97 /* utils.c */,
-				18A434FE25C3C652000DAE97 /* fw-api.h */,
-				18A434FF25C3C652000DAE97 /* sf.c */,
-				18A4350025C3C652000DAE97 /* mvm.h */,
+				18A434EB25C3C652000DAE97 /* d3.c */,
 				18A4350125C3C652000DAE97 /* debugfs-vif.c */,
-				18A4350225C3C652000DAE97 /* sta.c */,
-				18A4350325C3C652000DAE97 /* ftm-initiator.c */,
-				18A4350425C3C652000DAE97 /* offloading.c */,
-				18A4350525C3C652000DAE97 /* time-event.h */,
-				18A4350625C3C652000DAE97 /* mac-ctxt.c */,
-				18A4350725C3C652000DAE97 /* testmode.h */,
+				18A434EE25C3C652000DAE97 /* debugfs.c */,
 				18A4350825C3C652000DAE97 /* debugfs.h */,
+				18A4350325C3C652000DAE97 /* ftm-initiator.c */,
+				18A434E625C3C652000DAE97 /* ftm-responder.c */,
+				18A434FE25C3C652000DAE97 /* fw-api.h */,
+				18A434F825C3C652000DAE97 /* fw.c */,
+				18A434E725C3C652000DAE97 /* led.c */,
+				18A4350625C3C652000DAE97 /* mac-ctxt.c */,
+				18A434E825C3C652000DAE97 /* mac80211.c */,
+				18A434F025C3C652000DAE97 /* Makefile */,
+				18A4350025C3C652000DAE97 /* mvm.h */,
+				18A434EA25C3C652000DAE97 /* nvm.c */,
+				18A4350425C3C652000DAE97 /* offloading.c */,
+				18A434F325C3C652000DAE97 /* ops.c */,
+				18A434F625C3C652000DAE97 /* phy-ctxt.c */,
+				18A434FA25C3C652000DAE97 /* power.c */,
+				18A434FC25C3C652000DAE97 /* quota.c */,
 				18A4350925C3C652000DAE97 /* rs-fw.c */,
-				18A4350A25C3C652000DAE97 /* tx.c */,
 				18A4350B25C3C652000DAE97 /* rs.c */,
+				18A434F925C3C652000DAE97 /* rs.h */,
+				18A434EC25C3C652000DAE97 /* rx.c */,
+				18A434F125C3C652000DAE97 /* rxmq.c */,
+				18A434F525C3C652000DAE97 /* scan.c */,
+				18A434FF25C3C652000DAE97 /* sf.c */,
+				18A4350225C3C652000DAE97 /* sta.c */,
+				18A434ED25C3C652000DAE97 /* sta.h */,
+				18A434F425C3C652000DAE97 /* tdls.c */,
+				18A4350725C3C652000DAE97 /* testmode.h */,
+				18A434F225C3C652000DAE97 /* time-event.c */,
+				18A4350525C3C652000DAE97 /* time-event.h */,
+				18A434F725C3C652000DAE97 /* tt.c */,
+				18A4350A25C3C652000DAE97 /* tx.c */,
+				18A434FD25C3C652000DAE97 /* utils.c */,
 			);
 			path = mvm;
 			sourceTree = "<group>";
@@ -3589,31 +3739,31 @@
 		18A4354B25C3C652000DAE97 /* dvm */ = {
 			isa = PBXGroup;
 			children = (
-				18A4354C25C3C652000DAE97 /* led.c */,
-				18A4354D25C3C652000DAE97 /* mac80211.c */,
-				18A4354E25C3C652000DAE97 /* power.h */,
-				18A4354F25C3C652000DAE97 /* lib.c */,
-				18A4355025C3C652000DAE97 /* rx.c */,
-				18A4355125C3C652000DAE97 /* debugfs.c */,
-				18A4355225C3C652000DAE97 /* calib.c */,
-				18A4355325C3C652000DAE97 /* Makefile */,
-				18A4355425C3C652000DAE97 /* scan.c */,
-				18A4355525C3C652000DAE97 /* commands.h */,
-				18A4355625C3C652000DAE97 /* tt.c */,
-				18A4355725C3C652000DAE97 /* dev.h */,
-				18A4355825C3C652000DAE97 /* rs.h */,
-				18A4355925C3C652000DAE97 /* power.c */,
-				18A4355A25C3C652000DAE97 /* led.h */,
-				18A4355B25C3C652000DAE97 /* devices.c */,
-				18A4355C25C3C652000DAE97 /* main.c */,
-				18A4355D25C3C652000DAE97 /* sta.c */,
 				18A4355E25C3C652000DAE97 /* agn.h */,
-				18A4355F25C3C652000DAE97 /* ucode.c */,
+				18A4355225C3C652000DAE97 /* calib.c */,
 				18A4356025C3C652000DAE97 /* calib.h */,
-				18A4356125C3C652000DAE97 /* tx.c */,
+				18A4355525C3C652000DAE97 /* commands.h */,
+				18A4355125C3C652000DAE97 /* debugfs.c */,
+				18A4355725C3C652000DAE97 /* dev.h */,
+				18A4355B25C3C652000DAE97 /* devices.c */,
+				18A4354C25C3C652000DAE97 /* led.c */,
+				18A4355A25C3C652000DAE97 /* led.h */,
+				18A4354F25C3C652000DAE97 /* lib.c */,
+				18A4354D25C3C652000DAE97 /* mac80211.c */,
+				18A4355C25C3C652000DAE97 /* main.c */,
+				18A4355325C3C652000DAE97 /* Makefile */,
+				18A4355925C3C652000DAE97 /* power.c */,
+				18A4354E25C3C652000DAE97 /* power.h */,
 				18A4356225C3C652000DAE97 /* rs.c */,
-				18A4356325C3C652000DAE97 /* tt.h */,
+				18A4355825C3C652000DAE97 /* rs.h */,
+				18A4355025C3C652000DAE97 /* rx.c */,
 				18A4356425C3C652000DAE97 /* rxon.c */,
+				18A4355425C3C652000DAE97 /* scan.c */,
+				18A4355D25C3C652000DAE97 /* sta.c */,
+				18A4355625C3C652000DAE97 /* tt.c */,
+				18A4356325C3C652000DAE97 /* tt.h */,
+				18A4356125C3C652000DAE97 /* tx.c */,
+				18A4355F25C3C652000DAE97 /* ucode.c */,
 			);
 			path = dvm;
 			sourceTree = "<group>";
@@ -3661,6 +3811,7 @@
 		37CFF2812573CFF00047098B = {
 			isa = PBXGroup;
 			children = (
+				189E021525E3AD9B00854111 /* fw2bin.sh */,
 				37CFF28D2573CFF00047098B /* AirPortLinux */,
 				37CFF28C2573CFF00047098B /* Products */,
 			);
@@ -3680,22 +3831,25 @@
 		37CFF28D2573CFF00047098B /* AirPortLinux */ = {
 			isa = PBXGroup;
 			children = (
-				37CFF2902573CFF00047098B /* AirPortLinux.cpp */,
-				37CFF28E2573CFF00047098B /* AirPortLinux.hpp */,
 				37CFF60E2573EE480047098B /* AirPortLinux_80211.cpp */,
 				37CFF60F2573EE480047098B /* AirPortLinux_Ioctl.cpp */,
-				1805C325259AEBA00069998A /* help_ifconfig.h */,
-				1805C326259AEBA00069998A /* help_ifconfig.c */,
 				37CFF6102573EE480047098B /* AirPortLinux_Util.cpp */,
+				37CFF2902573CFF00047098B /* AirPortLinux.cpp */,
+				37CFF28E2573CFF00047098B /* AirPortLinux.hpp */,
 				37CFF2AA2573EB150047098B /* Apple Headers */,
 				37CFF2AD2573EB150047098B /* apple80211 */,
 				37CFF2B72573EB150047098B /* apple80211.h */,
 				37CFF2C62573ECC00047098B /* compat.cpp */,
-				37E824812573F3F6001A3370 /* firmware */,
 				37CFF2C52573ECC00047098B /* compat.h */,
+				189B815B25DA5CCC004EC6C5 /* driver_wext.c */,
+				189B815A25DA5CCC004EC6C5 /* driver_wext.h */,
+				37E824812573F3F6001A3370 /* firmware */,
+				1805C326259AEBA00069998A /* help_ifconfig.c */,
+				1805C325259AEBA00069998A /* help_ifconfig.h */,
 				37CFF2922573CFF00047098B /* Info.plist */,
 				37CFF2C42573ECC00047098B /* iwlwifi.h */,
 				187077DA25C3A6B00066BC98 /* linux5.10.11 */,
+				189E021625E3AE1A00854111 /* sources */,
 			);
 			path = AirPortLinux;
 			sourceTree = "<group>";
@@ -3736,12 +3890,38 @@
 		37E824812573F3F6001A3370 /* firmware */ = {
 			isa = PBXGroup;
 			children = (
-				374023622587BC3E006B33D3 /* iwlwifi-8265-21.ucode */,
-				374023792587BC41006B33D3 /* iwlwifi-8265-22.ucode */,
-				374023992587BC44006B33D3 /* iwlwifi-8265-27.ucode */,
-				374023872587BC42006B33D3 /* iwlwifi-8265-31.ucode */,
-				3740238D2587BC43006B33D3 /* iwlwifi-8265-34.ucode */,
-				374023892587BC42006B33D3 /* iwlwifi-8265-36.ucode */,
+				189E027425E3AFE400854111 /* firmware_ucode.c */,
+				189E026625E3AFE300854111 /* firmware_ucode.h */,
+				189E027D25E3AFE500854111 /* iwlwifi_100_5_ucode.c */,
+				189E028225E3AFE600854111 /* iwlwifi_105_6_ucode.c */,
+				189E028425E3AFE600854111 /* iwlwifi_135_6_ucode.c */,
+				189E027A25E3AFE500854111 /* iwlwifi_1000_5_ucode.c */,
+				189E028525E3AFE600854111 /* iwlwifi_2000_6_ucode.c */,
+				189E027E25E3AFE500854111 /* iwlwifi_2030_6_ucode.c */,
+				189E026D25E3AFE300854111 /* iwlwifi_3160_17_ucode.c */,
+				189E027825E3AFE400854111 /* iwlwifi_3168_29_ucode.c */,
+				189E027925E3AFE500854111 /* iwlwifi_3945_2_ucode.c */,
+				189E027625E3AFE400854111 /* iwlwifi_4965_2_ucode.c */,
+				189E026A25E3AFE300854111 /* iwlwifi_5000_5_ucode.c */,
+				189E028025E3AFE500854111 /* iwlwifi_5150_2_ucode.c */,
+				189E026825E3AFE300854111 /* iwlwifi_6000_4_ucode.c */,
+				189E027325E3AFE400854111 /* iwlwifi_6000g2a_6_ucode.c */,
+				189E028125E3AFE500854111 /* iwlwifi_6000g2b_6_ucode.c */,
+				189E027F25E3AFE500854111 /* iwlwifi_6050_5_ucode.c */,
+				189E026725E3AFE300854111 /* iwlwifi_7260_17_ucode.c */,
+				189E026C25E3AFE300854111 /* iwlwifi_7265_17_ucode.c */,
+				189E027725E3AFE400854111 /* iwlwifi_7265D_29_ucode.c */,
+				189E027225E3AFE400854111 /* iwlwifi_8000C_36_ucode.c */,
+				189E026E25E3AFE300854111 /* iwlwifi_8265_36_ucode.c */,
+				189E026B25E3AFE300854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c */,
+				189E026925E3AFE300854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c */,
+				189E028325E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c */,
+				189E027B25E3AFE500854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c */,
+				189E026525E3AFE300854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c */,
+				189E026F25E3AFE400854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c */,
+				189E027125E3AFE400854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c */,
+				189E027025E3AFE400854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c */,
+				189E027C25E3AFE500854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c */,
 			);
 			path = firmware;
 			sourceTree = "<group>";
@@ -3956,6 +4136,7 @@
 				18707A4F25C3A6B30066BC98 /* core.h in Headers */,
 				18707E8725C3A6B50066BC98 /* net.h in Headers */,
 				1870803725C3A6B60066BC98 /* of.h in Headers */,
+				189B815C25DA5CCC004EC6C5 /* driver_wext.h in Headers */,
 				18A436C925C3C653000DAE97 /* tx.h in Headers */,
 				37152F9D25C681F3004031DF /* rwsem.h in Headers */,
 				37CFF2BB2573EB150047098B /* apple80211_ioctl.h in Headers */,
@@ -4041,6 +4222,7 @@
 				187081E325C3A6B70066BC98 /* random.h in Headers */,
 				18707F4725C3A6B50066BC98 /* atomic.h in Headers */,
 				18707AD325C3A6B30066BC98 /* driver-ops.h in Headers */,
+				189E028A25E3AFE600854111 /* firmware_ucode.h in Headers */,
 				18A4378525C3C653000DAE97 /* agn.h in Headers */,
 				18A436D125C3C653000DAE97 /* coex.h in Headers */,
 				187080BF25C3A6B60066BC98 /* netlink.h in Headers */,
@@ -4285,6 +4467,7 @@
 				18707FD425C3A6B60066BC98 /* rtnetlink.h in Headers */,
 				18707E6C25C3A6B50066BC98 /* gcc_intrin.h in Headers */,
 				187081CC25C3A6B70066BC98 /* if.h in Headers */,
+				189B815D25DA5CCC004EC6C5 /* driver_wext.h in Headers */,
 				18A436CA25C3C653000DAE97 /* tx.h in Headers */,
 				37152F9E25C681F3004031DF /* rwsem.h in Headers */,
 				18707AF025C3A6B30066BC98 /* debug.h in Headers */,
@@ -4370,6 +4553,7 @@
 				187080F425C3A6B60066BC98 /* _string.h in Headers */,
 				18707B6825C3A6B30066BC98 /* led.h in Headers */,
 				187081E425C3A6B70066BC98 /* random.h in Headers */,
+				189E028B25E3AFE600854111 /* firmware_ucode.h in Headers */,
 				18A4378625C3C653000DAE97 /* agn.h in Headers */,
 				18A436D225C3C653000DAE97 /* coex.h in Headers */,
 				18707F4825C3A6B50066BC98 /* atomic.h in Headers */,
@@ -4614,6 +4798,7 @@
 				18707FD525C3A6B60066BC98 /* rtnetlink.h in Headers */,
 				18707E6D25C3A6B50066BC98 /* gcc_intrin.h in Headers */,
 				187081CD25C3A6B70066BC98 /* if.h in Headers */,
+				189B815E25DA5CCC004EC6C5 /* driver_wext.h in Headers */,
 				18A436CB25C3C653000DAE97 /* tx.h in Headers */,
 				37152F9F25C681F3004031DF /* rwsem.h in Headers */,
 				18707AF125C3A6B30066BC98 /* debug.h in Headers */,
@@ -4699,6 +4884,7 @@
 				187080F525C3A6B60066BC98 /* _string.h in Headers */,
 				18707B6925C3A6B30066BC98 /* led.h in Headers */,
 				187081E525C3A6B70066BC98 /* random.h in Headers */,
+				189E028C25E3AFE600854111 /* firmware_ucode.h in Headers */,
 				18A4378725C3C653000DAE97 /* agn.h in Headers */,
 				18A436D325C3C653000DAE97 /* coex.h in Headers */,
 				18707F4925C3A6B50066BC98 /* atomic.h in Headers */,
@@ -4943,6 +5129,7 @@
 				18707FD625C3A6B60066BC98 /* rtnetlink.h in Headers */,
 				18707E6E25C3A6B50066BC98 /* gcc_intrin.h in Headers */,
 				187081CE25C3A6B70066BC98 /* if.h in Headers */,
+				189B815F25DA5CCC004EC6C5 /* driver_wext.h in Headers */,
 				18A436CC25C3C653000DAE97 /* tx.h in Headers */,
 				37152FA025C681F3004031DF /* rwsem.h in Headers */,
 				18707AF225C3A6B30066BC98 /* debug.h in Headers */,
@@ -5028,6 +5215,7 @@
 				187080F625C3A6B60066BC98 /* _string.h in Headers */,
 				18707B6A25C3A6B30066BC98 /* led.h in Headers */,
 				187081E625C3A6B70066BC98 /* random.h in Headers */,
+				189E028D25E3AFE600854111 /* firmware_ucode.h in Headers */,
 				18A4378825C3C653000DAE97 /* agn.h in Headers */,
 				18A436D425C3C653000DAE97 /* coex.h in Headers */,
 				18707F4A25C3A6B50066BC98 /* atomic.h in Headers */,
@@ -5066,6 +5254,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
+
+/* Begin PBXLegacyTarget section */
+		189E020D25E3AD6300854111 /* fw2bin */ = {
+			isa = PBXLegacyTarget;
+			buildArgumentsString = "$(ACTION)";
+			buildConfigurationList = 189E021025E3AD6400854111 /* Build configuration list for PBXLegacyTarget "fw2bin" */;
+			buildPhases = (
+			);
+			buildToolPath = "$(PROJECT_DIR)/fw2bin.sh";
+			dependencies = (
+			);
+			name = fw2bin;
+			passBuildSettingsInEnvironment = 1;
+			productName = fw2bin;
+		};
+/* End PBXLegacyTarget section */
 
 /* Begin PBXNativeTarget section */
 		37CFF28A2573CFF00047098B /* AirPortLinux */ = {
@@ -5149,6 +5353,9 @@
 				LastUpgradeCheck = 1030;
 				ORGANIZATIONNAME = "User-Mac";
 				TargetAttributes = {
+					189E020D25E3AD6300854111 = {
+						CreatedOnToolsVersion = 12.4;
+					};
 					37CFF28A2573CFF00047098B = {
 						CreatedOnToolsVersion = 10.3;
 					};
@@ -5179,6 +5386,7 @@
 				37CFF6182573EEC00047098B /* AirPortLinux_Mojave */,
 				37CFF7CB2573EFE40047098B /* AirPortLinux_Catalina */,
 				37CFF97E2573F1340047098B /* AirPortLinux_BigSur */,
+				189E020D25E3AD6300854111 /* fw2bin */,
 			);
 		};
 /* End PBXProject section */
@@ -5188,13 +5396,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				374023F82587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */,
-				374024542587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */,
-				374024A42587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */,
-				18A4373125C3C653000DAE97 /* Kconfig in Resources */,
-				3740248C2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */,
-				374024D42587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */,
-				374024942587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5202,13 +5403,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				374023F92587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */,
-				374024552587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */,
-				374024A52587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */,
-				18A4373225C3C653000DAE97 /* Kconfig in Resources */,
-				3740248D2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */,
-				374024D52587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */,
-				374024952587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5216,13 +5410,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				374023FA2587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */,
-				374024562587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */,
-				374024A62587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */,
-				18A4373325C3C653000DAE97 /* Kconfig in Resources */,
-				3740248E2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */,
-				374024D62587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */,
-				374024962587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5230,13 +5417,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				374023FB2587BC48006B33D3 /* iwlwifi-8265-21.ucode in Resources */,
-				374024572587BC48006B33D3 /* iwlwifi-8265-22.ucode in Resources */,
-				374024A72587BC48006B33D3 /* iwlwifi-8265-34.ucode in Resources */,
-				18A4373425C3C653000DAE97 /* Kconfig in Resources */,
-				3740248F2587BC48006B33D3 /* iwlwifi-8265-31.ucode in Resources */,
-				374024D72587BC48006B33D3 /* iwlwifi-8265-27.ucode in Resources */,
-				374024972587BC48006B33D3 /* iwlwifi-8265-36.ucode in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5247,24 +5427,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				189E02DE25E3AFE600854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c in Sources */,
 				18A437B925C3C653000DAE97 /* 6000.c in Sources */,
 				18A4361D25C3C653000DAE97 /* debugfs-vif.c in Sources */,
 				18A435BD25C3C653000DAE97 /* coex.c in Sources */,
 				18707BBB25C3A6B30066BC98 /* vht.c in Sources */,
+				189E029E25E3AFE600854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c in Sources */,
 				18707ABB25C3A6B30066BC98 /* mesh.c in Sources */,
 				18707AD725C3A6B30066BC98 /* led.c in Sources */,
 				18707B6325C3A6B30066BC98 /* pm.c in Sources */,
 				18A4379525C3C653000DAE97 /* rs.c in Sources */,
+				189E02B225E3AFE600854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c in Sources */,
 				18707F7325C3A6B50066BC98 /* genetlink.c in Sources */,
 				18707FE725C3A6B60066BC98 /* _string.c in Sources */,
 				18A4378925C3C653000DAE97 /* ucode.c in Sources */,
 				1805C32B259AEBA00069998A /* help_ifconfig.c in Sources */,
 				1870805B25C3A6B60066BC98 /* dma-mapping.c in Sources */,
 				3714F47625D66E14008CE76F /* _malloc.c in Sources */,
+				189E02BE25E3AFE600854111 /* iwlwifi_6000g2a_6_ucode.c in Sources */,
 				18707A8B25C3A6B30066BC98 /* wext-sme.c in Sources */,
 				37CFF6112573EE480047098B /* AirPortLinux_80211.cpp in Sources */,
 				18A435C125C3C653000DAE97 /* nvm.c in Sources */,
 				18A4370D25C3C653000DAE97 /* smem.c in Sources */,
+				189E02DA25E3AFE600854111 /* iwlwifi_1000_5_ucode.c in Sources */,
 				18707AEB25C3A6B30066BC98 /* iface.c in Sources */,
 				18707A7725C3A6B30066BC98 /* ethtool.c in Sources */,
 				18A4366925C3C653000DAE97 /* init.c in Sources */,
@@ -5272,6 +5457,7 @@
 				18707B5725C3A6B30066BC98 /* ethtool.c in Sources */,
 				18A435F125C3C653000DAE97 /* phy-ctxt.c in Sources */,
 				18707EEB25C3A6B50066BC98 /* algapi.c in Sources */,
+				189E02C225E3AFE600854111 /* firmware_ucode.c in Sources */,
 				18A437E125C3C654000DAE97 /* tx.c in Sources */,
 				18A4376525C3C653000DAE97 /* tt.c in Sources */,
 				18707A0325C3A6B20066BC98 /* net_namespace.c in Sources */,
@@ -5294,6 +5480,7 @@
 				18707A3725C3A6B30066BC98 /* sock.c in Sources */,
 				18A4374125C3C653000DAE97 /* mac80211.c in Sources */,
 				18A4366D25C3C653000DAE97 /* pnvm.c in Sources */,
+				189E02CA25E3AFE600854111 /* iwlwifi_4965_2_ucode.c in Sources */,
 				18A4382925C3C654000DAE97 /* trans-gen2.c in Sources */,
 				18707B9F25C3A6B30066BC98 /* debugfs_key.c in Sources */,
 				18707BB725C3A6B30066BC98 /* mesh_hwmp.c in Sources */,
@@ -5304,6 +5491,8 @@
 				18A437F925C3C654000DAE97 /* iwl-eeprom-read.c in Sources */,
 				18707A6325C3A6B30066BC98 /* debugfs.c in Sources */,
 				18707A8F25C3A6B30066BC98 /* sme.c in Sources */,
+				189E02CE25E3AFE600854111 /* iwlwifi_7265D_29_ucode.c in Sources */,
+				189E02B625E3AFE600854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c in Sources */,
 				18A4372125C3C653000DAE97 /* img.c in Sources */,
 				187080C725C3A6B60066BC98 /* skbuff.c in Sources */,
 				18A4362125C3C653000DAE97 /* sta.c in Sources */,
@@ -5313,6 +5502,7 @@
 				18707AA325C3A6B30066BC98 /* wext-core.c in Sources */,
 				18A4363125C3C653000DAE97 /* mac-ctxt.c in Sources */,
 				18707FDB25C3A6B60066BC98 /* bitrev.c in Sources */,
+				189E02D225E3AFE600854111 /* iwlwifi_3168_29_ucode.c in Sources */,
 				18A437A925C3C653000DAE97 /* 9000.c in Sources */,
 				1870820B25C3A6B70066BC98 /* rhashtable.c in Sources */,
 				18707FB325C3A6B60066BC98 /* pkt_sched.c in Sources */,
@@ -5322,6 +5512,7 @@
 				37152F9725C680ED004031DF /* notifier.c in Sources */,
 				18707EAB25C3A6B50066BC98 /* nl80211.c in Sources */,
 				18707AAB25C3A6B30066BC98 /* ap.c in Sources */,
+				189E029625E3AFE600854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c in Sources */,
 				18707B3725C3A6B30066BC98 /* offchannel.c in Sources */,
 				18707A9725C3A6B30066BC98 /* of.c in Sources */,
 				1870814F25C3A6B60066BC98 /* device.c in Sources */,
@@ -5330,6 +5521,7 @@
 				1870820725C3A6B70066BC98 /* radix-tree.c in Sources */,
 				187080D325C3A6B60066BC98 /* task.c in Sources */,
 				18707BBF25C3A6B30066BC98 /* tx.c in Sources */,
+				189E02E625E3AFE600854111 /* iwlwifi_100_5_ucode.c in Sources */,
 				18A4375D25C3C653000DAE97 /* scan.c in Sources */,
 				18A4377125C3C653000DAE97 /* power.c in Sources */,
 				18707AB325C3A6B30066BC98 /* nl80211.c in Sources */,
@@ -5350,13 +5542,17 @@
 				18707F0325C3A6B50066BC98 /* memneq.c in Sources */,
 				18A4360125C3C653000DAE97 /* power.c in Sources */,
 				18707B5F25C3A6B30066BC98 /* aes_cmac.c in Sources */,
+				189E02E225E3AFE600854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c in Sources */,
 				18707BC725C3A6B30066BC98 /* tkip.c in Sources */,
+				189E02AA25E3AFE600854111 /* iwlwifi_8265_36_ucode.c in Sources */,
 				18A4378125C3C653000DAE97 /* sta.c in Sources */,
 				18A437AD25C3C653000DAE97 /* 5000.c in Sources */,
 				18A435D125C3C653000DAE97 /* debugfs.c in Sources */,
 				18A4380D25C3C654000DAE97 /* rx.c in Sources */,
+				189E02AE25E3AFE600854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c in Sources */,
 				1870808725C3A6B60066BC98 /* errno.c in Sources */,
 				18A435ED25C3C653000DAE97 /* scan.c in Sources */,
+				189E030225E3AFE600854111 /* iwlwifi_135_6_ucode.c in Sources */,
 				18707A4325C3A6B30066BC98 /* trace.c in Sources */,
 				18707F6F25C3A6B50066BC98 /* fq_impl.c in Sources */,
 				37D2CE5725C5794F0009C8D2 /* s1g.c in Sources */,
@@ -5373,8 +5569,11 @@
 				18A435A925C3C653000DAE97 /* iwl-trans.c in Sources */,
 				18707AB725C3A6B30066BC98 /* lib80211_crypt_ccmp.c in Sources */,
 				18A4371125C3C653000DAE97 /* notif-wait.c in Sources */,
+				189E029225E3AFE600854111 /* iwlwifi_6000_4_ucode.c in Sources */,
+				189E02FA25E3AFE600854111 /* iwlwifi_105_6_ucode.c in Sources */,
 				18A435B925C3C653000DAE97 /* mac80211.c in Sources */,
 				18707A1B25C3A6B30066BC98 /* dev.c in Sources */,
+				189E030625E3AFE600854111 /* iwlwifi_2000_6_ucode.c in Sources */,
 				18707A3F25C3A6B30066BC98 /* pmsr.c in Sources */,
 				187080F725C3A6B60066BC98 /* poison.c in Sources */,
 				18A4381125C3C654000DAE97 /* tx-gen2.c in Sources */,
@@ -5382,12 +5581,17 @@
 				1870818325C3A6B70066BC98 /* wait.c in Sources */,
 				18A4360925C3C653000DAE97 /* quota.c in Sources */,
 				18A4381D25C3C654000DAE97 /* ctxt-info-gen3.c in Sources */,
+				189E02FE25E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c in Sources */,
 				18707AE725C3A6B30066BC98 /* aes_gmac.c in Sources */,
 				18707A0B25C3A6B20066BC98 /* dev_addr_lists.c in Sources */,
 				18A435F925C3C653000DAE97 /* fw.c in Sources */,
 				18A437A125C3C653000DAE97 /* 22000.c in Sources */,
 				18A4368125C3C653000DAE97 /* dbg.c in Sources */,
+				189E02BA25E3AFE600854111 /* iwlwifi_8000C_36_ucode.c in Sources */,
 				187081D325C3A6B70066BC98 /* bit_spinlock.c in Sources */,
+				189E02A225E3AFE600854111 /* iwlwifi_7265_17_ucode.c in Sources */,
+				189E02F625E3AFE600854111 /* iwlwifi_6000g2b_6_ucode.c in Sources */,
+				189E029A25E3AFE600854111 /* iwlwifi_5000_5_ucode.c in Sources */,
 				1870813325C3A6B60066BC98 /* compiler.c in Sources */,
 				18A4362925C3C653000DAE97 /* offloading.c in Sources */,
 				1870803F25C3A6B60066BC98 /* bug.c in Sources */,
@@ -5404,6 +5608,7 @@
 				18707B1325C3A6B30066BC98 /* cfg.c in Sources */,
 				18707F3F25C3A6B50066BC98 /* swab.c in Sources */,
 				37CFF2912573CFF00047098B /* AirPortLinux.cpp in Sources */,
+				189B816025DA5CCC004EC6C5 /* driver_wext.c in Sources */,
 				18707A7325C3A6B30066BC98 /* wext-compat.c in Sources */,
 				18A4360D25C3C653000DAE97 /* utils.c in Sources */,
 				18707A1F25C3A6B30066BC98 /* genetlink.c in Sources */,
@@ -5413,12 +5618,15 @@
 				187081FF25C3A6B70066BC98 /* idr.c in Sources */,
 				18707ECF25C3A6B50066BC98 /* api.c in Sources */,
 				187081C325C3A6B70066BC98 /* uaccess.c in Sources */,
+				189E02EA25E3AFE600854111 /* iwlwifi_2030_6_ucode.c in Sources */,
 				18707BCB25C3A6B30066BC98 /* mesh_ps.c in Sources */,
 				18A4374925C3C653000DAE97 /* lib.c in Sources */,
 				18707A2B25C3A6B30066BC98 /* socket.c in Sources */,
+				189E02EE25E3AFE600854111 /* iwlwifi_6050_5_ucode.c in Sources */,
 				18707EDB25C3A6B50066BC98 /* shash.c in Sources */,
 				18A4366125C3C653000DAE97 /* paging.c in Sources */,
 				18A4375525C3C653000DAE97 /* calib.c in Sources */,
+				189E02A625E3AFE600854111 /* iwlwifi_3160_17_ucode.c in Sources */,
 				18707B7B25C3A6B30066BC98 /* airtime.c in Sources */,
 				18A435C925C3C653000DAE97 /* rx.c in Sources */,
 				18707B5325C3A6B30066BC98 /* mesh_plink.c in Sources */,
@@ -5447,11 +5655,14 @@
 				18A4381925C3C654000DAE97 /* trans.c in Sources */,
 				37D2CE5225C577E00009C8D2 /* ioctl.c in Sources */,
 				18861BC425CFD53400F90563 /* scm.c in Sources */,
+				189E02D625E3AFE600854111 /* iwlwifi_3945_2_ucode.c in Sources */,
 				18707ED325C3A6B50066BC98 /* aead.c in Sources */,
 				18A435B125C3C653000DAE97 /* ftm-responder.c in Sources */,
 				18707EC325C3A6B50066BC98 /* aes.c in Sources */,
 				1870810F25C3A6B60066BC98 /* rculist.c in Sources */,
+				189E02F225E3AFE600854111 /* iwlwifi_5150_2_ucode.c in Sources */,
 				18707FEF25C3A6B60066BC98 /* rbtree.c in Sources */,
+				189E028625E3AFE600854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c in Sources */,
 				18707B0725C3A6B30066BC98 /* ibss.c in Sources */,
 				18707B7325C3A6B30066BC98 /* wpa.c in Sources */,
 				18A435A125C3C653000DAE97 /* iwl-dbg-tlv.c in Sources */,
@@ -5468,6 +5679,7 @@
 				187080A725C3A6B60066BC98 /* if.c in Sources */,
 				18A4372925C3C653000DAE97 /* acpi.c in Sources */,
 				18707A1325C3A6B30066BC98 /* rtnetlink.c in Sources */,
+				189E028E25E3AFE600854111 /* iwlwifi_7260_17_ucode.c in Sources */,
 				18A4382125C3C654000DAE97 /* ctxt-info.c in Sources */,
 				1870801B25C3A6B60066BC98 /* if_vlan.c in Sources */,
 				18A435AD25C3C653000DAE97 /* iwl-io.c in Sources */,
@@ -5475,6 +5687,7 @@
 				18707B2725C3A6B30066BC98 /* sta_info.c in Sources */,
 				18A4364125C3C653000DAE97 /* tx.c in Sources */,
 				18A4375125C3C653000DAE97 /* debugfs.c in Sources */,
+				189E031425E3B2F300854111 /* firmware.c in Sources */,
 				18707BC325C3A6B30066BC98 /* mesh.c in Sources */,
 				18707B9325C3A6B30066BC98 /* mlme.c in Sources */,
 				18A4359525C3C653000DAE97 /* iwl-phy-db.c in Sources */,
@@ -5487,24 +5700,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				189E02DF25E3AFE600854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c in Sources */,
 				18A437BA25C3C653000DAE97 /* 6000.c in Sources */,
 				18A4361E25C3C653000DAE97 /* debugfs-vif.c in Sources */,
 				18A435BE25C3C653000DAE97 /* coex.c in Sources */,
 				18707BBC25C3A6B30066BC98 /* vht.c in Sources */,
+				189E029F25E3AFE600854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c in Sources */,
 				18707ABC25C3A6B30066BC98 /* mesh.c in Sources */,
 				18707AD825C3A6B30066BC98 /* led.c in Sources */,
 				18707B6425C3A6B30066BC98 /* pm.c in Sources */,
 				18A4379625C3C653000DAE97 /* rs.c in Sources */,
+				189E02B325E3AFE600854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c in Sources */,
 				18707F7425C3A6B50066BC98 /* genetlink.c in Sources */,
 				37CFF6232573EF630047098B /* AirPortLinux.cpp in Sources */,
 				18A4378A25C3C653000DAE97 /* ucode.c in Sources */,
 				18707FE825C3A6B60066BC98 /* _string.c in Sources */,
 				37CFF6242573EF630047098B /* AirPortLinux_80211.cpp in Sources */,
 				3714F47725D66E14008CE76F /* _malloc.c in Sources */,
+				189E02BF25E3AFE600854111 /* iwlwifi_6000g2a_6_ucode.c in Sources */,
 				37CFF6252573EF630047098B /* AirPortLinux_Ioctl.cpp in Sources */,
 				37CFF6262573EF630047098B /* AirPortLinux_Util.cpp in Sources */,
 				18A435C225C3C653000DAE97 /* nvm.c in Sources */,
 				18A4370E25C3C653000DAE97 /* smem.c in Sources */,
+				189E02DB25E3AFE600854111 /* iwlwifi_1000_5_ucode.c in Sources */,
 				1805C32C259AEBA00069998A /* help_ifconfig.c in Sources */,
 				37CFF6272573EF630047098B /* compat.cpp in Sources */,
 				18A4366A25C3C653000DAE97 /* init.c in Sources */,
@@ -5512,6 +5730,7 @@
 				1870805C25C3A6B60066BC98 /* dma-mapping.c in Sources */,
 				18A435F225C3C653000DAE97 /* phy-ctxt.c in Sources */,
 				18707A8C25C3A6B30066BC98 /* wext-sme.c in Sources */,
+				189E02C325E3AFE600854111 /* firmware_ucode.c in Sources */,
 				18A437E225C3C654000DAE97 /* tx.c in Sources */,
 				18A4376625C3C653000DAE97 /* tt.c in Sources */,
 				18707AEC25C3A6B30066BC98 /* iface.c in Sources */,
@@ -5534,6 +5753,7 @@
 				18707A3025C3A6B30066BC98 /* eth.c in Sources */,
 				18A4374225C3C653000DAE97 /* mac80211.c in Sources */,
 				18A4366E25C3C653000DAE97 /* pnvm.c in Sources */,
+				189E02CB25E3AFE600854111 /* iwlwifi_4965_2_ucode.c in Sources */,
 				18A4382A25C3C654000DAE97 /* trans-gen2.c in Sources */,
 				1870818025C3A6B70066BC98 /* stddef.c in Sources */,
 				18707B8C25C3A6B30066BC98 /* agg-rx.c in Sources */,
@@ -5544,6 +5764,8 @@
 				18A437FA25C3C654000DAE97 /* iwl-eeprom-read.c in Sources */,
 				18707A3825C3A6B30066BC98 /* sock.c in Sources */,
 				18707BA025C3A6B30066BC98 /* debugfs_key.c in Sources */,
+				189E02CF25E3AFE600854111 /* iwlwifi_7265D_29_ucode.c in Sources */,
+				189E02B725E3AFE600854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c in Sources */,
 				18A4372225C3C653000DAE97 /* img.c in Sources */,
 				18707BB825C3A6B30066BC98 /* mesh_hwmp.c in Sources */,
 				18A4362225C3C653000DAE97 /* sta.c in Sources */,
@@ -5553,6 +5775,7 @@
 				18707A9025C3A6B30066BC98 /* sme.c in Sources */,
 				18A4363225C3C653000DAE97 /* mac-ctxt.c in Sources */,
 				187080C825C3A6B60066BC98 /* skbuff.c in Sources */,
+				189E02D325E3AFE600854111 /* iwlwifi_3168_29_ucode.c in Sources */,
 				18A437AA25C3C653000DAE97 /* 9000.c in Sources */,
 				18707A6825C3A6B30066BC98 /* ocb.c in Sources */,
 				1870801425C3A6B60066BC98 /* timer.c in Sources */,
@@ -5562,6 +5785,7 @@
 				37152F9825C680ED004031DF /* notifier.c in Sources */,
 				18707FB425C3A6B60066BC98 /* pkt_sched.c in Sources */,
 				18707A1825C3A6B30066BC98 /* dev_ioctl.c in Sources */,
+				189E029725E3AFE600854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c in Sources */,
 				187080C425C3A6B60066BC98 /* crc32.c in Sources */,
 				18707A9C25C3A6B30066BC98 /* mlme.c in Sources */,
 				18707EAC25C3A6B50066BC98 /* nl80211.c in Sources */,
@@ -5570,6 +5794,7 @@
 				18707A9825C3A6B30066BC98 /* of.c in Sources */,
 				1870815025C3A6B60066BC98 /* device.c in Sources */,
 				18707B7825C3A6B30066BC98 /* driver-ops.c in Sources */,
+				189E02E725E3AFE600854111 /* iwlwifi_100_5_ucode.c in Sources */,
 				18A4375E25C3C653000DAE97 /* scan.c in Sources */,
 				18A4377225C3C653000DAE97 /* power.c in Sources */,
 				18707AFC25C3A6B30066BC98 /* util.c in Sources */,
@@ -5590,13 +5815,17 @@
 				18707AC425C3A6B30066BC98 /* lib80211_crypt_tkip.c in Sources */,
 				18A4360225C3C653000DAE97 /* power.c in Sources */,
 				18707A5C25C3A6B30066BC98 /* util.c in Sources */,
+				189E02E325E3AFE600854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c in Sources */,
 				18707B9C25C3A6B30066BC98 /* aead_api.c in Sources */,
+				189E02AB25E3AFE600854111 /* iwlwifi_8265_36_ucode.c in Sources */,
 				18A4378225C3C653000DAE97 /* sta.c in Sources */,
 				18A437AE25C3C653000DAE97 /* 5000.c in Sources */,
 				18A435D225C3C653000DAE97 /* debugfs.c in Sources */,
 				18A4380E25C3C654000DAE97 /* rx.c in Sources */,
+				189E02AF25E3AFE600854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c in Sources */,
 				18707BD425C3A6B30066BC98 /* fils_aead.c in Sources */,
 				18A435EE25C3C653000DAE97 /* scan.c in Sources */,
+				189E030325E3AFE600854111 /* iwlwifi_135_6_ucode.c in Sources */,
 				18707F0425C3A6B50066BC98 /* memneq.c in Sources */,
 				18707B6025C3A6B30066BC98 /* aes_cmac.c in Sources */,
 				37D2CE5825C5794F0009C8D2 /* s1g.c in Sources */,
@@ -5613,8 +5842,11 @@
 				18A435AA25C3C653000DAE97 /* iwl-trans.c in Sources */,
 				1870806825C3A6B60066BC98 /* pci.c in Sources */,
 				18A4371225C3C653000DAE97 /* notif-wait.c in Sources */,
+				189E029325E3AFE600854111 /* iwlwifi_6000_4_ucode.c in Sources */,
+				189E02FB25E3AFE600854111 /* iwlwifi_105_6_ucode.c in Sources */,
 				18A435BA25C3C653000DAE97 /* mac80211.c in Sources */,
 				1870820425C3A6B70066BC98 /* xarray.c in Sources */,
+				189E030725E3AFE600854111 /* iwlwifi_2000_6_ucode.c in Sources */,
 				1870809C25C3A6B60066BC98 /* random.c in Sources */,
 				18707B4425C3A6B30066BC98 /* ht.c in Sources */,
 				18A4381225C3C654000DAE97 /* tx-gen2.c in Sources */,
@@ -5622,12 +5854,17 @@
 				18707A1C25C3A6B30066BC98 /* dev.c in Sources */,
 				18A4360A25C3C653000DAE97 /* quota.c in Sources */,
 				18A4381E25C3C654000DAE97 /* ctxt-info-gen3.c in Sources */,
+				189E02FF25E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c in Sources */,
 				18707A4025C3A6B30066BC98 /* pmsr.c in Sources */,
 				187080F825C3A6B60066BC98 /* poison.c in Sources */,
 				18A435FA25C3C653000DAE97 /* fw.c in Sources */,
 				18A437A225C3C653000DAE97 /* 22000.c in Sources */,
 				18A4368225C3C653000DAE97 /* dbg.c in Sources */,
+				189E02BB25E3AFE600854111 /* iwlwifi_8000C_36_ucode.c in Sources */,
 				18707B9025C3A6B30066BC98 /* wme.c in Sources */,
+				189E02A325E3AFE600854111 /* iwlwifi_7265_17_ucode.c in Sources */,
+				189E02F725E3AFE600854111 /* iwlwifi_6000g2b_6_ucode.c in Sources */,
+				189E029B25E3AFE600854111 /* iwlwifi_5000_5_ucode.c in Sources */,
 				1870818425C3A6B70066BC98 /* wait.c in Sources */,
 				18A4362A25C3C653000DAE97 /* offloading.c in Sources */,
 				18707AE825C3A6B30066BC98 /* aes_gmac.c in Sources */,
@@ -5644,6 +5881,7 @@
 				18707A6C25C3A6B30066BC98 /* rdev-ops.c in Sources */,
 				18707A1025C3A6B30066BC98 /* filter.c in Sources */,
 				18707B1025C3A6B30066BC98 /* wep.c in Sources */,
+				189B816125DA5CCC004EC6C5 /* driver_wext.c in Sources */,
 				18707B1425C3A6B30066BC98 /* cfg.c in Sources */,
 				18A4360E25C3C653000DAE97 /* utils.c in Sources */,
 				18707F4025C3A6B50066BC98 /* swab.c in Sources */,
@@ -5653,12 +5891,15 @@
 				18707B9825C3A6B30066BC98 /* status.c in Sources */,
 				1870820025C3A6B70066BC98 /* idr.c in Sources */,
 				18707ED025C3A6B50066BC98 /* api.c in Sources */,
+				189E02EB25E3AFE600854111 /* iwlwifi_2030_6_ucode.c in Sources */,
 				187081C425C3A6B70066BC98 /* uaccess.c in Sources */,
 				18A4374A25C3C653000DAE97 /* lib.c in Sources */,
 				18707BCC25C3A6B30066BC98 /* mesh_ps.c in Sources */,
+				189E02EF25E3AFE600854111 /* iwlwifi_6050_5_ucode.c in Sources */,
 				18707A2C25C3A6B30066BC98 /* socket.c in Sources */,
 				18A4366225C3C653000DAE97 /* paging.c in Sources */,
 				18A4375625C3C653000DAE97 /* calib.c in Sources */,
+				189E02A725E3AFE600854111 /* iwlwifi_3160_17_ucode.c in Sources */,
 				18707EDC25C3A6B50066BC98 /* shash.c in Sources */,
 				18A435CA25C3C653000DAE97 /* rx.c in Sources */,
 				18707B7C25C3A6B30066BC98 /* airtime.c in Sources */,
@@ -5687,11 +5928,14 @@
 				18A4381A25C3C654000DAE97 /* trans.c in Sources */,
 				37D2CE5325C577E00009C8D2 /* ioctl.c in Sources */,
 				18861BC525CFD53400F90563 /* scm.c in Sources */,
+				189E02D725E3AFE600854111 /* iwlwifi_3945_2_ucode.c in Sources */,
 				1870810025C3A6B60066BC98 /* kmemleak.c in Sources */,
 				18A435B225C3C653000DAE97 /* ftm-responder.c in Sources */,
 				18707ED425C3A6B50066BC98 /* aead.c in Sources */,
 				18707EC425C3A6B50066BC98 /* aes.c in Sources */,
+				189E02F325E3AFE600854111 /* iwlwifi_5150_2_ucode.c in Sources */,
 				1870811025C3A6B60066BC98 /* rculist.c in Sources */,
+				189E028725E3AFE600854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c in Sources */,
 				18707FF025C3A6B60066BC98 /* rbtree.c in Sources */,
 				18707B0825C3A6B30066BC98 /* ibss.c in Sources */,
 				18A435A225C3C653000DAE97 /* iwl-dbg-tlv.c in Sources */,
@@ -5708,6 +5952,7 @@
 				187080A825C3A6B60066BC98 /* if.c in Sources */,
 				18A4372A25C3C653000DAE97 /* acpi.c in Sources */,
 				18707A1425C3A6B30066BC98 /* rtnetlink.c in Sources */,
+				189E028F25E3AFE600854111 /* iwlwifi_7260_17_ucode.c in Sources */,
 				18A4382225C3C654000DAE97 /* ctxt-info.c in Sources */,
 				1870801C25C3A6B60066BC98 /* if_vlan.c in Sources */,
 				18A435AE25C3C653000DAE97 /* iwl-io.c in Sources */,
@@ -5715,6 +5960,7 @@
 				18707B2825C3A6B30066BC98 /* sta_info.c in Sources */,
 				18A4364225C3C653000DAE97 /* tx.c in Sources */,
 				18A4375225C3C653000DAE97 /* debugfs.c in Sources */,
+				189E031525E3B2F300854111 /* firmware.c in Sources */,
 				18707BC425C3A6B30066BC98 /* mesh.c in Sources */,
 				18707B9425C3A6B30066BC98 /* mlme.c in Sources */,
 				18A4359625C3C653000DAE97 /* iwl-phy-db.c in Sources */,
@@ -5727,24 +5973,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				189E02E025E3AFE600854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c in Sources */,
 				18A437BB25C3C653000DAE97 /* 6000.c in Sources */,
 				18A4361F25C3C653000DAE97 /* debugfs-vif.c in Sources */,
 				18A435BF25C3C653000DAE97 /* coex.c in Sources */,
 				18707BBD25C3A6B30066BC98 /* vht.c in Sources */,
+				189E02A025E3AFE600854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c in Sources */,
 				18707ABD25C3A6B30066BC98 /* mesh.c in Sources */,
 				18707AD925C3A6B30066BC98 /* led.c in Sources */,
 				18707B6525C3A6B30066BC98 /* pm.c in Sources */,
 				18A4379725C3C653000DAE97 /* rs.c in Sources */,
+				189E02B425E3AFE600854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c in Sources */,
 				18707F7525C3A6B50066BC98 /* genetlink.c in Sources */,
 				37CFF8D92573F0080047098B /* AirPortLinux.cpp in Sources */,
 				18A4378B25C3C653000DAE97 /* ucode.c in Sources */,
 				18707FE925C3A6B60066BC98 /* _string.c in Sources */,
 				37CFF8DA2573F0080047098B /* AirPortLinux_80211.cpp in Sources */,
 				3714F47825D66E14008CE76F /* _malloc.c in Sources */,
+				189E02C025E3AFE600854111 /* iwlwifi_6000g2a_6_ucode.c in Sources */,
 				37CFF8DB2573F0080047098B /* AirPortLinux_Ioctl.cpp in Sources */,
 				37CFF8DC2573F0080047098B /* AirPortLinux_Util.cpp in Sources */,
 				18A435C325C3C653000DAE97 /* nvm.c in Sources */,
 				18A4370F25C3C653000DAE97 /* smem.c in Sources */,
+				189E02DC25E3AFE600854111 /* iwlwifi_1000_5_ucode.c in Sources */,
 				1805C32D259AEBA00069998A /* help_ifconfig.c in Sources */,
 				37CFF8DD2573F0080047098B /* compat.cpp in Sources */,
 				18A4366B25C3C653000DAE97 /* init.c in Sources */,
@@ -5752,6 +6003,7 @@
 				1870805D25C3A6B60066BC98 /* dma-mapping.c in Sources */,
 				18A435F325C3C653000DAE97 /* phy-ctxt.c in Sources */,
 				18707A8D25C3A6B30066BC98 /* wext-sme.c in Sources */,
+				189E02C425E3AFE600854111 /* firmware_ucode.c in Sources */,
 				18A437E325C3C654000DAE97 /* tx.c in Sources */,
 				18A4376725C3C653000DAE97 /* tt.c in Sources */,
 				18707AED25C3A6B30066BC98 /* iface.c in Sources */,
@@ -5774,6 +6026,7 @@
 				18707A3125C3A6B30066BC98 /* eth.c in Sources */,
 				18A4374325C3C653000DAE97 /* mac80211.c in Sources */,
 				18A4366F25C3C653000DAE97 /* pnvm.c in Sources */,
+				189E02CC25E3AFE600854111 /* iwlwifi_4965_2_ucode.c in Sources */,
 				18A4382B25C3C654000DAE97 /* trans-gen2.c in Sources */,
 				1870818125C3A6B70066BC98 /* stddef.c in Sources */,
 				18707B8D25C3A6B30066BC98 /* agg-rx.c in Sources */,
@@ -5784,6 +6037,8 @@
 				18A437FB25C3C654000DAE97 /* iwl-eeprom-read.c in Sources */,
 				18707A3925C3A6B30066BC98 /* sock.c in Sources */,
 				18707BA125C3A6B30066BC98 /* debugfs_key.c in Sources */,
+				189E02D025E3AFE600854111 /* iwlwifi_7265D_29_ucode.c in Sources */,
+				189E02B825E3AFE600854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c in Sources */,
 				18A4372325C3C653000DAE97 /* img.c in Sources */,
 				18707BB925C3A6B30066BC98 /* mesh_hwmp.c in Sources */,
 				18A4362325C3C653000DAE97 /* sta.c in Sources */,
@@ -5793,6 +6048,7 @@
 				18707A9125C3A6B30066BC98 /* sme.c in Sources */,
 				18A4363325C3C653000DAE97 /* mac-ctxt.c in Sources */,
 				187080C925C3A6B60066BC98 /* skbuff.c in Sources */,
+				189E02D425E3AFE600854111 /* iwlwifi_3168_29_ucode.c in Sources */,
 				18A437AB25C3C653000DAE97 /* 9000.c in Sources */,
 				18707A6925C3A6B30066BC98 /* ocb.c in Sources */,
 				1870801525C3A6B60066BC98 /* timer.c in Sources */,
@@ -5802,6 +6058,7 @@
 				37152F9925C680ED004031DF /* notifier.c in Sources */,
 				18707FB525C3A6B60066BC98 /* pkt_sched.c in Sources */,
 				18707A1925C3A6B30066BC98 /* dev_ioctl.c in Sources */,
+				189E029825E3AFE600854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c in Sources */,
 				187080C525C3A6B60066BC98 /* crc32.c in Sources */,
 				18707A9D25C3A6B30066BC98 /* mlme.c in Sources */,
 				18707EAD25C3A6B50066BC98 /* nl80211.c in Sources */,
@@ -5810,6 +6067,7 @@
 				18707A9925C3A6B30066BC98 /* of.c in Sources */,
 				1870815125C3A6B60066BC98 /* device.c in Sources */,
 				18707B7925C3A6B30066BC98 /* driver-ops.c in Sources */,
+				189E02E825E3AFE600854111 /* iwlwifi_100_5_ucode.c in Sources */,
 				18A4375F25C3C653000DAE97 /* scan.c in Sources */,
 				18A4377325C3C653000DAE97 /* power.c in Sources */,
 				18707AFD25C3A6B30066BC98 /* util.c in Sources */,
@@ -5830,13 +6088,17 @@
 				18707AC525C3A6B30066BC98 /* lib80211_crypt_tkip.c in Sources */,
 				18A4360325C3C653000DAE97 /* power.c in Sources */,
 				18707A5D25C3A6B30066BC98 /* util.c in Sources */,
+				189E02E425E3AFE600854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c in Sources */,
 				18707B9D25C3A6B30066BC98 /* aead_api.c in Sources */,
+				189E02AC25E3AFE600854111 /* iwlwifi_8265_36_ucode.c in Sources */,
 				18A4378325C3C653000DAE97 /* sta.c in Sources */,
 				18A437AF25C3C653000DAE97 /* 5000.c in Sources */,
 				18A435D325C3C653000DAE97 /* debugfs.c in Sources */,
 				18A4380F25C3C654000DAE97 /* rx.c in Sources */,
+				189E02B025E3AFE600854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c in Sources */,
 				18707BD525C3A6B30066BC98 /* fils_aead.c in Sources */,
 				18A435EF25C3C653000DAE97 /* scan.c in Sources */,
+				189E030425E3AFE600854111 /* iwlwifi_135_6_ucode.c in Sources */,
 				18707F0525C3A6B50066BC98 /* memneq.c in Sources */,
 				18707B6125C3A6B30066BC98 /* aes_cmac.c in Sources */,
 				37D2CE5925C5794F0009C8D2 /* s1g.c in Sources */,
@@ -5853,8 +6115,11 @@
 				18A435AB25C3C653000DAE97 /* iwl-trans.c in Sources */,
 				1870806925C3A6B60066BC98 /* pci.c in Sources */,
 				18A4371325C3C653000DAE97 /* notif-wait.c in Sources */,
+				189E029425E3AFE600854111 /* iwlwifi_6000_4_ucode.c in Sources */,
+				189E02FC25E3AFE600854111 /* iwlwifi_105_6_ucode.c in Sources */,
 				18A435BB25C3C653000DAE97 /* mac80211.c in Sources */,
 				1870820525C3A6B70066BC98 /* xarray.c in Sources */,
+				189E030825E3AFE600854111 /* iwlwifi_2000_6_ucode.c in Sources */,
 				1870809D25C3A6B60066BC98 /* random.c in Sources */,
 				18707B4525C3A6B30066BC98 /* ht.c in Sources */,
 				18A4381325C3C654000DAE97 /* tx-gen2.c in Sources */,
@@ -5862,12 +6127,17 @@
 				18707A1D25C3A6B30066BC98 /* dev.c in Sources */,
 				18A4360B25C3C653000DAE97 /* quota.c in Sources */,
 				18A4381F25C3C654000DAE97 /* ctxt-info-gen3.c in Sources */,
+				189E030025E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c in Sources */,
 				18707A4125C3A6B30066BC98 /* pmsr.c in Sources */,
 				187080F925C3A6B60066BC98 /* poison.c in Sources */,
 				18A435FB25C3C653000DAE97 /* fw.c in Sources */,
 				18A437A325C3C653000DAE97 /* 22000.c in Sources */,
 				18A4368325C3C653000DAE97 /* dbg.c in Sources */,
+				189E02BC25E3AFE600854111 /* iwlwifi_8000C_36_ucode.c in Sources */,
 				18707B9125C3A6B30066BC98 /* wme.c in Sources */,
+				189E02A425E3AFE600854111 /* iwlwifi_7265_17_ucode.c in Sources */,
+				189E02F825E3AFE600854111 /* iwlwifi_6000g2b_6_ucode.c in Sources */,
+				189E029C25E3AFE600854111 /* iwlwifi_5000_5_ucode.c in Sources */,
 				1870818525C3A6B70066BC98 /* wait.c in Sources */,
 				18A4362B25C3C653000DAE97 /* offloading.c in Sources */,
 				18707AE925C3A6B30066BC98 /* aes_gmac.c in Sources */,
@@ -5884,6 +6154,7 @@
 				18707A6D25C3A6B30066BC98 /* rdev-ops.c in Sources */,
 				18707A1125C3A6B30066BC98 /* filter.c in Sources */,
 				18707B1125C3A6B30066BC98 /* wep.c in Sources */,
+				189B816225DA5CCC004EC6C5 /* driver_wext.c in Sources */,
 				18707B1525C3A6B30066BC98 /* cfg.c in Sources */,
 				18A4360F25C3C653000DAE97 /* utils.c in Sources */,
 				18707F4125C3A6B50066BC98 /* swab.c in Sources */,
@@ -5893,12 +6164,15 @@
 				18707B9925C3A6B30066BC98 /* status.c in Sources */,
 				1870820125C3A6B70066BC98 /* idr.c in Sources */,
 				18707ED125C3A6B50066BC98 /* api.c in Sources */,
+				189E02EC25E3AFE600854111 /* iwlwifi_2030_6_ucode.c in Sources */,
 				187081C525C3A6B70066BC98 /* uaccess.c in Sources */,
 				18A4374B25C3C653000DAE97 /* lib.c in Sources */,
 				18707BCD25C3A6B30066BC98 /* mesh_ps.c in Sources */,
+				189E02F025E3AFE600854111 /* iwlwifi_6050_5_ucode.c in Sources */,
 				18707A2D25C3A6B30066BC98 /* socket.c in Sources */,
 				18A4366325C3C653000DAE97 /* paging.c in Sources */,
 				18A4375725C3C653000DAE97 /* calib.c in Sources */,
+				189E02A825E3AFE600854111 /* iwlwifi_3160_17_ucode.c in Sources */,
 				18707EDD25C3A6B50066BC98 /* shash.c in Sources */,
 				18A435CB25C3C653000DAE97 /* rx.c in Sources */,
 				18707B7D25C3A6B30066BC98 /* airtime.c in Sources */,
@@ -5927,11 +6201,14 @@
 				18A4381B25C3C654000DAE97 /* trans.c in Sources */,
 				37D2CE5425C577E00009C8D2 /* ioctl.c in Sources */,
 				18861BC625CFD53400F90563 /* scm.c in Sources */,
+				189E02D825E3AFE600854111 /* iwlwifi_3945_2_ucode.c in Sources */,
 				1870810125C3A6B60066BC98 /* kmemleak.c in Sources */,
 				18A435B325C3C653000DAE97 /* ftm-responder.c in Sources */,
 				18707ED525C3A6B50066BC98 /* aead.c in Sources */,
 				18707EC525C3A6B50066BC98 /* aes.c in Sources */,
+				189E02F425E3AFE600854111 /* iwlwifi_5150_2_ucode.c in Sources */,
 				1870811125C3A6B60066BC98 /* rculist.c in Sources */,
+				189E028825E3AFE600854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c in Sources */,
 				18707FF125C3A6B60066BC98 /* rbtree.c in Sources */,
 				18707B0925C3A6B30066BC98 /* ibss.c in Sources */,
 				18A435A325C3C653000DAE97 /* iwl-dbg-tlv.c in Sources */,
@@ -5948,6 +6225,7 @@
 				187080A925C3A6B60066BC98 /* if.c in Sources */,
 				18A4372B25C3C653000DAE97 /* acpi.c in Sources */,
 				18707A1525C3A6B30066BC98 /* rtnetlink.c in Sources */,
+				189E029025E3AFE600854111 /* iwlwifi_7260_17_ucode.c in Sources */,
 				18A4382325C3C654000DAE97 /* ctxt-info.c in Sources */,
 				1870801D25C3A6B60066BC98 /* if_vlan.c in Sources */,
 				18A435AF25C3C653000DAE97 /* iwl-io.c in Sources */,
@@ -5955,6 +6233,7 @@
 				18707B2925C3A6B30066BC98 /* sta_info.c in Sources */,
 				18A4364325C3C653000DAE97 /* tx.c in Sources */,
 				18A4375325C3C653000DAE97 /* debugfs.c in Sources */,
+				189E031625E3B2F300854111 /* firmware.c in Sources */,
 				18707BC525C3A6B30066BC98 /* mesh.c in Sources */,
 				18707B9525C3A6B30066BC98 /* mlme.c in Sources */,
 				18A4359725C3C653000DAE97 /* iwl-phy-db.c in Sources */,
@@ -5967,24 +6246,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				189E02E125E3AFE600854111 /* iwlwifi_Qu_b0_hr_b0_55_ucode.c in Sources */,
 				18A437BC25C3C653000DAE97 /* 6000.c in Sources */,
 				18A4362025C3C653000DAE97 /* debugfs-vif.c in Sources */,
 				18A435C025C3C653000DAE97 /* coex.c in Sources */,
 				18707BBE25C3A6B30066BC98 /* vht.c in Sources */,
+				189E02A125E3AFE600854111 /* iwlwifi_9000_pu_b0_jf_b0_46_ucode.c in Sources */,
 				18707ABE25C3A6B30066BC98 /* mesh.c in Sources */,
 				18707ADA25C3A6B30066BC98 /* led.c in Sources */,
 				18707B6625C3A6B30066BC98 /* pm.c in Sources */,
 				18A4379825C3C653000DAE97 /* rs.c in Sources */,
+				189E02B525E3AFE600854111 /* iwlwifi_QuZ_a0_hr_b0_55_ucode.c in Sources */,
 				18707F7625C3A6B50066BC98 /* genetlink.c in Sources */,
 				37CFF9892573F1E70047098B /* AirPortLinux.cpp in Sources */,
 				18A4378C25C3C653000DAE97 /* ucode.c in Sources */,
 				18707FEA25C3A6B60066BC98 /* _string.c in Sources */,
 				37CFF98A2573F1E70047098B /* AirPortLinux_80211.cpp in Sources */,
 				3714F47925D66E14008CE76F /* _malloc.c in Sources */,
+				189E02C125E3AFE600854111 /* iwlwifi_6000g2a_6_ucode.c in Sources */,
 				37CFF98B2573F1E70047098B /* AirPortLinux_Ioctl.cpp in Sources */,
 				37CFF98C2573F1E70047098B /* AirPortLinux_Util.cpp in Sources */,
 				18A435C425C3C653000DAE97 /* nvm.c in Sources */,
 				18A4371025C3C653000DAE97 /* smem.c in Sources */,
+				189E02DD25E3AFE600854111 /* iwlwifi_1000_5_ucode.c in Sources */,
 				1805C32E259AEBA00069998A /* help_ifconfig.c in Sources */,
 				37CFF98D2573F1E70047098B /* compat.cpp in Sources */,
 				18A4366C25C3C653000DAE97 /* init.c in Sources */,
@@ -5992,6 +6276,7 @@
 				1870805E25C3A6B60066BC98 /* dma-mapping.c in Sources */,
 				18A435F425C3C653000DAE97 /* phy-ctxt.c in Sources */,
 				18707A8E25C3A6B30066BC98 /* wext-sme.c in Sources */,
+				189E02C525E3AFE600854111 /* firmware_ucode.c in Sources */,
 				18A437E425C3C654000DAE97 /* tx.c in Sources */,
 				18A4376825C3C653000DAE97 /* tt.c in Sources */,
 				18707AEE25C3A6B30066BC98 /* iface.c in Sources */,
@@ -6014,6 +6299,7 @@
 				18707A3225C3A6B30066BC98 /* eth.c in Sources */,
 				18A4374425C3C653000DAE97 /* mac80211.c in Sources */,
 				18A4367025C3C653000DAE97 /* pnvm.c in Sources */,
+				189E02CD25E3AFE600854111 /* iwlwifi_4965_2_ucode.c in Sources */,
 				18A4382C25C3C654000DAE97 /* trans-gen2.c in Sources */,
 				1870818225C3A6B70066BC98 /* stddef.c in Sources */,
 				18707B8E25C3A6B30066BC98 /* agg-rx.c in Sources */,
@@ -6024,6 +6310,8 @@
 				18A437FC25C3C654000DAE97 /* iwl-eeprom-read.c in Sources */,
 				18707A3A25C3A6B30066BC98 /* sock.c in Sources */,
 				18707BA225C3A6B30066BC98 /* debugfs_key.c in Sources */,
+				189E02D125E3AFE600854111 /* iwlwifi_7265D_29_ucode.c in Sources */,
+				189E02B925E3AFE600854111 /* iwlwifi_Qu_c0_jf_b0_55_ucode.c in Sources */,
 				18A4372425C3C653000DAE97 /* img.c in Sources */,
 				18707BBA25C3A6B30066BC98 /* mesh_hwmp.c in Sources */,
 				18A4362425C3C653000DAE97 /* sta.c in Sources */,
@@ -6033,6 +6321,7 @@
 				18707A9225C3A6B30066BC98 /* sme.c in Sources */,
 				18A4363425C3C653000DAE97 /* mac-ctxt.c in Sources */,
 				187080CA25C3A6B60066BC98 /* skbuff.c in Sources */,
+				189E02D525E3AFE600854111 /* iwlwifi_3168_29_ucode.c in Sources */,
 				18A437AC25C3C653000DAE97 /* 9000.c in Sources */,
 				18707A6A25C3A6B30066BC98 /* ocb.c in Sources */,
 				1870801625C3A6B60066BC98 /* timer.c in Sources */,
@@ -6042,6 +6331,7 @@
 				37152F9A25C680ED004031DF /* notifier.c in Sources */,
 				18707FB625C3A6B60066BC98 /* pkt_sched.c in Sources */,
 				18707A1A25C3A6B30066BC98 /* dev_ioctl.c in Sources */,
+				189E029925E3AFE600854111 /* iwlwifi_9260_th_b0_jf_b0_46_ucode.c in Sources */,
 				187080C625C3A6B60066BC98 /* crc32.c in Sources */,
 				18707A9E25C3A6B30066BC98 /* mlme.c in Sources */,
 				18707EAE25C3A6B50066BC98 /* nl80211.c in Sources */,
@@ -6050,6 +6340,7 @@
 				18707A9A25C3A6B30066BC98 /* of.c in Sources */,
 				1870815225C3A6B60066BC98 /* device.c in Sources */,
 				18707B7A25C3A6B30066BC98 /* driver-ops.c in Sources */,
+				189E02E925E3AFE600854111 /* iwlwifi_100_5_ucode.c in Sources */,
 				18A4376025C3C653000DAE97 /* scan.c in Sources */,
 				18A4377425C3C653000DAE97 /* power.c in Sources */,
 				18707AFE25C3A6B30066BC98 /* util.c in Sources */,
@@ -6070,13 +6361,17 @@
 				18707AC625C3A6B30066BC98 /* lib80211_crypt_tkip.c in Sources */,
 				18A4360425C3C653000DAE97 /* power.c in Sources */,
 				18707A5E25C3A6B30066BC98 /* util.c in Sources */,
+				189E02E525E3AFE600854111 /* iwlwifi_QuZ_a0_jf_b0_55_ucode.c in Sources */,
 				18707B9E25C3A6B30066BC98 /* aead_api.c in Sources */,
+				189E02AD25E3AFE600854111 /* iwlwifi_8265_36_ucode.c in Sources */,
 				18A4378425C3C653000DAE97 /* sta.c in Sources */,
 				18A437B025C3C653000DAE97 /* 5000.c in Sources */,
 				18A435D425C3C653000DAE97 /* debugfs.c in Sources */,
 				18A4381025C3C654000DAE97 /* rx.c in Sources */,
+				189E02B125E3AFE600854111 /* iwlwifi_Qu_c0_hr_b0_55_ucode.c in Sources */,
 				18707BD625C3A6B30066BC98 /* fils_aead.c in Sources */,
 				18A435F025C3C653000DAE97 /* scan.c in Sources */,
+				189E030525E3AFE600854111 /* iwlwifi_135_6_ucode.c in Sources */,
 				18707F0625C3A6B50066BC98 /* memneq.c in Sources */,
 				18707B6225C3A6B30066BC98 /* aes_cmac.c in Sources */,
 				37D2CE5A25C5794F0009C8D2 /* s1g.c in Sources */,
@@ -6093,8 +6388,11 @@
 				18A435AC25C3C653000DAE97 /* iwl-trans.c in Sources */,
 				1870806A25C3A6B60066BC98 /* pci.c in Sources */,
 				18A4371425C3C653000DAE97 /* notif-wait.c in Sources */,
+				189E029525E3AFE600854111 /* iwlwifi_6000_4_ucode.c in Sources */,
+				189E02FD25E3AFE600854111 /* iwlwifi_105_6_ucode.c in Sources */,
 				18A435BC25C3C653000DAE97 /* mac80211.c in Sources */,
 				1870820625C3A6B70066BC98 /* xarray.c in Sources */,
+				189E030925E3AFE600854111 /* iwlwifi_2000_6_ucode.c in Sources */,
 				1870809E25C3A6B60066BC98 /* random.c in Sources */,
 				18707B4625C3A6B30066BC98 /* ht.c in Sources */,
 				18A4381425C3C654000DAE97 /* tx-gen2.c in Sources */,
@@ -6102,12 +6400,17 @@
 				18707A1E25C3A6B30066BC98 /* dev.c in Sources */,
 				18A4360C25C3C653000DAE97 /* quota.c in Sources */,
 				18A4382025C3C654000DAE97 /* ctxt-info-gen3.c in Sources */,
+				189E030125E3AFE600854111 /* iwlwifi_cc_a0_55_ucode.c in Sources */,
 				18707A4225C3A6B30066BC98 /* pmsr.c in Sources */,
 				187080FA25C3A6B60066BC98 /* poison.c in Sources */,
 				18A435FC25C3C653000DAE97 /* fw.c in Sources */,
 				18A437A425C3C653000DAE97 /* 22000.c in Sources */,
 				18A4368425C3C653000DAE97 /* dbg.c in Sources */,
+				189E02BD25E3AFE600854111 /* iwlwifi_8000C_36_ucode.c in Sources */,
 				18707B9225C3A6B30066BC98 /* wme.c in Sources */,
+				189E02A525E3AFE600854111 /* iwlwifi_7265_17_ucode.c in Sources */,
+				189E02F925E3AFE600854111 /* iwlwifi_6000g2b_6_ucode.c in Sources */,
+				189E029D25E3AFE600854111 /* iwlwifi_5000_5_ucode.c in Sources */,
 				1870818625C3A6B70066BC98 /* wait.c in Sources */,
 				18A4362C25C3C653000DAE97 /* offloading.c in Sources */,
 				18707AEA25C3A6B30066BC98 /* aes_gmac.c in Sources */,
@@ -6124,6 +6427,7 @@
 				18707A6E25C3A6B30066BC98 /* rdev-ops.c in Sources */,
 				18707A1225C3A6B30066BC98 /* filter.c in Sources */,
 				18707B1225C3A6B30066BC98 /* wep.c in Sources */,
+				189B816325DA5CCC004EC6C5 /* driver_wext.c in Sources */,
 				18707B1625C3A6B30066BC98 /* cfg.c in Sources */,
 				18A4361025C3C653000DAE97 /* utils.c in Sources */,
 				18707F4225C3A6B50066BC98 /* swab.c in Sources */,
@@ -6133,12 +6437,15 @@
 				18707B9A25C3A6B30066BC98 /* status.c in Sources */,
 				1870820225C3A6B70066BC98 /* idr.c in Sources */,
 				18707ED225C3A6B50066BC98 /* api.c in Sources */,
+				189E02ED25E3AFE600854111 /* iwlwifi_2030_6_ucode.c in Sources */,
 				187081C625C3A6B70066BC98 /* uaccess.c in Sources */,
 				18A4374C25C3C653000DAE97 /* lib.c in Sources */,
 				18707BCE25C3A6B30066BC98 /* mesh_ps.c in Sources */,
+				189E02F125E3AFE600854111 /* iwlwifi_6050_5_ucode.c in Sources */,
 				18707A2E25C3A6B30066BC98 /* socket.c in Sources */,
 				18A4366425C3C653000DAE97 /* paging.c in Sources */,
 				18A4375825C3C653000DAE97 /* calib.c in Sources */,
+				189E02A925E3AFE600854111 /* iwlwifi_3160_17_ucode.c in Sources */,
 				18707EDE25C3A6B50066BC98 /* shash.c in Sources */,
 				18A435CC25C3C653000DAE97 /* rx.c in Sources */,
 				18707B7E25C3A6B30066BC98 /* airtime.c in Sources */,
@@ -6167,11 +6474,14 @@
 				18A4381C25C3C654000DAE97 /* trans.c in Sources */,
 				37D2CE5525C577E00009C8D2 /* ioctl.c in Sources */,
 				18861BC725CFD53400F90563 /* scm.c in Sources */,
+				189E02D925E3AFE600854111 /* iwlwifi_3945_2_ucode.c in Sources */,
 				1870810225C3A6B60066BC98 /* kmemleak.c in Sources */,
 				18A435B425C3C653000DAE97 /* ftm-responder.c in Sources */,
 				18707ED625C3A6B50066BC98 /* aead.c in Sources */,
 				18707EC625C3A6B50066BC98 /* aes.c in Sources */,
+				189E02F525E3AFE600854111 /* iwlwifi_5150_2_ucode.c in Sources */,
 				1870811225C3A6B60066BC98 /* rculist.c in Sources */,
+				189E028925E3AFE600854111 /* iwlwifi_Qu_b0_jf_b0_55_ucode.c in Sources */,
 				18707FF225C3A6B60066BC98 /* rbtree.c in Sources */,
 				18707B0A25C3A6B30066BC98 /* ibss.c in Sources */,
 				18A435A425C3C653000DAE97 /* iwl-dbg-tlv.c in Sources */,
@@ -6188,6 +6498,7 @@
 				187080AA25C3A6B60066BC98 /* if.c in Sources */,
 				18A4372C25C3C653000DAE97 /* acpi.c in Sources */,
 				18707A1625C3A6B30066BC98 /* rtnetlink.c in Sources */,
+				189E029125E3AFE600854111 /* iwlwifi_7260_17_ucode.c in Sources */,
 				18A4382425C3C654000DAE97 /* ctxt-info.c in Sources */,
 				1870801E25C3A6B60066BC98 /* if_vlan.c in Sources */,
 				18A435B025C3C653000DAE97 /* iwl-io.c in Sources */,
@@ -6195,6 +6506,7 @@
 				18707B2A25C3A6B30066BC98 /* sta_info.c in Sources */,
 				18A4364425C3C653000DAE97 /* tx.c in Sources */,
 				18A4375425C3C653000DAE97 /* debugfs.c in Sources */,
+				189E031725E3B2F300854111 /* firmware.c in Sources */,
 				18707BC625C3A6B30066BC98 /* mesh.c in Sources */,
 				18707B9625C3A6B30066BC98 /* mlme.c in Sources */,
 				18A4359825C3C653000DAE97 /* iwl-phy-db.c in Sources */,
@@ -6206,6 +6518,35 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		189E020E25E3AD6400854111 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUGGING_SYMBOLS = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		189E020F25E3AD6400854111 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		37CFF2932573CFF00047098B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -6492,6 +6833,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		189E021025E3AD6400854111 /* Build configuration list for PBXLegacyTarget "fw2bin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				189E020E25E3AD6400854111 /* Debug */,
+				189E020F25E3AD6400854111 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		37CFF2852573CFF00047098B /* Build configuration list for PBXProject "AirPortLinux" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

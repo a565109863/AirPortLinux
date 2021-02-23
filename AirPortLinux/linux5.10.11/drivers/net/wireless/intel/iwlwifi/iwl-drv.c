@@ -212,47 +212,6 @@ static int iwl_alloc_fw_desc(struct iwl_drv *drv, struct fw_desc *desc,
 static void iwl_req_fw_callback(const struct firmware *ucode_raw,
 				void *context);
 
-
-void firmwareLoadComplete(OSKextRequestTag requestTag, OSReturn result,
-                                 const void *resourceData,
-                                 uint32_t resourceDataLength,
-                                 void *context) {
-
-//    OSData *firmwareData = OSData::withBytes(resourceData, resourceDataLength);
-    struct firmware* fw = (struct firmware *)vmalloc(sizeof(struct firmware));
-    if(result == kOSReturnSuccess) {
-        fw->size = resourceDataLength;
-        fw->data = (const u8 *)vmalloc(fw->size);
-        memcpy((void*)fw->data, resourceData, fw->size);
-    }
-
-//    kprintf("--%s: line = %d, fw->size = %lu", __FUNCTION__, __LINE__, fw->size);
-
-    ((struct iwl_drv *)context)->dev->cont(fw, context);
-}
-
-
-inline int request_firmware_nowait(
-    void *module, bool uevent,
-    const char *name, struct device *device, gfp_t gfp, void *context,
-    void (*cont)(const struct firmware *fw, void *context))
-{
-    struct iwl_drv *drv = (struct iwl_drv *)context;
-    drv->dev->cont = cont;
-    OSReturn ret = OSKextRequestResource(OSKextGetCurrentIdentifier(),
-                                         name,
-                                         firmwareLoadComplete,
-                                         context,
-                                         NULL);
-    if (ret != kIOReturnSuccess) {
-        IOLockUnlock(drv->request_firmware_complete.lock);
-        return kIOReturnError;
-    }
-    
-    return ret;
-}
-
-
 static int iwl_request_firmware(struct iwl_drv *drv, bool first)
 {
 	const struct iwl_cfg *cfg = drv->trans->cfg;
@@ -1721,12 +1680,13 @@ struct iwl_drv *iwl_drv_start(struct iwl_trans *trans)
 
     drv->request_firmware_complete.event = drv;
 	ret = iwl_request_firmware(drv, true);
+    if (ret) {
+        IOLockUnlock(drv->request_firmware_complete.lock);
+        IWL_ERR(trans, "Couldn't request the fw\n");
+        goto err_fw;
+    }
     IOLockSleep(drv->request_firmware_complete.lock, drv, THREAD_INTERRUPTIBLE);
     IOLockUnlock(drv->request_firmware_complete.lock);
-	if (ret) {
-		IWL_ERR(trans, "Couldn't request the fw\n");
-		goto err_fw;
-	}
     
     IOLockFree(drv->request_firmware_complete.lock);
 

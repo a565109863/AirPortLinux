@@ -2013,6 +2013,7 @@ ieee80211_tx_skb_tid_band(struct ieee80211_sub_if_data *sdata,
 static inline void ieee80211_tx_skb_tid(struct ieee80211_sub_if_data *sdata,
                     struct sk_buff *skb, int tid)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_chanctx_conf *chanctx_conf;
 
     rcu_read_lock();
@@ -2031,6 +2032,7 @@ static inline void ieee80211_tx_skb_tid(struct ieee80211_sub_if_data *sdata,
 static inline void ieee80211_tx_skb(struct ieee80211_sub_if_data *sdata,
                     struct sk_buff *skb)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     /* Send all internal mgmt frames on VO. Accordingly set TID to 7. */
     ieee80211_tx_skb_tid(sdata, skb, 7);
 }

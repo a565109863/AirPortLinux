@@ -533,7 +533,7 @@ ieee80211_tx_h_unicast_ps_buf(struct ieee80211_tx_data *tx)
         } else
             tx->local->total_ps_buffered++;
 
-        info->control.jiffies = jiffies;
+        info->control._jiffies = jiffies;
         info->control.vif = &tx->sdata->vif;
         info->control.flags |= IEEE80211_TX_INTCFL_NEED_TXPROCESSING;
         info->flags &= ~IEEE80211_TX_TEMPORARY_FLAGS;
@@ -1254,6 +1254,7 @@ static struct txq_info *ieee80211_get_txq(struct ieee80211_local *local,
                       struct sta_info *sta,
                       struct sk_buff *skb)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_hdr *hdr = (typeof(hdr)) skb->data;
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
     struct ieee80211_txq *txq = NULL;
@@ -1606,6 +1607,7 @@ static bool ieee80211_queue_skb(struct ieee80211_local *local,
                 struct sta_info *sta,
                 struct sk_buff *skb)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_vif *vif;
     struct txq_info *txqi;
 
@@ -1613,18 +1615,22 @@ static bool ieee80211_queue_skb(struct ieee80211_local *local,
         sdata->vif.type == NL80211_IFTYPE_MONITOR)
         return false;
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     if (sdata->vif.type == NL80211_IFTYPE_AP_VLAN)
         sdata = container_of(sdata->bss,
                      struct ieee80211_sub_if_data, u.ap);
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     vif = &sdata->vif;
     txqi = ieee80211_get_txq(local, vif, sta, skb);
 
     if (!txqi)
         return false;
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     ieee80211_txq_enqueue(local, txqi, skb);
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     schedule_and_wake_txq(local, txqi);
 
     return true;
@@ -1636,6 +1642,7 @@ static bool ieee80211_tx_frags(struct ieee80211_local *local,
                    struct sk_buff_head *skbs,
                    bool txpending)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_tx_control control = {};
     struct sk_buff *skb, *tmp;
     unsigned long flags;
@@ -1710,6 +1717,7 @@ static bool __ieee80211_tx(struct ieee80211_local *local,
                struct sk_buff_head *skbs, int led_len,
                struct sta_info *sta, bool txpending)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_tx_info *info;
     struct ieee80211_sub_if_data *sdata;
     struct ieee80211_vif *vif;
@@ -1753,6 +1761,7 @@ static bool __ieee80211_tx(struct ieee80211_local *local,
         break;
     }
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     result = ieee80211_tx_frags(local, vif, sta, skbs, txpending);
 
     ieee80211_tpt_led_trig_tx(local, fc, led_len);
@@ -1811,6 +1820,7 @@ static int invoke_tx_handlers_early(struct ieee80211_tx_data *tx)
  */
 static int invoke_tx_handlers_late(struct ieee80211_tx_data *tx)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(tx->skb);
     ieee80211_tx_result res = TX_CONTINUE;
 
@@ -1900,6 +1910,7 @@ static bool ieee80211_tx(struct ieee80211_sub_if_data *sdata,
              struct sta_info *sta, struct sk_buff *skb,
              bool txpending)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = sdata->local;
     struct ieee80211_tx_data tx;
     ieee80211_tx_result res_prepare;
@@ -1912,16 +1923,19 @@ static bool ieee80211_tx(struct ieee80211_sub_if_data *sdata,
         return true;
     }
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     /* initialises tx */
     led_len = skb->len;
     res_prepare = ieee80211_tx_prepare(sdata, &tx, sta, skb);
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     if (unlikely(res_prepare == TX_DROP)) {
         ieee80211_free_txskb(&local->hw, skb);
         return true;
     } else if (unlikely(res_prepare == TX_QUEUED)) {
         return true;
     }
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
 
     /* set up hw_queue value early */
     if (!(info->flags & IEEE80211_TX_CTL_TX_OFFCHAN) ||
@@ -1929,12 +1943,15 @@ static bool ieee80211_tx(struct ieee80211_sub_if_data *sdata,
         info->hw_queue =
             sdata->vif.hw_queue[skb_get_queue_mapping(skb)];
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     if (invoke_tx_handlers_early(&tx))
         return true;
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     if (ieee80211_queue_skb(local, sdata, tx.sta, tx.skb))
         return true;
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     if (!invoke_tx_handlers_late(&tx))
         result = __ieee80211_tx(local, &tx.skbs, led_len,
                     tx.sta, txpending);
@@ -1990,6 +2007,7 @@ static int ieee80211_skb_resize(struct ieee80211_sub_if_data *sdata,
 void ieee80211_xmit(struct ieee80211_sub_if_data *sdata,
             struct sta_info *sta, struct sk_buff *skb)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     struct ieee80211_local *local = sdata->local;
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
     struct ieee80211_hdr *hdr = (typeof(hdr)) skb->data;
@@ -2009,6 +2027,7 @@ void ieee80211_xmit(struct ieee80211_sub_if_data *sdata,
     headroom -= skb_headroom(skb);
     headroom = max_t(int, 0, headroom);
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     if (ieee80211_skb_resize(sdata, skb, headroom, encrypt)) {
         ieee80211_free_txskb(&local->hw, skb);
         return;
@@ -2018,6 +2037,7 @@ void ieee80211_xmit(struct ieee80211_sub_if_data *sdata,
     hdr = (typeof(hdr)) skb->data;
     info->control.vif = &sdata->vif;
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     if (ieee80211_vif_is_mesh(&sdata->vif)) {
         if (ieee80211_is_data(hdr->frame_control) &&
             is_unicast_ether_addr(hdr->addr1)) {
@@ -2028,7 +2048,9 @@ void ieee80211_xmit(struct ieee80211_sub_if_data *sdata,
         }
     }
 
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     ieee80211_set_qos_hdr(sdata, skb);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     ieee80211_tx(sdata, sta, skb, false);
 }
 
@@ -5410,6 +5432,7 @@ void __ieee80211_tx_skb_tid_band(struct ieee80211_sub_if_data *sdata,
                  struct sk_buff *skb, int tid,
                  enum nl80211_band band)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     int ac = ieee80211_ac_from_tid(tid);
 
     skb_reset_mac_header(skb);

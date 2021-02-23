@@ -1,25 +1,25 @@
-//
-//  firmware.h
-//  AppleIntelWiFi
-//
-//  Created by Zhong-Mac on 2020/4/28.
-//  Copyright © 2020 Zhong-Mac. All rights reserved.
-//
-
-#ifndef firmware_h
-#define firmware_h
+//* SPDX-License-Identifier: GPL-2.0 */
+#ifndef _LINUX_FIRMWARE_H
+#define _LINUX_FIRMWARE_H
 
 #include <linux/types.h>
+#include <linux/compiler.h>
 #include <linux/gfp.h>
 
+#include "firmware_ucode.h"
+
 struct firmware {
+    const char *name;
     size_t size;
     const u8 *data;
 //    struct page **pages;
-
-    /* firmware loader private fields */
-    void *priv;
+//
+//    /* firmware loader private fields */
+//    void *priv;
 };
+
+#define FIRMWARE(_name, _data, _size) \
+    .name = _name, .data = _data, .size = _size
 
 static int request_firmware(const struct firmware **fw, const char *name,
 struct device *device)
@@ -34,14 +34,10 @@ struct device *device)
 }
 
 int request_firmware_nowait(
-void *, bool uevent,
-const char *name, struct device *device, gfp_t gfp, void *context,
-void (*cont)(const struct firmware *fw, void *context));
+    struct module *module, bool uevent,
+    const char *name, struct device *device, gfp_t gfp, void *context,
+    void (*cont)(const struct firmware *fw, void *context));
 
-static void release_firmware(const struct firmware *fw)
-{
-    if( fw )
-    IOFree((void *)fw, sizeof(struct firmware));
-}
+void release_firmware(const struct firmware *fw);
 
-#endif /* firmware_h */
+#endif /* linux_firmware_h */

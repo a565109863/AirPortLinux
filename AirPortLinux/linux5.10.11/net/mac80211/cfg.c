@@ -2489,12 +2489,18 @@ ieee80211_sched_scan_stop(struct wiphy *wiphy, struct net_device *dev,
 static int ieee80211_auth(struct wiphy *wiphy, struct net_device *dev,
               struct cfg80211_auth_request *req)
 {
+    DebugLog("--%s: line = %d", __FUNCTION__, __LINE__);
     return ieee80211_mgd_auth(IEEE80211_DEV_TO_SUB_IF(dev), req);
 }
 
 static int ieee80211_assoc(struct wiphy *wiphy, struct net_device *dev,
                struct cfg80211_assoc_request *req)
 {
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
+    DebugLogSleep("--%s: line = %d", __FUNCTION__, __LINE__);
     return ieee80211_mgd_assoc(IEEE80211_DEV_TO_SUB_IF(dev), req);
 }
 

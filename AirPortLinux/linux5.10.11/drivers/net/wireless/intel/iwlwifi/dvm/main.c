@@ -2141,7 +2141,7 @@ const struct iwl_op_mode_ops iwl_dvm_ops = {
  * driver and module entry point
  *
  *****************************************************************************/
-static int __init iwl_init(void)
+int __init iwl_init(void)
 {
 
 	int ret;

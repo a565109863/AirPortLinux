@@ -227,7 +227,7 @@
  *            rdev->ops traces             *
  *************************************************************/
 #undef TRACE_EVENT
-#define TRACE_EVENT(name, proto, args...) \
+#define TRACE_EVENT(name, proto, args, tstruct, assign, print) \
 static inline void trace_ ## name(proto) {}
 #undef DECLARE_EVENT_CLASS
 #define DECLARE_EVENT_CLASS(...)

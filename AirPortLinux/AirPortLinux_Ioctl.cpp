@@ -11,6 +11,8 @@
 #include <linux/pci.h>
 #include "iwl-trans.h"
 
+#include "driver_wext.h"
+
 //
 // MARK: 1 - SSID
 //
@@ -550,13 +552,50 @@ IOReturn AirPortLinux::setPOWER(IOInterface *interface,
 IOReturn AirPortLinux::setASSOCIATE(IOInterface *interface, struct apple80211_assoc_data *ad)
 {
     
-//    DebugLog("--%s: line = %d ssid = %s, bssid = %s", __FUNCTION__, __LINE__, ad->ad_ssid,
-//             ether_sprintf(ad->ad_bssid.octet));
-//
-//    DebugLog("--%s: line = %d, ad_mode = %d, ad_rsn_ie_len = %d", __FUNCTION__, __LINE__, ad->ad_mode, ad->ad_rsn_ie_len);
-//
-//    DebugLog("--%s: line = %d ad_auth_lower = %d, ad_auth_upper = %d, key_cipher_type = %d", __FUNCTION__, __LINE__, ad->ad_auth_lower, ad->ad_auth_upper, ad->ad_key.key_cipher_type);
-//
+    DebugLogSleep("--%s: line = %d ssid = %s, bssid = %s", __FUNCTION__, __LINE__, ad->ad_ssid,
+             ether_sprintf(ad->ad_bssid.octet));
+
+    DebugLogSleep("--%s: line = %d, ad_mode = %d, ad_rsn_ie_len = %d", __FUNCTION__, __LINE__, ad->ad_mode, ad->ad_rsn_ie_len);
+
+    DebugLogSleep("--%s: line = %d ad_auth_lower = %d, ad_auth_upper = %d, key_cipher_type = %d", __FUNCTION__, __LINE__, ad->ad_auth_lower, ad->ad_auth_upper, ad->ad_key.key_cipher_type);
+    
+    struct privsep_cmd_associate *data;
+    int res;
+    size_t buflen;
+
+    buflen = sizeof(*data) + ad->ad_rsn_ie_len;
+    data = (typeof data)zalloc(buflen);
+    if (data == NULL)
+        return -1;
+
+//    if (ad->ad_bssid)
+//        memcpy(data->bssid, ad->ad_bssid, ETH_ALEN);
+    os_memcpy(data->ssid, ad->ad_ssid, ad->ad_ssid_len);
+    data->ssid_len = ad->ad_ssid_len;
+    data->hwmode = ad->ad_mode;
+//    data->freq = params->freq.freq;
+    data->channel = 36;
+    data->pairwise_suite = WPA_CIPHER_NONE;
+    data->group_suite = WPA_CIPHER_NONE;
+    data->key_mgmt_suite = WPA_KEY_MGMT_NONE;
+    data->auth_alg = WPA_AUTH_ALG_OPEN;
+    data->mode = ad->ad_mode;
+    data->wpa_ie_len = ad->ad_rsn_ie_len;
+    if (ad->ad_rsn_ie)
+        os_memcpy(data + 1, ad->ad_rsn_ie, ad->ad_rsn_ie_len);
+    /* TODO: add support for other assoc parameters */
+
+    
+    DebugLogSleep("--%s: line = %d, ssid = %s, ssid_len = %lu, hwmode = %d, mode = %d, ie_len = %d", __FUNCTION__,
+           __LINE__, data->ssid, data->ssid_len, data->hwmode, data->mode, data->wpa_ie_len);
+    
+    
+    struct wpa_driver_wext_data *drv = (typeof drv)malloc(sizeof(struct wpa_driver_wext_data));
+    memcpy(drv->ifname, this->ifname, sizeof(this->ifname));
+    drv->ioctl_sock = 1;
+    
+    wpa_priv_cmd_associate(drv, data, buflen);
+    
 //    if (ad->ad_mode != 1) {
 //        if (!(ad->ad_ssid_len == this->assoc_data.ad_ssid_len && memcmp(ad->ad_ssid, this->assoc_data.ad_ssid, ad->ad_ssid_len) == 0 && ad->ad_key.key_len == this->assoc_data.ad_key.key_len && memcmp(ad->ad_key.key, this->assoc_data.ad_key.key, ad->ad_key.key_len) == 0)) {
 //            this->assoc_data = *ad;
